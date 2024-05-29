@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose'
 
-
 export interface CountryDocument extends mongoose.Document{
     countryName?: string;
     state?: string;
@@ -14,7 +13,7 @@ export interface CountryDocument extends mongoose.Document{
     modifiedBy?: string;
 }
 
-export const statusSchema = new mongoose.Schema({
+export const countrySchema = new mongoose.Schema({
     countryName: {type: String},
     state:{ type: String},
     city:{ type: String},
@@ -27,4 +26,4 @@ export const statusSchema = new mongoose.Schema({
  
 })
 
-export const Country = mongoose.model("Country", statusSchema)
+export const Country = mongoose.model("Country", countrySchema)

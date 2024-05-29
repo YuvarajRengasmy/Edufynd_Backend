@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose'
 
-
 export interface EmailDocument extends mongoose.Document{
     from?: string;
     to?: string;

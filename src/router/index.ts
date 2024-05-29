@@ -20,6 +20,7 @@ import Staff from './staff.routes'
 import Status from '../globalSetting/router/status.routes'
 import Country from '../globalSetting/router/country.routes'
 import InTake from '../globalSetting/router/intake.routes'
+import Email from '../globalSetting/router/email.routes'
 
 
 
@@ -40,6 +41,7 @@ router.use('/staff', Staff)
 router.use('/status', Status )
 router.use('/country', Country)
 router.use('/intake', InTake)
+router.use('/email', Email)
 
 
 

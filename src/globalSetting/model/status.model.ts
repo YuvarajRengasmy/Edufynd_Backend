@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose'
 
-
 export interface StatusDocument extends mongoose.Document{
     statusName?: string;
     duration?: string;
