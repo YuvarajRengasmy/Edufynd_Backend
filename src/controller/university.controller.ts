@@ -331,42 +331,44 @@ export const csvToJson = async (req, res) => {
     try {
         let universityList = [];
         // Parse CSV file
-        const res = await csv().fromFile(req.file.path);
+        const csvData = await csv().fromFile(req.file.path);
+   
         // Process CSV data
-        for (let i = 0; i < res.length; i++) {
+        for (let i = 0; i < csvData.length; i++) {
             universityList.push({
-                universityName: res[i].UniversityName,
-                universityLogo:res[i].UniversityLogo,
-                businessName: res[i].BusinessName,
-                banner: res[i].Banner,
-                country: res[i].Country,
-                countryName: res[i].CountryName,
-                email: res[i].Email,
-                campus: res[i].Campus ? res[i].Campus.split(','): [],
-                ranking: res[i].Ranking,
-                applicationFees: res[i].ApplicationFees,
-                averageFees: res[i].AverageFees,
-                popularCategories: res[i].PopularCategories ? res[i].PopularCategories.split(','): [],
-                offerTAT: res[i].OfferTAT,
-                founded: res[i].Founded,
-                institutionType: res[i].InstitutionType,
-                costOfLiving: res[i].CostOfLiving,
-                admissionRequirement: res[i].AdmissionRequirement,
-                grossTuition: res[i].GrossTuition,
-                flag: res[i].Flag,
-                paymentMethod:res[i].PaymentMethod,
-                amount:res[i].Amount,
-                percentage: res[i].Percentage,
-                eligibilityForCommission: res[i].EligibilityForCommission,
-                currency: res[i].Currency,
-                paymentTAT: res[i].PaymentTAT,
-                tax: res[i].Tax,
-                commissionPaidOn: res[i].CommissionPaidOn,
+                universityName: csvData[i].UniversityName,
+                universityLogo:csvData[i].UniversityLogo,
+                businessName: csvData[i].BusinessName,
+                banner: csvData[i].Banner,
+                country: csvData[i].Country,
+                countryName: csvData[i].CountryName,
+                email: csvData[i].Email,
+                campus: csvData[i].Campus ? csvData[i].Campus.split(','): [],
+                ranking: csvData[i].Ranking,
+                applicationFees: csvData[i].ApplicationFees,
+                averageFees: csvData[i].AverageFees,
+                popularCategories: csvData[i].PopularCategories ? csvData[i].PopularCategories.split(','): [],
+                offerTAT: csvData[i].OfferTAT,
+                founded: csvData[i].Founded,
+                institutionType: csvData[i].InstitutionType,
+                costOfLiving: csvData[i].CostOfLiving,
+                admissionRequirement: csvData[i].AdmissionRequirement,
+                grossTuition: csvData[i].GrossTuition,
+                flag: csvData[i].Flag,
+                paymentMethod:csvData[i].PaymentMethod,
+                amount:csvData[i].Amount,
+                percentage: csvData[i].Percentage,
+                eligibilityForCommission: csvData[i].EligibilityForCommission,
+                currency: csvData[i].Currency,
+                paymentTAT: csvData[i].PaymentTAT,
+                tax: csvData[i].Tax,
+                commissionPaidOn: csvData[i].CommissionPaidOn,
               
                 
               
             });
         }
+     
         // Insert into the database
         await University.insertMany(universityList);
         // Send success response
