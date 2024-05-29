@@ -37,7 +37,7 @@ router.use('/client', Client)
 router.use('/staff', Staff)
 
 //Global Setting API
-router.use('/status',Status )
+router.use('/status', Status )
 router.use('/country', Country)
 router.use('/intake', InTake)
 
