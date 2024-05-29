@@ -18,6 +18,8 @@ import Staff from './staff.routes'
 
 //Global Setting Routes
 import Status from '../globalSetting/router/status.routes'
+import Country from '../globalSetting/router/country.routes'
+import InTake from '../globalSetting/router/intake.routes'
 
 
 
@@ -36,6 +38,8 @@ router.use('/staff', Staff)
 
 //Global Setting API
 router.use('/status',Status )
+router.use('/country', Country)
+router.use('/intake', InTake)
 
 
 
