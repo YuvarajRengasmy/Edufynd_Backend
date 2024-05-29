@@ -4,24 +4,24 @@ import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
 
 
-var activity = "Global Status";
+var activity = "Global-Country";
 
 
 
-export const getAllStatus = async (req, res) => {
+export const getAllCountry = async (req, res) => {
     try {
-        const data = await Status.find()
-        response(req, res, activity, 'Level-1', 'GetAll-Status', true, 200, data, clientError.success.fetchedSuccessfully)
+        const data = await Country.find()
+        response(req, res, activity, 'Level-1', 'GetAll-Country', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-Status', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetAll-Country', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
 
-export const getSingleStatus = async (req, res) => {
+export const getSingleCountry = async (req, res) => {
     try {
-        const data = await Status.findOne({ _id: req.query._id })
+        const data = await Country.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Status', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Status', false, 500, {}, errorMessage.internalServer, err.message)
