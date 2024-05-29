@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff } from '../controller/staff.controller';
+import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -45,5 +45,12 @@ router.delete('/',                  //delete staff
     deleteStaff
 );
 
+
+
+router.put('/getFilterStaff',
+    basicAuthUser,
+    checkSession,
+    getFilteredStaff,
+);
 
 export default router

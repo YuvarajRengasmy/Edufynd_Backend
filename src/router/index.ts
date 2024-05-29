@@ -2,6 +2,8 @@ import { Router } from 'express';
 const router: Router = Router();
 
 
+
+// All Module Routes
 import SuperAdmin from './superAdmin.routes'
 import Admin from './admin.routes'
 import Student from './student.routes'
@@ -14,9 +16,12 @@ import Contact from './contact.routes'
 import Client from './client.routes'
 import Staff from './staff.routes'
 
+//Global Setting Routes
+import Status from '../globalSetting/router/status.routes'
 
 
 
+// All Module API
 router.use('/superadmin', SuperAdmin)
 router.use('/admin', Admin)
 router.use('/student', Student)
@@ -28,6 +33,9 @@ router.use('/applicant', Applicant)
 router.use('/contact', Contact)
 router.use('/client', Client)
 router.use('/staff', Staff)
+
+//Global Setting API
+router.use('/status',Status )
 
 
 

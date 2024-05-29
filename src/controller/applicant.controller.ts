@@ -115,24 +115,46 @@ export let deleteApplicant = async (req, res, next) => {
 };
 
 
-export const getApplicantDetails = async (req, res) => {
+
+/**
+ * @author Balan K K
+ * @date 28-05-2024
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next  
+ * @description This Function is used to get filter Staff Details
+ */
+
+export let getFilteredApplication = async (req, res, next) => {
     try {
-        // Extract the applicant ID from request parameters
-        const applicantId = req.params.applicantId;
-
-        // Find the applicant by ID and populate the referenced fields
-        const applicant = await Applicant.findById(applicantId).populate('name', 'dob passportNo email primaryNumber')
-            .populate('selectCourse.universityName', 'name location');
-
-      
-        if (!applicant) {
-            return res.status(404).json({ error: 'Applicant not found' });
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.studentID) {
+            andList.push({ studentID: req.body.studentID })
         }
+        if (req.body.universityID) {
+            andList.push({ universityID: req.body.universityID })
+        }
+        if (req.body.feesPaid) {
+            andList.push({ feesPaid: req.body.feesPaid })
+        }
+        if (req.body.anyVisaRejections) {
+            andList.push({ anyVisaRejections: req.body.anyVisaRejections })
+        }
+       
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        // Send the response with the applicant's details
-        return res.status(200).json({ applicant });
-    } catch (error) {
-      
-        return res.status(500).json({ error: error.message });
+        const applicantList = await Applicant.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const applicantCount = await Applicant.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterApplicant', true, 200, { applicantList, applicantCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterApplicant', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+

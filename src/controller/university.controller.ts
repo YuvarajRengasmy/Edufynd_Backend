@@ -85,6 +85,9 @@ export let updateUniversity = async (req, res, next) => {
                     tax: universityDetails.tax,
                     commissionPaidOn: universityDetails.commissionPaidOn,
 
+                    modifiedOn: universityDetails.modifiedOn,
+                    modifiedBy:  universityDetails.modifiedBy,
+
                 }
             });
 
@@ -332,35 +335,33 @@ export const csvToJson = async (req, res) => {
         // Process CSV data
         for (let i = 0; i < res.length; i++) {
             universityList.push({
-                universityName: res[i].universityName,
-                universityLogo:res[i].universityLogo,
-                businessName: res[i].businessName,
-                banner: res[i].banner,
-                country: res[i].country,
-                countryName: res[i].countryName,
-                email: res[i].email,
-                campus: res[i].campus.split(','),
-                ranking: res[i].ranking,
-                applicationFees: res[i].applicationFees,
-                averageFees: res[i].averageFees,
-                popularCategories: res[i].popularCategories.split(','),
-                offerTAT: res[i].offerTAT,
-                founded: res[i].founded,
-                institutionType: res[i].institutionType,
-                costOfLiving: res[i].costOfLiving,
-                admissionRequirement: res[i].admissionRequirement,
-                grossTuition: res[i].grossTuition,
-                flag: res[i].flag,
-                inTake:res[i].InTake,
-
-                paymentMethod:res[i].paymentMethod,
-                amount:res[i].amount,
-                percentage: res[i].percentage,
-                eligibilityForCommission: res[i].eligibilityForCommission,
-                currency: res[i].currency,
-                paymentTAT: res[i].paymentTAT,
-                tax: res[i].tax,
-                commissionPaidOn: res[i].commissionPaidOn,
+                universityName: res[i].UniversityName,
+                universityLogo:res[i].UniversityLogo,
+                businessName: res[i].BusinessName,
+                banner: res[i].Banner,
+                country: res[i].Country,
+                countryName: res[i].CountryName,
+                email: res[i].Email,
+                campus: res[i].Campus ? res[i].Campus.split(','): [],
+                ranking: res[i].Ranking,
+                applicationFees: res[i].ApplicationFees,
+                averageFees: res[i].AverageFees,
+                popularCategories: res[i].PopularCategories ? res[i].PopularCategories.split(','): [],
+                offerTAT: res[i].OfferTAT,
+                founded: res[i].Founded,
+                institutionType: res[i].InstitutionType,
+                costOfLiving: res[i].CostOfLiving,
+                admissionRequirement: res[i].AdmissionRequirement,
+                grossTuition: res[i].GrossTuition,
+                flag: res[i].Flag,
+                paymentMethod:res[i].PaymentMethod,
+                amount:res[i].Amount,
+                percentage: res[i].Percentage,
+                eligibilityForCommission: res[i].EligibilityForCommission,
+                currency: res[i].Currency,
+                paymentTAT: res[i].PaymentTAT,
+                tax: res[i].Tax,
+                commissionPaidOn: res[i].CommissionPaidOn,
               
                 
               

@@ -19,7 +19,6 @@ export interface UniversityDocument extends mongoose.Document {
     popularCategories?: any[]; // Popular Categories (Multiple)
     admissionRequirement?: string; // Admission Requirement (Text box)
     offerTAT?: string; // Offer TAT
-    inTake?: any[];
     paymentMethod?: string;
     amount?: string;
     percentage?: string;
@@ -33,6 +32,12 @@ export interface UniversityDocument extends mongoose.Document {
     applicationFees?: string;
     costOfLiving?: string;
     grossTuition?: string;
+
+    isDeleted?: boolean;
+    createdOn?: Date;
+    createdBy?: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
 }
 
 
@@ -68,6 +73,12 @@ const universitySchema = new mongoose.Schema({
     businessName: { type: String },      // Client Name
     banner: {type: String},
     universityLogo: { type: String },
+
+    isDeleted: { type: Boolean, default: false },
+    createdOn: { type: Date },
+    createdBy: { type: String },
+    modifiedOn: { type: Date },
+    modifiedBy: { type: String },
 })
 
 export const University = mongoose.model("University", universitySchema)

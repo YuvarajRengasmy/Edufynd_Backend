@@ -39,6 +39,9 @@ export interface StudentDocument extends mongoose.Document {
     facebook?: string;
     instagram?: string;
     linkedIn?: string;
+    isDeleted?: boolean;
+    createdOn?: Date;
+    createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
 
@@ -48,7 +51,6 @@ const studentSchema =new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     studentCode : {type: String},
     source: { type: String},
-   
     name: {type: String},
     passportNo: {type: String},
     expiryDate: {type: String},
@@ -86,8 +88,12 @@ const studentSchema =new mongoose.Schema({
       instagram: {type: String},
       facebook: {type: String},
       linkedIn: {type: String},
+
+      isDeleted: { type: Boolean, default: false },
+      createdOn: { type: Date },
+      createdBy: { type: String },
       modifiedOn: { type: Date },
-      modifiedBy: { type: String }
+      modifiedBy: { type: String },
 })
 
 

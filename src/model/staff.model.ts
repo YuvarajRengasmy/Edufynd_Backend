@@ -24,7 +24,7 @@ export interface StaffDocument extends mongoose.Document {
     activeInactive?: boolean    // – User
     teamLead?: string;     // – Select Employees and permission to be viewed.
     isDeleted?: boolean;
-    status?: string;
+    status?: number;
     privileges?: string;
     createdOn?: Date;
     createdBy?: string;

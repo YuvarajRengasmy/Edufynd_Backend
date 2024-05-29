@@ -93,3 +93,51 @@ export let deleteStaff = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Delete-StaffDetail', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+/**
+ * @author Balan K K
+ * @date 28-05-2024
+ * @param {Object} req 
+ * @param {Object} res 
+ * @param {Function} next  
+ * @description This Function is used to get filter Staff Details
+ */
+
+export let getFilteredStaff = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.empName) {
+            andList.push({ empName: req.body.empName })
+        }
+        if (req.body.designation) {
+            andList.push({ designation: req.body.designation })
+        }
+        if (req.body.reportingManager) {
+            andList.push({ reportingManager: req.body.reportingManager })
+        }
+        if (req.body.manageApplications) {
+            andList.push({ manageApplications: req.body.manageApplications })
+        }
+        if (req.body.teamLead) {
+            andList.push({ teamLead: req.body.teamLead })
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const staffList = await Staff.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const staffCount = await Staff.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterStaff', true, 200, { staffList, staffCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterStaff', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+

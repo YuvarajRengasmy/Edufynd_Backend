@@ -106,7 +106,10 @@ export let updateStudent = async (req, res, next) => {
                     twitter:studentDetails .twitter,
                     facebook: studentDetails.facebook,
                     instagram: studentDetails.instagram,
-                    linkedIn: studentDetails.linkedIn
+                    linkedIn: studentDetails.linkedIn,
+
+                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedBy:  studentDetails.modifiedBy,
                 }
                 
             });
