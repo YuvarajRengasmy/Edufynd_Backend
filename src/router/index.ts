@@ -21,6 +21,7 @@ import Status from '../globalSetting/router/status.routes'
 import Country from '../globalSetting/router/country.routes'
 import InTake from '../globalSetting/router/intake.routes'
 import Email from '../globalSetting/router/email.routes'
+import Currency from '../globalSetting/router/currency.routes'
 
 
 
@@ -42,6 +43,7 @@ router.use('/status', Status )
 router.use('/country', Country)
 router.use('/intake', InTake)
 router.use('/email', Email)
+router.use('/currency', Currency)
 
 
 

@@ -1,10 +1,9 @@
 import * as mongoose from 'mongoose'
 
 export interface CountryDocument extends mongoose.Document{
-    countryName?: string;
+    country?: string;
     state?: string;
-    city?: string;
-
+    lga?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -13,10 +12,9 @@ export interface CountryDocument extends mongoose.Document{
 }
 
 export const countrySchema = new mongoose.Schema({
-    countryName: {type: String},
+    country: {type: String},
     state:{ type: String},
-    city:{ type: String},
- 
+    lga:{ type: String},
 
     createdOn: { type: Date },
     createdBy: { type: String },
