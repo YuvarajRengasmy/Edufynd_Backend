@@ -58,3 +58,31 @@ export let deleteCurrency = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Deleted the Currency', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+export let getFilteredCurrency = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.currency) {
+            andList.push({ currency: req.body.currency })
+        }
+        if (req.body.flag) {
+            andList.push({ flag: req.body.flag })
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const currencyList = await Currency.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const currencyCount = await Currency.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterCurrency', true, 200, { currencyList, currencyCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterCurrency', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
