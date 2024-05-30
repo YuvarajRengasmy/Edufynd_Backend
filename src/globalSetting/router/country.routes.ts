@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCountry, getSingleCountry, createCountry, updateCountry, deleteCountry } from '../../globalSetting/controller/country.controller';
+import { getAllCountry, getSingleCountry, createCountry, updateCountry, deleteCountry, getFilteredCountry } from '../../globalSetting/controller/country.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 
@@ -35,6 +35,11 @@ router.delete('/',                  //delete Country
     basicAuthUser,
     checkQuery('_id'),
     deleteCountry
+);
+
+router.put('/getFilterCountry',
+    basicAuthUser,
+    getFilteredCountry,
 );
 
 

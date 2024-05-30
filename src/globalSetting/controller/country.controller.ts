@@ -82,3 +82,35 @@ export let deleteCountry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Deleted the Country', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+export let getFilteredCountry = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.country) {
+            andList.push({ country: req.body.country })
+        }
+        if (req.body.state) {
+            andList.push({ state: req.body.state })
+        }
+        if (req.body.lga) {
+            andList.push({ lga: req.body.lga })
+        }
+      
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const countryList = await Country.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const countryCount = await Country.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterCountry', true, 200, { countryList, countryCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterCountry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
