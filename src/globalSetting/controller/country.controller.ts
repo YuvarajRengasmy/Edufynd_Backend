@@ -54,8 +54,6 @@ export const updateCountry = async (req, res) => {
             let statusData = await Country.findByIdAndUpdate({ _id: countryDetails._id }, {
                 $set: {
                     country: countryDetails.country,
-                    state: countryDetails.state,
-                    lga: countryDetails.lga,
                     modifiedOn: countryDetails.modifiedOn,
                     modifiedBy:  countryDetails.modifiedBy,
                 }

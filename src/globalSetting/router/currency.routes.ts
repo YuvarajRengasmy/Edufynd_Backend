@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCurrency, getSingleCurrency, createCurrency, deleteCurrency } from '../../globalSetting/controller/currency.controller';
+import { getAllCurrency, getSingleCurrency, createCurrency, deleteCurrency, getFilteredCurrency } from '../../globalSetting/controller/currency.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 
@@ -28,6 +28,11 @@ router.delete('/',                  //delete Currency
     basicAuthUser,
     checkQuery('_id'),
     deleteCurrency
+);
+
+router.put('/getFilterCurrency',
+    basicAuthUser,
+    getFilteredCurrency,
 );
 
 

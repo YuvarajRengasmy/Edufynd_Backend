@@ -84,3 +84,36 @@ export let deleteInTake = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Deleted this InTake', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+export let getFilteredInTake   = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.from) {
+            andList.push({ from: req.body.from })
+        }
+        if (req.body.to) {
+            andList.push({ to: req.body.to })
+        }
+        if (req.body.subject) {
+            andList.push({ subject: req.body.subject })
+        }
+        if (req.body.content) {
+            andList.push({ content: req.body.content })
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const emailList = await InTake.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const emailCount = await InTake.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterEmail', true, 200, { emailList, emailCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterEmail', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
