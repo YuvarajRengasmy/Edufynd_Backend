@@ -4,8 +4,7 @@ export interface CountryDocument extends mongoose.Document{
     countryName?: string;
     state?: string;
     city?: string;
-    currency?: string;
-    flag?: string;
+
 
     createdOn?: Date;
     createdBy?: string;
@@ -17,7 +16,7 @@ export const countrySchema = new mongoose.Schema({
     countryName: {type: String},
     state:{ type: String},
     city:{ type: String},
-    currency:{ type: String},
+ 
 
     createdOn: { type: Date },
     createdBy: { type: String },
