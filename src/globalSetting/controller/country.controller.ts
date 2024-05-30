@@ -95,12 +95,6 @@ export let getFilteredCountry = async (req, res, next) => {
         if (req.body.country) {
             andList.push({ country: req.body.country })
         }
-        if (req.body.state) {
-            andList.push({ state: req.body.state })
-        }
-        if (req.body.lga) {
-            andList.push({ lga: req.body.lga })
-        }
       
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
