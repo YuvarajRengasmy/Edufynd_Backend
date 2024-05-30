@@ -81,3 +81,32 @@ export let deleteStatus = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Deleted this Status', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+export let getFilteredStatus   = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.statusName) {
+            andList.push({ statusName: req.body.statusName })
+        }
+        if (req.body.duration) {
+            andList.push({ duration: req.body.duration })
+        }
+        
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const statusList = await Status.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const statusCount = await Status.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterStatus', true, 200, { statusList, statusCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterStatus', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};

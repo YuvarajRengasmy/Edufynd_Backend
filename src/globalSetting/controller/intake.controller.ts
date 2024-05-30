@@ -109,11 +109,11 @@ export let getFilteredInTake   = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const emailList = await InTake.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const intakeList = await InTake.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
 
-        const emailCount = await InTake.find(findQuery).count()
-        response(req, res, activity, 'Level-1', 'Get-FilterEmail', true, 200, { emailList, emailCount }, clientError.success.fetchedSuccessfully);
+        const intakeCount = await InTake.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterInTak', true, 200, { intakeList, intakeCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-FilterEmail', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Get-FilterInTake', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };

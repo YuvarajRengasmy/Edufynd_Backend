@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllStatus, getSingleStatus, createStatus, updateStatus, deleteStatus } from '../../globalSetting/controller/status.controller';
+import { getAllStatus, getSingleStatus, createStatus, updateStatus, deleteStatus, getFilteredStatus } from '../../globalSetting/controller/status.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 
@@ -35,6 +35,12 @@ router.delete('/',                  //delete Status
     basicAuthUser,
     checkQuery('_id'),
     deleteStatus
+);
+
+
+router.put('/getFilterStatus',
+    basicAuthUser,
+    getFilteredStatus,
 );
 
 
