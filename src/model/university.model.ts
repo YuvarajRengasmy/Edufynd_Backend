@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { clientError } from 'src/helper/ErrorMessage';
+
 
 export interface UniversityDocument extends mongoose.Document {
     _id?: any;

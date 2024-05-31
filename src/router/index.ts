@@ -23,6 +23,9 @@ import InTake from '../setting/globalSetting/router/intake.routes'
 import Email from '../setting/globalSetting/router/email.routes'
 import Currency from '../setting/globalSetting/router/currency.routes'
 
+//Module Setting Routes
+import UniversityList from '../setting/moduleSetting/router/universityList.route'
+
 
 
 // All Module API
@@ -44,6 +47,10 @@ router.use('/country', Country)
 router.use('/intake', InTake)
 router.use('/email', Email)
 router.use('/currency', Currency)
+
+
+//Module Setting API
+router.use('/universityList',UniversityList )
 
 
 

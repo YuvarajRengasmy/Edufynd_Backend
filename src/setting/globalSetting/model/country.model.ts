@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 
 export interface CountryDocument extends mongoose.Document{
-    country?: string;
+    country?: any[];
   
 
     createdOn?: Date;
@@ -11,7 +11,7 @@ export interface CountryDocument extends mongoose.Document{
 }
 
 export const countrySchema = new mongoose.Schema({
-    country: {type: String},
+    country: [String],
 
 
     createdOn: { type: Date },
