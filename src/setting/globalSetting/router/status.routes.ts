@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getAllStatus, getSingleStatus, createStatus, updateStatus, deleteStatus, getFilteredStatus } from '../../globalSetting/controller/status.controller';
-import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
-import { basicAuthUser } from '../../middleware/checkAuth';
+import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
+import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getAllInTake, getSingleInTake, createInTake, updateInTake, deleteInTake, getFilteredInTake } from '../../globalSetting/controller/intake.controller';
-import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
-import { basicAuthUser } from '../../middleware/checkAuth';
+import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
+import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();

@@ -17,11 +17,11 @@ import Client from './client.routes'
 import Staff from './staff.routes'
 
 //Global Setting Routes
-import Status from '../globalSetting/router/status.routes'
-import Country from '../globalSetting/router/country.routes'
-import InTake from '../globalSetting/router/intake.routes'
-import Email from '../globalSetting/router/email.routes'
-import Currency from '../globalSetting/router/currency.routes'
+import Status from '../setting/globalSetting/router/status.routes'
+import Country from '../setting/globalSetting/router/country.routes'
+import InTake from '../setting/globalSetting/router/intake.routes'
+import Email from '../setting/globalSetting/router/email.routes'
+import Currency from '../setting/globalSetting/router/currency.routes'
 
 
 

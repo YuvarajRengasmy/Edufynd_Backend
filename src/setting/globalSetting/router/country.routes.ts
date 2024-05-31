@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getAllCountry, getSingleCountry, createCountry, updateCountry, deleteCountry, getFilteredCountry } from '../../globalSetting/controller/country.controller';
-import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
-import { basicAuthUser } from '../../middleware/checkAuth';
+import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
+import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();

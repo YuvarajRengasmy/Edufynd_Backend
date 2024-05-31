@@ -1,7 +1,7 @@
 import { Status, StatusDocument } from '../../globalSetting/model/status.model'
 import { validationResult } from "express-validator";
-import { response, } from "../../helper/commonResponseHandler";
-import { clientError, errorMessage } from "../../helper/ErrorMessage";
+import { response, } from "../../../helper/commonResponseHandler";
+import { clientError, errorMessage } from "../../../helper/ErrorMessage";
 
 
 var activity = "Global Status";
