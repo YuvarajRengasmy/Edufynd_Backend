@@ -12,11 +12,7 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-const imagesDir = path.resolve(__dirname, 'images');
-if (!fs.existsSync(imagesDir)) {
-    fs.mkdirSync(imagesDir, { recursive: true });
-}
-router.use('/images', express.static(imagesDir));
+
 
 router.get('/getalluniversity',                //get all university
     basicAuthUser,
