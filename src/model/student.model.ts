@@ -21,16 +21,16 @@ export interface StudentDocument extends mongoose.Document {
     institution?: string;
     percentage?: number;
     doHaveAnyEnglishLanguageTest?: string;
-    englishTestType?: any[]; // Only sEnglishLanguageTest is true
-    testScore?: number; // Only sEnglishLanguageTest is true
-    dateOfTest?: Date; // Only sEnglishLanguageTest is true
+    englishTestType?: any[]; // Only EnglishLanguageTest is true
+    testScore?: number; // Only EnglishLanguageTest is true
+    dateOfTest?: Date; // Only EnglishLanguageTest is true
     country?: string;
     desiredUniversity?: string;
     desiredCourse?: string;
     workExperience?: number; // In years
-    anyVisaRejections?: string; // Only sVisaRejections is true
+    anyVisaRejections?: string; // Only VisaRejections is true
     visaReason?: string;
-    doYouHaveTravelHistory?: string; // Only sTravelHistory is true
+    doYouHaveTravelHistory?: string; // Only TravelHistory is true
     travelReason?: string;
     finance?: any[];
     password?: string;

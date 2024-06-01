@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getAllCurrency, getSingleCurrency, createCurrency, deleteCurrency, getFilteredCurrency } from '../../globalSetting/controller/currency.controller';
-import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
-import { basicAuthUser } from '../../middleware/checkAuth';
+import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
+import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();
