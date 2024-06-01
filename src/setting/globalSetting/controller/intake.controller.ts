@@ -46,32 +46,34 @@ export let createInTake = async (req, res, next) => {
 };
 
 
-export const updateInTake = async (req, res) => {
-    const errors = validationResult(req)
+
+export const updateInTake = async (req,res) => {
+    const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const intakeData: InTakeDocument = req.body;
-            let statusData = await InTake.findByIdAndUpdate({ _id: intakeData._id }, {
-                $set: {
-                    inTakeName: intakeData.inTakeName,
-                    startDate: intakeData.startDate,
-                    closeDate: intakeData.closeDate,
-                 
-                    modifiedOn: intakeData.modifiedOn,
-                    modifiedBy:  intakeData.modifiedBy,
+            const statusData = await InTake.findByIdAndUpdate(
+                { _id: intakeData._id },
+                {
+                    $set: {
+                        intakeName: intakeData.intakeName,
+                        startDate: intakeData.startDate,
+                        endDate: intakeData.endDate,
+                        modifiedOn: intakeData.modifiedOn,
+                        modifiedBy: intakeData.modifiedBy,
+                    },
                 },
-              
-            });
+                { new: true } // This option returns the updated document
+            );
 
             response(req, res, activity, 'Level-2', 'Update-InTakeData', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Update-InTakeData', false, 500, {}, errorMessage.internalServer, err.message);
         }
-    }
-    else {
+    } else {
         response(req, res, activity, 'Level-3', 'Update-InTakeData', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-}
+};
 
 export let deleteInTake = async (req, res, next) => {
   
