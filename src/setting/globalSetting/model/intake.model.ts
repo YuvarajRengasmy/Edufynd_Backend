@@ -2,7 +2,9 @@ import * as mongoose from 'mongoose'
 
 
 export interface InTakeDocument extends mongoose.Document{
-    inTake?: string;
+    inTakeName?: string;
+    startDate?: string;
+    closeDate?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -11,11 +13,10 @@ export interface InTakeDocument extends mongoose.Document{
 }
 
 export const inTakeSchema = new mongoose.Schema({
-    inTake:[{
+   
         inTakeName:{type:String},
         startDate:{type:String},
-        closeDate:{type:String}
-    }],
+        closeDate:{type:String},
 
     createdOn: { type: Date },
     createdBy: { type: String },

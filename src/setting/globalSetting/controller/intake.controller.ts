@@ -53,14 +53,14 @@ export const updateInTake = async (req, res) => {
             const intakeData: InTakeDocument = req.body;
             let statusData = await InTake.findByIdAndUpdate({ _id: intakeData._id }, {
                 $set: {
+                    inTakeName: intakeData.inTakeName,
+                    startDate: intakeData.startDate,
+                    closeDate: intakeData.closeDate,
                  
                     modifiedOn: intakeData.modifiedOn,
                     modifiedBy:  intakeData.modifiedBy,
                 },
-                $addToSet: {
-                    inTake: intakeData.inTake,
-                  
-                }
+              
             });
 
             response(req, res, activity, 'Level-2', 'Update-InTakeData', true, 200, statusData, clientError.success.updateSuccess);

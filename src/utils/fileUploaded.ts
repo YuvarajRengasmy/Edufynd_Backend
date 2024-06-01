@@ -2,10 +2,8 @@ import multer = require('multer')
 import path = require('path')
 
 
-// router.use(express.static(path.resolve('public/upload')))
-
 const storage = multer.diskStorage({
-    destination: './images',
+    destination: 'src/files',
     filename: (req, file, cb)=>{
          return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
         
