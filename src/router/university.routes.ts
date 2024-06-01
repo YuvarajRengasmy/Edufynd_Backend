@@ -1,15 +1,22 @@
 import { Router } from 'express';
+import * as express from 'express';
+import * as path from 'path';
+import * as fs from 'fs'
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
-     universityLogo, getUniversityWithProgramDetails} from '../controller/university.controller';
+     getUniversityWithProgramDetails} from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
-;
 const router: Router = Router();
 
 
+const imagesDir = path.resolve(__dirname, 'images');
+if (!fs.existsSync(imagesDir)) {
+    fs.mkdirSync(imagesDir, { recursive: true });
+}
+router.use('/images', express.static(imagesDir));
 
 router.get('/getalluniversity',                //get all university
     basicAuthUser,
@@ -31,6 +38,7 @@ router.post('/',
     checkSession,
     // checkQuery('_id'),
     // checkRequestBodyParams('_id'),
+    upload.single('logo'),
     saveUniversity
 );
 
@@ -78,10 +86,6 @@ router.put('/studentfilteruniversity',
 );
 
 
-router.post('/logo',
-    upload.single('logo'),
-    universityLogo
-);
 
 router.post('/import',      // CSV File to json and Store into Database
     upload.single('file'),

@@ -36,7 +36,9 @@ export let saveUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-            const createData = new University(universityDetails);
+            const { filename } = req.file
+            const profile_url = `http://localhost:4409/${req.file.filename}`
+            const createData = new University({ ...universityDetails, universityLogo: profile_url });
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
@@ -56,6 +58,7 @@ export let updateUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
+            const universityLogo = req.file ? req.file.path : '';
             let universityData = await University.findByIdAndUpdate({ _id: universityDetails._id }, {
                 $set: {
                     universityName: universityDetails.universityName,
@@ -112,32 +115,6 @@ export let deleteUniversity = async (req, res, next) => {
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-University', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
-
-
-
-
-export let universityLogo = async (req, res, next) => {
-
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-
-            const { filename } = req.file
-            const profile_url = `http://localhost:4409/profile/${req.file.filename}`
-            const createData = new University({ universityLogo: profile_url });
-
-            let insertData = await createData.save();
-
-            response(req, res, activity, 'Level-2', 'University-Logo-Uploaded', true, 200, insertData, clientError.success.savedSuccessfully);
-
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'University-Logo-Uploaded', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    } else {
-        response(req, res, activity, 'Level-3', 'University-Logo-Uploaded', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 
