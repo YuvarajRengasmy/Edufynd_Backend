@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllUniversityList, getSingleUniversityList, createUniversityList, updateUniversityList, deleteUniversityList } from '../../moduleSetting/controller/universityList.controller';
+import { getAllUniversityList, getSingleUniversityList, createUniversityList, updateUniversityList, deleteUniversityList } from '../../moduleSetting/controller/dropdownSetting.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 

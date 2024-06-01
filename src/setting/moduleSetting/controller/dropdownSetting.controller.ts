@@ -1,10 +1,10 @@
-import { UniversityList, UniversityListDocument } from '../../moduleSetting/model/universityList.model'
+import { UniversityList, UniversityListDocument } from '../model/dropdownSetting.model'
 import { validationResult } from "express-validator";
 import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
 
 
-var activity = "ModuleSetting-University";
+var activity = "ModuleSetting-DropDown Setting In All Module";
 
 
 
@@ -57,13 +57,14 @@ export const updateUniversityList = async (req, res) => {
                     popularCategories: UniversityListDetails.popularCategories,
                     country: UniversityListDetails.country,
                     offerTAT: UniversityListDetails.offerTAT,
-                    institutionType:UniversityListDetails.institutionType,
+                    institutionType: UniversityListDetails.institutionType,
                     paymentMethod: UniversityListDetails.paymentMethod,
-                    tax:UniversityListDetails.tax,
+                    tax: UniversityListDetails.tax,
                     commissionPaidOn: UniversityListDetails.commissionPaidOn,
+                    typeOfClient: UniversityListDetails.typeOfClient,
 
                     modifiedOn: UniversityListDetails.modifiedOn,
-                    modifiedBy:  UniversityListDetails.modifiedBy,
+                    modifiedBy: UniversityListDetails.modifiedBy,
                 }
             });
 
@@ -78,7 +79,7 @@ export const updateUniversityList = async (req, res) => {
 }
 
 export let deleteUniversityList = async (req, res, next) => {
-  
+
     try {
         let id = req.query._id;
         const country = await UniversityList.findByIdAndDelete({ _id: id })

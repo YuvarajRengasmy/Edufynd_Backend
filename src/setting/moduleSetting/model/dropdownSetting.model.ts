@@ -10,8 +10,8 @@ export interface UniversityListDocument extends mongoose.Document {
     tax?: string;
     commissionPaidOn?: string;
     institutionType?: string;
+    typeOfClient?: string;
 
-    isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -19,7 +19,7 @@ export interface UniversityListDocument extends mongoose.Document {
 }
 
 const universityListSchema = new mongoose.Schema({
-    courseType: { type: String },
+    courseType: { type: String },   // program module
     popularCategories: { type: String },
     country: { type: String },
     offerTAT: { type: String },
@@ -27,8 +27,8 @@ const universityListSchema = new mongoose.Schema({
     paymentMethod: { type: String, },
     tax: { type: String },
     commissionPaidOn: { type: String },
+    typeOfClient: {type: String},    // Client Module
 
-    isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

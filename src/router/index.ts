@@ -24,7 +24,7 @@ import Email from '../setting/globalSetting/router/email.routes'
 import Currency from '../setting/globalSetting/router/currency.routes'
 
 //Module Setting Routes
-import UniversityList from '../setting/moduleSetting/router/universityList.route'
+import UniversityList from '../setting/moduleSetting/router/dropdownSetting.route'
 
 
 
