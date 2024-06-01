@@ -24,14 +24,14 @@ router.post('/',
 );
 
 
-router.put('/',                    // update UniversityList
+router.put('/',                    // update UniversityList for Drop Down menu
     basicAuthUser,
     checkQuery('_id'),
     updateUniversityList
 );
 
 
-router.delete('/',                  //delete UniversityList
+router.delete('/',                  //delete UniversityList for Drop down menu
     basicAuthUser,
     checkQuery('_id'),
     deleteUniversityList
