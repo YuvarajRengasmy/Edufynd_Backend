@@ -4,19 +4,18 @@ import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
-import upload from '../utils/fileUploaded';
 const router:Router=Router();
 
 
 
-router.get('/get', //get all users
+router.get('/getAll',                          //get all users
     basicAuthUser,
      checkSession,
     getAllStudent
 );
 
 
-router.get('/getsinglestudent',
+router.get('/getSingle',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -35,7 +34,7 @@ router.post('/contact', createContact);
 
 
 
-router.put('/update', // update user
+router.put('/',             // update user
     basicAuthUser,
     checkSession,
     checkRequestBodyParams('_id'),
@@ -43,7 +42,7 @@ router.put('/update', // update user
 );
 
 
-router.delete('/delete', //delete user
+router.delete('/',                //delete user
     basicAuthUser,
     checkSession,
     checkQuery('_id'),

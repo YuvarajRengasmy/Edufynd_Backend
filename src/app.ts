@@ -7,11 +7,10 @@ import { Request, Response, NextFunction } from 'express';
 import { mongoconnect } from './utils/database';
 import routes from './router'
 
+
 export const app: any = {
 
 	instance: express(),
-	
-	
 	async init() {
 		this.initConfig();
 		await this.initDatabase();
@@ -40,6 +39,7 @@ export const app: any = {
 			}
 		});
 	},
+	
 	initRoutes() {
 		this.instance.use(express.static(path.join(__dirname, 'dist')));
 		this.instance.use('/api', routes);

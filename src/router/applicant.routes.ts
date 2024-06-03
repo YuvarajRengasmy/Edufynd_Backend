@@ -7,20 +7,21 @@ const router:Router=Router();
 
 
 
-router.get('/getallapplicant', //get all Applicant
+router.get('/',               //get all Applicant
     basicAuthUser,
      checkSession,
     getAllApplicant
 );
 
 
-router.get('/getsingleapplicant',
+router.get('/getSingle',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     getSingleApplicant,
 );
-router.post('/save', 
+router.post('/', 
+         basicAuthUser,
          checkRequestBodyParams('email'),
          createApplicant
 );

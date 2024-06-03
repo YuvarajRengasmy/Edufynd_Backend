@@ -1,40 +1,40 @@
 import { Router } from 'express';
-import { getAllUniversityList, getSingleUniversityList, createUniversityList, updateUniversityList, deleteUniversityList } from '../../moduleSetting/controller/dropdownSetting.controller';
+import { getAllDropDownList, getSingleDropDownList, createCustomLabel, updateDropDownList, deleteDropDownList } from '../../moduleSetting/controller/dropdownSetting.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();
 
-router.get('/getAllList',                //get all UniversityList
+router.get('/all',               
     basicAuthUser,
-    getAllUniversityList
+    getAllDropDownList
 );
 
-router.get('/getSingleList',
+router.get('/',
     basicAuthUser,
     checkQuery('_id'),
-    getSingleUniversityList,
+    getSingleDropDownList,
 );
 
 
 router.post('/',
     basicAuthUser,
-    createUniversityList
+    createCustomLabel
 );
 
 
-router.put('/',                    // update UniversityList for Drop Down menu
+router.put('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    updateUniversityList
+    updateDropDownList
 );
 
 
-router.delete('/',                  //delete UniversityList for Drop down menu
+router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deleteUniversityList
+    deleteDropDownList
 );
 
 
