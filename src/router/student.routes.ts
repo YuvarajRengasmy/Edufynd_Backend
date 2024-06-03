@@ -8,14 +8,14 @@ const router:Router=Router();
 
 
 
-router.get('/getAll',                          //get all users
+router.get('/',                          //get all users
     basicAuthUser,
      checkSession,
     getAllStudent
 );
 
 
-router.get('/getSingle',
+router.get('/getSingleStudent',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -51,7 +51,7 @@ router.delete('/',                //delete user
 
 
 
-router.put('/getFilterStudent',
+router.put('/getFilterStudentbySuperAdmin',
     basicAuthUser,
     checkSession,
     getFilteredStudentBySuperAdmin,
