@@ -12,7 +12,7 @@ router.post('/',
          createAgent
 );
 
-router.get('/get', //get all agent
+router.get('/', //get all agent
     basicAuthUser,
      checkSession,
     getAllAgent
