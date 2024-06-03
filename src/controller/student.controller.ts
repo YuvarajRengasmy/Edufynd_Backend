@@ -140,8 +140,7 @@ export let deleteStudent = async (req, res, next) => {
 
 
 
-
-export let getFilteredStudent = async (req, res, next) => {
+export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     try {
         var findQuery;
         var andList: any = []
@@ -149,27 +148,23 @@ export let getFilteredStudent = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-        if (req.body._id) {
-            andList.push({ _id: req.body._id })
+       
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
         }
         if (req.body.superAdminId) {
             andList.push({ superAdminId: req.body.superAdminId })
-        }
-        if (req.body.agentId) {
-            andList.push({ agentId: req.body.agentId })
         }
       
        
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
 
         const studentCount = await Student.find(findQuery).count()
-        response(req, res, activity, 'Level-1', 'Get-FilterUniversity', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
+        response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-FilterUniversity', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Get-Filter', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
-
-
 

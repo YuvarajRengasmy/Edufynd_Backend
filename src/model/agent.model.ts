@@ -4,9 +4,11 @@ export interface AgentDocument extends mongoose.Document {
     
     // agentId?: string; // Auto Generated
     _id?: any;
+    studentId?: any;
     agentCode?: string;
     businessName?: string;
-    address?:any;
+    addressLine1?:string;
+    addressLine2?: string;
     email?: string;
     // contactNumber?: string;
     mobileNumber?: string;
@@ -16,7 +18,8 @@ export interface AgentDocument extends mongoose.Document {
     panNumberCompany?: string; // If applicable
     gstn?: string; // Optional
     inc?: string; // If applicable
-    staffDetail?: any;
+    staffName?: string;
+    staffContactNo?: string;
     // agentPayout?: string[]; // List of payouts
     agentsCommission?: number; // Will be calculated based on the University Commission & Agent Payout
     agentBusinessLogo?: string; // Optional
@@ -40,16 +43,12 @@ export interface AgentDocument extends mongoose.Document {
 const agentSchema = new mongoose.Schema({
      //•Agent ID (Auto Generated)
      _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     agentCode: { type: String},
      name: { type: String},
      businessName: { type: String},
-     address: [{ 
-             streetAddress: { type: String },
-             city: { type: String },
-             state: { type: String },
-             country: { type: String },
-             pinCode: { type: String }
-               }],
+     addressLine1: {type: String},
+     addressLine2: {type: String},
      email: { type: String, required: true},
      mobileNumber: {type: String, required: true},
     whatsAppNumber: {type: String},
@@ -58,10 +57,8 @@ const agentSchema = new mongoose.Schema({
      panNumberCompany: { type: String},   //(if applicable)
      gstn: {type: String},
      inc: {type: String},  // (if applicable)
-     staffDetail: [{
-         name: { type: String },
-         contactNumber: { type: String }
-               }],
+     staffName: {type: String},
+     staffContactNo: {type: String},
      // agentPayout: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AgentPayout' }],//•Agent payout (List, Add, Edit, Delete)
      agentsCommission: {type: Number},  // (Will be calculated based on the University Commission & Agent Payout) Decimal value to the nearest – To be viewed only for agents
      agentBusinessLogo: {type: String},  // (Optional)

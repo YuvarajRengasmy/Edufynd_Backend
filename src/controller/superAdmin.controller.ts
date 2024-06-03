@@ -1,4 +1,6 @@
 import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
+import { Student, StudentDocument } from '../model/student.model'
+
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -54,6 +56,90 @@ export let createSuperAdmin = async (req, res, next) => {
 
 
 
+export let createStudentBySuperAdmin = async (req, res, next) => {
+    const errors = validationResult(req);
 
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails: SuperAdminDocument = req.body;
+            const studentDetails: StudentDocument = req.body;
+
+            // Find the superAdmin in the database
+            const superAdmin = await SuperAdmin.findOne({ id: superAdminDetails._id });
+
+            if (superAdmin) {
+                // SuperAdmin exist, proceed to create a new student
+                const createStudent = new Student({
+                    ...studentDetails,
+                    superAdminId: superAdmin._id // Add superAdmin ID to student document
+                });
+
+                // Save the student to the database
+                const insertStudent = await createStudent.save();
+
+                // Respond with success message
+                response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, {
+                    student: insertStudent,
+                    superAdminId: superAdmin._id
+                  
+                }, 'Student created successfully by agent.');
+            } else {
+                // Agent already exists, respond with error message
+                response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'SuperAdmin with the provided email already exists.');
+            }
+        } catch (err: any) {
+            // Handle server error
+
+            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+        // Request body validation failed, respond with error message
+        response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
+
+
+
+// export let createAgentBySuperAdmin = async (req, res, next) => {
+//     const errors = validationResult(req);
+
+//     if (errors.isEmpty()) {
+//         try {
+//             const superAdminDetails: SuperAdminDocument = req.body;
+//             const agentDetails: AgentDocument = req.body;
+
+//             // Find the superAdmin in the database
+//             const superAdmin = await SuperAdmin.findOne({ id: superAdminDetails._id });
+
+//             if (superAdmin) {
+//                 // SuperAdmin exist, proceed to create a new student
+//                 const createStudent = new Student({
+//                     ...studentDetails,
+//                     superAdminId: superAdmin._id // Add superAdmin ID to student document
+//                 });
+
+//                 // Save the student to the database
+//                 const insertStudent = await createStudent.save();
+
+//                 // Respond with success message
+//                 response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, {
+//                     student: insertStudent,
+//                     superAdminId: superAdmin._id
+                  
+//                 }, 'Student created successfully by agent.');
+//             } else {
+//                 // Agent already exists, respond with error message
+//                 response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'SuperAdmin with the provided email already exists.');
+//             }
+//         } catch (err: any) {
+//             // Handle server error
+
+//             response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+//         }
+//     } else {
+//         // Request body validation failed, respond with error message
+//         response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+//     }
+// };
 
 
