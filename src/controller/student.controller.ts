@@ -140,7 +140,7 @@ export let deleteStudent = async (req, res, next) => {
 
 
 
-export let getFiltered = async (req, res, next) => {
+export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     try {
         var findQuery;
         var andList: any = []

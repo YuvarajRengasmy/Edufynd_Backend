@@ -1,24 +1,20 @@
-import {Router} from 'express';
-import { createAgent,createStudentByAgent, getAllAgent, getFiltered, getSingleAgent, updateAgent } from '../controller/agent.controller';
-import { createContact} from '../controller/contact.controller';
+import { Router } from 'express';
+import { createAgent, createStudentByAgent, deleteAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent } from '../controller/agent.controller';
+import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
-const router:Router=Router();
+const router: Router = Router();
 
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         createAgent
-);
 
-router.get('/', //get all agent
+router.get('/',                                //get all agent
     basicAuthUser,
-     checkSession,
+    checkSession,
     getAllAgent
 );
 
-router.get('/getsingleagent',
+router.get('/getSingleAgent',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -26,8 +22,15 @@ router.get('/getsingleagent',
 );
 
 
+router.post('/',
+    basicAuthUser,
+    checkRequestBodyParams('email'),
+    createAgent
+);
+
+
 router.post('/contact',
- createContact
+    createContact
 );
 
 
@@ -36,22 +39,29 @@ router.put('/createStudent',             //create student by agent
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
-    createStudentByAgent  
+    createStudentByAgent
 );
 
 
-router.put('/update', //update agent
+router.put('/',                          //update agent
     basicAuthUser,
     checkSession,
     checkRequestBodyParams('_id'),
-    updateAgent  
+    updateAgent
 );
 
 
-router.put('/getFilter',
+router.delete('/',                  //delete agent
     basicAuthUser,
     checkSession,
-    getFiltered,
+    checkQuery('_id'),
+    deleteAgent
+);
+
+router.put('/getFilterStudentByAgent',
+    basicAuthUser,
+    checkSession,
+    getFilteredStudentByAgent,
 );
 
 

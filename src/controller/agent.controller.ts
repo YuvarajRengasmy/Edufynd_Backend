@@ -1,5 +1,5 @@
 
-import {Agent, AgentDocument} from '../model/agent.model'
+import { Agent, AgentDocument } from '../model/agent.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
@@ -46,8 +46,11 @@ const generateNextAgentID = async (): Promise<string> => {
     const formattedCounter = String(newCounter).padStart(3, '0');
 
     // Return the new client ID
-    return `CL_${formattedCounter}`;
+    return `AG_${formattedCounter}`;
 };
+
+
+
 export let createAgent = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -62,7 +65,7 @@ export let createAgent = async (req, res, next) => {
                 // const createData = new Agent(agentDetails);
                 agentDetails.agentCode = await generateNextAgentID();
                 const createData = new Agent(agentDetails);
-              
+
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],
@@ -113,14 +116,16 @@ export let updateAgent = async (req, res, next) => {
                     agentBusinessLogo: agentDetails.agentBusinessLogo,
                     countryInterested: agentDetails.countryInterested,
                     privileges: agentDetails.privileges,
-               
+                    addressLine1:agentDetails.addressLine1,
+                    addressLine2:agentDetails.addressLine2,
+                    staffName:agentDetails.staffName,
+                    staffContactNo:agentDetails.staffContactNo,
+
+
                     modifiedOn: agentDetails.modifiedOn,
-                    modifiedBy:  agentDetails.modifiedBy,
-                },
-                $addToSet: {
-                    address: agentDetails.address,
-                    staffDetail: agentDetails.staffDetail
+                    modifiedBy: agentDetails.modifiedBy,
                 }
+              
 
             });
             response(req, res, activity, 'Level-2', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
@@ -136,6 +141,17 @@ export let updateAgent = async (req, res, next) => {
 
 
 
+export let deleteAgent = async (req, res, next) => {
+
+    try {
+        const agent = await Agent.findOneAndDelete({ _id: req.query._id })
+
+        response(req, res, activity, 'Level-2', 'Delete-Agent', true, 200, agent, 'Successfully Agent University');
+    }
+    catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 
 
@@ -184,7 +200,7 @@ export let createStudentByAgent = async (req, res, next) => {
 
 
 
-export let getFiltered = async (req, res, next) => {
+export let getFilteredStudentByAgent = async (req, res, next) => {
     try {
         var findQuery;
         var andList: any = []
@@ -192,18 +208,14 @@ export let getFiltered = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-       
+
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
-        if (req.body.superAdminId) {
-            andList.push({ superAdminId: req.body.superAdminId })
-        }
-      
-       
+        
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const agentList = await Agent.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 }) 
+        const agentList = await Agent.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
 
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);

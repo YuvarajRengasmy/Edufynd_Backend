@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFiltered} from '../controller/student.controller';
+import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -51,10 +51,10 @@ router.delete('/',                //delete user
 
 
 
-router.put('/getFilter',
+router.put('/getFilterStudent',
     basicAuthUser,
     checkSession,
-    getFiltered,
+    getFilteredStudentBySuperAdmin,
 );
 
 
