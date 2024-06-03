@@ -12,13 +12,13 @@ router.post('/',
          createAgent
 );
 
-router.get('/getAll', //get all agent
+router.get('/', //get all agent
     basicAuthUser,
      checkSession,
     getAllAgent
 );
 
-router.get('/getSingle',
+router.get('/getsingleagent',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -40,7 +40,7 @@ router.put('/createStudent',             //create student by agent
 );
 
 
-router.put('/',                           //update agent
+router.put('/update', //update agent
     basicAuthUser,
     checkSession,
     checkRequestBodyParams('_id'),
