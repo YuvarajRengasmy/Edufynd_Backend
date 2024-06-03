@@ -10,10 +10,11 @@ const storage = multer.diskStorage({
     }
  })
 
+ const maxSize = 10 * 1024 * 1024  // 10MB
  
  const upload = multer({
      storage: storage,
-     limits: {fileSize: 1000000}
+     limits: {fileSize: maxSize}
  })
 
  export default upload

@@ -23,8 +23,6 @@ router.get('/getsingleclient',
 router.post('/',
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    // checkRequestBodyParams('_id'),
     saveClient
 );
 

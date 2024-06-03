@@ -6,13 +6,13 @@ import { checkSession } from '../utils/tokenManager';
 
 const router: Router = Router();
 
-router.get('/getallstaff',                //get all staff Details
+router.get('/getAll',                //get all staff Details
     basicAuthUser,
     checkSession,
     getAllStaff
 );
 
-router.get('/getsinglestaff',
+router.get('/',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -23,8 +23,6 @@ router.get('/getsinglestaff',
 router.post('/',           // create staff
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    // checkRequestBodyParams('_id'),
     createStaff
 );
 

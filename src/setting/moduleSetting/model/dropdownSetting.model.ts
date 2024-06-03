@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose'
 
 
-export interface UniversityListDocument extends mongoose.Document {
-    courseType?: string;
+export interface DropDownListDocument extends mongoose.Document {
+    courseType?: string;        // Program Module
     popularCategories?: string;
     country?: string;
     offerTAT?: string;
@@ -10,16 +10,16 @@ export interface UniversityListDocument extends mongoose.Document {
     tax?: string;
     commissionPaidOn?: string;
     institutionType?: string;
+    typeOfClient?: string;         // Client Module
 
-    isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
 }
 
-const universityListSchema = new mongoose.Schema({
-    courseType: { type: String },
+const dropDownListSchema = new mongoose.Schema({
+    courseType: { type: String },   // program module
     popularCategories: { type: String },
     country: { type: String },
     offerTAT: { type: String },
@@ -27,12 +27,12 @@ const universityListSchema = new mongoose.Schema({
     paymentMethod: { type: String, },
     tax: { type: String },
     commissionPaidOn: { type: String },
+    typeOfClient: {type: String},    // Client Module
 
-    isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
-export const UniversityList = mongoose.model("UniversityList", universityListSchema)
+export const DropDownList = mongoose.model("AllModule", dropDownListSchema)

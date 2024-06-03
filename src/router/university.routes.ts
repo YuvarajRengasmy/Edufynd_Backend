@@ -1,7 +1,4 @@
 import { Router } from 'express';
-import * as express from 'express';
-import * as path from 'path';
-import * as fs from 'fs'
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
      getUniversityWithProgramDetails} from '../controller/university.controller';
@@ -32,8 +29,6 @@ router.get('/getsingleuniversity',
 router.post('/',
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    // checkRequestBodyParams('_id'),
     upload.single('logo'),
     saveUniversity
 );
