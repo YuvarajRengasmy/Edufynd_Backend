@@ -1,4 +1,5 @@
-import { Agent, AgentDocument } from '../model/agent.model'
+
+import {Agent, AgentDocument} from '../model/agent.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
@@ -157,5 +158,36 @@ export let createStudentByAgent = async (req, res, next) => {
     } else {
         // Request body validation failed, respond with error message
         response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
+
+
+
+
+export let getFiltered = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+       
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
+        }
+        if (req.body.superAdminId) {
+            andList.push({ superAdminId: req.body.superAdminId })
+        }
+      
+       
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const agentList = await Agent.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 }) 
+
+        const agentCount = await Agent.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-Filter', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };

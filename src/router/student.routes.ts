@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent} from '../controller/student.controller';
+import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFiltered} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -47,6 +47,14 @@ router.delete('/',                //delete user
     checkSession,
     checkQuery('_id'),
     deleteStudent
+);
+
+
+
+router.put('/getFilter',
+    basicAuthUser,
+    checkSession,
+    getFiltered,
 );
 
 

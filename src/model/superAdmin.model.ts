@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface SuperAdminDocument extends mongoose.Document{
+    _id?: any;
     name?: string;
     email?: string;
     mobileNumber?: string;
@@ -18,6 +19,7 @@ export interface SuperAdminDocument extends mongoose.Document{
 
 
 const superAdminSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, auto: true },
     name: {type: String},
     email: { type: String},
     mobileNumber: {type: String},

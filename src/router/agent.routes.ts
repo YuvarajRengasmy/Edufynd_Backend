@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createAgent,createStudentByAgent, getAllAgent, getSingleAgent, updateAgent } from '../controller/agent.controller';
+import { createAgent,createStudentByAgent, getAllAgent, getFiltered, getSingleAgent, updateAgent } from '../controller/agent.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -32,7 +32,7 @@ router.post('/contact',
 
 
 
-router.put('/create-student', //create student by agent
+router.put('/createStudent',             //create student by agent
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -46,5 +46,13 @@ router.put('/',                           //update agent
     checkRequestBodyParams('_id'),
     updateAgent  
 );
+
+
+router.put('/getFilter',
+    basicAuthUser,
+    checkSession,
+    getFiltered,
+);
+
 
 export default router
