@@ -45,7 +45,7 @@ const generateNextAgentID = async (): Promise<string> => {
     const formattedCounter = String(newCounter).padStart(3, '0');
 
     // Return the new client ID
-    return `CL_${formattedCounter}`;
+    return `AG_${formattedCounter}`;
 };
 export let createAgent = async (req, res, next) => {
     const errors = validationResult(req);
