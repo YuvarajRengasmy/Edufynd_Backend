@@ -9,7 +9,7 @@ export interface UniversityDocument extends mongoose.Document {
     universityName?: string; // University Name
     email?: string;
     banner?: string;
-    universityLogo?: string; // University Logo (Optional)
+    universityLogo?:string; // University Logo (Optional)
     countryName?: string; // Country
     country?: string;
     flag?: string;

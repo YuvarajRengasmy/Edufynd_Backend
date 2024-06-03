@@ -36,9 +36,11 @@ export let saveUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-            const { filename } = req.file
-            const profile_url = `http://localhost:4409/${req.file.filename}`
-            const createData = new University({ ...universityDetails, universityLogo: profile_url });
+            // const { filename } = req.file
+            // const profile_url = `http://localhost:4409/${req.file.filename}`
+            // const createData = new University({ ...universityDetails, universityLogo: profile_url });
+            const createData = new University(universityDetails);
+
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
