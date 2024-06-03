@@ -55,7 +55,6 @@ export let saveClient = async (req, res, next) => {
             
             // Generate the next client ID
             clientDetails.clientID = await generateNextClientID();
-            
             const createData = new Client(clientDetails);
             let insertData = await createData.save();
 

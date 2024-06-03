@@ -29,7 +29,24 @@ export let getSingleAgent = async (req, res, next) => {
     }
 }
 
+const generateNextAgentID = async (): Promise<string> => {
+    // Retrieve all client IDs to determine the highest existing client counter
+    const agents = await Agent.find({}, 'agentCode').exec();
+    const maxCounter = agents.reduce((max, agent) => {
+        const agentCode = agent.agentCode;
+        const counter = parseInt(agentCode.split('_')[1], 10);
+        return counter > max ? counter : max;
+    }, 0);
 
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+
+    // Return the new client ID
+    return `CL_${formattedCounter}`;
+};
 export let createAgent = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -41,7 +58,10 @@ export let createAgent = async (req, res, next) => {
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
 
                 const agentDetails: AgentDocument = req.body;
+                // const createData = new Agent(agentDetails);
+                agentDetails.agentCode = await generateNextAgentID();
                 const createData = new Agent(agentDetails);
+              
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],

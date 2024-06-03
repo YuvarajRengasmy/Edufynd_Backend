@@ -4,6 +4,7 @@ export interface AgentDocument extends mongoose.Document {
     
     // agentId?: string; // Auto Generated
     _id?: any;
+    agentCode?: string;
     businessName?: string;
     address?:any;
     email?: string;
@@ -39,6 +40,7 @@ export interface AgentDocument extends mongoose.Document {
 const agentSchema = new mongoose.Schema({
      //•Agent ID (Auto Generated)
      _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+    agentCode: { type: String},
      name: { type: String},
      businessName: { type: String},
      address: [{ 

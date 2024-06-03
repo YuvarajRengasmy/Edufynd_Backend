@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createSuperAdmin, getFiltered} from '../controller/superAdmin.controller';
+import { createSuperAdmin, } from '../controller/superAdmin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -12,11 +12,6 @@ router.post('/',
 );
 
 
-router.put('/getFilter',
-    basicAuthUser,
-    checkSession,
-    getFiltered,
-);
 
 
 

@@ -8,7 +8,7 @@ const router:Router=Router();
 
 
 
-router.get('/',                          //get all users
+router.get('/getAll',                          //get all users
     basicAuthUser,
      checkSession,
     getAllStudent
