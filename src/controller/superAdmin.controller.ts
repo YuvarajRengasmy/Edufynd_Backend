@@ -188,7 +188,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
         try {
             const superAdminDetails: SuperAdminDocument = req.body;
             const staffDetails: StaffDocument = req.body;
-
+           
             // Find the superAdmin in the database
        const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
        if(!superAdmin){
@@ -218,4 +218,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
+
+
+
 
