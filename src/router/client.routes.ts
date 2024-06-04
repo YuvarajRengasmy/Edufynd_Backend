@@ -6,13 +6,13 @@ import { checkSession } from '../utils/tokenManager';
 
 const router: Router = Router();
 
-router.get('/getallclient',                //get all client
+router.get('/',                //get all client
     basicAuthUser,
     checkSession,
     getAllClient
 );
 
-router.get('/getsingleclient',
+router.get('/getSingleClient',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),

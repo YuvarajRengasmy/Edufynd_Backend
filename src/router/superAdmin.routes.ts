@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createStudentBySuperAdmin, createSuperAdmin} from '../controller/superAdmin.controller';
+import { createAdminBySuperAdmin, createAgentBySuperAdmin, createStaffBySuperAdmin, createStudentBySuperAdmin, createSuperAdmin} from '../controller/superAdmin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -12,11 +12,34 @@ router.post('/',
 );
 
 
-router.put('/addStudent', //create student by superAdmin
+router.put('/createStudent',             //create student by super Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
-    createStudentBySuperAdmin  
+    createStudentBySuperAdmin
+);
+
+router.put('/createAgent',             //create agent by super Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createAgentBySuperAdmin
+);
+
+
+router.put('/createAdmin',             //create admin by super Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createAdminBySuperAdmin
+);
+
+
+router.put('/createStaff',             //create staff by super Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createStaffBySuperAdmin
 );
 
 

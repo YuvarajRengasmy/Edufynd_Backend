@@ -14,7 +14,7 @@ router.get('/',               //get all Applicant
 );
 
 
-router.get('/getSingle',
+router.get('/getSingleApplicant',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
