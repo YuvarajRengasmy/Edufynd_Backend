@@ -38,9 +38,9 @@ export let saveUniversity = async (req, res, next) => {
         try {
             const universityDetails: UniversityDocument = req.body;
 
-            const universityLogo = req.files['logo'] ? `${req.protocol}://${req.get('host')}/files/${req.files['logo'][0].filename}` : null;
-            const banner = req.files['banner'] ? `${req.protocol}://${req.get('host')}/files/${req.files['banner'][0].filename}` : null;
-            const createData = new University({ ...universityDetails, universityLogo: universityLogo, banner: banner });
+            //  const universityLogo = req.files? `${req.protocol}://${req.get('host')}/files/${req.files.filename}` : null;
+            // const banner = req.files['banner'] ? `${req.protocol}://${req.get('host')}/files/${req.files['banner'][0].filename}` : null;
+            const createData = new University(universityDetails  );
 
             let insertData = await createData.save();
 
