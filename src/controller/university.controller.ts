@@ -31,30 +31,57 @@ export let getSingleUniversity = async (req, res, next) => {
 }
 
 
+// export let saveUniversity = async (req, res, next) => {
+//     console.log("balan")
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const universityDetails: UniversityDocument = req.body;
+         
+
+//             const universityLogo = req.files['logo'] ? `${req.protocol}://${req.get('host')}/files/${req.files['logo'][0].filename}` : null;
+//             const banner = req.files['banner'] ? `${req.protocol}://${req.get('host')}/files/${req.files['banner'][0].filename}` : null;
+//             const createData = new University({ ...universityDetails, universityLogo: universityLogo, banner: banner });
+
+//             let insertData = await createData.save();
+
+//             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
+
+//         } catch (err: any) {
+//             console.log(err)
+//             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     } else {
+//         response(req, res, activity, 'Level-3', 'Save-University', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// };
+
 export let saveUniversity = async (req, res, next) => {
-    console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        try {
-            const universityDetails: UniversityDocument = req.body;
-
-            const universityLogo = req.files['logo'] ? `${req.protocol}://${req.get('host')}/files/${req.files['logo'][0].filename}` : null;
-            const banner = req.files['banner'] ? `${req.protocol}://${req.get('host')}/files/${req.files['banner'][0].filename}` : null;
-            const createData = new University({ ...universityDetails, universityLogo: universityLogo, banner: banner });
-
-            let insertData = await createData.save();
-
-            response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
-
-        } catch (err: any) {
-            console.log(err)
-            response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
+      try {
+        const universityDetails: UniversityDocument = req.body;
+  
+        // Get image file path from request
+        const imagePath = req.imageFilePath;
+  
+        // Update universityDetails with image path if available
+        if (imagePath) {
+          universityDetails.universityLogo = imagePath;
         }
+  
+        const createData = new University(universityDetails);
+        let insertData = await createData.save();
+  
+        res.status(200).json({ success: true, message: 'University saved successfully', data: insertData });
+      } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Internal server error', error: err.message });
+      }
     } else {
-        response(req, res, activity, 'Level-3', 'Save-University', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+      res.status(422).json({ success: false, message: 'Validation failed', errors: errors.array() });
     }
-};
-
+}
 
 
 export let updateUniversity = async (req, res, next) => {

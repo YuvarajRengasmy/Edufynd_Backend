@@ -1,12 +1,14 @@
+import * as auth from 'basic-auth';
+import { clientError } from '../helper/ErrorMessage';
+
+
+
 /**
  * @author Balan K K
  * @date  01-05-2024
  * @description Authentication Methods
  */
 
-
-import * as auth from 'basic-auth';
-import { clientError } from '../helper/ErrorMessage';
 
 export let basicAuthUser = function (req, res, next) {
     console.log("basicauth verify")
