@@ -6,10 +6,7 @@ import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
-import { University, UniversityDocument } from '../model/university.model'
 const router: Router = Router();
-
-
 
 
 router.get('/getalluniversity',                //get all university
@@ -28,22 +25,14 @@ router.get('/getsingleuniversity',
 
 
 
-// router.post('/',
-//     basicAuthUser,
-//     checkSession,
-//     upload.fields([
-//         { name: 'logo', maxCount: 1 },
-//         { name: 'banner', maxCount: 1 }
-//     ]),
-//     saveUniversity
-// );
-
-
 router.post('/',
     basicAuthUser,
     checkSession,
     saveUniversity
 );
+
+
+
 router.put('/',                    // update 
     basicAuthUser,
     checkSession,
@@ -102,17 +91,4 @@ router.get('/getprogrambyuniversity',    /// Get university details with that un
 );
 
 
-
-
-// router.post('/image', async(req,res)=>{
-//     const {base64} = req.body
-//     console.log(base64)
-//     try {
-//         await University.create({universityLogo: base64})
-//         res.send({status:"ok", })
-        
-//     } catch (error) {
-//         res.send({status: "error", data:error})
-//     }
-// })
 export default router

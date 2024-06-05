@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { createAgent, createStudentByAgent, deleteAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent } from '../controller/agent.controller';
+import { createAgent, createStudentByAgent, createStudentProfileByAgent, deleteAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent } from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser } from '../middleware/checkAuth';
+import { basicAuthUser, validateAgentId } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 const router: Router = Router();
 
@@ -64,5 +64,13 @@ router.put('/getFilterStudentByAgent',
     getFilteredStudentByAgent,
 );
 
+
+router.post('/create',             //create student by agent
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    validateAgentId,
+    createStudentProfileByAgent
+);
 
 export default router
