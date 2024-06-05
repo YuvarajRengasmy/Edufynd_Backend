@@ -32,20 +32,22 @@ export let getSingleUniversity = async (req, res, next) => {
 
 
 export let saveUniversity = async (req, res, next) => {
+    console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-            // const { filename } = req.file
-            // const profile_url = `http://localhost:4409/${req.file.filename}`
-            // const createData = new University({ ...universityDetails, universityLogo: profile_url });
-            const createData = new University(universityDetails);
+
+            const universityLogo = req.files['logo'] ? `${req.protocol}://${req.get('host')}/files/${req.files['logo'][0].filename}` : null;
+            const banner = req.files['banner'] ? `${req.protocol}://${req.get('host')}/files/${req.files['banner'][0].filename}` : null;
+            const createData = new University({ ...universityDetails, universityLogo: universityLogo, banner: banner });
 
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
 
         } catch (err: any) {
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
@@ -91,7 +93,7 @@ export let updateUniversity = async (req, res, next) => {
                     commissionPaidOn: universityDetails.commissionPaidOn,
 
                     modifiedOn: universityDetails.modifiedOn,
-                    modifiedBy:  universityDetails.modifiedBy,
+                    modifiedBy: universityDetails.modifiedBy,
 
                 }
             });
@@ -311,22 +313,22 @@ export const csvToJson = async (req, res) => {
         let universityList = [];
         // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
-   
+
         // Process CSV data
         for (let i = 0; i < csvData.length; i++) {
             universityList.push({
                 universityName: csvData[i].UniversityName,
-                universityLogo:csvData[i].UniversityLogo,
+                universityLogo: csvData[i].UniversityLogo,
                 businessName: csvData[i].BusinessName,
                 banner: csvData[i].Banner,
                 country: csvData[i].Country,
                 countryName: csvData[i].CountryName,
                 email: csvData[i].Email,
-                campus: csvData[i].Campus ? csvData[i].Campus.split(','): [],
+                campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
                 ranking: csvData[i].Ranking,
                 applicationFees: csvData[i].ApplicationFees,
                 averageFees: csvData[i].AverageFees,
-                popularCategories: csvData[i].PopularCategories ? csvData[i].PopularCategories.split(','): [],
+                popularCategories: csvData[i].PopularCategories ? csvData[i].PopularCategories.split(',') : [],
                 offerTAT: csvData[i].OfferTAT,
                 founded: csvData[i].Founded,
                 institutionType: csvData[i].InstitutionType,
@@ -334,8 +336,8 @@ export const csvToJson = async (req, res) => {
                 admissionRequirement: csvData[i].AdmissionRequirement,
                 grossTuition: csvData[i].GrossTuition,
                 flag: csvData[i].Flag,
-                paymentMethod:csvData[i].PaymentMethod,
-                amount:csvData[i].Amount,
+                paymentMethod: csvData[i].PaymentMethod,
+                amount: csvData[i].Amount,
                 percentage: csvData[i].Percentage,
                 eligibilityForCommission: csvData[i].EligibilityForCommission,
                 currency: csvData[i].Currency,
@@ -344,7 +346,7 @@ export const csvToJson = async (req, res) => {
                 commissionPaidOn: csvData[i].CommissionPaidOn,
             });
         }
-     
+
         // Insert into the database
         await University.insertMany(universityList);
         // Send success response
