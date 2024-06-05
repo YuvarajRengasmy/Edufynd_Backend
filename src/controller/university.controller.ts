@@ -342,9 +342,6 @@ export const csvToJson = async (req, res) => {
                 paymentTAT: csvData[i].PaymentTAT,
                 tax: csvData[i].Tax,
                 commissionPaidOn: csvData[i].CommissionPaidOn,
-              
-                
-              
             });
         }
      
@@ -358,8 +355,6 @@ export const csvToJson = async (req, res) => {
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
-
-
 
 ////////////////////
 

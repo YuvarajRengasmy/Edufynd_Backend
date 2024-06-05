@@ -38,7 +38,7 @@ router.post('/contact',
 router.put('/createStudent',             //create student by agent
     basicAuthUser,
     checkSession,
-    checkQuery('_id'),
+    // checkQuery('_id'),
     createStudentByAgent
 );
 

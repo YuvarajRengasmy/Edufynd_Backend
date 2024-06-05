@@ -162,17 +162,14 @@ export let createStudentByAgent = async (req, res, next) => {
         try {
             const agentDetails: AgentDocument = req.body;
             const studentDetails: StudentDocument = req.body;
-
             // Find the agent in the database
-            const agent = await Agent.findOne({ id: agentDetails._id });
+            const agent = await Agent.findOne({ _id: req.query._id })
+            if(!agent){
+                return res.status(400).json({ success: false, message: 'Agent ID is required' });
 
-            if (agent) {
+            }
                 // Agent exist, proceed to create a new student
-                const createStudent = new Student({
-                    ...studentDetails,
-                    agentId: agent._id // Add agent ID to student document
-                });
-
+                const createStudent = new Student({...studentDetails,agentId: agent._id}) // Add agent ID to student document
                 // Save the student to the database
                 const insertStudent = await createStudent.save();
 
@@ -182,10 +179,8 @@ export let createStudentByAgent = async (req, res, next) => {
                     agentId: agent._id,
                     AgentName: agent.name
                 }, 'Student created successfully by agent.');
-            } else {
-                // Agent already exists, respond with error message
-                response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 422, {}, 'Agent with the provided email already exists.');
-            }
+
+       
         } catch (err: any) {
             // Handle server error
 
