@@ -38,9 +38,7 @@ export let saveUniversity = async (req, res, next) => {
         try {
             const universityDetails: UniversityDocument = req.body;
 
-            //  const universityLogo = req.files? `${req.protocol}://${req.get('host')}/files/${req.files.filename}` : null;
-            // const banner = req.files['banner'] ? `${req.protocol}://${req.get('host')}/files/${req.files['banner'][0].filename}` : null;
-            const createData = new University(universityDetails  );
+               const createData = new University(universityDetails  );
 
             let insertData = await createData.save();
 
@@ -62,7 +60,7 @@ export let updateUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-            const universityLogo = req.file ? req.file.path : '';
+       
             let universityData = await University.findByIdAndUpdate({ _id: universityDetails._id }, {
                 $set: {
                     universityName: universityDetails.universityName,
