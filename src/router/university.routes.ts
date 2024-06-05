@@ -26,13 +26,24 @@ router.get('/getsingleuniversity',
 );
 
 
+// router.post('/',
+//     basicAuthUser,
+//     // checkSession,
+//     upload.single('logo'),
+//     upload.single('banner'),
+//     saveUniversity
+// );
+
+
 router.post('/',
     basicAuthUser,
     checkSession,
-    upload.single('logo'),
+    upload.fields([
+        { name: 'logo', maxCount: 1 },
+        { name: 'banner', maxCount: 1 }
+    ]),
     saveUniversity
 );
-
 
 router.put('/',                    // update 
     basicAuthUser,
