@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createAgent, createStudentByAgent, createStudentProfileByAgent, deleteAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent } from '../controller/agent.controller';
+import { createAgent, createStudentProfileByAgent, deleteAgent, deleteStudentByAgent, editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent, viewStudentProfileByAgent } from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId } from '../middleware/checkAuth';
@@ -34,15 +34,6 @@ router.post('/contact',
 );
 
 
-
-router.put('/createStudent',             //create student by agent
-    basicAuthUser,
-    checkSession,
-    // checkQuery('_id'),
-    createStudentByAgent
-);
-
-
 router.put('/',                          //update agent
     basicAuthUser,
     checkSession,
@@ -64,13 +55,36 @@ router.put('/getFilterStudentByAgent',
     getFilteredStudentByAgent,
 );
 
-
-router.post('/create',             //create student by agent
+router.get('/viewStudentByAgent',             //View student by agent
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
+    validateAgentId,
+    checkQuery('studentId'),
+    viewStudentProfileByAgent
+);
+
+router.put('/createStudentByAgent',             //create student by agent
+    basicAuthUser,
+    checkSession,
     validateAgentId,
     createStudentProfileByAgent
 );
+
+router.put('/updateStudentByAgent',             //Update student by agent
+    basicAuthUser,
+    checkSession,
+    validateAgentId,
+    editStudentProfileByAgent
+);
+
+router.delete('/deleteStudentByAgent',             //Delete student by agent
+    basicAuthUser,
+    checkSession,
+    validateAgentId,
+    deleteStudentByAgent
+);
+
+
+
 
 export default router

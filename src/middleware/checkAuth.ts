@@ -36,7 +36,7 @@ export const validateAgentId = async (req, res, next) => {
 
         // Check if agent ID is provided
         if (!agentId) {
-            return res.status(400).json({ message: 'Agent ID is required' });
+            return res.status(400).json({ success: false, message: 'Agent ID is required' });
         }
 
         // Validate agent ID
@@ -47,7 +47,7 @@ export const validateAgentId = async (req, res, next) => {
 
         // Attach agent to request object
         req.agent = agent;
-        console.log("lll", req.agent )
+   
         next();
     } catch (error) {
         res.status(500).json({ message: 'Error validating agent ID', error });
