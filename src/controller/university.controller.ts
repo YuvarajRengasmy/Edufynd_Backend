@@ -32,13 +32,13 @@ export let getSingleUniversity = async (req, res, next) => {
 
 
 export let saveUniversity = async (req, res, next) => {
-    console.log("balan")
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-
-               const createData = new University(universityDetails  );
+         
+            const createData = new University(universityDetails);
 
             let insertData = await createData.save();
 
@@ -60,7 +60,6 @@ export let updateUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-       
             let universityData = await University.findByIdAndUpdate({ _id: universityDetails._id }, {
                 $set: {
                     universityName: universityDetails.universityName,

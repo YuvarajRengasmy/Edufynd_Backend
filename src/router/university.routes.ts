@@ -9,8 +9,6 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-
-
 router.get('/getalluniversity',                //get all university
     basicAuthUser,
     checkSession,
@@ -26,23 +24,14 @@ router.get('/getsingleuniversity',
 );
 
 
+
 router.post('/',
     basicAuthUser,
-    // checkSession,
-    upload.single('logo'),
+    checkSession,
     saveUniversity
 );
 
 
-// router.post('/',
-//     basicAuthUser,
-//     checkSession,
-//     upload.fields([
-//         { name: 'logo', maxCount: 1 },
-//         { name: 'banner', maxCount: 1 }
-//     ]),
-//     saveUniversity
-// );
 
 router.put('/',                    // update 
     basicAuthUser,
@@ -100,5 +89,6 @@ router.get('/getprogrambyuniversity',    /// Get university details with that un
     checkQuery('universityId'),
     getUniversityWithProgramDetails  
 );
+
 
 export default router

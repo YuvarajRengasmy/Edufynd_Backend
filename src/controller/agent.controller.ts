@@ -1,4 +1,3 @@
-
 import { Agent, AgentDocument } from '../model/agent.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
@@ -216,5 +215,23 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'Get-Filter', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+export const createStudentProfileByAgent = async (req, res) => {
+    
+    try {
+      
+        const studentDetails: StudentDocument = req.body;
+        const agentId = req.agent._id;
+        console.log("666", agentId)
+
+        const newStudent = new Student({...studentDetails,agentId: agentId});
+        await newStudent.save();
+        res.status(201).json({ message: 'Student profile created by agent successfully', student: newStudent });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Error creating student profile by agent', error });
     }
 };

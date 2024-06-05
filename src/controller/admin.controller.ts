@@ -1,4 +1,5 @@
 import { Admin, AdminDocument } from '../model/admin.model'
+import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -73,3 +74,44 @@ export let createAdmin = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+
+
+
+export let createStudentByAdmin = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()) {
+        try {
+            const adminDetails: AdminDocument = req.body;
+            const studentDetails: StudentDocument = req.body;
+
+            // Find the Admin in the database
+       const admin = await Admin.findOne({ _id: req.query._id })
+       if(!admin){
+           return res.status(400).json({ success: false, message: 'Admin ID is required' });
+
+       }
+                // Admin exist, proceed to create a new student
+                const createStudent = new Student({...studentDetails,adminId: admin._id });
+
+                // Save the student to the database
+                const insertStudent = await createStudent.save();
+
+                // Respond with success message
+                response(req, res, activity, 'Level-3', 'Create-Student-By-Admin', true, 200, {
+                    student: insertStudent,
+                    adminId: admin._id
+                  
+                }, 'Student created successfully by Admin.');
+         
+        } catch (err: any) {
+            // Handle server error
+            response(req, res, activity, 'Level-3', 'Create-Student-By-Admin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+        // Request body validation failed, respond with error message
+        response(req, res, activity, 'Level-3', 'Create-Student-By-Admin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
