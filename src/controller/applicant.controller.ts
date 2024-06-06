@@ -4,6 +4,7 @@ import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
+import { Error } from 'mongoose';
 
 
 var activity = "Applicant";
@@ -37,8 +38,9 @@ const generateNextApplicationCode = async () => {
     console.log("ss", applicant)
     const maxCounter = applicant.reduce((max, app) => {
         const appCode = app.applicationCode;
-    
+        console.log("55", appCode)
         const parts = appCode.split('_')
+        console.log("ll", parts)
         if(parts.length === 2){
             const counter = parseInt(parts[1], 10)
             return counter > max ? counter : max;
@@ -48,8 +50,8 @@ const generateNextApplicationCode = async () => {
     }, 0);
 
     // Increment the counter
-    const newCounter = maxCounter + 1;
-
+    const newCounter = maxCounter + 100;
+console.log("qq", newCounter)
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
 
@@ -59,73 +61,70 @@ const generateNextApplicationCode = async () => {
 };
 
 
-// export let createApplicant = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const applicantDetails: ApplicantDocument = req.body;
-//             // Generate the next client ID
-//             applicantDetails.applicationCode = await generateNextApplicationCode();
-
-//             const createData = new Applicant(applicantDetails);
-//             let insertData = await createData.save();
-
-
-
-//             response(req, res, activity, 'Save-Applicant', 'Level-2', true, 200, insertData, clientError.success.application);
-//         } catch (err: any) {
-//             console.log(err)
-//             response(req, res, activity, 'Save-Applicant', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Save-Applicant', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// };
-
-
 export let createApplicant = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const studentDetails: StudentDocument = req.body;
-            const universityDetails: UniversityDocument = req.body;
-
-            const applicant = await Student.findOne({ $and: [{ isDeleted: false }, { email: studentDetails.email }] });
-          
-            const university = await University.findOne({ $and: [{ isDeleted: false }, { universityId: universityDetails._id }] });
-
-            if (applicant) {
-                const applicantDetails: ApplicantDocument = req.body;
-
-                 applicantDetails.applicationCode = await generateNextApplicationCode();
-
-                const createData = new Applicant(applicantDetails);
-                let insertData = await createData.save();
-
-                const studentData = {}
-                studentData['name'] = applicant.name
-                studentData['email'] = applicant.email
-
-                const universityData = {}
-                universityData['_id'] = university._id
-                universityData['universityName'] = university.universityName
-
-                const final = { studentData, universityData }
-                response(req, res, activity, 'Level-2', 'Save-Applicant', true, 200, final, clientError.success.application);
-            }
-            else {
-                response(req, res, activity, 'Level-3', 'Save-Applicant', true, 422, {}, 'No email Id found');
-            }
-
+            const applicantDetails: ApplicantDocument = req.body;
+            // Generate the next client ID
+            applicantDetails.applicationCode = await generateNextApplicationCode();
+            const createData = new Applicant(applicantDetails);
+            let insertData = await createData.save();
+            response(req, res, activity, 'Save-Applicant', 'Level-2', true, 200, insertData, clientError.success.application);
         } catch (err: any) {
-console.log(err)
-            response(req, res, activity, 'Level-3', 'Save-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
+        console.log(err)
+            response(req, res, activity, 'Save-Applicant', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
         }
+    } else {
+        response(req, res, activity, 'Save-Applicant', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-    else {
-        response(req, res, activity, 'Level-3', 'Save-Applicant', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
-}
+};
+
+
+// export let createApplicant = async (req, res, next) => {
+//     console.log("bbb")
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const studentDetails: StudentDocument = req.body;
+//             const universityDetails: UniversityDocument = req.body;
+
+//             const applicant = await Student.findOne({ $and: [{ isDeleted: false }, { email: studentDetails.email }] });
+          
+//             const university = await University.findOne({ $and: [{ isDeleted: false }, { universityId: universityDetails._id }] });
+
+//             if (applicant) {
+//                 const applicantDetails: ApplicantDocument = req.body;
+
+//                  applicantDetails.applicationCode = await generateNextApplicationCode();
+
+//                 const createData = new Applicant(applicantDetails);
+//                 let insertData = await createData.save();
+
+//                 const studentData = {}
+//                 studentData['name'] = applicant.name
+//                 studentData['email'] = applicant.email
+
+//                 const universityData = {}
+//                 universityData['_id'] = university._id
+//                 universityData['universityName'] = university.universityName
+
+//                 const final = { studentData, universityData }
+//                 response(req, res, activity, 'Level-2', 'Save-Applicant', true, 200, final, clientError.success.application);
+//             }
+//             else {
+//                 response(req, res, activity, 'Level-3', 'Save-Applicant', true, 422, {}, 'No email Id found');
+//             }
+
+//         } catch (err: any) {
+// console.log(err)
+//             response(req, res, activity, 'Level-3', 'Save-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Save-Applicant', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
 
 
 
