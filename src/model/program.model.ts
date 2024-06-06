@@ -40,8 +40,8 @@ const programSchema = new mongoose.Schema({
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     appliedStudentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
-    universityName: { type: String },
-    universityLogo: {type: String},  // (List Universities added)
+    universityName: { type: String }, // (List Universities added)
+    universityLogo: {type: String},
     country: {type: String},
     courseType: [String],  // (List) Add, Delete, View, Edit
     programTitle: {type:String},

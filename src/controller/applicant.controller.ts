@@ -80,10 +80,21 @@ export let updateApplicant = async (req, res, next) => {
             const applicantDetails: ApplicantDocument = req.body;
             let applicantData = await Applicant.findByIdAndUpdate({ _id: applicantDetails._id }, {
                 $set: {
-                   
+                    applicationCode: applicantDetails.applicationCode,
+                    name: applicantDetails.name,
+                    dob:applicantDetails.dob,
+                    passportNo: applicantDetails.passportNo,
+                    email: applicantDetails.email,
+                    primaryNumber:applicantDetails.primaryNumber,
+                    whatsAppNumber: applicantDetails.whatsAppNumber,
+                    inTake:applicantDetails.inTake,
+                    universityName:applicantDetails.universityName,
+                    course: applicantDetails.course,
+                    courseFees:applicantDetails.courseFees,
                     anyVisaRejections: applicantDetails.anyVisaRejections,
-                    feesPaid:applicantDetails.feesPaid,
+                    feesPaid: applicantDetails.feesPaid,
                     assignTo:applicantDetails.assignTo,
+                
                     status:  applicantDetails.status,
                     modifiedOn: applicantDetails.modifiedOn,
                     modifiedBy:  applicantDetails.modifiedBy,
@@ -133,11 +144,11 @@ export let getFilteredApplication = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-        if (req.body.studentID) {
-            andList.push({ studentID: req.body.studentID })
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
         }
-        if (req.body.universityID) {
-            andList.push({ universityID: req.body.universityID })
+        if (req.body.universityId) {
+            andList.push({ universityId: req.body.universityId })
         }
         if (req.body.feesPaid) {
             andList.push({ feesPaid: req.body.feesPaid })

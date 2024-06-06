@@ -101,7 +101,7 @@ export let updateAgent = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const agentDetails: AgentDocument = req.body;
-            const updateData = await Agent.findOneAndUpdate({ _id: req.body._id }, {
+            const updateData = await Agent.findOneAndUpdate({ _id: agentDetails._id }, {
                 $set: {
 
                     businessName: agentDetails.businessName,
@@ -154,44 +154,110 @@ export let deleteAgent = async (req, res, next) => {
 
 
 
-export let createStudentByAgent = async (req, res, next) => {
+export const createStudentProfileByAgent = async (req, res) => {
     const errors = validationResult(req);
-
     if (errors.isEmpty()) {
-        try {
-            const agentDetails: AgentDocument = req.body;
-            const studentDetails: StudentDocument = req.body;
-            // Find the agent in the database
-            const agent = await Agent.findOne({ _id: req.query._id })
-            if(!agent){
-                return res.status(400).json({ success: false, message: 'Agent ID is required' });
-
-            }
-                // Agent exist, proceed to create a new student
-                const createStudent = new Student({...studentDetails,agentId: agent._id}) // Add agent ID to student document
-                // Save the student to the database
-                const insertStudent = await createStudent.save();
-
-                // Respond with success message
-                response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, {
-                    student: insertStudent,
-                    agentId: agent._id,
-                    AgentName: agent.name
-                }, 'Student created successfully by agent.');
-
-       
-        } catch (err: any) {
-            // Handle server error
-
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
-        }
-    } else {
-        // Request body validation failed, respond with error message
-        response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    
+    try {
+        const studentDetails: StudentDocument = req.body;
+        const agentId = req.agent._id;
+        const newStudent = new Student({...studentDetails, agentId: agentId});
+        await newStudent.save();
+        response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
+    } catch (err:any) {
+        response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
     }
+ } else {
+
+    response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+}
 };
 
 
+
+export const viewStudentProfileByAgent = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+    try {
+        const studentId = await Student.find({ _id: req.query.studentId })
+        const student = await Student.findById(studentId).populate('agentId', 'name email');
+
+        if (!student) {
+            return res.status(400).json({ success: false, message: 'Student Not Found' });
+        }
+        response(req, res, activity, 'Level-1', 'View Student by Agent', true, 200, student, clientError.success.fetchedSuccessfully);
+    } catch (err:any) {
+        response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
+    }} else {
+    response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+}};
+
+
+export const editStudentProfileByAgent = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+    try {
+      
+        const studentDetails : StudentDocument = req.body;
+        const updateData = await Student.findOneAndUpdate({ _id: studentDetails._id }, {
+            $set: {  
+                name: studentDetails.name,
+                passportNo: studentDetails.passportNo,
+                expiryDate:studentDetails.expiryDate,
+                dob: studentDetails.dob,
+                citizenship:studentDetails.citizenship,
+                gender:studentDetails.gender,
+                whatsAppNumber: studentDetails.whatsAppNumber,
+                degreeName:studentDetails.degreeName,
+                academicYear: studentDetails.academicYear,
+                institution:studentDetails.institution,
+                percentage: studentDetails.percentage,
+                doHaveAnyEnglishLanguageTest:studentDetails.doHaveAnyEnglishLanguageTest,
+                englishTestType:studentDetails.englishTestType,
+                testScore: studentDetails.testScore,
+                dateOfTest: studentDetails.dateOfTest,
+                country:studentDetails.country,
+                desiredUniversity:studentDetails.desiredUniversity, 
+                desiredCourse: studentDetails.desiredCourse, 
+                workExperience: studentDetails.workExperience,
+                anyVisaRejections: studentDetails.anyVisaRejections, 
+                visaReason:studentDetails.visaReason,
+                doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory, 
+                travelReason:studentDetails.travelReason,
+                finance: studentDetails.finance,
+                twitter:studentDetails .twitter,
+                facebook: studentDetails.facebook,
+                instagram: studentDetails.instagram,
+                linkedIn: studentDetails.linkedIn,
+
+                modifiedOn: studentDetails.modifiedOn,
+                modifiedBy:  studentDetails.modifiedBy,
+            }
+            
+        });
+        response(req, res, activity, 'Level-2', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
+    }
+    catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }}
+else {
+    response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+}
+}
+
+
+export let deleteStudentByAgent = async (req, res, next) => {
+  
+    try {
+        let id = req.query.studentId;
+        const student = await Student.findByIdAndDelete({ _id: id })
+      
+        response(req, res, activity, 'Level-2', 'Delete-Student by Agent', true, 200, student, 'Successfully Remove Student by Agent');
+    }
+    catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Delete-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 
 export let getFilteredStudentByAgent = async (req, res, next) => {
@@ -218,20 +284,3 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
     }
 };
 
-
-export const createStudentProfileByAgent = async (req, res) => {
-    
-    try {
-      
-        const studentDetails: StudentDocument = req.body;
-        const agentId = req.agent._id;
-        console.log("666", agentId)
-
-        const newStudent = new Student({...studentDetails,agentId: agentId});
-        await newStudent.save();
-        res.status(201).json({ message: 'Student profile created by agent successfully', student: newStudent });
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ message: 'Error creating student profile by agent', error });
-    }
-};
