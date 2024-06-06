@@ -67,27 +67,6 @@ export let saveClient = async (req, res, next) => {
     }
 };
 
-// export let saveClient = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             let clientCounter = 1;
-//             const clientDetails: ClientDocument = req.body;
-//             const formattedCounter = String(clientCounter).padStart(3, '0');
-//             clientDetails.clientID = `CL_${formattedCounter}`;
-            
-//             const createData = new Client(clientDetails);
-//             let insertData = await createData.save();
-//             clientCounter++;
-//             response(req, res, activity, 'Level-2', 'Save-Client', true, 200, insertData, clientError.success.savedSuccessfully);
-
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Save-Client', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Level-3', 'Save-Client', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// };
 
 
 

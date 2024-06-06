@@ -24,7 +24,7 @@ router.get('/getSingleApplicant',
 
 router.post('/', 
          basicAuthUser,
-         checkRequestBodyParams('email'),
+         checkSession,
          createApplicant
 );
 
