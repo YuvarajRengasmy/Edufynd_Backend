@@ -38,7 +38,7 @@ export let createApplicant = async (req, res, next) => {
             const universityDetails: UniversityDocument = req.body;
 
             const applicant = await Student.findOne({ $and: [{ isDeleted: false }, { email: studentDetails.email }] });
-            const university = await University.findOne({ $and: [{ isDeleted: false }, { universityID: universityDetails._id }] });
+            const university = await University.findOne({ $and: [{ isDeleted: false }, { universityId: universityDetails._id }] });
 
             if (applicant) {
                 const applicantDetails: ApplicantDocument = req.body;
