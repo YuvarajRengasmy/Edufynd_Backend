@@ -31,25 +31,25 @@ export let getSingleApplicant = async (req, res, next) => {
 
 
 
-const generateNextApplicationCode = async ()=> {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
-    const applicant = await Applicant.find({}, 'applicationCode').exec();
-    const maxCounter = applicant.reduce((max, app) => {
-        const appCode = app.applicationCode;
-        const counter = parseInt(appCode.split('_')[1], 10);
-        return counter > max ? counter : max;
-    }, 0);
+// const generateNextApplicationCode = async ()=> {
+//     // Retrieve all applicant IDs to determine the highest existing applicant counter
+//     const applicant = await Applicant.find({}, 'applicationCode').exec();
+//     const maxCounter = applicant.reduce((max, app) => {
+//         const appCode = app.applicationCode;
+//         const counter = parseInt(appCode.split('_')[1], 10);
+//         return counter > max ? counter : max;
+//     }, 0);
 
-    // Increment the counter
-    const newCounter = maxCounter + 1;
+//     // Increment the counter
+//     const newCounter = maxCounter + 1;
 
-    // Format the counter as a string with leading zeros
-    const formattedCounter = String(newCounter).padStart(3, '0');
+//     // Format the counter as a string with leading zeros
+//     const formattedCounter = String(newCounter).padStart(3, '0');
 
 
-    // Return the new Applicantion Code
-    return `AP_${formattedCounter}`;
-};
+//     // Return the new Applicantion Code
+//     return `AP_${formattedCounter}`;
+// };
 
 
 export let createApplicant = async (req, res, next) => {
@@ -65,7 +65,7 @@ export let createApplicant = async (req, res, next) => {
             if (applicant) {
                 const applicantDetails: ApplicantDocument = req.body;
 
-                applicantDetails.applicationCode = await generateNextApplicationCode();
+                // applicantDetails.applicationCode = await generateNextApplicationCode();
 
                 const createData = new Applicant(applicantDetails);
                 let insertData = await createData.save();
