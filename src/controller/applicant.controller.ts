@@ -45,10 +45,10 @@ const generateNextApplicationCode = async () => {
             return counter > max ? counter : max;
         }
         return max;
-    }, 0);
+    }, 100);
 
     // Increment the counter
-    const newCounter = maxCounter + 100;
+    const newCounter = maxCounter + 1;
 console.log("qq", newCounter)
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
