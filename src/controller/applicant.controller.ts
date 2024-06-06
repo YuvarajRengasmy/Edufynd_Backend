@@ -89,6 +89,7 @@ export let updateApplicant = async (req, res, next) => {
                     whatsAppNumber: applicantDetails.whatsAppNumber,
                     inTake:applicantDetails.inTake,
                     universityName:applicantDetails.universityName,
+                    campus:applicantDetails.campus,
                     course: applicantDetails.course,
                     courseFees:applicantDetails.courseFees,
                     anyVisaRejections: applicantDetails.anyVisaRejections,
