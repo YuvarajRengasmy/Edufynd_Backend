@@ -1,7 +1,8 @@
 import {Router} from 'express';
 import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProgram, 
     getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, 
-    getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity} from '../controller/program.controller';
+    getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
+    updateProgramApplications} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -81,5 +82,11 @@ router.get('/programDetails',    /// Get program details with that university pr
     getProgramDetailsByUniversity   
 );
 
+
+
+router.put('/applyStudent',
+basicAuthUser,
+updateProgramApplications
+)
 
 export default router
