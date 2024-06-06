@@ -14,6 +14,7 @@ export interface ApplicantDocument extends mongoose.Document {
     inTake?: string,
     universityName?: string,
     course?: string,
+    campus?: string,
     courseFees?: string,
     anyVisaRejections?: string,  // (Auto Fetch from Students)
     feesPaid?: string,
@@ -39,6 +40,7 @@ const applicantSchema = new mongoose.Schema({
     whatsAppNumber: { type: String, ref: 'Student' },
     inTake: { type: String },
     universityName: { type: String, ref: 'University' },
+    campus: {type: String},
     course: { type: String },
     courseFees: { type: String },       // (Auto fetch from Program)
     anyVisaRejections: { type: String, ref: 'Student' },
