@@ -398,3 +398,44 @@ export const getProgramDetailsByUniversity = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'GetUniversityProgram', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+export const updateProgramApplications = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const { programId, studentId } = req.body;
+
+            // Check if the student is already applied
+            const program = await Program.findOne({ _id: programId, appliedStudentId: studentId });
+
+            if (program) {
+                // Student already applied, remove the student
+                const updatedProgram = await Program.findByIdAndUpdate(
+                    programId,
+                    {
+                        $pull: { appliedStudentId: studentId }
+                    },
+                    { new: true }
+                );
+
+                response(req, res, activity,'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student application removed successfully');
+            } else {
+                // Student not applied, add the student
+                const updatedProgram = await Program.findByIdAndUpdate(
+                    programId,
+                    {
+                        $addToSet: { appliedStudentId: studentId }
+                    },
+                    { new: true }
+                );
+
+                response(req, res, activity,  'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student applied successfully');
+            }
+        } catch (err) {
+            response(req, res, activity, 'Level-3', 'Update-Program-Applications', false, 500, {}, 'Internal server error', err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Program-Applications', false, 422, {}, 'Field validation error', JSON.stringify(errors.mapped()));
+    }
+};
