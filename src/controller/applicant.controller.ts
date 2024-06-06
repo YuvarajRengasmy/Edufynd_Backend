@@ -70,7 +70,7 @@ export let createApplicant = async (req, res, next) => {
             if (applicant) {
                 const applicantDetails: ApplicantDocument = req.body;
 
-        applicantDetails.applicationCode = await generateNextApplicationCode();
+                applicantDetails.applicationCode = await generateNextApplicationCode();
 
                 const createData = new Applicant(applicantDetails);
                 let insertData = await createData.save();
