@@ -37,21 +37,25 @@ const generateNextApplicationCode = async () => {
     console.log("ss", applicant)
     const maxCounter = applicant.reduce((max, app) => {
         const appCode = app.applicationCode;
-        console.log("kk", appCode)
-        const counter = parseInt(appCode.split('_')[1], 10);
-        console.log("ttt", counter)
-        return counter > max ? counter : max;
+    
+        const parts = appCode.split('_')
+        if(parts.length === 2){
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+      
+        return max;
     }, 0);
 
     // Increment the counter
     const newCounter = maxCounter + 1;
 
     // Format the counter as a string with leading zeros
-    // const formattedCounter = String(newCounter).padStart(3, '100');
+    const formattedCounter = String(newCounter).padStart(3, '0');
 
 
     // Return the new Applicantion Code
-    return `AP_${newCounter}`;
+    return `AP_${formattedCounter}`;
 };
 
 
@@ -93,7 +97,7 @@ export let createApplicant = async (req, res, next) => {
             if (applicant) {
                 const applicantDetails: ApplicantDocument = req.body;
 
-                // applicantDetails.applicationCode = await generateNextApplicationCode();
+                 applicantDetails.applicationCode = await generateNextApplicationCode();
 
                 const createData = new Applicant(applicantDetails);
                 let insertData = await createData.save();
