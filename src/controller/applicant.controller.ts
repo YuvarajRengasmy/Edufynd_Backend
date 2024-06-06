@@ -35,27 +35,20 @@ export let getSingleApplicant = async (req, res, next) => {
 const generateNextApplicationCode = async () => {
     // Retrieve all applicant IDs to determine the highest existing applicant counter
     const applicant = await Applicant.find({}, 'applicationCode').exec();
-    console.log("ss", applicant)
     const maxCounter = applicant.reduce((max, app) => {
         const appCode = app.applicationCode;
-        console.log("55", appCode)
         const parts = appCode.split('_')
-        console.log("ll", parts)
         if(parts.length === 2){
             const counter = parseInt(parts[1], 10)
             return counter > max ? counter : max;
         }
-      
         return max;
-    }, 0);
+    }, 100);
 
     // Increment the counter
-    const newCounter = maxCounter + 100;
-console.log("qq", newCounter)
+    const newCounter = maxCounter + 1;
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-
-
     // Return the new Applicantion Code
     return `AP_${formattedCounter}`;
 };
