@@ -91,3 +91,49 @@ export let deleteDropDownList = async (req, res, next) => {
 };
 
 
+
+export let getFilteredDropDown = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.courseType) {
+            andList.push({ courseType: req.body.courseType })
+        }
+        if (req.body.popularCategories) {
+            andList.push({ popularCategories: req.body.popularCategories })
+        }
+        if (req.body.offerTAT) {
+            andList.push({ offerTAT: req.body.offerTAT })
+        }
+        if (req.body.country) {
+            andList.push({ country: req.body.country })
+        }
+        if (req.body.institutionType) {
+            andList.push({ institutionType: req.body.institutionType })
+        }
+        if (req.body.paymentMethod) {
+            andList.push({ paymentMethod: req.body.paymentMethod })
+        }
+        if (req.body.tax) {
+            andList.push({ tax: req.body.tax })
+        }
+        if (req.body.commissionPaidOn) {
+            andList.push({ commissionPaidOn: req.body.commissionPaidOn })
+        }
+        if (req.body.typeOfClient) {
+            andList.push({ tax: req.body.typeOfClient })
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const dropDownList = await DropDownList.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const dropDownCount = await DropDownList.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-Filter DropDown List', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-Filter DropDown List', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};

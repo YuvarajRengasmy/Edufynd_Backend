@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { getAllDropDownList, getSingleDropDownList, createCustomLabel, updateDropDownList, deleteDropDownList } from '../../moduleSetting/controller/dropdownSetting.controller';
+import { getAllDropDownList, getSingleDropDownList, createCustomLabel, updateDropDownList, deleteDropDownList, getFilteredDropDown } from '../../moduleSetting/controller/dropdownSetting.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();
 
-router.get('/all',               
+router.get('/',               
     basicAuthUser,
     getAllDropDownList
 );
 
-router.get('/',
+router.get('/getSingleDropDown',
     basicAuthUser,
     checkQuery('_id'),
     getSingleDropDownList,
@@ -35,6 +35,12 @@ router.delete('/',
     basicAuthUser,
     checkQuery('_id'),
     deleteDropDownList
+);
+
+
+router.put('/getFilterDropDown',
+    basicAuthUser,
+    getFilteredDropDown,
 );
 
 

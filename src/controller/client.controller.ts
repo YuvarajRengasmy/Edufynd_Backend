@@ -35,7 +35,7 @@ const generateNextClientID = async (): Promise<string> => {
         const clientID = client.clientID;
         const counter = parseInt(clientID.split('_')[1], 10);
         return counter > max ? counter : max;
-    }, 0);
+    }, 100);
 
     // Increment the counter
     const newCounter = maxCounter + 1;
