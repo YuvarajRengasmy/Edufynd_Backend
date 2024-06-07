@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface DropDownListDocument extends mongoose.Document {
+    _id?: any;
     courseType?: string;        // Program Module
     popularCategories?: string;
     country?: string;
@@ -19,6 +20,7 @@ export interface DropDownListDocument extends mongoose.Document {
 }
 
 const dropDownListSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
     courseType: { type: String },   // program module
     popularCategories: { type: String },
     country: { type: String },
