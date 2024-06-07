@@ -6,12 +6,12 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/all',               
+router.get('/',               
     basicAuthUser,
     getAllDropDownList
 );
 
-router.get('/',
+router.get('/getSignelDropDownList',
     basicAuthUser,
     checkQuery('_id'),
     getSingleDropDownList,
