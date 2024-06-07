@@ -46,38 +46,63 @@ export let createCustomLabel = async (req, res, next) => {
 };
 
 
+// export const updateDropDownList = async (req, res) => {
+//     const errors = validationResult(req)
+//     if (errors.isEmpty()) {
+//         try {
+//             const DropdownListDetails: DropDownListDocument = req.body;
+//             let statusData = await DropDownList.findOne({ _id: DropdownListDetails._id }, {
+//                 $set: {
+//                     courseType: DropdownListDetails.courseType,
+//                     popularCategories: DropdownListDetails.popularCategories,
+//                     country: DropdownListDetails.country,
+//                     offerTAT: DropdownListDetails.offerTAT,
+//                     institutionType: DropdownListDetails.institutionType,
+//                     paymentMethod: DropdownListDetails.paymentMethod,
+//                     tax: DropdownListDetails.tax,
+//                     commissionPaidOn: DropdownListDetails.commissionPaidOn,
+//                     typeOfClient: DropdownListDetails.typeOfClient,
+
+//                     modifiedOn: DropdownListDetails.modifiedOn,
+//                     modifiedBy: DropdownListDetails.modifiedBy,
+//                 }
+//             });
+
+//             response(req, res, activity, 'Level-2', 'Update-DropdownList', true, 200, statusData, clientError.success.updateSuccess);
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
+
 export const updateDropDownList = async (req, res) => {
-    const errors = validationResult(req)
-    if (errors.isEmpty()) {
-        try {
-            const DropdownListDetails: DropDownListDocument = req.body;
-            let statusData = await DropDownList.findOne({ _id: DropdownListDetails._id }, {
-                $set: {
-                    courseType: DropdownListDetails.courseType,
-                    popularCategories: DropdownListDetails.popularCategories,
-                    country: DropdownListDetails.country,
-                    offerTAT: DropdownListDetails.offerTAT,
-                    institutionType: DropdownListDetails.institutionType,
-                    paymentMethod: DropdownListDetails.paymentMethod,
-                    tax: DropdownListDetails.tax,
-                    commissionPaidOn: DropdownListDetails.commissionPaidOn,
-                    typeOfClient: DropdownListDetails.typeOfClient,
-
-                    modifiedOn: DropdownListDetails.modifiedOn,
-                    modifiedBy: DropdownListDetails.modifiedBy,
-                }
-            });
-
-            response(req, res, activity, 'Level-2', 'Update-DropdownList', true, 200, statusData, clientError.success.updateSuccess);
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 500, {}, errorMessage.internalServer, err.message);
-        }
+    const moduleId =  req.query._id // Assuming the module ID is passed in the URL params
+    const DropdownListDetails: DropDownListDocument = req.body;
+    
+    try {
+      // Check if the module exists
+      const existingModule = await DropDownList.findById(moduleId);
+      if (!existingModule) {
+        return res.status(404).json({ message: 'Module not found' });
+      }
+      
+      // Update the module with the new data
+      existingModule.courseType = DropdownListDetails.courseType; // Assuming courseType is the only field being updated
+      
+      // Save the updated module
+      const updatedModule = await existingModule.save();
+      
+      // Respond with success message and updated module data
+      res.status(200).json({ message: 'Module updated successfully', updatedModule });
+    } catch (error) {
+      // Handle errors
+      console.error('Error updating module:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-    else {
-        response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
-}
-
+  };
 
 // export const updateDropDownList = async (req, res) => {
 //     const errors = validationResult(req)
