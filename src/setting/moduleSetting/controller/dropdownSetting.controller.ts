@@ -46,37 +46,37 @@ export let createCustomLabel = async (req, res, next) => {
 };
 
 
-// export const updateDropDownList = async (req, res) => {
-//     const errors = validationResult(req)
-//     if (errors.isEmpty()) {
-//         try {
-//             const DropdownListDetails: DropDownListDocument = req.body;
-//             let statusData = await DropDownList.findOne({ _id: DropdownListDetails._id }, {
-//                 $set: {
-//                     courseType: DropdownListDetails.courseType,
-//                     popularCategories: DropdownListDetails.popularCategories,
-//                     country: DropdownListDetails.country,
-//                     offerTAT: DropdownListDetails.offerTAT,
-//                     institutionType: DropdownListDetails.institutionType,
-//                     paymentMethod: DropdownListDetails.paymentMethod,
-//                     tax: DropdownListDetails.tax,
-//                     commissionPaidOn: DropdownListDetails.commissionPaidOn,
-//                     typeOfClient: DropdownListDetails.typeOfClient,
+export const updateDropDownList = async (req, res) => {
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+        try {
+            const DropdownListDetails: DropDownListDocument = req.body;
+            let statusData = await DropDownList.findOne({ _id: DropdownListDetails._id }, {
+                $set: {
+                    courseType: DropdownListDetails.courseType,
+                    popularCategories: DropdownListDetails.popularCategories,
+                    country: DropdownListDetails.country,
+                    offerTAT: DropdownListDetails.offerTAT,
+                    institutionType: DropdownListDetails.institutionType,
+                    paymentMethod: DropdownListDetails.paymentMethod,
+                    tax: DropdownListDetails.tax,
+                    commissionPaidOn: DropdownListDetails.commissionPaidOn,
+                    typeOfClient: DropdownListDetails.typeOfClient,
 
-//                     modifiedOn: DropdownListDetails.modifiedOn,
-//                     modifiedBy: DropdownListDetails.modifiedBy,
-//                 }
-//             });
+                    modifiedOn: DropdownListDetails.modifiedOn,
+                    modifiedBy: DropdownListDetails.modifiedBy,
+                }
+            });
 
-//             response(req, res, activity, 'Level-2', 'Update-DropdownList', true, 200, statusData, clientError.success.updateSuccess);
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     }
-//     else {
-//         response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// }
+            response(req, res, activity, 'Level-2', 'Update-DropdownList', true, 200, statusData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-DropdownList', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
 
 
 // export const updateDropDownList = async (req, res) => {
@@ -112,42 +112,42 @@ export let createCustomLabel = async (req, res, next) => {
 // }
 
 
-    export let updateDropDownList = async (req, res, next) => {
-        const errors = validationResult(req);
-        if (errors.isEmpty()) {
-            try {
-                const DropdownListDetails: DropDownListDocument = req.body;
-                const dropdown = await DropDownList.findOne({ $and: [{ _id: { $ne: DropdownListDetails._id }}] });
+    // export let updateDropDownList = async (req, res, next) => {
+    //     const errors = validationResult(req);
+    //     if (errors.isEmpty()) {
+    //         try {
+    //             const DropdownListDetails: DropDownListDocument = req.body;
+    //             const dropdown = await DropDownList.findOne({ $and: [{ _id: { $ne: DropdownListDetails._id }}] });
 
-                if (!dropdown ) {
-                    const updateDropDown = new DropDownList(DropdownListDetails)
-                    let insertMaster = await updateDropDown.updateOne({
-                        $set: {
-                            courseType: DropdownListDetails.courseType,
-                            popularCategories: DropdownListDetails.popularCategories,
-                            country: DropdownListDetails.country,
-                            offerTAT: DropdownListDetails.offerTAT,
-                            institutionType: DropdownListDetails.institutionType,
-                            paymentMethod: DropdownListDetails.paymentMethod,
-                            tax: DropdownListDetails.tax,
-                            commissionPaidOn: DropdownListDetails.commissionPaidOn,
-                            typeOfClient: DropdownListDetails.typeOfClient,
+    //             if (!dropdown ) {
+    //                 const updateDropDown = new DropDownList(DropdownListDetails)
+    //                 let insertMaster = await updateDropDown.updateOne({
+    //                     $set: {
+    //                         courseType: DropdownListDetails.courseType,
+    //                         popularCategories: DropdownListDetails.popularCategories,
+    //                         country: DropdownListDetails.country,
+    //                         offerTAT: DropdownListDetails.offerTAT,
+    //                         institutionType: DropdownListDetails.institutionType,
+    //                         paymentMethod: DropdownListDetails.paymentMethod,
+    //                         tax: DropdownListDetails.tax,
+    //                         commissionPaidOn: DropdownListDetails.commissionPaidOn,
+    //                         typeOfClient: DropdownListDetails.typeOfClient,
 
-                            modifiedOn: DropdownListDetails.modifiedOn,
-                            modifiedBy: DropdownListDetails.modifiedBy,
-                    }})
-                    response(req, res, activity, 'Level-2', 'Update-Master', true, 200, insertMaster, clientError.success.updateSuccess)
-                }
-                else {
-                    response(req, res, activity, 'Level-3', 'Update-Master', true, 422, {}, 'Email already registered');
-                }
-            } catch (err: any) {
-                response(req, res, activity, 'Level-3', 'Update-Master', false, 500, {}, errorMessage.internalServer, err.message)
-            }
-        } else {
-            response(req, res, activity, 'Level-3', 'Update-Master', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-        }
-    };
+    //                         modifiedOn: DropdownListDetails.modifiedOn,
+    //                         modifiedBy: DropdownListDetails.modifiedBy,
+    //                 }})
+    //                 response(req, res, activity, 'Level-2', 'Update-Master', true, 200, insertMaster, clientError.success.updateSuccess)
+    //             }
+    //             else {
+    //                 response(req, res, activity, 'Level-3', 'Update-Master', true, 422, {}, 'Email already registered');
+    //             }
+    //         } catch (err: any) {
+    //             response(req, res, activity, 'Level-3', 'Update-Master', false, 500, {}, errorMessage.internalServer, err.message)
+    //         }
+    //     } else {
+    //         response(req, res, activity, 'Level-3', 'Update-Master', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    //     }
+    // };
 
     export let deleteDropDownList = async (req, res, next) => {
 
