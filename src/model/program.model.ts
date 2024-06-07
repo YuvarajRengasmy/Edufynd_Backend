@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface ProgramDocument extends mongoose.Document {
+    _id?:any;
     superAdminId?: any;
     appliedStudentId?: any;
     universityId?: any;

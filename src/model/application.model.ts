@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface ApplicantDocument extends mongoose.Document {
+    _id?: any;
     applicationCode?: string //(Student Code / Number Series)
     universityId?: any;
     studentId?:any;
@@ -29,6 +30,7 @@ export interface ApplicantDocument extends mongoose.Document {
 
 
 const applicantSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
     applicationCode: { type: String },
     universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
