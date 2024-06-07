@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/',               
+router.get('/',
     basicAuthUser,
     getAllDropDownList
 );
@@ -24,14 +24,14 @@ router.post('/',
 );
 
 
-router.put('/',                  
+router.put('/',
     basicAuthUser,
-    // checkQuery('_id'),
+    checkQuery('_id'),
     updateDropDownList
 );
 
 
-router.delete('/',                  
+router.delete('/',
     basicAuthUser,
     checkQuery('_id'),
     deleteDropDownList
