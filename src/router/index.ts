@@ -25,6 +25,7 @@ import Currency from '../setting/globalSetting/router/currency.routes'
 
 //Drop Down Setting Routes
 import CourseType from '../setting/moduleSetting/router/courseType.route'
+import DropDown from '../setting/moduleSetting/router/dropdownSetting.route'
 
 
 
@@ -51,6 +52,7 @@ router.use('/currency', Currency)
 
 //Drop Down - Setting API
 router.use('/course', CourseType )
+router.use('/dropdown', DropDown )
 
 
 
