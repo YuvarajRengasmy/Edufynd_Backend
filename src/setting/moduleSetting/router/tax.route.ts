@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDropDownList, getSingleDropDownList, createCustomLabel, updateDropDownList, deleteDropDownList, getFilteredDropDown } from '../../moduleSetting/controller/dropdownSetting.controller';
+import { getAllTax, getSingleTax, createTax, updateTax, deleteTax, getFilteredTax } from '../../moduleSetting/controller/tax.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
@@ -8,39 +8,39 @@ const router: Router = Router();
 
 router.get('/',
     basicAuthUser,
-    getAllDropDownList
+    getAllTax
 );
 
-router.get('/getSingleDropDown',
+router.get('/getSingleTax',
     basicAuthUser,
     checkQuery('_id'),
-    getSingleDropDownList,
+    getSingleTax,
 );
 
 
 router.post('/',
     basicAuthUser,
-    createCustomLabel
+    createTax
 );
 
 
 router.put('/',
     basicAuthUser,
     checkQuery('_id'),
-    updateDropDownList
+    updateTax
 );
 
 
 router.delete('/',
     basicAuthUser,
     checkQuery('_id'),
-    deleteDropDownList
+    deleteTax
 );
 
 
-router.put('/getFilterDropDown',
+router.put('/getFilterTax',
     basicAuthUser,
-    getFilteredDropDown,
+    getFilteredTax,
 );
 
 
