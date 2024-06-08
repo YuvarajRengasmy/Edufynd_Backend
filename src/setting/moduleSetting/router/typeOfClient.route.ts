@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllTypeOfClient, getSingleTypeOfClient, createTypeOfClient, updateTypeOfClient, deleteTypeOfClient, getFilteredTypeOfClient } from '../controller/typeOfClient.controller';
+import { getAllTypeOfClient, getSingleTypeOfClient, createTypeOfClient, updateTypeOfClient, deleteTypeOfClient, getFilteredTypeOfClient } from '../../moduleSetting/controller/typeOfClient.Controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
