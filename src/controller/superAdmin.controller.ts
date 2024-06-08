@@ -15,6 +15,7 @@ var activity = "SuperAdmin";
 
 
 export let createSuperAdmin = async (req, res, next) => {
+    console.log("bye")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {

@@ -43,6 +43,7 @@ export const app: any = {
 	initRoutes() {
 		this.instance.use(express.static(path.join(__dirname, 'dist')));
 		this.instance.use('/api', routes);
+		console.log("hi")
 		 this.instance.get('*', (req, res) => {
 			res.sendFile(path.join(__dirname, 'dist/index.html'));
 	

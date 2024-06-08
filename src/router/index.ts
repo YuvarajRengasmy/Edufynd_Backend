@@ -23,8 +23,8 @@ import InTake from '../setting/globalSetting/router/intake.routes'
 import Email from '../setting/globalSetting/router/email.routes'
 import Currency from '../setting/globalSetting/router/currency.routes'
 
-//Module Setting Routes
-import DropDownList from '../setting/moduleSetting/router/dropdownSetting.route'
+//Drop Down Setting Routes
+import CourseType from '../setting/moduleSetting/router/courseType.route'
 
 
 
@@ -49,8 +49,8 @@ router.use('/email', Email)
 router.use('/currency', Currency)
 
 
-//Module Setting API
-router.use('/allModule',DropDownList )
+//Drop Down - Setting API
+router.use('/course', CourseType )
 
 
 
