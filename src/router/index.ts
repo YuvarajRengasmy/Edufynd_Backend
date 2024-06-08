@@ -29,6 +29,9 @@ import PopularCategory from '../setting/moduleSetting/router/popularCourse.route
 import CommissionPaid from '../setting/moduleSetting/router/commissionPaid.route'
 import InstitutionType from '../setting/moduleSetting/router/institutionType.route'
 import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
+import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
+import Tax from '../setting/moduleSetting/router/tax.route'
+import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
 
 
 
@@ -60,6 +63,9 @@ router.use('/popularCourse', PopularCategory )
 router.use('/commissionPaid', CommissionPaid)
 router.use('/institutionType', InstitutionType)
 router.use('/offerTAT', OfferTAT)
+router.use('/paymentMethod', PaymentMethod)
+router.use('/tax', Tax)
+router.use('/typeOfClient', TypeOfClient)
 
 
 
