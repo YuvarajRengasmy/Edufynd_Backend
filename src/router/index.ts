@@ -25,6 +25,11 @@ import Currency from '../setting/globalSetting/router/currency.routes'
 
 //Drop Down Setting Routes
 import CourseType from '../setting/moduleSetting/router/courseType.route'
+import PopularCategory from '../setting/moduleSetting/router/popularCourse.route'
+import CommissionPaid from '../setting/moduleSetting/router/commissionPaid.route'
+import InstitutionType from '../setting/moduleSetting/router/institutionType.route'
+import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
+
 
 
 
@@ -51,6 +56,11 @@ router.use('/currency', Currency)
 
 //Drop Down - Setting API
 router.use('/course', CourseType )
+router.use('/popularCourse', PopularCategory )
+router.use('/commissionPaid', CommissionPaid)
+router.use('/institutionType', InstitutionType)
+router.use('/offerTAT', OfferTAT)
+
 
 
 
