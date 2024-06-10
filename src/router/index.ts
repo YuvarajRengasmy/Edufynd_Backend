@@ -27,11 +27,12 @@ import Currency from '../setting/globalSetting/router/currency.routes'
 import CourseType from '../setting/moduleSetting/router/courseType.route'
 import PopularCategory from '../setting/moduleSetting/router/popularCourse.route'
 import CommissionPaid from '../setting/moduleSetting/router/commissionPaid.route'
+import CountryName from '../setting/moduleSetting/router/country.route'
 import InstitutionType from '../setting/moduleSetting/router/institutionType.route'
 import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
 import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
 import Tax from '../setting/moduleSetting/router/tax.route'
-import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
+ import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
 
 
 
@@ -62,10 +63,11 @@ router.use('/course', CourseType )
 router.use('/popularCourse', PopularCategory )
 router.use('/commissionPaid', CommissionPaid)
 router.use('/institutionType', InstitutionType)
+router.use('/countryName', CountryName)
 router.use('/offerTAT', OfferTAT)
 router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
-router.use('/typeOfClient', TypeOfClient)
+ router.use('/typeOfClient', TypeOfClient)
 
 
 

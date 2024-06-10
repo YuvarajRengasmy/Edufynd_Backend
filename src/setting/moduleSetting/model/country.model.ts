@@ -18,4 +18,4 @@ const countrySchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
-export const Country = mongoose.model("Country", countrySchema)
+export const Country = mongoose.model("CountryName", countrySchema)

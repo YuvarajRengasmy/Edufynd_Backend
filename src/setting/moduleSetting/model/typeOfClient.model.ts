@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface TypeOfClientDocument extends mongoose.Document {
-    typeOfClient?: string;         // Client Module
+    typeOfClient?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -10,7 +10,7 @@ export interface TypeOfClientDocument extends mongoose.Document {
 }
 
 const typeOfClientSchema = new mongoose.Schema({
-    typeOfClient: {type: String},    // Client Module
+    typeOfClient: { type: String },
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

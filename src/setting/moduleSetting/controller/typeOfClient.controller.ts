@@ -4,7 +4,7 @@ import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
 
 
-var activity = "ModuleSetting-DropDown Setting In All Module";
+var activity = "ModuleSetting-All Module-Program-CourseType";
 
 
 
@@ -33,7 +33,7 @@ export let createTypeOfClient = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const DropdownListDetails: TypeOfClientDocument = req.body;
+            const DropdownListDetails:TypeOfClientDocument = req.body;
             const createData = new TypeOfClient(DropdownListDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-TypeOfClient', true, 200, insertData, clientError.success.savedSuccessfully);
@@ -44,6 +44,7 @@ export let createTypeOfClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-TypeOfClient', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
 
 
 export const updateTypeOfClient = async (req, res) => {
@@ -58,21 +59,20 @@ export const updateTypeOfClient = async (req, res) => {
       }
       
       // Update the module with the new data
-     
-      existingModule.typeOfClient = DropdownListDetails.typeOfClient
-
- let updatedModule = await existingModule.save();
-     
+      existingModule.typeOfClient = DropdownListDetails.typeOfClient; // Assuming courseType is the only field being updated
+      // Save the updated module
+     let updatedModule = await existingModule.save();
+         
       
       // Respond with success message and updated module data
       response(req, res, activity, 'Level-2', 'Update-TypeOfClient', true, 200, updatedModule, clientError.success.updateSuccess);
     } catch (err) {
-      response(req, res, activity, 'Level-3', 'Create-TypeOfClient', false, 500, {}, errorMessage.internalServer, err.message);
+      response(req, res, activity, 'Level-3', 'Update-TypeOfClient', false, 500, {}, errorMessage.internalServer, err.message);
     }
   };
 
 
-    export let deleteTypeOfClient = async (req, res, next) => {
+    export let deleteTypeOfClient= async (req, res, next) => {
 
         try {
             let id = req.query._id;
@@ -94,10 +94,10 @@ export const updateTypeOfClient = async (req, res) => {
             var page = req.body.page ? req.body.page : 0;
             andList.push({ isDeleted: false })
             andList.push({ status: 1 })
-           
             if (req.body.typeOfClient) {
-                andList.push({ tax: req.body.typeOfClient })
+                andList.push({ typeOfClient: req.body.typeOfClient })
             }
+            
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
             const dropDownList = await TypeOfClient.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
