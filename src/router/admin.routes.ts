@@ -6,6 +6,11 @@ import { checkSession } from '../utils/tokenManager';
 const router:Router=Router();
 
 
+
+router.get('/aaa',async(req,res)=>{
+    console.log("balan")
+    res.send("Hi balan")
+})
 router.get('/getallAdmin', //get all admin
     basicAuthUser,
      checkSession,
