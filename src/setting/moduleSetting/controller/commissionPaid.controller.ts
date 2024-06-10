@@ -11,10 +11,10 @@ var activity = "ModuleSetting-DropDown Setting In All Module";
 export const getAllCommissionPaid = async (req, res) => {
     try {
         const data = await CommissionPaid.find()
-        response(req, res, activity, 'Level-1', 'GetAll-DropDown', true, 200, data, clientError.success.fetchedSuccessfully)
+        response(req, res, activity, 'Level-1', 'GetAll-CommissionPaid', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-DropDown', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetAll-CommissionPaid', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
