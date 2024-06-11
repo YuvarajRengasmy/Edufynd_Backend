@@ -5,6 +5,7 @@ export interface ClientDocument extends mongoose.Document {
     _id?: any;
     clientID?: string;
     typeOfClient?: string;    // - Institution, Financial Institution, Other Service Provider
+    clientStatus?: string; 
     businessName?: string;
     businessMailID?: string;
     businessContactNo?: string;
@@ -16,7 +17,7 @@ export interface ClientDocument extends mongoose.Document {
     addressLine2?: string;
     addressLine3?: string;      // Street Address, City, State, Postal Code, Country
     gstn?: string;
-    status?: string;     // (Active/Inactive)
+    staffStatus?: string;     // (Active/Inactive)
     isDeleted?: boolean;
     privileges?: string;
     createdOn?: Date;
@@ -31,6 +32,7 @@ const clientSchema = new mongoose.Schema({
     clientID: { type: String },
     typeOfClient: { type: String },  // - Institution, Financial Institution, Other Service Provider
     businessName: { type: String },
+    clientStatus: {type: String},
     businessMailID: { type: String },
     businessContactNo: { type: String },
     website: { type: String },
@@ -41,7 +43,7 @@ const clientSchema = new mongoose.Schema({
     addressLine2: { type: String },// , City, State, 
     addressLine3: { type: String } ,   //  Postal Code, Country
     gstn: { type: String },
-    status: { type: String },    // (Active/Inactive)
+    staffStatus: { type: String },    // (Active/Inactive)
     isDeleted: { type: Boolean, default: false },
      privileges: {type: String},
      createdOn: { type: Date },
