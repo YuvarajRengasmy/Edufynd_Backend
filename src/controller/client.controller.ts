@@ -1,7 +1,8 @@
-import { Client, ClientDocument} from '../model/client.model'
+import { Client, ClientDocument } from '../model/client.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
+import csv = require('csvtojson')
 
 
 
@@ -52,18 +53,18 @@ export let saveClient = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const clientDetails: ClientDocument = req.body;
-            
+
             // Generate the next client ID
             clientDetails.clientID = await generateNextClientID();
             const createData = new Client(clientDetails);
             let insertData = await createData.save();
 
-            response(req, res,activity, 'Save-Client', 'Level-2', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Save-Client', 'Level-2', true, 200, insertData, clientError.success.savedSuccessfully);
         } catch (err: any) {
-            response(req, res,activity, 'Save-Client', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Save-Client', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
-        response(req, res,activity, 'Save-Client', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Save-Client', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 
@@ -77,23 +78,23 @@ export let updateClient = async (req, res, next) => {
             const clientDetails: ClientDocument = req.body;
             let clientData = await Client.findByIdAndUpdate({ _id: clientDetails._id }, {
                 $set: {
-                  
+
                     typeOfClient: clientDetails.typeOfClient,
                     businessName: clientDetails.businessName,
                     businessMailID: clientDetails.businessMailID,
                     clientStatus: clientDetails.clientStatus,
                     businessContactNo: clientDetails.businessContactNo,
-                    website:clientDetails.website,
+                    website: clientDetails.website,
                     addressLine1: clientDetails.addressLine1,
                     addressLine2: clientDetails.addressLine2,
                     addressLine3: clientDetails.addressLine3,
-                    name:clientDetails.name,
+                    name: clientDetails.name,
                     contactNo: clientDetails.contactNo,
                     emailID: clientDetails.emailID,
                     staffStatus: clientDetails.staffStatus,
                     privileges: clientDetails.privileges,
                     modifiedOn: clientDetails.modifiedOn,
-                    modifiedBy:  clientDetails.modifiedBy,
+                    modifiedBy: clientDetails.modifiedBy,
                 }
             });
 
@@ -118,5 +119,43 @@ export let deleteClient = async (req, res, next) => {
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-Client', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+
+export const csvToJson = async (req, res) => {
+    try {
+        let clientList = [];
+        // Parse CSV file
+        const csvData = await csv().fromFile(req.file.path);
+
+        // Process CSV data
+        for (let i = 0; i < csvData.length; i++) {
+            clientList.push({
+                typeOfClient: csvData[i].TypeOfClient,  
+                clientStatus: csvData[i].ClientStatus,
+                businessMailID: csvData[i].BusinessMailID,
+                businessContactNo: csvData[i].BusinessContactNo,
+                website: csvData[i].Website,
+                gstn: csvData[i].GST,
+                addressLine1: csvData[i].AddressLine1, 
+                addressLine2: csvData[i].AddressLine2, 
+                addressLine3: csvData[i].AddressLine3, 
+                name: csvData[i].StaffName,
+                contactNo:csvData[i].StaffContactNo,
+                emailID: csvData[i].StaffMailId,
+                staffStatus: csvData[i].staffStatus,
+
+            });
+        }
+
+        // Insert into the database
+        await Client.insertMany(clientList);
+        // Send success response
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for client module', true, 200, { clientList }, 'Successfully CSV File Store Into Database');
+    } catch (err) {
+        // Send error response
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };

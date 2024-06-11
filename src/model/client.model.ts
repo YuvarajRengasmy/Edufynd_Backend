@@ -5,7 +5,7 @@ export interface ClientDocument extends mongoose.Document {
     _id?: any;
     clientID?: string;
     typeOfClient?: string;    // - Institution, Financial Institution, Other Service Provider
-    clientStatus?: string; 
+    clientStatus?: string;
     businessName?: string;
     businessMailID?: string;
     businessContactNo?: string;
@@ -32,24 +32,24 @@ const clientSchema = new mongoose.Schema({
     clientID: { type: String },
     typeOfClient: { type: String },  // - Institution, Financial Institution, Other Service Provider
     businessName: { type: String },
-    clientStatus: {type: String},
+    clientStatus: { type: String },
     businessMailID: { type: String },
     businessContactNo: { type: String },
     website: { type: String },
     addressLine1: { type: String }, // No Street Address, 
+    addressLine2: { type: String },// , City, State, 
+    addressLine3: { type: String },   //  Postal Code, Country
     name: { type: String },
     contactNo: { type: String },
     emailID: { type: String },
-    addressLine2: { type: String },// , City, State, 
-    addressLine3: { type: String } ,   //  Postal Code, Country
     gstn: { type: String },
     staffStatus: { type: String },    // (Active/Inactive)
     isDeleted: { type: Boolean, default: false },
-     privileges: {type: String},
-     createdOn: { type: Date },
-     createdBy: { type: String },
-     modifiedOn: { type: Date },
-     modifiedBy: { type: String },
+    privileges: { type: String },
+    createdOn: { type: Date },
+    createdBy: { type: String },
+    modifiedOn: { type: Date },
+    modifiedBy: { type: String },
 
 })
 

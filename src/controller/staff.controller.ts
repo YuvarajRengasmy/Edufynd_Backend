@@ -2,6 +2,7 @@ import { Staff, StaffDocument } from '../model/staff.model'
 import { validationResult } from 'express-validator'
 import { response } from '../helper/commonResponseHandler'
 import { clientError, errorMessage } from '../helper/ErrorMessage'
+import csv = require('csvtojson')
 
 var activity = "Staff"
 
@@ -141,3 +142,47 @@ export let getFilteredStaff = async (req, res, next) => {
 };
 
 
+
+export const csvToJson = async (req, res) => {
+    try {
+        let staffList = [];
+        // Parse CSV file
+        const csvData = await csv().fromFile(req.file.path);
+
+        // Process CSV data
+        for (let i = 0; i < csvData.length; i++) {
+            staffList.push({
+                empName:csvData[i].EmpName,
+                designation:csvData[i].Designation,
+                jobDescription: csvData[i].JobDescription,
+                reportingManager: csvData[i].ReportingManager,
+                shiftTiming: csvData[i].ShiftTiming,                       
+                areTheyEligibleForCasualLeave: csvData[i].AreTheyEligibleForCasualLeave,          
+                doj: csvData[i].DOJ,                    
+                dob: csvData[i].DOB,                   
+                addressline1:csvData[i].AddressLine1,
+                addressline2:csvData[i].AddressLine2,
+                addressline3:csvData[i].AddressLine3,
+                email: csvData[i].Email,
+                mobileNumber: csvData[i].MobileNo,
+                emergencyContactNo: csvData[i].EmergencyContactNo,
+                probationDuration: csvData[i].ProbationDuration,
+                salary:csvData[i].salary,                   
+                idCard: csvData[i].IDCard,                    
+                manageApplications: csvData[i].ManageApplications,         
+                activeInactive: csvData[i].ActiveInactive,              
+                teamLead: csvData[i].TeamLead,     
+                
+            });
+        }
+
+        // Insert into the database
+        await Staff.insertMany(staffList);
+        // Send success response
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for staff module', true, 200, { staffList }, 'Successfully CSV File Store Into Database');
+    } catch (err) {
+        console.error(err);
+        // Send error response
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for staff module', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

@@ -1,9 +1,10 @@
 import {Router} from 'express';
-import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin} from '../controller/student.controller';
+import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
+import upload from '../utils/fileUploaded'
 const router:Router=Router();
 
 
@@ -55,6 +56,12 @@ router.put('/getFilterStudentbySuperAdmin',
     basicAuthUser,
     checkSession,
     getFilteredStudentBySuperAdmin,
+);
+
+
+router.post('/import',      // CSV File to json and Store into Database
+    upload.single('file'),
+    csvToJson
 );
 
 

@@ -4,6 +4,7 @@ import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
+import csv = require("csvtojson")
 
 var activity = "Student";
 
@@ -40,7 +41,7 @@ export let saveStudent = async (req, res, next) => {
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 const studentDetails: StudentDocument = req.body;
                 const uniqueId = Math.floor(Math.random() * 10000);
-                studentDetails.studentCode = studentDetails.name + "_"+ uniqueId;
+                studentDetails.studentCode = studentDetails.name + "_" + uniqueId;
                 const createData = new Student(studentDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -55,7 +56,7 @@ export let saveStudent = async (req, res, next) => {
                 finalResult["token"] = token;
                 finalResult["loginType"] = 'student';
                 finalResult["studentDetails"] = result;
-                
+
                 response(req, res, activity, 'Level-2', 'Save-Student', true, 200, finalResult, clientError.success.registerSuccessfully);
             }
             else {
@@ -63,7 +64,7 @@ export let saveStudent = async (req, res, next) => {
             }
 
         } catch (err: any) {
-          console.log(err)
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Save-Student', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
@@ -75,43 +76,43 @@ export let saveStudent = async (req, res, next) => {
 export let updateStudent = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        try{
-            const studentDetails : StudentDocument = req.body;
+        try {
+            const studentDetails: StudentDocument = req.body;
             const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, {
-                $set: {  
+                $set: {
                     name: studentDetails.name,
                     passportNo: studentDetails.passportNo,
-                    expiryDate:studentDetails.expiryDate,
+                    expiryDate: studentDetails.expiryDate,
                     dob: studentDetails.dob,
-                    citizenship:studentDetails.citizenship,
-                    gender:studentDetails.gender,
+                    citizenship: studentDetails.citizenship,
+                    gender: studentDetails.gender,
                     whatsAppNumber: studentDetails.whatsAppNumber,
-                    degreeName:studentDetails.degreeName,
+                    degreeName: studentDetails.degreeName,
                     academicYear: studentDetails.academicYear,
-                    institution:studentDetails.institution,
+                    institution: studentDetails.institution,
                     percentage: studentDetails.percentage,
-                    doHaveAnyEnglishLanguageTest:studentDetails.doHaveAnyEnglishLanguageTest,
-                    englishTestType:studentDetails.englishTestType,
+                    doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                    englishTestType: studentDetails.englishTestType,
                     testScore: studentDetails.testScore,
                     dateOfTest: studentDetails.dateOfTest,
-                    country:studentDetails.country,
-                    desiredUniversity:studentDetails.desiredUniversity, 
-                    desiredCourse: studentDetails.desiredCourse, 
+                    country: studentDetails.country,
+                    desiredUniversity: studentDetails.desiredUniversity,
+                    desiredCourse: studentDetails.desiredCourse,
                     workExperience: studentDetails.workExperience,
-                    anyVisaRejections: studentDetails.anyVisaRejections, 
-                    visaReason:studentDetails.visaReason,
-                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory, 
-                    travelReason:studentDetails.travelReason,
+                    anyVisaRejections: studentDetails.anyVisaRejections,
+                    visaReason: studentDetails.visaReason,
+                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                    travelReason: studentDetails.travelReason,
                     finance: studentDetails.finance,
-                    twitter:studentDetails .twitter,
+                    twitter: studentDetails.twitter,
                     facebook: studentDetails.facebook,
                     instagram: studentDetails.instagram,
                     linkedIn: studentDetails.linkedIn,
 
                     modifiedOn: studentDetails.modifiedOn,
-                    modifiedBy:  studentDetails.modifiedBy,
+                    modifiedBy: studentDetails.modifiedBy,
                 }
-                
+
             });
             response(req, res, activity, 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
         }
@@ -126,11 +127,11 @@ export let updateStudent = async (req, res, next) => {
 
 
 export let deleteStudent = async (req, res, next) => {
-  
+
     try {
         let id = req.query._id;
         const student = await Student.findByIdAndDelete({ _id: id })
-      
+
         response(req, res, activity, 'Level-2', 'Delete-Student', true, 200, student, 'Successfully Remove User');
     }
     catch (err: any) {
@@ -148,15 +149,15 @@ export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-       
+
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
         if (req.body.superAdminId) {
             andList.push({ superAdminId: req.body.superAdminId })
         }
-      
-       
+
+
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
@@ -168,3 +169,62 @@ export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     }
 };
 
+
+
+
+export const csvToJson = async (req, res) => {
+    try {
+        let studentList = [];
+        // Parse CSV file
+        const csvData = await csv().fromFile(req.file.path);
+
+        // Process CSV data
+        for (let i = 0; i < csvData.length; i++) {
+            studentList.push({
+                name:  csvData[i].Name,
+                email: csvData[i].Email,
+                mobileNumber:  csvData[i].MobileNumber,
+                whatsAppNumber: csvData[i].WhatsAppNumber,
+                gender:  csvData[i].GreGmatRequirementender,
+                dob:  csvData[i].DOB,
+                source: csvData[i].Source,
+                passportNo: csvData[i].PassportNo,
+                expiryDate:  csvData[i].ExpiryDate,
+                citizenship:  csvData[i].Citizenship,
+                highestQualification:  csvData[i].HighestQualification,
+                degreeName:  csvData[i].DegreeName,
+                academicYear: csvData[i].AcademicYear,
+                yearPassed:  csvData[i].YearPassed,
+                institution:  csvData[i].Institution,
+                percentage:  csvData[i].Percentage,
+                country: csvData[i].Country,
+                desiredUniversity:  csvData[i].DesiredUniversity,
+                desiredCourse: csvData[i].DesiredCourse,
+                doHaveAnyEnglishLanguageTest: csvData[i].DoHaveAnyEnglishLanguageTest,
+                englishTestType:  csvData[i].EnglishTestType,
+                testScore:  csvData[i].TestScore,
+                dateOfTest:  csvData[i].DateOfTest,
+                workExperience:  csvData[i].WorkExperience,
+                anyVisaRejections: csvData[i].AnyVisaRejections,
+                visaReason:  csvData[i].VisaReason,
+                doYouHaveTravelHistory: csvData[i].DoYouHaveTravelHistory,
+                travelReason:  csvData[i].TravelReason,
+                finance: csvData[i].Finance,
+                twitter: csvData[i].Twitter,
+                instagram:  csvData[i].Instagram,
+                facebook:  csvData[i].Facebook,
+                linkedIn:  csvData[i].LinkedIn,
+
+            });
+        }
+
+        // Insert into the database
+        await Student.insertMany(studentList);
+        // Send success response
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for student module', true, 200, { studentList }, 'Successfully CSV File Store Into Database');
+    } catch (err) {
+        console.error(err);
+        // Send error response
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for student module', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
