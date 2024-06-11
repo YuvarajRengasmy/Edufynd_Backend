@@ -69,7 +69,8 @@ export let updateUniversity = async (req, res, next) => {
                     countryName: universityDetails.countryName,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
-                    campus: universityDetails.campus,
+                    state: universityDetails.state,
+                    city: universityDetails.city,
                     ranking: universityDetails.ranking,
                     averageFees: universityDetails.averageFees,
                     popularCategories: universityDetails.popularCategories,
@@ -276,8 +277,11 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
         if (req.body.country) {
             andList.push({ country: req.body.country })
         }
-        if (req.body.campus) {
-            andList.push({ campus: req.body.campus })
+        if (req.body.state) {
+            andList.push({ state: req.body.state })
+        }
+        if (req.body.city) {
+            andList.push({ city: req.body.city })
         }
         if (req.body.ranking) {
             andList.push({ ranking: req.body.ranking })
@@ -321,7 +325,7 @@ export const csvToJson = async (req, res) => {
                 country: csvData[i].Country,
                 countryName: csvData[i].CountryName,
                 email: csvData[i].Email,
-                campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
+                // campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
                 ranking: csvData[i].Ranking,
                 applicationFees: csvData[i].ApplicationFees,
                 averageFees: csvData[i].AverageFees,
