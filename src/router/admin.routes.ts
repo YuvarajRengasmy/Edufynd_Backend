@@ -26,7 +26,7 @@ router.post('/',
 );
 
 
-router.put('/createStudent',             //create student by Admin
+router.put('/',             //create student by Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
