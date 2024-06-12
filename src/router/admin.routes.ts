@@ -1,19 +1,19 @@
 import {Router} from 'express';
-import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin} from '../controller/admin.controller';
+import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin} from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 const router:Router=Router();
 
 
-router.get('/getallAdmin', //get all admin
+router.get('/', //get all admin
     basicAuthUser,
      checkSession,
     getAllAdmin
 );
 
 
-router.get('/getsingleadmin',
+router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -33,6 +33,13 @@ router.put('/createStudent',             //create student by Admin
     createStudentByAdmin
 );
 
+
+router.put('/createStaff',             //create staff by  Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createStaffByAdmin
+);
 
 
 export default router

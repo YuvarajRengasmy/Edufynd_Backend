@@ -9,14 +9,14 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/getalluniversity',                //get all university
+router.get('/',                //get all university
     basicAuthUser,
     checkSession,
     getAllUniversity
 );
 
 
-router.get('/getsingleuniversity',
+router.get('/getSingleUniversity',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -50,26 +50,26 @@ router.delete('/',                  //delete university
 );
 
 
-router.put('/getfilteruniversity',
+router.put('/getFilterUniversity',
     basicAuthUser,
     checkSession,
     getFilteredUniversity,
 );
 
-router.get('/getalluniversityforweb',         // get all university for web //without checking session
+router.get('/getAllUniversityForWeb',         // get all university for web //without checking session
     basicAuthUser,
     getAllUniversityForWeb
 );
 
 
-router.put('/agentfilteruniversity',
+router.put('/agentFilterUniversity',
     basicAuthUser,
     checkSession,
     getFilteredUniversityForAgent,
 );
 
 
-router.put('/studentfilteruniversity',
+router.put('/studentFilterUniversity',
     basicAuthUser,
     // checkSession,
     getFilteredUniversityForStudent,
@@ -85,7 +85,7 @@ router.post('/import',      // CSV File to json and Store into Database
 ////////
 
 
-router.get('/getprogrambyuniversity',    /// Get university details with that university program          
+router.get('/getProgramByUniversity',    /// Get university details with that university program          
     checkQuery('universityId'),
     getUniversityWithProgramDetails  
 );
