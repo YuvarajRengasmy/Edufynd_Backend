@@ -70,7 +70,7 @@ export let updateUniversity = async (req, res, next) => {
                     country: universityDetails.country,
                     flag: universityDetails.flag,
                     state: universityDetails.state,
-                    city: universityDetails.city,
+                    lga: universityDetails.lga,
                     ranking: universityDetails.ranking,
                     averageFees: universityDetails.averageFees,
                     popularCategories: universityDetails.popularCategories,
