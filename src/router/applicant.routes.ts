@@ -6,7 +6,6 @@ import { checkSession } from '../utils/tokenManager';
 const router:Router=Router();
 
 
-
 router.get('/',               //get all Applicant
     basicAuthUser,
      checkSession,
