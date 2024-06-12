@@ -67,6 +67,7 @@ export let updateUniversity = async (req, res, next) => {
                     banner: universityDetails.banner,
                     universityLogo: universityDetails.universityLogo,
                     countryName: universityDetails.countryName,
+                    courseType: universityDetails.courseType,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
                     state: universityDetails.state,
@@ -178,6 +179,9 @@ export let getFilteredUniversity = async (req, res, next) => {
         if (req.body.popularCategories) {
             andList.push({ popularCategories: req.body.popularCategories })
         }
+        if (req.body.courseType) {
+            andList.push({ courseType: req.body.courseType })
+        }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const universityList = await University.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
@@ -286,6 +290,9 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
         if (req.body.ranking) {
             andList.push({ ranking: req.body.ranking })
         }
+        if (req.body.courseType) {
+            andList.push({ courseType: req.body.courseType })
+        }
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
@@ -320,6 +327,7 @@ export const csvToJson = async (req, res) => {
             universityList.push({
                 universityName: csvData[i].UniversityName,
                 universityLogo: csvData[i].UniversityLogo,
+                courseType: csvData[i].CourseType,
                 businessName: csvData[i].BusinessName,
                 banner: csvData[i].Banner,
                 country: csvData[i].Country,
