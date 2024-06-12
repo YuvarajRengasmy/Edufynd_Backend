@@ -85,4 +85,18 @@ const universitySchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
+
+// // Add a virtual property for createdOn in IST
+// universitySchema.virtual('createdOnIST').get(function() {
+//     if (this.createdOn) {
+//         return moment(this.createdOn).tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
+//     }
+//     return null;
+// });
+
+// // Ensure virtual fields are included in toJSON and toObject output
+// universitySchema.set('toJSON', { virtuals: true });
+// universitySchema.set('toObject', { virtuals: true });
+
+
 export const University = mongoose.model("University", universitySchema)
