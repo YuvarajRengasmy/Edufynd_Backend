@@ -5,6 +5,7 @@ import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
+import csv = require('csvtojson')
 
 var activity = "Agent";
 
@@ -115,16 +116,17 @@ export let updateAgent = async (req, res, next) => {
                     agentBusinessLogo: agentDetails.agentBusinessLogo,
                     countryInterested: agentDetails.countryInterested,
                     privileges: agentDetails.privileges,
-                    addressLine1:agentDetails.addressLine1,
-                    addressLine2:agentDetails.addressLine2,
-                    staffName:agentDetails.staffName,
-                    staffContactNo:agentDetails.staffContactNo,
+                    addressLine1: agentDetails.addressLine1,
+                    addressLine2: agentDetails.addressLine2,
+                    addressLine3: agentDetails.addressLine3,
+                    staffName: agentDetails.staffName,
+                    staffContactNo: agentDetails.staffContactNo,
 
 
                     modifiedOn: agentDetails.modifiedOn,
                     modifiedBy: agentDetails.modifiedBy,
                 }
-              
+
 
             });
             response(req, res, activity, 'Level-2', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
@@ -157,20 +159,20 @@ export let deleteAgent = async (req, res, next) => {
 export const createStudentProfileByAgent = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-    
-    try {
-        const studentDetails: StudentDocument = req.body;
-        const agentId = req.agent._id;
-        const newStudent = new Student({...studentDetails, agentId: agentId});
-        await newStudent.save();
-        response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
-    } catch (err:any) {
-        response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
-    }
- } else {
 
-    response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-}
+        try {
+            const studentDetails: StudentDocument = req.body;
+            const agentId = req.agent._id;
+            const newStudent = new Student({ ...studentDetails, agentId: agentId });
+            await newStudent.save();
+            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+
+        response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
 };
 
 
@@ -178,80 +180,83 @@ export const createStudentProfileByAgent = async (req, res) => {
 export const viewStudentProfileByAgent = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-    try {
-        const studentId = await Student.find({ _id: req.query.studentId })
-        const student = await Student.findById(studentId).populate('agentId', 'name email');
+        try {
+            const studentId = await Student.find({ _id: req.query.studentId })
+            const student = await Student.findById(studentId).populate('agentId', 'name email');
 
-        if (!student) {
-            return res.status(400).json({ success: false, message: 'Student Not Found' });
+            if (!student) {
+                return res.status(400).json({ success: false, message: 'Student Not Found' });
+            }
+            response(req, res, activity, 'Level-1', 'View Student by Agent', true, 200, student, clientError.success.fetchedSuccessfully);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
         }
-        response(req, res, activity, 'Level-1', 'View Student by Agent', true, 200, student, clientError.success.fetchedSuccessfully);
-    } catch (err:any) {
-        response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
-    }} else {
-    response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-}};
+    } else {
+        response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
 
 
 export const editStudentProfileByAgent = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-    try {
-      
-        const studentDetails : StudentDocument = req.body;
-        const updateData = await Student.findOneAndUpdate({ _id: studentDetails._id }, {
-            $set: {  
-                name: studentDetails.name,
-                passportNo: studentDetails.passportNo,
-                expiryDate:studentDetails.expiryDate,
-                dob: studentDetails.dob,
-                citizenship:studentDetails.citizenship,
-                gender:studentDetails.gender,
-                whatsAppNumber: studentDetails.whatsAppNumber,
-                degreeName:studentDetails.degreeName,
-                academicYear: studentDetails.academicYear,
-                institution:studentDetails.institution,
-                percentage: studentDetails.percentage,
-                doHaveAnyEnglishLanguageTest:studentDetails.doHaveAnyEnglishLanguageTest,
-                englishTestType:studentDetails.englishTestType,
-                testScore: studentDetails.testScore,
-                dateOfTest: studentDetails.dateOfTest,
-                country:studentDetails.country,
-                desiredUniversity:studentDetails.desiredUniversity, 
-                desiredCourse: studentDetails.desiredCourse, 
-                workExperience: studentDetails.workExperience,
-                anyVisaRejections: studentDetails.anyVisaRejections, 
-                visaReason:studentDetails.visaReason,
-                doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory, 
-                travelReason:studentDetails.travelReason,
-                finance: studentDetails.finance,
-                twitter:studentDetails .twitter,
-                facebook: studentDetails.facebook,
-                instagram: studentDetails.instagram,
-                linkedIn: studentDetails.linkedIn,
+        try {
 
-                modifiedOn: studentDetails.modifiedOn,
-                modifiedBy:  studentDetails.modifiedBy,
-            }
-            
-        });
-        response(req, res, activity, 'Level-2', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
+            const studentDetails: StudentDocument = req.body;
+            const updateData = await Student.findOneAndUpdate({ _id: studentDetails._id }, {
+                $set: {
+                    name: studentDetails.name,
+                    passportNo: studentDetails.passportNo,
+                    expiryDate: studentDetails.expiryDate,
+                    dob: studentDetails.dob,
+                    citizenship: studentDetails.citizenship,
+                    gender: studentDetails.gender,
+                    whatsAppNumber: studentDetails.whatsAppNumber,
+                    degreeName: studentDetails.degreeName,
+                    academicYear: studentDetails.academicYear,
+                    institution: studentDetails.institution,
+                    percentage: studentDetails.percentage,
+                    doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                    englishTestType: studentDetails.englishTestType,
+                    testScore: studentDetails.testScore,
+                    dateOfTest: studentDetails.dateOfTest,
+                    country: studentDetails.country,
+                    desiredUniversity: studentDetails.desiredUniversity,
+                    desiredCourse: studentDetails.desiredCourse,
+                    workExperience: studentDetails.workExperience,
+                    anyVisaRejections: studentDetails.anyVisaRejections,
+                    visaReason: studentDetails.visaReason,
+                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                    travelReason: studentDetails.travelReason,
+                    finance: studentDetails.finance,
+                    twitter: studentDetails.twitter,
+                    facebook: studentDetails.facebook,
+                    instagram: studentDetails.instagram,
+                    linkedIn: studentDetails.linkedIn,
+
+                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedBy: studentDetails.modifiedBy,
+                }
+
+            });
+            response(req, res, activity, 'Level-2', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
+        }
+        catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        }
     }
-    catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
-    }}
-else {
-    response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-}
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
 }
 
 
 export let deleteStudentByAgent = async (req, res, next) => {
-  
+
     try {
         let id = req.query.studentId;
         const student = await Student.findByIdAndDelete({ _id: id })
-      
+
         response(req, res, activity, 'Level-2', 'Delete-Student by Agent', true, 200, student, 'Successfully Remove Student by Agent');
     }
     catch (err: any) {
@@ -272,7 +277,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
-        
+
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const agentList = await Agent.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
@@ -284,3 +289,45 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
     }
 };
 
+
+
+
+export const csvToJson = async (req, res) => {
+    try {
+        let agentList = [];
+        // Parse CSV file
+        const csvData = await csv().fromFile(req.file.path);
+
+        // Process CSV data
+        for (let i = 0; i < csvData.length; i++) {
+            agentList.push({
+                agentName: csvData[i].AgentName,
+                businessName: csvData[i].BusinessName,
+                email: csvData[i].Email,
+                mobileNumber:csvData[i].MobileNumber,
+                whatsAppNumber:csvData[i].WhatsAppNumber,
+                addressLine1: csvData[i].addressLine1,
+                addressLine2: csvData[i].addressLine2,
+                addressLine3: csvData[i].addressLine3,
+                panNumberIndividual: csvData[i].PanNumberIndividual,
+                panNumberCompany: csvData[i].PanNumberCompany,   
+                gstn:csvData[i].GSTN,
+                inc: csvData[i].INC,  
+                staffName: csvData[i].StaffName,
+                staffContactNo: csvData[i].StaffContactNo,
+                agentsCommission:csvData[i].AcademicRequirementgentsCommission, 
+                countryInterested:csvData[i].CountryInterested,
+
+            });
+        }
+
+        // Insert into the database
+        await Agent.insertMany(agentList);
+        // Send success response
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for agent module', true, 200, { agentList }, 'Successfully CSV File Store Into Database');
+    } catch (err) {
+        console.error(err);
+        // Send error response
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for agent module', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

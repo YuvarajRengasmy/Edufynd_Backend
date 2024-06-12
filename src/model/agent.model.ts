@@ -7,6 +7,7 @@ export interface AgentDocument extends mongoose.Document {
   businessName?: string;
   addressLine1?: string;
   addressLine2?: string;
+  addressLine3?: String;
   email?: string;
   mobileNumber?: string;
   whatsAppNumber?: string;
@@ -45,6 +46,7 @@ const agentSchema = new mongoose.Schema({
   businessName: { type: String },
   addressLine1: { type: String },
   addressLine2: { type: String },
+  addressLine3: { type: String },
   email: { type: String, required: true },
   mobileNumber: { type: String, required: true },
   whatsAppNumber: { type: String },
