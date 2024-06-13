@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose'
 
 export interface CurrencyDocument extends mongoose.Document{
+    country?: string;
     currency?: string;
     flag?: string;
 
@@ -11,6 +12,7 @@ export interface CurrencyDocument extends mongoose.Document{
 }
 
 export const currencySchema = new mongoose.Schema({
+    country: {type: String},
     currency: {type: String},
     flag:{ type: String},
 

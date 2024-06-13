@@ -76,6 +76,9 @@ export let getFilteredCurrency = async (req, res, next) => {
         if (req.body.flag) {
             andList.push({ flag: req.body.flag })
         }
+        if (req.body.country) {
+            andList.push({ country: req.body.country })
+        }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const currencyList = await Currency.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
