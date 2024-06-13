@@ -2,7 +2,7 @@
   "name": "edufynd",
   "version": "1.0.0",
   "description": " ",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "export NODE_ENV=production&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
