@@ -42,7 +42,7 @@ export let CreateJWTToken = (data: any = {}) => {
  */
 export let checkSession = async (req, res, next) => {
     const token = req.headers['token'];
-    console.log("token", token)
+
     if (token) {
         const headerType = token.split(' ')[0];
   

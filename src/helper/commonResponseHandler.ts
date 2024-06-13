@@ -44,13 +44,13 @@ export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: 'info@Pixalive.me', 
+            user: 'info@edufynd.me', 
             pass: 'Pale2468'
         }
     });
 
     var composemail = {
-        from: 'info@Pixalive.me',
+        from: 'info@edufynd.me',
         to: toMail,
         subject: subject,
         text: text
