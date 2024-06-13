@@ -10,13 +10,13 @@ import upload from '../utils/fileUploaded';
 
 const router:Router=Router();
 
-router.get('/getallprogram', //get all program
+router.get('/', //get all program
     basicAuthUser,
      checkSession,
     getAllProgram
 );
 
-router.get('/getsingleprogram',
+router.get('/getSingleProgram',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -46,20 +46,20 @@ router.delete('/',             //delete program
     deleteProgram
 );
 
-router.get('/getallprogramforweb',         // get all program for web //without checking session
+router.get('/getAllProgramForWeb',         // get all program for web //without checking session
     basicAuthUser,
     getAllProgramForWeb
 );
 
 
-router.put('/getuniversityfilterprogram',
+router.put('/getUniversityFilterProgram',
     basicAuthUser,
     checkSession,
     getFilteredProgram,
 );
 
 
-router.put('/appliedstudent',    // Filter for Applied Student of University
+router.put('/appliedStudent',    // Filter for Applied Student of University
     basicAuthUser,
     checkSession,
     getFilteredProgramForAppliedStudent,
@@ -71,7 +71,7 @@ router.post('/import',      // CSV File to json and Store into Database
     csvToJson
 );
 
-router.get('/getprogrambyuniversity',    /// Get university details with that university program          
+router.get('/getProgramByUniversity',    /// Get university details with that university program          
     checkQuery('universityId'),
     getProgramsByUniversityName   
 );

@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { createAgent, createStudentProfileByAgent, deleteAgent, deleteStudentByAgent, editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent, viewStudentProfileByAgent } from '../controller/agent.controller';
+import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, deleteStudentByAgent, editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent, viewStudentProfileByAgent } from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
+import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
@@ -81,6 +82,12 @@ router.delete('/deleteStudentByAgent',             //Delete student by agent
     checkSession,
     validateAgentId,
     deleteStudentByAgent
+);
+
+
+router.post('/import',      // CSV File to json and Store into Database
+    upload.single('file'),
+    csvToJson
 );
 
 

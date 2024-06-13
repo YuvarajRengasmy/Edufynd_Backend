@@ -52,7 +52,7 @@ router.delete('/',                //delete user
 
 
 
-router.put('/getFilterStudentbySuperAdmin',
+router.put('/getFilterStudentBySuperAdmin',
     basicAuthUser,
     checkSession,
     getFilteredStudentBySuperAdmin,
