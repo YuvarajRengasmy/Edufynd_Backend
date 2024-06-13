@@ -1,4 +1,4 @@
-import { app } from '../app';
+import { app } from '../.././app';
 import { Server } from 'http';
 import { SERVER } from '../config';
 /**
