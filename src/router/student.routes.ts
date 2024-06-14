@@ -28,17 +28,22 @@ router.post('/',
         saveStudent
 );
 
-
-
-
 router.post('/contact', createContact);
-
 
 
 router.put('/',             // update user
     basicAuthUser,
     checkSession,
     checkRequestBodyParams('_id'),
+    upload.fields([
+        { name: 'photo', maxCount: 1 },
+        { name: 'resume', maxCount: 1 },
+        { name: 'passport', maxCount: 1 },
+        { name: 'sslc', maxCount: 1 },
+        { name: 'hsc', maxCount: 1 },
+        { name: 'degree', maxCount: 10 },
+        { name: 'additional', maxCount: 10 }
+    ]),
     updateStudent
 );
 
@@ -69,6 +74,8 @@ router.post('/import',      // CSV File to json and Store into Database
     upload.single('file'),
     csvToJson
 );
+
+
 
 
 export default router

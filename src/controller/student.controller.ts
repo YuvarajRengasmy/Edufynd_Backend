@@ -69,7 +69,7 @@ export let saveStudent = async (req, res, next) => {
         }
     }
     else {
-        response(req, res, activity, 'Level-3', 'Save-User', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Save-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
 
@@ -78,6 +78,30 @@ export let updateStudent = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const studentDetails: StudentDocument = req.body;
+
+             // Handling file uploads
+             if (req.files['photo']) {
+                studentDetails.photo = `${req.protocol}://${req.get('host')}/uploads/${req.files['photo'][0].filename}`;
+            }
+            if (req.files['resume']) {
+                studentDetails.resume = `${req.protocol}://${req.get('host')}/uploads/${req.files['resume'][0].filename}`;
+            }
+            if (req.files['passport']) {
+                studentDetails.passport = `${req.protocol}://${req.get('host')}/uploads/${req.files['passport'][0].filename}`;
+            }
+            if (req.files['sslc']) {
+                studentDetails.sslc = `${req.protocol}://${req.get('host')}/uploads/${req.files['sslc'][0].filename}`;
+            }
+            if (req.files['hsc']) {
+                studentDetails.hsc = `${req.protocol}://${req.get('host')}/uploads/${req.files['hsc'][0].filename}`;
+            }
+            if (req.files['degree']) {
+                studentDetails.degree = req.files['degree'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+            }
+            if (req.files['additional']) {
+                studentDetails.additional = req.files['additional'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+            }
+
             const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, {
                 $set: {
                     name: studentDetails.name,
@@ -110,11 +134,11 @@ export let updateStudent = async (req, res, next) => {
                     linkedIn: studentDetails.linkedIn,
                     photo: studentDetails.photo,
                     resume: studentDetails.resume,
-                    passport:studentDetails.passport,
+                    passport: studentDetails.passport,
                     sslc: studentDetails.sslc,
                     hsc: studentDetails.hsc,
-                    degree:studentDetails.degree,
-                    additional:studentDetails.additional,
+                    degree: studentDetails.degree,
+                    additional: studentDetails.additional,
 
                     modifiedOn: studentDetails.modifiedOn,
                     modifiedBy: studentDetails.modifiedBy,
@@ -131,6 +155,8 @@ export let updateStudent = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
 
 
 export let deleteStudent = async (req, res, next) => {
@@ -169,7 +195,7 @@ export let getFilteredStudent = async (req, res, next) => {
         if (req.body.mobileNumber) {
             andList.push({ mobileNumber: req.body.mobileNumber })
         }
-       
+
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
@@ -219,39 +245,39 @@ export const csvToJson = async (req, res) => {
         // Process CSV data
         for (let i = 0; i < csvData.length; i++) {
             studentList.push({
-                name:  csvData[i].Name,
+                name: csvData[i].Name,
                 email: csvData[i].Email,
-                mobileNumber:  csvData[i].MobileNumber,
+                mobileNumber: csvData[i].MobileNumber,
                 whatsAppNumber: csvData[i].WhatsAppNumber,
-                gender:  csvData[i].GreGmatRequirementender,
-                dob:  csvData[i].DOB,
+                gender: csvData[i].GreGmatRequirementender,
+                dob: csvData[i].DOB,
                 source: csvData[i].Source,
                 passportNo: csvData[i].PassportNo,
-                expiryDate:  csvData[i].ExpiryDate,
-                citizenship:  csvData[i].Citizenship,
-                highestQualification:  csvData[i].HighestQualification,
-                degreeName:  csvData[i].DegreeName,
+                expiryDate: csvData[i].ExpiryDate,
+                citizenship: csvData[i].Citizenship,
+                highestQualification: csvData[i].HighestQualification,
+                degreeName: csvData[i].DegreeName,
                 academicYear: csvData[i].AcademicYear,
-                yearPassed:  csvData[i].YearPassed,
-                institution:  csvData[i].Institution,
-                percentage:  csvData[i].Percentage,
+                yearPassed: csvData[i].YearPassed,
+                institution: csvData[i].Institution,
+                percentage: csvData[i].Percentage,
                 country: csvData[i].Country,
-                desiredUniversity:  csvData[i].DesiredUniversity,
+                desiredUniversity: csvData[i].DesiredUniversity,
                 desiredCourse: csvData[i].DesiredCourse,
                 doHaveAnyEnglishLanguageTest: csvData[i].DoHaveAnyEnglishLanguageTest,
-                englishTestType:  csvData[i].EnglishTestType,
-                testScore:  csvData[i].TestScore,
-                dateOfTest:  csvData[i].DateOfTest,
-                workExperience:  csvData[i].WorkExperience,
+                englishTestType: csvData[i].EnglishTestType,
+                testScore: csvData[i].TestScore,
+                dateOfTest: csvData[i].DateOfTest,
+                workExperience: csvData[i].WorkExperience,
                 anyVisaRejections: csvData[i].AnyVisaRejections,
-                visaReason:  csvData[i].VisaReason,
+                visaReason: csvData[i].VisaReason,
                 doYouHaveTravelHistory: csvData[i].DoYouHaveTravelHistory,
-                travelReason:  csvData[i].TravelReason,
+                travelReason: csvData[i].TravelReason,
                 finance: csvData[i].Finance,
                 twitter: csvData[i].Twitter,
-                instagram:  csvData[i].Instagram,
-                facebook:  csvData[i].Facebook,
-                linkedIn:  csvData[i].LinkedIn,
+                instagram: csvData[i].Instagram,
+                facebook: csvData[i].Facebook,
+                linkedIn: csvData[i].LinkedIn,
 
             });
         }
@@ -266,3 +292,38 @@ export const csvToJson = async (req, res) => {
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for student module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
+
+
+
+// export let createProfile = async (req, res, next) => {
+//     console.log("nsdsdsjk")
+
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const studentDetails: StudentDocument = req.body;
+
+
+//             const photo = req.files['photo'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['photo'][0].filename}` : null;
+//             const resume = req.files['resume'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['resume'][0].filename}` : null;
+//             const passport = req.files['passport'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['passport'][0].filename}` : null;
+//             const sslc = req.files['sslc'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['sslc'][0].filename}` : null;
+//             const hsc = req.files['hsc'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['hsc'][0].filename}` : null;
+//             const degree = req.files['degree'] ? req.files['degree'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`) : [];
+//             const additional = req.files['additional'] ? req.files['additional'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`) : [];
+
+
+//             const createData = new Student({ ...studentDetails, photo, resume, passport, sslc, degree, hsc, additional });
+
+//             let insertData = await createData.save();
+
+//             response(req, res, activity, 'Level-2', 'Create Profile', true, 200, insertData, clientError.success.savedSuccessfully);
+
+//         } catch (err: any) {
+//             console.log(err)
+//             response(req, res, activity, 'Level-3', 'Create Profile', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     } else {
+//         response(req, res, activity, 'Level-3', 'Create Profile', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// };
