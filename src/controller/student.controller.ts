@@ -108,6 +108,13 @@ export let updateStudent = async (req, res, next) => {
                     facebook: studentDetails.facebook,
                     instagram: studentDetails.instagram,
                     linkedIn: studentDetails.linkedIn,
+                    photo: studentDetails.photo,
+                    resume: studentDetails.resume,
+                    passport:studentDetails.passport,
+                    sslc: studentDetails.sslc,
+                    hsc: studentDetails.hsc,
+                    degree:studentDetails.degree,
+                    additional:studentDetails.additional,
 
                     modifiedOn: studentDetails.modifiedOn,
                     modifiedBy: studentDetails.modifiedBy,
@@ -139,7 +146,40 @@ export let deleteStudent = async (req, res, next) => {
     }
 };
 
+export let getFilteredStudent = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.studentCode) {
+            andList.push({ studentCode: req.body.studentCode })
+        }
+        if (req.body.name) {
+            andList.push({ name: req.body.name })
+        }
+        if (req.body.passportNo) {
+            andList.push({ passportNo: req.body.passportNo })
+        }
+        if (req.body.email) {
+            andList.push({ email: req.body.email })
+        }
+        if (req.body.mobileNumber) {
+            andList.push({ mobileNumber: req.body.mobileNumber })
+        }
+       
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
 
+        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const studentCount = await Student.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterStudent', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterStudent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     try {
@@ -156,8 +196,6 @@ export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
         if (req.body.superAdminId) {
             andList.push({ superAdminId: req.body.superAdminId })
         }
-
-
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { StudentName: 1, email: 1, mobileNumber: 1 })

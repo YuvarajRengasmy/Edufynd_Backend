@@ -58,6 +58,43 @@ export let createSuperAdmin = async (req, res, next) => {
 
 
 
+
+export let getFilteredSuperAdmin = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
+        }
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId })
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId })
+        }
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId })
+        }
+        if (req.body.universityId) {
+            andList.push({ universityId: req.body.universityId })
+        }
+       
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const superAdminList = await SuperAdmin.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const superAdminCount = await SuperAdmin.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterSuperAdmin', true, 200, { superAdminList, superAdminCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterSuperAdmin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
 export let createStudentBySuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
 

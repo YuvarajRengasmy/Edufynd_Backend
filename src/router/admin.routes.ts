@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin} from '../controller/admin.controller';
+import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin, deleteAdmin} from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -25,6 +25,13 @@ router.post('/',
          createAdmin
 );
 
+
+router.delete('/',                  //delete admin
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    deleteAdmin
+);
 
 router.put('/',             //create student by Admin
     basicAuthUser,

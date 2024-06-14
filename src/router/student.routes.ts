@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson} from '../controller/student.controller';
+import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, getFilteredStudent} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -50,6 +50,12 @@ router.delete('/',                //delete user
     deleteStudent
 );
 
+
+router.put('/getFilterStudent',
+    basicAuthUser,
+    checkSession,
+    getFilteredStudent,
+);
 
 
 router.put('/getFilterStudentBySuperAdmin',

@@ -79,6 +79,22 @@ export let createAdmin = async (req, res, next) => {
 
 
 
+export let deleteAdmin = async (req, res, next) => {
+
+    try {
+        const agent = await Admin.findOneAndDelete({ _id: req.query._id })
+
+        response(req, res, activity, 'Level-2', 'Delete-Admin', true, 200, agent, 'Successfully Admin University');
+    }
+    catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Delete-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+
+
+
 
 export let createStudentByAdmin = async (req, res, next) => {
     const errors = validationResult(req);
