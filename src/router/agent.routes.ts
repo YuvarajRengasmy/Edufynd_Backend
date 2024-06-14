@@ -63,7 +63,7 @@ router.get('/viewStudentByAgent',             //View student by agent
     viewStudentProfileByAgent
 );
 
-router.put('/createStudentByAgent',             //create student by agent
+router.post('/createStudentByAgent',             //create student by agent
     basicAuthUser,
     checkSession,
     validateAgentId,

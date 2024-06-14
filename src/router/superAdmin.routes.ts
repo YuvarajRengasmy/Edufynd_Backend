@@ -18,14 +18,14 @@ router.put('/getFilterSuperAdmin',
     getFilteredSuperAdmin,
 );
 
-router.put('/createStudent',             //create student by super Admin
+router.post('/createStudent',             //create student by super Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
     createStudentBySuperAdmin
 );
 
-router.put('/createAgent',             //create agent by super Admin
+router.post('/createAgent',             //create agent by super Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
@@ -33,7 +33,7 @@ router.put('/createAgent',             //create agent by super Admin
 );
 
 
-router.put('/createAdmin',             //create admin by super Admin
+router.post('/createAdmin',             //create admin by super Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
@@ -41,7 +41,7 @@ router.put('/createAdmin',             //create admin by super Admin
 );
 
 
-router.put('/createStaff',             //create staff by super Admin
+router.post('/createStaff',             //create staff by super Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),

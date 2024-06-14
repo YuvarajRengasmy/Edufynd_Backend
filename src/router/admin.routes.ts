@@ -33,7 +33,7 @@ router.delete('/',                  //delete admin
     deleteAdmin
 );
 
-router.put('/',             //create student by Admin
+router.post('/createStudentByAdmin',             //create student by Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
@@ -41,7 +41,7 @@ router.put('/',             //create student by Admin
 );
 
 
-router.put('/createStaff',             //create staff by  Admin
+router.post('/createStaffByAdmin',             //create staff by  Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
