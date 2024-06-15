@@ -11,7 +11,7 @@ export interface StudentDocument extends mongoose.Document {
     expiryDate?: Date;
     dob?: Date;
     citizenship?: string;
-    gender?: any[];
+    gender?:string;
     email?: string;
     contactNumber?: string;
     primaryNumber?: string;
