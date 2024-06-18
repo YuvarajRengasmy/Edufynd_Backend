@@ -1,4 +1,5 @@
 import { Admin, AdminDocument } from '../model/admin.model'
+import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
@@ -93,6 +94,43 @@ export let deleteAdmin = async (req, res, next) => {
 
 
 
+export let createAdminBySuperAdmin = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails: SuperAdminDocument = req.body;
+            const adminDetails: AdminDocument = req.body;
+
+            // Find the superAdmin in the database
+            const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
+            if (!superAdmin) {
+                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+
+            }
+            // SuperAdmin exist, proceed to create a new agent
+            const createAdmin = new Admin({ ...adminDetails, superAdminId: superAdmin._id });
+
+            // Save the agent to the database
+            const insertAdmin = await createAdmin.save();
+
+            // Respond with success message
+            response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, {
+                admin: insertAdmin,
+                superAdminId: superAdmin._id
+
+            }, 'Admin created successfully by SuperAdmin.');
+
+        } catch (err: any) {
+            // Handle server error
+
+            response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+        // Request body validation failed, respond with error message
+        response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
 
 
 

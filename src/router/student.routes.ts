@@ -1,5 +1,6 @@
 import {Router} from 'express';
-import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, getFilteredStudent} from '../controller/student.controller';
+import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
+    createStudentBySuperAdmin,getFilteredStudent} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -75,6 +76,13 @@ router.post('/import',      // CSV File to json and Store into Database
     csvToJson
 );
 
+
+router.put('/createStudentBySuperAdmin',             //create student by super Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createStudentBySuperAdmin
+);
 
 
 

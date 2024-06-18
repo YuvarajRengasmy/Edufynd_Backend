@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson } from '../controller/staff.controller';
+import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,createStaffBySuperAdmin } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -44,6 +44,14 @@ router.delete('/',                  //delete staff
     deleteStaff
 );
 
+
+
+router.post('/createStaffBySuperAdmin',             //create staff by super Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createStaffBySuperAdmin
+);
 
 router.put('/getFilterStaff',
     basicAuthUser,

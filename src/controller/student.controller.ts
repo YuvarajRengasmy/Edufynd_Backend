@@ -1,7 +1,8 @@
 import { Student, StudentDocument } from '../model/student.model'
+import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
 import csv = require("csvtojson")
@@ -295,35 +296,53 @@ export const csvToJson = async (req, res) => {
 
 
 
-// export let createProfile = async (req, res, next) => {
-//     console.log("nsdsdsjk")
 
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const studentDetails: StudentDocument = req.body;
+const generateRandomPassword = () => {
+    return Math.random().toString(36).slice(-8); // Generates a random 8-character password
+};
 
 
-//             const photo = req.files['photo'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['photo'][0].filename}` : null;
-//             const resume = req.files['resume'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['resume'][0].filename}` : null;
-//             const passport = req.files['passport'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['passport'][0].filename}` : null;
-//             const sslc = req.files['sslc'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['sslc'][0].filename}` : null;
-//             const hsc = req.files['hsc'] ? `${req.protocol}://${req.get('host')}/uploads/${req.files['hsc'][0].filename}` : null;
-//             const degree = req.files['degree'] ? req.files['degree'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`) : [];
-//             const additional = req.files['additional'] ? req.files['additional'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`) : [];
+export let createStudentBySuperAdmin = async (req, res, next) => {
+    const errors = validationResult(req);
 
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails: SuperAdminDocument = req.body;
+            const studentDetails: StudentDocument = req.body;
+            const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
+            const randomPassword = generateRandomPassword();
+            if (!superAdmin) {
+                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+            }
+            const createStudent = new Student({ ...studentDetails, password: randomPassword, superAdminId: superAdmin._id });
+            const insertStudent = await createStudent.save();
 
-//             const createData = new Student({ ...studentDetails, photo, resume, passport, sslc, degree, hsc, additional });
+            const mailOptions = {
+                from: 'balan9133civil@gmail.com',
+                to: insertStudent.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${insertStudent.password}\n\nPlease change your password after logging in for the first time.\n\nThank you!`
+            };
 
-//             let insertData = await createData.save();
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
+                }
+            });
+            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
+                student: insertStudent,
+                superAdminId: superAdmin._id
 
-//             response(req, res, activity, 'Level-2', 'Create Profile', true, 200, insertData, clientError.success.savedSuccessfully);
+            }, 'Student created successfully by SuperAdmin.');
 
-//         } catch (err: any) {
-//             console.log(err)
-//             response(req, res, activity, 'Level-3', 'Create Profile', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Level-3', 'Create Profile', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// };
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
