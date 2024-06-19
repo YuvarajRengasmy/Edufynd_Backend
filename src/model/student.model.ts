@@ -50,6 +50,9 @@ export interface StudentDocument extends mongoose.Document {
     degree?: any[];
     additional?: any[];
 
+    resetOtp?: string;
+    resetOtpExpires?: number;
+
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -109,6 +112,9 @@ const studentSchema =new mongoose.Schema({
       hsc: {type: String},
       degree: [String],
       additional:[String],
+
+      resetOtp: { type: String },
+      resetOtpExpires: { type: Number },
 
       isDeleted: { type: Boolean, default: false },
       createdOn: { type: Date },

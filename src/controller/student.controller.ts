@@ -346,3 +346,46 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
+
+
+// const { v4: uuidv4 } = require('uuid'); // Use uuid for generating OTP
+import {v4 as uuidv4} from 'uuid'
+
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    
+    try {
+        const student = await Student.findOne({ email });
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const otp = uuidv4().slice(0, 6); // Generate a 6-character OTP
+        student.resetOtp = otp;
+        student.resetOtpExpires = Date.now() + 3600000; // OTP expires in 1 hour
+
+        await student.save();
+
+        const mailOptions = {
+            from: 'balan9133civil@gmail.com',
+            to: student.email,
+            subject: 'Password Reset Request',
+            text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
+        };
+console.log("999", mailOptions)
+        transporter.sendMail(mailOptions, (error, info) => {
+            console.log("kk", info)
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).json({ message: 'Error sending email' });
+            } else {
+                console.log('Email sent:', info.response);
+                res.status(200).json({ message: 'OTP sent to email' });
+            }
+        });
+
+    } catch (error) {
+        console.error('Error requesting password reset:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
