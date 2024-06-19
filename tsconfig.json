@@ -1,29 +1,28 @@
 {
-    "compilerOptions": {
-      "baseUrl": ".",
-      "outDir": "dist",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "lib": ["es2020"],
-      "module": "commonjs",
-      "moduleResolution": "node",
-      "noImplicitAny": false,
-      "noUnusedLocals": false,
-      "pretty": true,
-      "removeComments": false,
-      "sourceMap": true,
-      "suppressImplicitAnyIndexErrors": false,
-      "target": "es2020",
-      "strict": false,
-      "esModuleInterop": false,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "typeRoots": [
-          "./node_modules/@types",
-          "./typings/index.d.ts"
-      ]
-    },
-    
-    "exclude": ["node_modules", "**/*.spec.ts"]
-  }
-  
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "pretty": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "target": "es2020",
+    "strict": false,
+    "esModuleInterop": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": [
+        "./node_modules/@types",
+        "./typings/index.d.ts"
+    ]
+  },
+  "include": ["*/"],
+  "exclude": ["node_modules", "*/.spec.ts"]
+}

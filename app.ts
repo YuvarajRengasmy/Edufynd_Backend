@@ -1,5 +1,7 @@
-import * as bodyParser from 'body-parser';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
+
+
 import * as path from 'path';
 import * as cors from 'cors';
 
@@ -9,13 +11,12 @@ import routes from './router'
 
 
 export const app: any = {
-
-	instance: express(),
-	async init() {
-		this.initConfig();
-		await this.initDatabase();
-		this.initRoutes();
-	},
+    instance: express(),
+    async init() {
+        this.initConfig();
+        await this.initDatabase();
+        this.initRoutes();
+    },
 
 	/**
  * Initialize the database connection with MongoDB
