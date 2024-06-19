@@ -1,6 +1,6 @@
-import { app } from '../app';
+import { app } from "../app";
 import { Server } from 'http';
-import { SERVER } from '../config';
+import { SERVER } from "../config";
 /**
  * Get port from environment and store in Express.
  */

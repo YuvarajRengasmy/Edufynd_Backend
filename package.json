@@ -4,10 +4,12 @@
   "description": " ",
   "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export NODE_ENV=production&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-    "local": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-    "testing": "export NODE_ENV=testing&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast"
+    "build": "tsc",
+    "start": "NODE_ENV=production node bin/server.js",
+    "local": "NODE_ENV=local node bin/server.js",
+    "testing": "NODE_ENV=testing node bin/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only bin/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@types/multer": "^1.4.11",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
   }
 }
