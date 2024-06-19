@@ -50,8 +50,6 @@ export const transporter = nodemailer.createTransport({
 });
 
 
-
-
 export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
     var sender = nodemailer.createTransport({
         service: 'Gmail',
