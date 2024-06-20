@@ -79,8 +79,8 @@ router.post('/import',      // CSV File to json and Store into Database
 
 
 router.put('/createStudentBySuperAdmin',             //create student by super Admin
-    basicAuthUser,
-    checkSession,
+    // basicAuthUser,
+    // checkSession,
     // checkQuery('_id'),
     createStudentBySuperAdmin
 );

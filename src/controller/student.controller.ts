@@ -325,6 +325,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
+                console.log("mmm", info)
                 if (error) {
                     console.error('Error sending email:', error);
                     return res.status(500).json({ message: 'Error sending email' });
@@ -373,7 +374,7 @@ export const forgotPassword = async (req, res) => {
             text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
         };
 console.log("999", mailOptions)
-        transporter.sendMail(mailOptions, (error, info) => {
+        transporter.sendMail(mailOptions, (error, info: any) => {
             console.log("kk", info)
             if (error) {
                 console.error('Error sending email:', error);
