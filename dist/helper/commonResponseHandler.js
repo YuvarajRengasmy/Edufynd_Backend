@@ -40,7 +40,7 @@ const sendEmail = async (req, toMail, subject, text) => {
     var sender = nodemailer.createTransport({
         service: 'outlook',
         port: 587,
-        secure: false,
+        secure: false, // true for 465, false for other ports
         auth: {
             user: 'info@edufynd.me',
             pass: 'Pale2468'
@@ -62,4 +62,3 @@ const sendEmail = async (req, toMail, subject, text) => {
     });
 };
 exports.sendEmail = sendEmail;
-//# sourceMappingURL=commonResponseHandler.js.map

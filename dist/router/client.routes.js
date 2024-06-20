@@ -1,11 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const client_controller_1 = require("../controller/client.controller");
 const Validators_1 = require("../middleware/Validators");
 const checkAuth_1 = require("../middleware/checkAuth");
 const tokenManager_1 = require("../utils/tokenManager");
-const fileUploaded_1 = require("../utils/fileUploaded");
+const fileUploaded_1 = __importDefault(require("../utils/fileUploaded"));
 const router = (0, express_1.Router)();
 router.get('/', //get all client
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, client_controller_1.getAllClient);
@@ -20,4 +23,3 @@ checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQu
 router.post('/import', // CSV File to json and Store into Database
 fileUploaded_1.default.single('file'), client_controller_1.csvToJson);
 exports.default = router;
-//# sourceMappingURL=client.routes.js.map

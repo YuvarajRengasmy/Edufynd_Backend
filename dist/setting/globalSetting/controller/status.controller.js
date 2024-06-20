@@ -103,4 +103,3 @@ let getFilteredStatus = async (req, res, next) => {
     }
 };
 exports.getFilteredStatus = getFilteredStatus;
-//# sourceMappingURL=status.controller.js.map

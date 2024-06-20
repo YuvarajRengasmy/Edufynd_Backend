@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), paymentMethod_controller_1.deletePaymentMethod);
 router.put('/getFilterPaymentMethod', checkAuth_1.basicAuthUser, paymentMethod_controller_1.getFilteredPaymentMethod);
 exports.default = router;
-//# sourceMappingURL=paymentMethod.route.js.map

@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), country_controller_1.deleteCountry);
 router.put('/getFilterCountry', checkAuth_1.basicAuthUser, country_controller_1.getFilteredCountry);
 exports.default = router;
-//# sourceMappingURL=country.route.js.map

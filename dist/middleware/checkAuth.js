@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateAgentId = exports.basicAuthUser = void 0;
-const auth = require("basic-auth");
+const basic_auth_1 = __importDefault(require("basic-auth"));
 const ErrorMessage_1 = require("../helper/ErrorMessage");
 const agent_model_1 = require("../model/agent.model");
 /**
@@ -11,7 +14,7 @@ const agent_model_1 = require("../model/agent.model");
  */
 let basicAuthUser = function (req, res, next) {
     console.log("basicauth verify");
-    var credentials = auth(req);
+    var credentials = (0, basic_auth_1.default)(req);
     console.log('credentials', credentials);
     if (!credentials || credentials.name != process.env.basicAuthUser || credentials.pass != process.env.basicAuthKey) {
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
@@ -47,4 +50,3 @@ const validateAgentId = async (req, res, next) => {
     }
 };
 exports.validateAgentId = validateAgentId;
-//# sourceMappingURL=checkAuth.js.map

@@ -187,4 +187,3 @@ let getFilteredApplication = async (req, res, next) => {
     }
 };
 exports.getFilteredApplication = getFilteredApplication;
-//# sourceMappingURL=applicant.controller.js.map

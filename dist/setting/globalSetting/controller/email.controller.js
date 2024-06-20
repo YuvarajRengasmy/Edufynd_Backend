@@ -109,4 +109,3 @@ let getFilteredEmail = async (req, res, next) => {
     }
 };
 exports.getFilteredEmail = getFilteredEmail;
-//# sourceMappingURL=email.controller.js.map

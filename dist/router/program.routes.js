@@ -1,11 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const program_controller_1 = require("../controller/program.controller");
 const Validators_1 = require("../middleware/Validators");
 const checkAuth_1 = require("../middleware/checkAuth");
 const tokenManager_1 = require("../utils/tokenManager");
-const fileUploaded_1 = require("../utils/fileUploaded");
+const fileUploaded_1 = __importDefault(require("../utils/fileUploaded"));
 const router = (0, express_1.Router)();
 router.get('/', //get all program
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, program_controller_1.getAllProgram);
@@ -30,4 +33,3 @@ router.get('/programDetails', /// Get program details with that university progr
 checkAuth_1.basicAuthUser, program_controller_1.getProgramDetailsByUniversity);
 router.put('/applyStudent', checkAuth_1.basicAuthUser, program_controller_1.updateProgramApplications);
 exports.default = router;
-//# sourceMappingURL=program.routes.js.map

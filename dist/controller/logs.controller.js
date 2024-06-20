@@ -38,4 +38,3 @@ let saveLog = async (params) => {
     return await createLogs.save();
 };
 exports.saveLog = saveLog;
-//# sourceMappingURL=logs.controller.js.map

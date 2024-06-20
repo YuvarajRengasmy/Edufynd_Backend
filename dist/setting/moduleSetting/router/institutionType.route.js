@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), institutionType_controller_1.deleteInstitutionType);
 router.put('/getFilterInstitutionType', checkAuth_1.basicAuthUser, institutionType_controller_1.getFilteredInstitutionType);
 exports.default = router;
-//# sourceMappingURL=institutionType.route.js.map

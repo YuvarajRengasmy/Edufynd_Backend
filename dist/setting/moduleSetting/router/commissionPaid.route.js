@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), commissionPaid_controller_1.deleteCommissionPaid);
 router.put('/getFilterCommissionPaid', checkAuth_1.basicAuthUser, commissionPaid_controller_1.getFilteredCommissionPaid);
 exports.default = router;
-//# sourceMappingURL=commissionPaid.route.js.map

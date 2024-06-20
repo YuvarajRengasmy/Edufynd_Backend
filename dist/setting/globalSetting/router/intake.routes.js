@@ -15,4 +15,3 @@ router.delete('/', //delete Status
 checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), intake_controller_1.deleteInTake);
 router.put('/getFilterInTake', checkAuth_1.basicAuthUser, intake_controller_1.getFilteredInTake);
 exports.default = router;
-//# sourceMappingURL=intake.routes.js.map

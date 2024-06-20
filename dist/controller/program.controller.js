@@ -386,4 +386,3 @@ const updateProgramApplications = async (req, res, next) => {
     }
 };
 exports.updateProgramApplications = updateProgramApplications;
-//# sourceMappingURL=program.controller.js.map

@@ -19,4 +19,3 @@ router.post('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkRequestBodyPar
 //     updatePassword
 // );
 exports.default = router;
-//# sourceMappingURL=login.routes.js.map

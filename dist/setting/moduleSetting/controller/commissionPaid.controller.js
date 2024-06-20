@@ -95,4 +95,3 @@ let getFilteredCommissionPaid = async (req, res, next) => {
     }
 };
 exports.getFilteredCommissionPaid = getFilteredCommissionPaid;
-//# sourceMappingURL=commissionPaid.controller.js.map

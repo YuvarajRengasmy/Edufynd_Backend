@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), popularCourse_controller_1.deletePopularCategory);
 router.put('/getFilterPopularCategory', checkAuth_1.basicAuthUser, popularCourse_controller_1.getFilteredPopularCategory);
 exports.default = router;
-//# sourceMappingURL=popularCourse.route.js.map

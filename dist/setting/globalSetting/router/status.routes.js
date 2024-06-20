@@ -15,4 +15,3 @@ router.delete('/', //delete Status
 checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), status_controller_1.deleteStatus);
 router.put('/getFilterStatus', checkAuth_1.basicAuthUser, status_controller_1.getFilteredStatus);
 exports.default = router;
-//# sourceMappingURL=status.routes.js.map

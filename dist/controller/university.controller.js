@@ -401,4 +401,3 @@ const getUniversityWithProgramDetails = async (req, res) => {
     }
 };
 exports.getUniversityWithProgramDetails = getUniversityWithProgramDetails;
-//# sourceMappingURL=university.controller.js.map

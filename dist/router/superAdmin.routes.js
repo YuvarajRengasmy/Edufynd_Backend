@@ -24,4 +24,3 @@ checkAuth_1.basicAuthUser, tokenManager_1.checkSession,
 // checkQuery('_id'),
 superAdmin_controller_1.createStaffBySuperAdmin);
 exports.default = router;
-//# sourceMappingURL=superAdmin.routes.js.map

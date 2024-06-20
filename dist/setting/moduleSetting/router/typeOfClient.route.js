@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), typeOfClient_controller_1.deleteTypeOfClient);
 router.put('/getFilterTypeOfClient', checkAuth_1.basicAuthUser, typeOfClient_controller_1.getFilteredTypeOfClient);
 exports.default = router;
-//# sourceMappingURL=typeOfClient.route.js.map

@@ -96,4 +96,3 @@ let getFilteredPaymentMethod = async (req, res, next) => {
     }
 };
 exports.getFilteredPaymentMethod = getFilteredPaymentMethod;
-//# sourceMappingURL=paymentMethod.controller.js.map

@@ -20,4 +20,3 @@ router.delete('/', //delete Applicant
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQuery)('_id'), applicant_controller_1.deleteApplicant);
 router.put('/getFilterApplicant', checkAuth_1.basicAuthUser, tokenManager_1.checkSession, applicant_controller_1.getFilteredApplication);
 exports.default = router;
-//# sourceMappingURL=applicant.routes.js.map

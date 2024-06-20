@@ -37,4 +37,3 @@ let checkRequestBodyParams = (val) => {
     return (0, express_validator_1.body)(val, ErrorMessage_1.ErrorMessage.general.required).isLength({ min: 1 }).trim().exists().withMessage(ErrorMessage_1.ErrorMessage.general.required);
 };
 exports.checkRequestBodyParams = checkRequestBodyParams;
-//# sourceMappingURL=Validators.js.map

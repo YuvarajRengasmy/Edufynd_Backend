@@ -95,4 +95,3 @@ let getFilteredPopularCategory = async (req, res, next) => {
     }
 };
 exports.getFilteredPopularCategory = getFilteredPopularCategory;
-//# sourceMappingURL=popularCourse.controller.js.map

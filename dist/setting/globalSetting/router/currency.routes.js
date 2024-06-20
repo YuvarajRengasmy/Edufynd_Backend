@@ -13,4 +13,3 @@ router.delete('/', //delete Currency
 checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), currency_controller_1.deleteCurrency);
 router.put('/getFilterCurrency', checkAuth_1.basicAuthUser, currency_controller_1.getFilteredCurrency);
 exports.default = router;
-//# sourceMappingURL=currency.routes.js.map

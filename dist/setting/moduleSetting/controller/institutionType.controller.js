@@ -96,4 +96,3 @@ let getFilteredInstitutionType = async (req, res, next) => {
     }
 };
 exports.getFilteredInstitutionType = getFilteredInstitutionType;
-//# sourceMappingURL=institutionType.controller.js.map

@@ -14,4 +14,3 @@ const upload = multer({
     limits: { fileSize: maxSize }
 });
 exports.default = upload;
-//# sourceMappingURL=fileUploaded.js.map

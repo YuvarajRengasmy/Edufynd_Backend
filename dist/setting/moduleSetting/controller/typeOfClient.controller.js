@@ -96,4 +96,3 @@ let getFilteredTypeOfClient = async (req, res, next) => {
     }
 };
 exports.getFilteredTypeOfClient = getFilteredTypeOfClient;
-//# sourceMappingURL=typeOfClient.controller.js.map

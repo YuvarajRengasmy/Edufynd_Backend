@@ -19,4 +19,3 @@ checkAuth_1.basicAuthUser, tokenManager_1.checkSession,
 // checkQuery('_id'),
 admin_controller_1.createStaffByAdmin);
 exports.default = router;
-//# sourceMappingURL=admin.routes.js.map

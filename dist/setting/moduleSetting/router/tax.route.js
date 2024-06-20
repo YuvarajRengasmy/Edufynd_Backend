@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), tax_controller_1.deleteTax);
 router.put('/getFilterTax', checkAuth_1.basicAuthUser, tax_controller_1.getFilteredTax);
 exports.default = router;
-//# sourceMappingURL=tax.route.js.map

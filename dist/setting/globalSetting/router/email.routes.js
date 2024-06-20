@@ -15,4 +15,3 @@ router.delete('/', //delete Template
 checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), email_controller_1.deleteTemplate);
 router.put('/getFilterEmail', checkAuth_1.basicAuthUser, email_controller_1.getFilteredEmail);
 exports.default = router;
-//# sourceMappingURL=email.routes.js.map

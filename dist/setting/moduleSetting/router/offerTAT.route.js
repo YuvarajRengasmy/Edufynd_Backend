@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), offerTAT_controller_1.deleteOfferTAT);
 router.put('/getFilterOfferTAT', checkAuth_1.basicAuthUser, offerTAT_controller_1.getFilteredOfferTAT);
 exports.default = router;
-//# sourceMappingURL=offerTAT.route.js.map

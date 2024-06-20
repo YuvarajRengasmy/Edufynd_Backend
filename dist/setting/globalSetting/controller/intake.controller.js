@@ -110,4 +110,3 @@ let getFilteredInTake = async (req, res, next) => {
     }
 };
 exports.getFilteredInTake = getFilteredInTake;
-//# sourceMappingURL=intake.controller.js.map

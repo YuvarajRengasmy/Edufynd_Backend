@@ -96,4 +96,3 @@ let getFilteredOfferTAT = async (req, res, next) => {
     }
 };
 exports.getFilteredOfferTAT = getFilteredOfferTAT;
-//# sourceMappingURL=offerTAT.controller.js.map

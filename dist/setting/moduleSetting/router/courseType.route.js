@@ -12,4 +12,3 @@ router.put('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), 
 router.delete('/', checkAuth_1.basicAuthUser, (0, Validators_1.checkQuery)('_id'), courseType_controller_1.deleteCourseType);
 router.put('/getFilterCourseType', checkAuth_1.basicAuthUser, courseType_controller_1.getFilteredCourseType);
 exports.default = router;
-//# sourceMappingURL=courseType.route.js.map

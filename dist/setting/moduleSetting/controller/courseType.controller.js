@@ -96,4 +96,3 @@ let getFilteredCourseType = async (req, res, next) => {
     }
 };
 exports.getFilteredCourseType = getFilteredCourseType;
-//# sourceMappingURL=courseType.controller.js.map

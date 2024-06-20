@@ -24,4 +24,3 @@ let createContact = async (req, res, next) => {
     }
 };
 exports.createContact = createContact;
-//# sourceMappingURL=contact.controller.js.map
