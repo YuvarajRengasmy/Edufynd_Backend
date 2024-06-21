@@ -308,14 +308,17 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 
     if (errors.isEmpty()) {
         try {
-            const superAdminDetails: SuperAdminDocument = req.body;
+
             const studentDetails: StudentDocument = req.body;
+
+            // const superAdminDetails: SuperAdminDocument = req.body;
             // const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
-            const randomPassword = generateRandomPassword();
+            // const randomPassword = generateRandomPassword();
             // if (!superAdmin) {
             //     return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
             // }
-            const createStudent = new Student({ ...studentDetails, password: randomPassword});
+            
+            const createStudent = new Student(studentDetails);
             const insertStudent = await createStudent.save();
 
             const mailOptions = {
