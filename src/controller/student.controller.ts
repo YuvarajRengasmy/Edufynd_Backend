@@ -5,6 +5,7 @@ import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
+import {v4 as uuidv4} from 'uuid'
 import csv = require("csvtojson")
 
 var activity = "Student";
@@ -309,12 +310,12 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
         try {
             const superAdminDetails: SuperAdminDocument = req.body;
             const studentDetails: StudentDocument = req.body;
-            const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
+            // const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
             const randomPassword = generateRandomPassword();
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            const createStudent = new Student({ ...studentDetails, password: randomPassword, superAdminId: superAdmin._id });
+            // if (!superAdmin) {
+            //     return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+            // }
+            const createStudent = new Student({ ...studentDetails, password: randomPassword});
             const insertStudent = await createStudent.save();
 
             const mailOptions = {
@@ -325,7 +326,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
-                console.log("mmm", info)
+   
                 if (error) {
                     console.error('Error sending email:', error);
                     return res.status(500).json({ message: 'Error sending email' });
@@ -336,7 +337,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             });
             response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
                 student: insertStudent,
-                superAdminId: superAdmin._id
+    
 
             }, 'Student created successfully by SuperAdmin.');
 
@@ -349,8 +350,67 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 };
 
 
-// const { v4: uuidv4 } = require('uuid'); // Use uuid for generating OTP
-import {v4 as uuidv4} from 'uuid'
+export const editStudentProfileBySuperAdmin = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+
+            const studentDetails: StudentDocument = req.body;
+            const updateData = await Student.findOneAndUpdate({ _id: studentDetails._id }, {
+                $set: {
+                    name: studentDetails.name,
+                    passportNo: studentDetails.passportNo,
+                    expiryDate: studentDetails.expiryDate,
+                    dob: studentDetails.dob,
+                    citizenship: studentDetails.citizenship,
+                    gender: studentDetails.gender,
+                    whatsAppNumber: studentDetails.whatsAppNumber,
+                    degreeName: studentDetails.degreeName,
+                    academicYear: studentDetails.academicYear,
+                    institution: studentDetails.institution,
+                    percentage: studentDetails.percentage,
+                    doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                    englishTestType: studentDetails.englishTestType,
+                    testScore: studentDetails.testScore,
+                    dateOfTest: studentDetails.dateOfTest,
+                    country: studentDetails.country,
+                    desiredUniversity: studentDetails.desiredUniversity,
+                    desiredCourse: studentDetails.desiredCourse,
+                    workExperience: studentDetails.workExperience,
+                    anyVisaRejections: studentDetails.anyVisaRejections,
+                    visaReason: studentDetails.visaReason,
+                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                    travelReason: studentDetails.travelReason,
+                    finance: studentDetails.finance,
+                    twitter: studentDetails.twitter,
+                    facebook: studentDetails.facebook,
+                    instagram: studentDetails.instagram,
+                    linkedIn: studentDetails.linkedIn,
+                    photo: studentDetails.photo,
+                    resume: studentDetails.resume,
+                    passport: studentDetails.passport,
+                    sslc: studentDetails.sslc,
+                    hsc: studentDetails.hsc,
+                    degree: studentDetails.degree,
+                    additional: studentDetails.additional,
+
+                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedBy: studentDetails.modifiedBy,
+                }
+
+            });
+            response(req, res, activity, 'Level-2', 'Update-Student by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
+        }
+        catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Student by Super Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Student by Super Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
+
+
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -373,9 +433,9 @@ export const forgotPassword = async (req, res) => {
             subject: 'Password Reset Request',
             text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
         };
-console.log("999", mailOptions)
+
         transporter.sendMail(mailOptions, (error, info: any) => {
-            console.log("kk", info)
+
             if (error) {
                 console.error('Error sending email:', error);
                 return res.status(500).json({ message: 'Error sending email' });

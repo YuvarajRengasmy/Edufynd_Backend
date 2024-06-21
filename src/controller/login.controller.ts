@@ -132,3 +132,55 @@ export let loginEmail = async (req, res, next) => {
     }
 };
 
+
+
+
+export let resetPassword = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            let student = await Student.findById({ _id: req.body._id })
+            let admin = await Admin.findById({ _id: req.body._id })
+            let agent = await Agent.findById({ _id: req.body._id })
+     
+            let { modifiedOn, modifiedBy } = req.body
+            let id = req.body._id
+            req.body.password = await encrypt(req.body.password);
+            if (student) {
+                const data = await Student.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                })
+                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+            }
+            else if (admin) {
+                const data = await Admin.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                })
+                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+            }
+            else {
+                const data = await Agent.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                })
+                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+            }
+
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Password', true, 500, {}, errorMessage.internalServer, err.message)
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Password', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()))
+    }
+}

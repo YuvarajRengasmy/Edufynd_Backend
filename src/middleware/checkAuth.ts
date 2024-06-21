@@ -4,6 +4,7 @@ import { Agent, AgentDocument } from '../model/agent.model'
 
 
 
+
 /**
  * @author Balan K K
  * @date  01-05-2024
@@ -27,6 +28,31 @@ export let basicAuthUser = function (req, res, next) {
         next();
     }
 }
+
+
+// export const validateSuperAdminId = async (req, res, next) => {
+//     try {
+//         const superadminId = req.body._id || req.query._id || req.headers['superAdmin-id'];
+
+//         // Check if agent ID is provided
+//         if (!superadminId) {
+//             return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+//         }
+
+//         // Validate agent ID
+//         const superadmin = await SuperAdmin.findById(superadminId);
+//         if (!superadmin) {
+//             return res.status(404).json({ message: 'Super Admin not found' });
+//         }
+
+//         // Attach agent to request object
+//         req.superadmin = superadmin;
+   
+//         next();
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error validating agent ID', error });
+//     }
+// };
 
 
 
