@@ -67,7 +67,7 @@ router.put('/getFilterStudentByAgent',
 router.get('/viewStudentByAgent',             //View student by agent
     basicAuthUser,
     checkSession,
-    validateAgentId,
+    // validateAgentId,
     checkQuery('studentId'),
     viewStudentProfileByAgent
 );
@@ -75,21 +75,21 @@ router.get('/viewStudentByAgent',             //View student by agent
 router.post('/createStudentByAgent',             //create student by agent
     basicAuthUser,
     checkSession,
-    validateAgentId,
+    // validateAgentId,
     createStudentProfileByAgent
 );
 
 router.put('/updateStudentByAgent',             //Update student by agent
     basicAuthUser,
     checkSession,
-    validateAgentId,
+    // validateAgentId,
     editStudentProfileByAgent
 );
 
 router.delete('/deleteStudentByAgent',             //Delete student by agent
     basicAuthUser,
     checkSession,
-    validateAgentId,
+    // validateAgentId,
     deleteStudentByAgent
 );
 

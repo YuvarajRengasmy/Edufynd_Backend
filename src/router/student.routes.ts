@@ -1,7 +1,8 @@
 import {Router} from 'express';
 import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
     createStudentBySuperAdmin,getFilteredStudent,
-    forgotPassword} from '../controller/student.controller';
+    forgotPassword,
+    editStudentProfileBySuperAdmin} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -78,16 +79,22 @@ router.post('/import',      // CSV File to json and Store into Database
 );
 
 
-router.put('/createStudentBySuperAdmin',             //create student by super Admin
-    // basicAuthUser,
-    // checkSession,
+router.post('/createStudentBySuperAdmin',             //create student by super Admin
+    basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     createStudentBySuperAdmin
 );
 
+router.put('/editStudentBySuperAdmin',             //Update student by super Admin
+    basicAuthUser,
+    checkSession,
+    editStudentProfileBySuperAdmin
+);
+
 router.put('/forgot',             //create student by super Admin
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
     // // checkQuery('_id'),
     forgotPassword
 );
