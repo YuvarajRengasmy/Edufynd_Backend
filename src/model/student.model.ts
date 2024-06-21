@@ -11,7 +11,7 @@ export interface StudentDocument extends mongoose.Document {
     expiryDate?: Date;
     dob?: Date;
     citizenship?: string;
-    gender?:string;
+    gender?: string;
     email?: string;
     contactNumber?: string;
     primaryNumber?: string;
@@ -41,6 +41,18 @@ export interface StudentDocument extends mongoose.Document {
     facebook?: string;
     instagram?: string;
     linkedIn?: string;
+
+    photo?: string;
+    resume?:string;
+    passport?: string;
+    sslc?: string;
+    hsc?: string;
+    degree?: any[];
+    additional?: any[];
+
+    resetOtp?: string;
+    resetOtpExpires?: number;
+
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -74,26 +86,38 @@ const studentSchema =new mongoose.Schema({
     englishTestType: { type: String},
     testScore: {type: String},
     dateOfTest: {type: String},
-    country:{type:String}, 
-    desiredUniversity:{type: String}, //(Optional)
-    desiredCourse:{type: String}, //(Optional)
-    workExperience: {type: String},
-    anyVisaRejections:{type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
-    visaReason: {type: String},
-    doYouHaveTravelHistory: {type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
-    travelReason: {type: String},
-    finance:{type: String},
-    password: {type: String},
-    confirmPassword:  {type: String},
-    twitter: {type: String},
-    instagram: {type: String},
-    facebook: {type: String},
-    linkedIn: {type: String},
-    isDeleted: { type: Boolean, default: false },
-    createdOn: { type: Date },
-    createdBy: { type: String },
-    modifiedOn: { type: Date },
-    modifiedBy: { type: String },
+    country:{type: String},
+      desiredUniversity:{type: String}, //(Optional)
+      desiredCourse:{type: String}, //(Optional)
+      workExperience: {type: String},
+      anyVisaRejections:{type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
+      visaReason: {type: String},
+      doYouHaveTravelHistory: {type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
+      travelReason: {type: String},
+      finance:{type: String},
+      password: {type: String},
+      confirmPassword:  {type: String},
+      twitter: {type: String},
+      instagram: {type: String},
+      facebook: {type: String},
+      linkedIn: {type: String},
+// Profile
+      photo: {type: String},
+      resume: {type: String},
+      passport: {type: String},
+      sslc: {type: String},
+      hsc: {type: String},
+      degree: [String],
+      additional:[String],
+
+      resetOtp: { type: String },
+      resetOtpExpires: { type: Number },
+
+      isDeleted: { type: Boolean, default: false },
+      createdOn: { type: Date },
+      createdBy: { type: String },
+      modifiedOn: { type: Date },
+      modifiedBy: { type: String },
 })
 
 

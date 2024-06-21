@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, deleteStudentByAgent, editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent, updateAgent, viewStudentProfileByAgent } from '../controller/agent.controller';
+import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, deleteStudentByAgent,
+     editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent,
+      updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent } from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId } from '../middleware/checkAuth';
@@ -49,6 +51,13 @@ router.delete('/',                  //delete agent
     deleteAgent
 );
 
+router.post('/createAgentBySuperAdmin',             //create agent by super Admin
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createAgentBySuperAdmin
+);
+
 router.put('/getFilterStudentByAgent',
     basicAuthUser,
     checkSession,
@@ -63,7 +72,7 @@ router.get('/viewStudentByAgent',             //View student by agent
     viewStudentProfileByAgent
 );
 
-router.put('/createStudentByAgent',             //create student by agent
+router.post('/createStudentByAgent',             //create student by agent
     basicAuthUser,
     checkSession,
     validateAgentId,

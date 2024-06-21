@@ -124,6 +124,39 @@ export let deleteClient = async (req, res, next) => {
 
 
 
+export let getFilteredClient = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.typeOfClient) {
+            andList.push({ typeOfClient: req.body.typeOfClient })
+        }
+        if (req.body.clientID) {
+            andList.push({ clientID: req.body.clientID })
+        }
+        if (req.body.businessName) {
+            andList.push({ businessName: req.body.businessName })
+        }
+        
+        
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const clientList = await Client.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const clientCount = await Client.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterClient', true, 200, { clientList, clientCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterClient', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+
+
 export const csvToJson = async (req, res) => {
     try {
         let clientList = [];

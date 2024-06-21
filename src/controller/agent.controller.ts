@@ -1,4 +1,5 @@
 import { Agent, AgentDocument } from '../model/agent.model'
+import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
@@ -151,6 +152,46 @@ export let deleteAgent = async (req, res, next) => {
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+
+export let createAgentBySuperAdmin = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails: SuperAdminDocument = req.body;
+            const agentDetails: AgentDocument = req.body;
+
+            // Find the superAdmin in the database
+            const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
+            if (!superAdmin) {
+                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+
+            }
+            // SuperAdmin exist, proceed to create a new agent
+            const createAgent = new Agent({ ...agentDetails, superAdminId: superAdmin._id });
+
+            // Save the agent to the database
+            const insertAgent = await createAgent.save();
+
+            // Respond with success message
+            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
+                agent: insertAgent,
+                superAdminId: superAdmin._id
+
+            }, 'Agent created successfully by SuperAdmin.');
+
+        } catch (err: any) {
+            // Handle server error
+
+            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+        // Request body validation failed, respond with error message
+        response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
 
