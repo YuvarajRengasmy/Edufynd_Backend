@@ -15,7 +15,7 @@ export interface StudentDocument extends mongoose.Document {
     email?: string;
     contactNumber?: string;
     primaryNumber?: string;
-    whatsAppNumber?: string; // Same as primary number if yes
+    whatsAppNumber?: string; 
     highestQualification?: string;
     degreeName?: string;
     academicYear?: string;
@@ -23,16 +23,16 @@ export interface StudentDocument extends mongoose.Document {
     institution?: string;
     percentage?: number;
     doHaveAnyEnglishLanguageTest?: string;
-    englishTestType?: any[]; // Only EnglishLanguageTest is true
-    testScore?: number; // Only EnglishLanguageTest is true
-    dateOfTest?: Date; // Only EnglishLanguageTest is true
+    englishTestType?: any[]; 
+    testScore?: number; 
+    dateOfTest?: Date; 
     country?: string;
     desiredUniversity?: string;
     desiredCourse?: string;
-    workExperience?: number; // In years
-    anyVisaRejections?: string; // Only VisaRejections is true
+    workExperience?: number; 
+    anyVisaRejections?: string; 
     visaReason?: string;
-    doYouHaveTravelHistory?: string; // Only TravelHistory is true
+    doYouHaveTravelHistory?: string; 
     travelReason?: string;
     finance?: any[];
     password?: string;
@@ -74,30 +74,26 @@ const studentSchema =new mongoose.Schema({
     englishTestType: { type: String},
     testScore: {type: String},
     dateOfTest: {type: String},
-    country:[{
-        label: {type: String}, 
-        value: {type: String}
-    }],
-      desiredUniversity:{type: String}, //(Optional)
-      desiredCourse:{type: String}, //(Optional)
-      workExperience: {type: String},
-      anyVisaRejections:{type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
-      visaReason: {type: String},
-      doYouHaveTravelHistory: {type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
-      travelReason: {type: String},
-      finance:{type: String},
-      password: {type: String},
-      confirmPassword:  {type: String},
-      twitter: {type: String},
-      instagram: {type: String},
-      facebook: {type: String},
-      linkedIn: {type: String},
-
-      isDeleted: { type: Boolean, default: false },
-      createdOn: { type: Date },
-      createdBy: { type: String },
-      modifiedOn: { type: Date },
-      modifiedBy: { type: String },
+    country:{type:String}, 
+    desiredUniversity:{type: String}, //(Optional)
+    desiredCourse:{type: String}, //(Optional)
+    workExperience: {type: String},
+    anyVisaRejections:{type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
+    visaReason: {type: String},
+    doYouHaveTravelHistory: {type: String}, // (Yes/No) If ‘Yes’ state reason (Text Box)
+    travelReason: {type: String},
+    finance:{type: String},
+    password: {type: String},
+    confirmPassword:  {type: String},
+    twitter: {type: String},
+    instagram: {type: String},
+    facebook: {type: String},
+    linkedIn: {type: String},
+    isDeleted: { type: Boolean, default: false },
+    createdOn: { type: Date },
+    createdBy: { type: String },
+    modifiedOn: { type: Date },
+    modifiedBy: { type: String },
 })
 
 
