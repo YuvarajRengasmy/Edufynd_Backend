@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.csvToJson = exports.getFilteredStudentByAgent = exports.deleteStudentByAgent = exports.editStudentProfileByAgent = exports.viewStudentProfileByAgent = exports.createStudentProfileByAgent = exports.deleteAgent = exports.updateAgent = exports.createAgent = exports.getSingleAgent = exports.getAllAgent = void 0;
+exports.csvToJson = exports.getFilteredStudentByAgent = exports.deleteStudentByAgent = exports.editStudentProfileByAgent = exports.viewStudentProfileByAgent = exports.createStudentProfileByAgent = exports.createAgentBySuperAdmin = exports.deleteAgent = exports.updateAgent = exports.createAgent = exports.getSingleAgent = exports.getAllAgent = void 0;
 const agent_model_1 = require("../model/agent.model");
+const superAdmin_model_1 = require("../model/superAdmin.model");
 const student_model_1 = require("../model/student.model");
 const express_validator_1 = require("express-validator");
 const TokenManager = require("../utils/tokenManager");
@@ -133,6 +134,38 @@ let deleteAgent = async (req, res, next) => {
     }
 };
 exports.deleteAgent = deleteAgent;
+let createAgentBySuperAdmin = async (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails = req.body;
+            const agentDetails = req.body;
+            // Find the superAdmin in the database
+            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
+            if (!superAdmin) {
+                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+            }
+            // SuperAdmin exist, proceed to create a new agent
+            const createAgent = new agent_model_1.Agent({ ...agentDetails, superAdminId: superAdmin._id });
+            // Save the agent to the database
+            const insertAgent = await createAgent.save();
+            // Respond with success message
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
+                agent: insertAgent,
+                superAdminId: superAdmin._id
+            }, 'Agent created successfully by SuperAdmin.');
+        }
+        catch (err) {
+            // Handle server error
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    }
+    else {
+        // Request body validation failed, respond with error message
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
+exports.createAgentBySuperAdmin = createAgentBySuperAdmin;
 const createStudentProfileByAgent = async (req, res) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {

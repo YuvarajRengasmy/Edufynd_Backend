@@ -78,13 +78,16 @@ router.post('/import',      // CSV File to json and Store into Database
 );
 
 
-router.put('/createStudentBySuperAdmin',             //create student by super Admin
-    // basicAuthUser,
-    // checkSession,
-    // checkQuery('_id'),
+// router.put('/createStudentBySuperAdmin',             //create student by super Admin
+//     // basicAuthUser,
+//     // checkSession,
+//     // checkQuery('_id'),
+//     createStudentBySuperAdmin
+// );
+router.post('/createStudentBySuperAdmin', 
+    checkRequestBodyParams('email'),
     createStudentBySuperAdmin
 );
-
 router.put('/forgot',             //create student by super Admin
     // basicAuthUser,
     // checkSession,

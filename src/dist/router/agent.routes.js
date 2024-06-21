@@ -17,10 +17,14 @@ router.put('/', //update agent
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkRequestBodyParams)('_id'), agent_controller_1.updateAgent);
 router.delete('/', //delete agent
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQuery)('_id'), agent_controller_1.deleteAgent);
+router.post('/createAgentBySuperAdmin', //create agent by super Admin
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// checkQuery('_id'),
+agent_controller_1.createAgentBySuperAdmin);
 router.put('/getFilterStudentByAgent', checkAuth_1.basicAuthUser, tokenManager_1.checkSession, agent_controller_1.getFilteredStudentByAgent);
 router.get('/viewStudentByAgent', //View student by agent
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, (0, Validators_1.checkQuery)('studentId'), agent_controller_1.viewStudentProfileByAgent);
-router.put('/createStudentByAgent', //create student by agent
+router.post('/createStudentByAgent', //create student by agent
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, agent_controller_1.createStudentProfileByAgent);
 router.put('/updateStudentByAgent', //Update student by agent
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, agent_controller_1.editStudentProfileByAgent);

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.csvToJson = exports.deleteClient = exports.updateClient = exports.saveClient = exports.getSingleClient = exports.getAllClient = void 0;
+exports.csvToJson = exports.getFilteredClient = exports.deleteClient = exports.updateClient = exports.saveClient = exports.getSingleClient = exports.getAllClient = void 0;
 const client_model_1 = require("../model/client.model");
 const express_validator_1 = require("express-validator");
 const commonResponseHandler_1 = require("../helper/commonResponseHandler");
@@ -108,6 +108,33 @@ let deleteClient = async (req, res, next) => {
     }
 };
 exports.deleteClient = deleteClient;
+let getFilteredClient = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList = [];
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false });
+        andList.push({ status: 1 });
+        if (req.body.typeOfClient) {
+            andList.push({ typeOfClient: req.body.typeOfClient });
+        }
+        if (req.body.clientID) {
+            andList.push({ clientID: req.body.clientID });
+        }
+        if (req.body.businessName) {
+            andList.push({ businessName: req.body.businessName });
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {};
+        const clientList = await client_model_1.Client.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page);
+        const clientCount = await client_model_1.Client.find(findQuery).count();
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-1', 'Get-FilterClient', true, 200, { clientList, clientCount }, ErrorMessage_1.clientError.success.fetchedSuccessfully);
+    }
+    catch (err) {
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Get-FilterClient', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
+    }
+};
+exports.getFilteredClient = getFilteredClient;
 const csvToJson = async (req, res) => {
     try {
         let clientList = [];

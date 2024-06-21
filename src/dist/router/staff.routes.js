@@ -18,6 +18,10 @@ checkAuth_1.basicAuthUser, tokenManager_1.checkSession,
 (0, Validators_1.checkRequestBodyParams)('_id'), staff_controller_1.updateStaff);
 router.delete('/', //delete staff
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQuery)('_id'), staff_controller_1.deleteStaff);
+router.post('/createStaffBySuperAdmin', //create staff by super Admin
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// checkQuery('_id'),
+staff_controller_1.createStaffBySuperAdmin);
 router.put('/getFilterStaff', checkAuth_1.basicAuthUser, tokenManager_1.checkSession, staff_controller_1.getFilteredStaff);
 router.post('/import', // CSV File to json and Store into Database
 fileUploaded_1.default.single('file'), staff_controller_1.csvToJson);

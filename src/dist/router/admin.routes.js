@@ -10,11 +10,17 @@ router.get('/', //get all admin
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, admin_controller_1.getAllAdmin);
 router.get('/getSingleAdmin', checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQuery)('_id'), admin_controller_1.getSingleAdmin);
 router.post('/', (0, Validators_1.checkRequestBodyParams)('email'), admin_controller_1.createAdmin);
-router.put('/', //create student by Admin
+router.delete('/', //delete admin
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQuery)('_id'), admin_controller_1.deleteAdmin);
+router.post('/createAdminBySuperAdmin', //create admin by super Admin
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// checkQuery('_id'),
+admin_controller_1.createAdminBySuperAdmin);
+router.post('/createStudentByAdmin', //create student by Admin
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
 // checkQuery('_id'),
 admin_controller_1.createStudentByAdmin);
-router.put('/createStaff', //create staff by  Admin
+router.post('/createStaffByAdmin', //create staff by  Admin
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
 // checkQuery('_id'),
 admin_controller_1.createStaffByAdmin);

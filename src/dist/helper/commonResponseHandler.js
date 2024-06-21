@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEmail = exports.response = void 0;
+exports.sendEmail = exports.transporter = exports.response = void 0;
 const logs_controller_1 = require("../controller/logs.controller");
 const logs_model_1 = require("../model/logs.model");
 var nodemailer = require('nodemailer');
@@ -36,18 +36,28 @@ let response = function (req, res, activity, level, method, success, statusCode,
     });
 };
 exports.response = response;
+exports.transporter = nodemailer.createTransport({
+    service: 'Gmail', // You can use any email service
+    // host: 'smtp.gmail.com',
+    // secure: false,
+    // port: 587,
+    auth: {
+        user: 'balan9133civil@gmail.com',
+        pass: 'wnsg rxfa jzfm pepq'
+    }
+});
 const sendEmail = async (req, toMail, subject, text) => {
     var sender = nodemailer.createTransport({
-        service: 'outlook',
+        service: 'Gmail',
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: 'info@edufynd.me',
-            pass: 'Pale2468'
+            user: 'balan9133civil@gmail.com',
+            pass: 'goqc wrqi hsqy vcoy'
         }
     });
     var composemail = {
-        from: 'info@edufynd.me',
+        from: 'balan9133civil@gmail.com',
         to: toMail,
         subject: subject,
         text: text

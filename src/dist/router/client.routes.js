@@ -17,6 +17,7 @@ checkAuth_1.basicAuthUser, tokenManager_1.checkSession,
 (0, Validators_1.checkRequestBodyParams)('_id'), client_controller_1.updateClient);
 router.delete('/', //delete client
 checkAuth_1.basicAuthUser, tokenManager_1.checkSession, (0, Validators_1.checkQuery)('_id'), client_controller_1.deleteClient);
+router.put('/getFilterClient', checkAuth_1.basicAuthUser, tokenManager_1.checkSession, client_controller_1.getFilteredClient);
 router.post('/import', // CSV File to json and Store into Database
 fileUploaded_1.default.single('file'), client_controller_1.csvToJson);
 exports.default = router;

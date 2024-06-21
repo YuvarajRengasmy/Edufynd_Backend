@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.csvToJson = exports.getFilteredStaff = exports.deleteStaff = exports.updateStaff = exports.createStaff = exports.getSingleStaff = exports.getAllStaff = void 0;
+exports.csvToJson = exports.getFilteredStaff = exports.createStaffBySuperAdmin = exports.deleteStaff = exports.updateStaff = exports.createStaff = exports.getSingleStaff = exports.getAllStaff = void 0;
 const staff_model_1 = require("../model/staff.model");
+const superAdmin_model_1 = require("../model/superAdmin.model");
 const express_validator_1 = require("express-validator");
 const commonResponseHandler_1 = require("../helper/commonResponseHandler");
 const ErrorMessage_1 = require("../helper/ErrorMessage");
@@ -95,6 +96,38 @@ let deleteStaff = async (req, res, next) => {
     }
 };
 exports.deleteStaff = deleteStaff;
+let createStaffBySuperAdmin = async (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails = req.body;
+            const staffDetails = req.body;
+            // Find the superAdmin in the database
+            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
+            if (!superAdmin) {
+                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+            }
+            // SuperAdmin exist, proceed to create a new staff
+            const createstaff = new staff_model_1.Staff({ ...staffDetails, superAdminId: superAdmin._id });
+            // Save the agent to the database
+            const insertStaff = await createstaff.save();
+            // Respond with success message
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {
+                staff: insertStaff,
+                superAdminId: superAdmin._id
+            }, 'Staff created successfully by SuperAdmin.');
+        }
+        catch (err) {
+            // Handle server error
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    }
+    else {
+        // Request body validation failed, respond with error message
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
+exports.createStaffBySuperAdmin = createStaffBySuperAdmin;
 /**
  * @author Balan K K
  * @date 28-05-2024

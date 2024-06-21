@@ -28,10 +28,7 @@ const studentSchema = new mongoose.Schema({
     englishTestType: { type: String },
     testScore: { type: String },
     dateOfTest: { type: String },
-    country: [{
-            label: { type: String },
-            value: { type: String }
-        }],
+    country: { type: String },
     desiredUniversity: { type: String }, //(Optional)
     desiredCourse: { type: String }, //(Optional)
     workExperience: { type: String },
@@ -46,6 +43,16 @@ const studentSchema = new mongoose.Schema({
     instagram: { type: String },
     facebook: { type: String },
     linkedIn: { type: String },
+    // Profile
+    photo: { type: String },
+    resume: { type: String },
+    passport: { type: String },
+    sslc: { type: String },
+    hsc: { type: String },
+    degree: [String],
+    additional: [String],
+    resetOtp: { type: String },
+    resetOtpExpires: { type: Number },
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
     createdBy: { type: String },

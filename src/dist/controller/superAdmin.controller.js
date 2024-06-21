@@ -1,15 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createStaffBySuperAdmin = exports.createAdminBySuperAdmin = exports.createAgentBySuperAdmin = exports.createStudentBySuperAdmin = exports.createSuperAdmin = void 0;
+exports.getFilteredSuperAdmin = exports.createSuperAdmin = void 0;
 const superAdmin_model_1 = require("../model/superAdmin.model");
-const student_model_1 = require("../model/student.model");
-const agent_model_1 = require("../model/agent.model");
-const admin_model_1 = require("../model/admin.model");
 const express_validator_1 = require("express-validator");
 const TokenManager = require("../utils/tokenManager");
 const commonResponseHandler_1 = require("../helper/commonResponseHandler");
 const ErrorMessage_1 = require("../helper/ErrorMessage");
 const Encryption_1 = require("../helper/Encryption");
+const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 var activity = "SuperAdmin";
 let createSuperAdmin = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
@@ -49,132 +48,37 @@ let createSuperAdmin = async (req, res, next) => {
     }
 };
 exports.createSuperAdmin = createSuperAdmin;
-let createStudentBySuperAdmin = async (req, res, next) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (errors.isEmpty()) {
-        try {
-            const superAdminDetails = req.body;
-            const studentDetails = req.body;
-            // Find the superAdmin in the database
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            // SuperAdmin exist, proceed to create a new student
-            const createStudent = new student_model_1.Student({ ...studentDetails, superAdminId: superAdmin._id });
-            // Save the student to the database
-            const insertStudent = await createStudent.save();
-            // Respond with success message
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
-                student: insertStudent,
-                superAdminId: superAdmin._id
-            }, 'Student created successfully by SuperAdmin.');
+let getFilteredSuperAdmin = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList = [];
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false });
+        andList.push({ status: 1 });
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId });
         }
-        catch (err) {
-            // Handle server error
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId });
         }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId });
+        }
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId });
+        }
+        if (req.body.universityId) {
+            andList.push({ universityId: req.body.universityId });
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {};
+        const superAdminList = await superAdmin_model_1.SuperAdmin.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page);
+        const superAdminCount = await superAdmin_model_1.SuperAdmin.find(findQuery).count();
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-1', 'Get-FilterSuperAdmin', true, 200, { superAdminList, superAdminCount }, ErrorMessage_1.clientError.success.fetchedSuccessfully);
     }
-    else {
-        // Request body validation failed, respond with error message
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
-};
-exports.createStudentBySuperAdmin = createStudentBySuperAdmin;
-let createAgentBySuperAdmin = async (req, res, next) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (errors.isEmpty()) {
-        try {
-            const superAdminDetails = req.body;
-            const agentDetails = req.body;
-            // Find the superAdmin in the database
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            // SuperAdmin exist, proceed to create a new agent
-            const createAgent = new agent_model_1.Agent({ ...agentDetails, superAdminId: superAdmin._id });
-            // Save the agent to the database
-            const insertAgent = await createAgent.save();
-            // Respond with success message
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
-                agent: insertAgent,
-                superAdminId: superAdmin._id
-            }, 'Agent created successfully by SuperAdmin.');
-        }
-        catch (err) {
-            // Handle server error
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
-        }
-    }
-    else {
-        // Request body validation failed, respond with error message
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    catch (err) {
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Get-FilterSuperAdmin', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
     }
 };
-exports.createAgentBySuperAdmin = createAgentBySuperAdmin;
-let createAdminBySuperAdmin = async (req, res, next) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (errors.isEmpty()) {
-        try {
-            const superAdminDetails = req.body;
-            const adminDetails = req.body;
-            // Find the superAdmin in the database
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            // SuperAdmin exist, proceed to create a new agent
-            const createAdmin = new admin_model_1.Admin({ ...adminDetails, superAdminId: superAdmin._id });
-            // Save the agent to the database
-            const insertAdmin = await createAdmin.save();
-            // Respond with success message
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, {
-                admin: insertAdmin,
-                superAdminId: superAdmin._id
-            }, 'Admin created successfully by SuperAdmin.');
-        }
-        catch (err) {
-            // Handle server error
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
-        }
-    }
-    else {
-        // Request body validation failed, respond with error message
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
-};
-exports.createAdminBySuperAdmin = createAdminBySuperAdmin;
-let createStaffBySuperAdmin = async (req, res, next) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (errors.isEmpty()) {
-        try {
-            const superAdminDetails = req.body;
-            const staffDetails = req.body;
-            // Find the superAdmin in the database
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            // SuperAdmin exist, proceed to create a new staff
-            const createstaff = new admin_model_1.Admin({ ...staffDetails, superAdminId: superAdmin._id });
-            // Save the agent to the database
-            const insertStaff = await createstaff.save();
-            // Respond with success message
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {
-                staff: insertStaff,
-                superAdminId: superAdmin._id
-            }, 'Staff created successfully by SuperAdmin.');
-        }
-        catch (err) {
-            // Handle server error
-            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
-        }
-    }
-    else {
-        // Request body validation failed, respond with error message
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
-};
-exports.createStaffBySuperAdmin = createStaffBySuperAdmin;
+exports.getFilteredSuperAdmin = getFilteredSuperAdmin;
 //# sourceMappingURL=superAdmin.controller.js.map

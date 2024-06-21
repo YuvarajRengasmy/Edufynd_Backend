@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.csvToJson = exports.getFilteredStudentBySuperAdmin = exports.deleteStudent = exports.updateStudent = exports.saveStudent = exports.getSingleStudent = exports.getAllStudent = void 0;
+exports.forgotPassword = exports.createStudentBySuperAdmin = exports.csvToJson = exports.getFilteredStudentBySuperAdmin = exports.getFilteredStudent = exports.deleteStudent = exports.updateStudent = exports.saveStudent = exports.getSingleStudent = exports.getAllStudent = void 0;
 const student_model_1 = require("../model/student.model");
+const superAdmin_model_1 = require("../model/superAdmin.model");
 const express_validator_1 = require("express-validator");
 const TokenManager = require("../utils/tokenManager");
 const commonResponseHandler_1 = require("../helper/commonResponseHandler");
@@ -66,7 +67,7 @@ let saveStudent = async (req, res, next) => {
         }
     }
     else {
-        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Save-User', false, 422, {}, ErrorMessage_1.errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Save-Student', false, 422, {}, ErrorMessage_1.errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 exports.saveStudent = saveStudent;
@@ -75,6 +76,28 @@ let updateStudent = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const studentDetails = req.body;
+            // Handling file uploads
+            if (req.files['photo']) {
+                studentDetails.photo = `${req.protocol}://${req.get('host')}/uploads/${req.files['photo'][0].filename}`;
+            }
+            if (req.files['resume']) {
+                studentDetails.resume = `${req.protocol}://${req.get('host')}/uploads/${req.files['resume'][0].filename}`;
+            }
+            if (req.files['passport']) {
+                studentDetails.passport = `${req.protocol}://${req.get('host')}/uploads/${req.files['passport'][0].filename}`;
+            }
+            if (req.files['sslc']) {
+                studentDetails.sslc = `${req.protocol}://${req.get('host')}/uploads/${req.files['sslc'][0].filename}`;
+            }
+            if (req.files['hsc']) {
+                studentDetails.hsc = `${req.protocol}://${req.get('host')}/uploads/${req.files['hsc'][0].filename}`;
+            }
+            if (req.files['degree']) {
+                studentDetails.degree = req.files['degree'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+            }
+            if (req.files['additional']) {
+                studentDetails.additional = req.files['additional'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+            }
             const updateData = await student_model_1.Student.findOneAndUpdate({ _id: req.body._id }, {
                 $set: {
                     name: studentDetails.name,
@@ -105,6 +128,13 @@ let updateStudent = async (req, res, next) => {
                     facebook: studentDetails.facebook,
                     instagram: studentDetails.instagram,
                     linkedIn: studentDetails.linkedIn,
+                    photo: studentDetails.photo,
+                    resume: studentDetails.resume,
+                    passport: studentDetails.passport,
+                    sslc: studentDetails.sslc,
+                    hsc: studentDetails.hsc,
+                    degree: studentDetails.degree,
+                    additional: studentDetails.additional,
                     modifiedOn: studentDetails.modifiedOn,
                     modifiedBy: studentDetails.modifiedBy,
                 }
@@ -131,6 +161,39 @@ let deleteStudent = async (req, res, next) => {
     }
 };
 exports.deleteStudent = deleteStudent;
+let getFilteredStudent = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList = [];
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false });
+        andList.push({ status: 1 });
+        if (req.body.studentCode) {
+            andList.push({ studentCode: req.body.studentCode });
+        }
+        if (req.body.name) {
+            andList.push({ name: req.body.name });
+        }
+        if (req.body.passportNo) {
+            andList.push({ passportNo: req.body.passportNo });
+        }
+        if (req.body.email) {
+            andList.push({ email: req.body.email });
+        }
+        if (req.body.mobileNumber) {
+            andList.push({ mobileNumber: req.body.mobileNumber });
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {};
+        const studentList = await student_model_1.Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page);
+        const studentCount = await student_model_1.Student.find(findQuery).count();
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-1', 'Get-FilterStudent', true, 200, { studentList, studentCount }, ErrorMessage_1.clientError.success.fetchedSuccessfully);
+    }
+    catch (err) {
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Get-FilterStudent', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
+    }
+};
+exports.getFilteredStudent = getFilteredStudent;
 let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     try {
         var findQuery;
@@ -210,4 +273,89 @@ const csvToJson = async (req, res) => {
     }
 };
 exports.csvToJson = csvToJson;
+const generateRandomPassword = () => {
+    return Math.random().toString(36).slice(-8); // Generates a random 8-character password
+};
+let createStudentBySuperAdmin = async (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (errors.isEmpty()) {
+        try {
+            const superAdminDetails = req.body;
+            const studentDetails = req.body;
+            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
+            const randomPassword = generateRandomPassword();
+            if (!superAdmin) {
+                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+            }
+            const createStudent = new student_model_1.Student({ ...studentDetails, password: randomPassword, superAdminId: superAdmin._id });
+            const insertStudent = await createStudent.save();
+            const mailOptions = {
+                from: 'balan9133civil@gmail.com',
+                to: insertStudent.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${insertStudent.password}\n\nPlease change your password after logging in for the first time.\n\nThank you!`
+            };
+            commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
+                console.log("mmm", info);
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                }
+                else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
+                }
+            });
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
+                student: insertStudent,
+                superAdminId: superAdmin._id
+            }, 'Student created successfully by SuperAdmin.');
+        }
+        catch (err) {
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+        }
+    }
+    else {
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+};
+exports.createStudentBySuperAdmin = createStudentBySuperAdmin;
+// const { v4: uuidv4 } = require('uuid'); // Use uuid for generating OTP
+const uuid_1 = require("uuid");
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const student = await student_model_1.Student.findOne({ email });
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+        const otp = (0, uuid_1.v4)().slice(0, 6); // Generate a 6-character OTP
+        student.resetOtp = otp;
+        student.resetOtpExpires = Date.now() + 3600000; // OTP expires in 1 hour
+        await student.save();
+        const mailOptions = {
+            from: 'balan9133civil@gmail.com',
+            to: student.email,
+            subject: 'Password Reset Request',
+            text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
+        };
+        console.log("999", mailOptions);
+        commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
+            console.log("kk", info);
+            if (error) {
+                console.error('Error sending email:', error);
+                return res.status(500).json({ message: 'Error sending email' });
+            }
+            else {
+                console.log('Email sent:', info.response);
+                res.status(200).json({ message: 'OTP sent to email' });
+            }
+        });
+    }
+    catch (error) {
+        console.error('Error requesting password reset:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+exports.forgotPassword = forgotPassword;
 //# sourceMappingURL=student.controller.js.map
