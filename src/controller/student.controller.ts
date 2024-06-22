@@ -347,7 +347,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             console.log("lll",insertStudent)
 
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: 'balan9133civil@gmail.com', 
                 to: insertStudent.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${insertStudent.password}\n\nPlease change your password after logging in for the first time.\n\nThank you!`
