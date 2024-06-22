@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginEmail = void 0;
+exports.resetPassword = exports.loginEmail = void 0;
 const express_validator_1 = require("express-validator");
 const Encryption_1 = require("../helper/Encryption");
 const ErrorMessage_1 = require("../helper/ErrorMessage");
@@ -135,4 +135,54 @@ let loginEmail = async (req, res, next) => {
     }
 };
 exports.loginEmail = loginEmail;
+let resetPassword = async (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (errors.isEmpty()) {
+        try {
+            let student = await student_model_1.Student.findById({ _id: req.body._id });
+            let admin = await admin_model_1.Admin.findById({ _id: req.body._id });
+            let agent = await agent_model_1.Agent.findById({ _id: req.body._id });
+            let { modifiedOn, modifiedBy } = req.body;
+            let id = req.body._id;
+            req.body.password = await (0, Encryption_1.encrypt)(req.body.password);
+            if (student) {
+                const data = await student_model_1.Student.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                });
+                (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, ErrorMessage_1.clientError.success.updateSuccess);
+            }
+            else if (admin) {
+                const data = await admin_model_1.Admin.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                });
+                (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, ErrorMessage_1.clientError.success.updateSuccess);
+            }
+            else {
+                const data = await agent_model_1.Agent.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                });
+                (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, ErrorMessage_1.clientError.success.updateSuccess);
+            }
+        }
+        catch (err) {
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Update-Password', true, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Update-Password', false, 422, {}, ErrorMessage_1.errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+exports.resetPassword = resetPassword;
 //# sourceMappingURL=login.controller.js.map

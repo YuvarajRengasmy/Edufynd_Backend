@@ -30,13 +30,13 @@ router.put('/getFilterStudentBySuperAdmin', checkAuth_1.basicAuthUser, tokenMana
 router.post('/import', // CSV File to json and Store into Database
 fileUploaded_1.default.single('file'), student_controller_1.csvToJson);
 router.put('/createStudentBySuperAdmin', //create student by super Admin
-// basicAuthUser,
-// checkSession,
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
 // checkQuery('_id'),
 student_controller_1.createStudentBySuperAdmin);
+router.put('/editStudentBySuperAdmin', //Update student by super Admin
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, student_controller_1.editStudentProfileBySuperAdmin);
 router.put('/forgot', //create student by super Admin
-// basicAuthUser,
-// checkSession,
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
 // // checkQuery('_id'),
 student_controller_1.forgotPassword);
 exports.default = router;

@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.forgotPassword = exports.createStudentBySuperAdmin = exports.csvToJson = exports.getFilteredStudentBySuperAdmin = exports.getFilteredStudent = exports.deleteStudent = exports.updateStudent = exports.saveStudent = exports.getSingleStudent = exports.getAllStudent = void 0;
+exports.forgotPassword = exports.editStudentProfileBySuperAdmin = exports.createStudentBySuperAdmin = exports.csvToJson = exports.getFilteredStudentBySuperAdmin = exports.getFilteredStudent = exports.deleteStudent = exports.updateStudent = exports.saveStudent = exports.getSingleStudent = exports.getAllStudent = void 0;
 const student_model_1 = require("../model/student.model");
-const superAdmin_model_1 = require("../model/superAdmin.model");
 const express_validator_1 = require("express-validator");
 const TokenManager = require("../utils/tokenManager");
 const commonResponseHandler_1 = require("../helper/commonResponseHandler");
 const ErrorMessage_1 = require("../helper/ErrorMessage");
 const Encryption_1 = require("../helper/Encryption");
+const uuid_1 = require("uuid");
 const csv = require("csvtojson");
 var activity = "Student";
 let getAllStudent = async (req, res, next) => {
@@ -30,6 +30,28 @@ let getSingleStudent = async (req, res, next) => {
     }
 };
 exports.getSingleStudent = getSingleStudent;
+const generateNextStudentCode = async () => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const student = await student_model_1.Student.find({}, 'studentCode').exec();
+    console.log("ll", student);
+    const maxCounter = student.reduce((max, app) => {
+        console.log("mm", app);
+        const appCode = app.studentCode;
+        console.log("kk", appCode);
+        const parts = appCode.split('_');
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10);
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `ST_${formattedCounter}`;
+};
 let saveStudent = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {
@@ -39,8 +61,7 @@ let saveStudent = async (req, res, next) => {
                 req.body.password = await (0, Encryption_1.encrypt)(req.body.password);
                 req.body.confirmPassword = await (0, Encryption_1.encrypt)(req.body.confirmPassword);
                 const studentDetails = req.body;
-                const uniqueId = Math.floor(Math.random() * 10000);
-                studentDetails.studentCode = studentDetails.name + "_" + uniqueId;
+                studentDetails.studentCode = await generateNextStudentCode();
                 const createData = new student_model_1.Student(studentDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -280,23 +301,25 @@ let createStudentBySuperAdmin = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {
         try {
-            const superAdminDetails = req.body;
             const studentDetails = req.body;
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            const randomPassword = generateRandomPassword();
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            const createStudent = new student_model_1.Student({ ...studentDetails, password: randomPassword, superAdminId: superAdmin._id });
+            // const superAdminDetails: SuperAdminDocument = req.body;
+            // const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
+            // const randomPassword = generateRandomPassword();
+            // if (!superAdmin) {
+            //     return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
+            // }
+            studentDetails.studentCode = await generateNextStudentCode();
+            const createStudent = new student_model_1.Student(studentDetails);
             const insertStudent = await createStudent.save();
+            console.log("lll", insertStudent);
             const mailOptions = {
                 from: 'balan9133civil@gmail.com',
                 to: insertStudent.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${insertStudent.password}\n\nPlease change your password after logging in for the first time.\n\nThank you!`
             };
+            console.log("kk", mailOptions);
             commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
-                console.log("mmm", info);
                 if (error) {
                     console.error('Error sending email:', error);
                     return res.status(500).json({ message: 'Error sending email' });
@@ -308,7 +331,6 @@ let createStudentBySuperAdmin = async (req, res, next) => {
             });
             (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
                 student: insertStudent,
-                superAdminId: superAdmin._id
             }, 'Student created successfully by SuperAdmin.');
         }
         catch (err) {
@@ -320,8 +342,63 @@ let createStudentBySuperAdmin = async (req, res, next) => {
     }
 };
 exports.createStudentBySuperAdmin = createStudentBySuperAdmin;
-// const { v4: uuidv4 } = require('uuid'); // Use uuid for generating OTP
-const uuid_1 = require("uuid");
+const editStudentProfileBySuperAdmin = async (req, res) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (errors.isEmpty()) {
+        try {
+            const studentDetails = req.body;
+            const updateData = await student_model_1.Student.findOneAndUpdate({ _id: studentDetails._id }, {
+                $set: {
+                    name: studentDetails.name,
+                    passportNo: studentDetails.passportNo,
+                    expiryDate: studentDetails.expiryDate,
+                    dob: studentDetails.dob,
+                    citizenship: studentDetails.citizenship,
+                    gender: studentDetails.gender,
+                    whatsAppNumber: studentDetails.whatsAppNumber,
+                    degreeName: studentDetails.degreeName,
+                    academicYear: studentDetails.academicYear,
+                    institution: studentDetails.institution,
+                    percentage: studentDetails.percentage,
+                    doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                    englishTestType: studentDetails.englishTestType,
+                    testScore: studentDetails.testScore,
+                    dateOfTest: studentDetails.dateOfTest,
+                    country: studentDetails.country,
+                    desiredUniversity: studentDetails.desiredUniversity,
+                    desiredCourse: studentDetails.desiredCourse,
+                    workExperience: studentDetails.workExperience,
+                    anyVisaRejections: studentDetails.anyVisaRejections,
+                    visaReason: studentDetails.visaReason,
+                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                    travelReason: studentDetails.travelReason,
+                    finance: studentDetails.finance,
+                    twitter: studentDetails.twitter,
+                    facebook: studentDetails.facebook,
+                    instagram: studentDetails.instagram,
+                    linkedIn: studentDetails.linkedIn,
+                    photo: studentDetails.photo,
+                    resume: studentDetails.resume,
+                    passport: studentDetails.passport,
+                    sslc: studentDetails.sslc,
+                    hsc: studentDetails.hsc,
+                    degree: studentDetails.degree,
+                    additional: studentDetails.additional,
+                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedBy: studentDetails.modifiedBy,
+                }
+            });
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-2', 'Update-Student by Super Admin', true, 200, updateData, ErrorMessage_1.clientError.success.updateSuccess);
+        }
+        catch (err) {
+            (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Update-Student by Super Admin', false, 500, {}, ErrorMessage_1.errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Update-Student by Super Admin', false, 422, {}, ErrorMessage_1.errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+exports.editStudentProfileBySuperAdmin = editStudentProfileBySuperAdmin;
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
@@ -339,9 +416,8 @@ const forgotPassword = async (req, res) => {
             subject: 'Password Reset Request',
             text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
         };
-        console.log("999", mailOptions);
+        console.log("kk", mailOptions);
         commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
-            console.log("kk", info);
             if (error) {
                 console.error('Error sending email:', error);
                 return res.status(500).json({ message: 'Error sending email' });

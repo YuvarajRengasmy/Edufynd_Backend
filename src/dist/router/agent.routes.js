@@ -23,13 +23,21 @@ checkAuth_1.basicAuthUser, tokenManager_1.checkSession,
 agent_controller_1.createAgentBySuperAdmin);
 router.put('/getFilterStudentByAgent', checkAuth_1.basicAuthUser, tokenManager_1.checkSession, agent_controller_1.getFilteredStudentByAgent);
 router.get('/viewStudentByAgent', //View student by agent
-checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, (0, Validators_1.checkQuery)('studentId'), agent_controller_1.viewStudentProfileByAgent);
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// validateAgentId,
+(0, Validators_1.checkQuery)('studentId'), agent_controller_1.viewStudentProfileByAgent);
 router.post('/createStudentByAgent', //create student by agent
-checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, agent_controller_1.createStudentProfileByAgent);
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// validateAgentId,
+agent_controller_1.createStudentProfileByAgent);
 router.put('/updateStudentByAgent', //Update student by agent
-checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, agent_controller_1.editStudentProfileByAgent);
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// validateAgentId,
+agent_controller_1.editStudentProfileByAgent);
 router.delete('/deleteStudentByAgent', //Delete student by agent
-checkAuth_1.basicAuthUser, tokenManager_1.checkSession, checkAuth_1.validateAgentId, agent_controller_1.deleteStudentByAgent);
+checkAuth_1.basicAuthUser, tokenManager_1.checkSession, 
+// validateAgentId,
+agent_controller_1.deleteStudentByAgent);
 router.post('/import', // CSV File to json and Store into Database
 fileUploaded_1.default.single('file'), agent_controller_1.csvToJson);
 exports.default = router;
