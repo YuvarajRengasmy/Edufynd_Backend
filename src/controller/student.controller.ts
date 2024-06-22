@@ -55,6 +55,8 @@ const generateNextStudentCode = async (): Promise<string> => {
  // Return the new Applicantion Code
  return `ST_${formattedCounter}`;
 };
+
+
 export let saveStudent = async (req, res, next) => {
 
     const errors = validationResult(req);
@@ -341,7 +343,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 
 
             const newHash = await decrypt(insertStudent["password"]);
-            console.log("xx", newHash)
+         
             const mailOptions = {
                 from: 'balan9133civil@gmail.com', 
                 to: insertStudent.email,

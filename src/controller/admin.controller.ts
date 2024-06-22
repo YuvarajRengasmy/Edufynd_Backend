@@ -4,7 +4,7 @@ import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
 
@@ -32,6 +32,30 @@ export let getSingleAdmin = async (req, res, next) => {
 }
 
 
+const generateNextAdminCode = async (): Promise<string> => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const admin = await Admin.find({}, 'adminCode').exec();
+   
+    const maxCounter = admin.reduce((max, app) => {
+   
+        const appCode = app.adminCode;
+      
+        const parts = appCode.split('_')
+        if(parts.length === 2){
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
+   
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `AD_${formattedCounter}`;
+   };
+
 export let createAdmin = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -43,8 +67,7 @@ export let createAdmin = async (req, res, next) => {
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
 
                 const adminDetails: AdminDocument = req.body;
-                const uniqueId = Math.floor(Math.random() * 1000)
-                adminDetails.adminCode = "AD" + uniqueId + "Fynd"
+                adminDetails.adminCode = await generateNextAdminCode();
              
                 const createData = new Admin(adminDetails);
                 let insertData = await createData.save();
@@ -99,35 +122,44 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
 
     if (errors.isEmpty()) {
         try {
-            const superAdminDetails: SuperAdminDocument = req.body;
+
             const adminDetails: AdminDocument = req.body;
 
-            // Find the superAdmin in the database
-            const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-
-            }
-            // SuperAdmin exist, proceed to create a new agent
-            const createAdmin = new Admin({ ...adminDetails, superAdminId: superAdmin._id });
-
-            // Save the agent to the database
+            adminDetails.adminCode = await generateNextAdminCode();
+            req.body.password = await encrypt(req.body.password)
+            const createAdmin = new Admin(adminDetails);
             const insertAdmin = await createAdmin.save();
 
-            // Respond with success message
+
+            const newHash = await decrypt(insertAdmin["password"]);
+         
+            const mailOptions = {
+                from: 'balan9133civil@gmail.com', 
+                to: insertAdmin.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${insertAdmin.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAdmin.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+   
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Admin profile created and email sent login credentials', admin: insertAdmin });
+                }
+            });
             response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, {
                 admin: insertAdmin,
-                superAdminId: superAdmin._id
+    
 
             }, 'Admin created successfully by SuperAdmin.');
 
         } catch (err: any) {
-            // Handle server error
-
             response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
-        // Request body validation failed, respond with error message
         response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };

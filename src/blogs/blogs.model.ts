@@ -7,6 +7,8 @@ export interface BlogDocument extends mongoose.Document{
   content1?: string;
   content2?: string;
   content3?: string;
+  tags?: any[];
+
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -14,15 +16,18 @@ export interface BlogDocument extends mongoose.Document{
 }
 
 
-const contactSchema = new mongoose.Schema({
-    name: {type: String},
-    email: {type: String},
-    mobileNumber: {type: String},
-    message: {type: String},
+const blogSchema = new mongoose.Schema({
+  title: {type: String},
+  introduction: {type: String},
+  content1:{type: String},
+  content2: {type: String},
+  content3: {type: String},
+  tags: [String],
+ 
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
-export const Contact = mongoose.model("Contact", contactSchema)
+export const Blog = mongoose.model("Blog", blogSchema)
