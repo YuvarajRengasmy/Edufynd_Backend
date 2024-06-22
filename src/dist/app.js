@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
-const express = require("express");
 const bodyParser = require("body-parser");
+const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const database_1 = require("./utils/database");
-const router_1 = require("./router");
+const database_1 = require("./src/utils/database");
+const router_1 = require("./src/router");
 exports.app = {
     instance: express(),
     async init() {
