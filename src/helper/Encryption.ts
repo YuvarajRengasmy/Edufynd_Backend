@@ -27,6 +27,7 @@ export let hashPassword = async (text) => {
  * @param {String} encrypted
  */
 export let encrypt = (textToConvert) => {
+  console.log("99",textToConvert )
   return (conversionOutput = CryptoJS.AES.encrypt(textToConvert.trim(),password.trim()).toString());
 };
 
