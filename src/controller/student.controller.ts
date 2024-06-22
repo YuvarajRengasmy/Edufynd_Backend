@@ -31,6 +31,30 @@ export let getSingleStudent = async (req, res, next) => {
     }
 }
 
+
+const generateNextStudentCode = async (): Promise<string> => {
+ // Retrieve all applicant IDs to determine the highest existing applicant counter
+ const student = await Student.find({}, 'studentCode').exec();
+ console.log("ll", student)
+ const maxCounter = student.reduce((max, app) => {
+console.log("mm", app)
+     const appCode = app.studentCode;
+     console.log("kk", appCode)
+     const parts = appCode.split('_')
+     if(parts.length === 2){
+         const counter = parseInt(parts[1], 10)
+         return counter > max ? counter : max;
+     }
+     return max;
+ }, 100);
+
+ // Increment the counter
+ const newCounter = maxCounter + 1;
+ // Format the counter as a string with leading zeros
+ const formattedCounter = String(newCounter).padStart(3, '0');
+ // Return the new Applicantion Code
+ return `ST_${formattedCounter}`;
+};
 export let saveStudent = async (req, res, next) => {
 
     const errors = validationResult(req);
@@ -42,8 +66,7 @@ export let saveStudent = async (req, res, next) => {
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 const studentDetails: StudentDocument = req.body;
-                const uniqueId = Math.floor(Math.random() * 10000);
-                studentDetails.studentCode = studentDetails.name + "_" + uniqueId;
+                studentDetails.studentCode = await generateNextStudentCode();
                 const createData = new Student(studentDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -317,7 +340,8 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             // if (!superAdmin) {
             //     return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
             // }
-            
+
+            studentDetails.studentCode = await generateNextStudentCode();
             const createStudent = new Student(studentDetails);
             const insertStudent = await createStudent.save();
 
