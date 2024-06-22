@@ -79,7 +79,7 @@ router.post('/import',      // CSV File to json and Store into Database
 );
 
 
-router.post('/createStudentBySuperAdmin',             //create student by super Admin
+router.put('/createStudentBySuperAdmin',             //create student by super Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),

@@ -317,6 +317,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             // }
             const createStudent = new Student({ ...studentDetails, password: randomPassword});
             const insertStudent = await createStudent.save();
+            console.log("lll",insertStudent)
 
             const mailOptions = {
                 from: 'balan9133civil@gmail.com',
@@ -324,7 +325,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${insertStudent.password}\n\nPlease change your password after logging in for the first time.\n\nThank you!`
             };
-
+console.log("kk", mailOptions)
             transporter.sendMail(mailOptions, (error, info) => {
    
                 if (error) {
@@ -433,6 +434,7 @@ export const forgotPassword = async (req, res) => {
             subject: 'Password Reset Request',
             text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
         };
+        console.log("kk", mailOptions)
 
         transporter.sendMail(mailOptions, (error, info: any) => {
 
