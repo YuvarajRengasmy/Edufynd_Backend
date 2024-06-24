@@ -5,7 +5,6 @@ import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
-import {v4 as uuidv4} from 'uuid'
 import csv = require("csvtojson")
 
 var activity = "Student";
@@ -35,11 +34,8 @@ export let getSingleStudent = async (req, res, next) => {
 const generateNextStudentCode = async (): Promise<string> => {
  // Retrieve all applicant IDs to determine the highest existing applicant counter
  const student = await Student.find({}, 'studentCode').exec();
-
  const maxCounter = student.reduce((max, app) => {
-
      const appCode = app.studentCode;
-     console.log("kk", appCode)
      const parts = appCode.split('_')
      if(parts.length === 2){
          const counter = parseInt(parts[1], 10)
@@ -234,33 +230,6 @@ export let getFilteredStudent = async (req, res, next) => {
     }
 };
 
-export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
-    try {
-        var findQuery;
-        var andList: any = []
-        var limit = req.body.limit ? req.body.limit : 0;
-        var page = req.body.page ? req.body.page : 0;
-        andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
-
-        if (req.body.studentId) {
-            andList.push({ studentId: req.body.studentId })
-        }
-        if (req.body.superAdminId) {
-            andList.push({ superAdminId: req.body.superAdminId })
-        }
-        findQuery = (andList.length > 0) ? { $and: andList } : {}
-
-        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { StudentName: 1, email: 1, mobileNumber: 1 })
-
-        const studentCount = await Student.find(findQuery).count()
-        response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Filter', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
-
 
 
 export const csvToJson = async (req, res) => {
@@ -322,12 +291,6 @@ export const csvToJson = async (req, res) => {
 
 
 
-
-const generateRandomPassword = () => {
-    return Math.random().toString(36).slice(-8); // Generates a random 8-character password
-};
-
-
 export let createStudentBySuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
 
@@ -338,6 +301,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 
             studentDetails.studentCode = await generateNextStudentCode();
             req.body.password = await encrypt(req.body.password)
+            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
             const createStudent = new Student(studentDetails);
             const insertStudent = await createStudent.save();
 
@@ -436,43 +400,29 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
     }
 }
 
-
-
-export const forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    
+export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     try {
-        const student = await Student.findOne({ email });
-        if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
         }
+        if (req.body.superAdminId) {
+            andList.push({ superAdminId: req.body.superAdminId })
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const otp = uuidv4().slice(0, 6); // Generate a 6-character OTP
-        student.resetOtp = otp;
-        student.resetOtpExpires = Date.now() + 3600000; // OTP expires in 1 hour
+        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { StudentName: 1, email: 1, mobileNumber: 1 })
 
-        await student.save();
-
-        const mailOptions = {
-            from: 'balan9133civil@gmail.com',
-            to: student.email,
-            subject: 'Password Reset Request',
-            text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
-        };
-
-        transporter.sendMail(mailOptions, (error, info: any) => {
-
-            if (error) {
-                console.error('Error sending email:', error);
-                return res.status(500).json({ message: 'Error sending email' });
-            } else {
-                console.log('Email sent:', info.response);
-                res.status(200).json({ message: 'OTP sent to email' });
-            }
-        });
-
-    } catch (error) {
-        console.error('Error requesting password reset:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        const studentCount = await Student.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-Filter', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+

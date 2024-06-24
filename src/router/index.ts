@@ -34,6 +34,7 @@ import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
 import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
 import Tax from '../setting/moduleSetting/router/tax.route'
 import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
+import { forgotPassword } from 'src/controller/login.controller';
 
 
 

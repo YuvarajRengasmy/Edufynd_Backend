@@ -11,6 +11,9 @@ export interface AdminDocument extends mongoose.Document{
     role?:string;
     isDeleted?: boolean;
 
+    resetOtp?: string;
+    resetOtpExpires?: number;
+    
     privileges?: string;
     createdOn?: Date;
     createdBy?: string;
@@ -27,6 +30,11 @@ const adminSchema = new mongoose.Schema({
     password: {type: String},
     confirmPassword: {type: String},
     role: {type: String},
+
+
+    resetOtp: { type: String },
+    resetOtpExpires: { type: Number },
+
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},
 

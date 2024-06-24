@@ -165,6 +165,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             const agentDetails: AgentDocument = req.body;
             agentDetails.agentCode = await generateNextAgentID();
             req.body.password = await encrypt(req.body.password)
+            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
             const createAgent = new Agent(agentDetails);
             const insertAgent = await createAgent.save();
             const newHash = await decrypt(insertAgent["password"]);

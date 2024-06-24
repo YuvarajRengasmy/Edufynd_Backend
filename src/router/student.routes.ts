@@ -1,7 +1,6 @@
 import {Router} from 'express';
 import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
     createStudentBySuperAdmin,getFilteredStudent,
-    forgotPassword,
     editStudentProfileBySuperAdmin} from '../controller/student.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
@@ -92,12 +91,7 @@ router.put('/editStudentBySuperAdmin',             //Update student by super Adm
     editStudentProfileBySuperAdmin
 );
 
-router.put('/forgot',             //create student by super Admin
-    basicAuthUser,
-    checkSession,
-    // // checkQuery('_id'),
-    forgotPassword
-);
+
 
 
 

@@ -22,6 +22,9 @@ export interface AgentDocument extends mongoose.Document {
   agentsCommission?: number; // Will be calculated based on the University Commission & Agent Payout
   agentBusinessLogo?: string; // Optional
   countryInterested?: string[];
+
+  resetOtp?: string;
+    resetOtpExpires?: number;
   isDeleted?: boolean;
 
   privileges?: string;
@@ -63,6 +66,10 @@ const agentSchema = new mongoose.Schema({
   countryInterested: { type: String },
   password: { type: String },
   confirmPassword: { type: String },
+
+  resetOtp: { type: String },
+    resetOtpExpires: { type: Number },
+
   isDeleted: { type: Boolean, default: false },
   privileges: { type: String },
 
