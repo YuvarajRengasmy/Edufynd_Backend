@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.csvToJson = exports.getFilteredStudentByAgent = exports.deleteStudentByAgent = exports.editStudentProfileByAgent = exports.viewStudentProfileByAgent = exports.createStudentProfileByAgent = exports.createAgentBySuperAdmin = exports.deleteAgent = exports.updateAgent = exports.createAgent = exports.getSingleAgent = exports.getAllAgent = void 0;
 const agent_model_1 = require("../model/agent.model");
-const superAdmin_model_1 = require("../model/superAdmin.model");
 const student_model_1 = require("../model/student.model");
 const express_validator_1 = require("express-validator");
 const TokenManager = require("../utils/tokenManager");
@@ -138,30 +137,37 @@ let createAgentBySuperAdmin = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {
         try {
-            const superAdminDetails = req.body;
             const agentDetails = req.body;
-            // Find the superAdmin in the database
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            // SuperAdmin exist, proceed to create a new agent
-            const createAgent = new agent_model_1.Agent({ ...agentDetails, superAdminId: superAdmin._id });
-            // Save the agent to the database
+            agentDetails.agentCode = await generateNextAgentID();
+            req.body.password = await (0, Encryption_1.encrypt)(req.body.password);
+            const createAgent = new agent_model_1.Agent(agentDetails);
             const insertAgent = await createAgent.save();
-            // Respond with success message
+            const newHash = await (0, Encryption_1.decrypt)(insertAgent["password"]);
+            const mailOptions = {
+                from: 'balan9133civil@gmail.com',
+                to: insertAgent.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${insertAgent.agentName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAgent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
+            };
+            commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                }
+                else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
+                }
+            });
             (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
                 agent: insertAgent,
-                superAdminId: superAdmin._id
             }, 'Agent created successfully by SuperAdmin.');
         }
         catch (err) {
-            // Handle server error
             (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     }
     else {
-        // Request body validation failed, respond with error message
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };

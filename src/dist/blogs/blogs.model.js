@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Contact = void 0;
+exports.Blog = void 0;
 const mongoose = require("mongoose");
-const contactSchema = new mongoose.Schema({
-    name: { type: String },
-    email: { type: String },
-    mobileNumber: { type: String },
-    message: { type: String },
+const blogSchema = new mongoose.Schema({
+    title: { type: String },
+    introduction: { type: String },
+    content1: { type: String },
+    content2: { type: String },
+    content3: { type: String },
+    tags: [String],
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 });
-exports.Contact = mongoose.model("Contact", contactSchema);
+exports.Blog = mongoose.model("Blog", blogSchema);
 //# sourceMappingURL=blogs.model.js.map

@@ -14,6 +14,7 @@ const applicant_routes_1 = require("./applicant.routes");
 const contact_routes_1 = require("./contact.routes");
 const client_routes_1 = require("./client.routes");
 const staff_routes_1 = require("./staff.routes");
+const blog_routes_1 = require("./blog.routes");
 //Global Setting Routes
 const status_routes_1 = require("../setting/globalSetting/router/status.routes");
 const country_routes_1 = require("../setting/globalSetting/router/country.routes");
@@ -42,6 +43,7 @@ router.use('/applicant', applicant_routes_1.default);
 router.use('/contact', contact_routes_1.default);
 router.use('/client', client_routes_1.default);
 router.use('/staff', staff_routes_1.default);
+router.use('/blog', blog_routes_1.default);
 //Global Setting API
 router.use('/status', status_routes_1.default);
 router.use('/country', country_routes_1.default);

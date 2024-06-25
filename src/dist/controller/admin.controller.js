@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createStaffByAdmin = exports.createStudentByAdmin = exports.createAdminBySuperAdmin = exports.deleteAdmin = exports.createAdmin = exports.getSingleAdmin = exports.getAllAdmin = void 0;
 const admin_model_1 = require("../model/admin.model");
-const superAdmin_model_1 = require("../model/superAdmin.model");
 const student_model_1 = require("../model/student.model");
 const express_validator_1 = require("express-validator");
 const TokenManager = require("../utils/tokenManager");
@@ -30,6 +29,25 @@ let getSingleAdmin = async (req, res, next) => {
     }
 };
 exports.getSingleAdmin = getSingleAdmin;
+const generateNextAdminCode = async () => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const admin = await admin_model_1.Admin.find({}, 'adminCode').exec();
+    const maxCounter = admin.reduce((max, app) => {
+        const appCode = app.adminCode;
+        const parts = appCode.split('_');
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10);
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `AD_${formattedCounter}`;
+};
 let createAdmin = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {
@@ -39,8 +57,7 @@ let createAdmin = async (req, res, next) => {
                 req.body.password = await (0, Encryption_1.encrypt)(req.body.password);
                 req.body.confirmPassword = await (0, Encryption_1.encrypt)(req.body.confirmPassword);
                 const adminDetails = req.body;
-                const uniqueId = Math.floor(Math.random() * 1000);
-                adminDetails.adminCode = "AD" + uniqueId + "Fynd";
+                adminDetails.adminCode = await generateNextAdminCode();
                 const createData = new admin_model_1.Admin(adminDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -84,30 +101,37 @@ let createAdminBySuperAdmin = async (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (errors.isEmpty()) {
         try {
-            const superAdminDetails = req.body;
             const adminDetails = req.body;
-            // Find the superAdmin in the database
-            const superAdmin = await superAdmin_model_1.SuperAdmin.findOne({ _id: req.query._id });
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            }
-            // SuperAdmin exist, proceed to create a new agent
-            const createAdmin = new admin_model_1.Admin({ ...adminDetails, superAdminId: superAdmin._id });
-            // Save the agent to the database
+            adminDetails.adminCode = await generateNextAdminCode();
+            req.body.password = await (0, Encryption_1.encrypt)(req.body.password);
+            const createAdmin = new admin_model_1.Admin(adminDetails);
             const insertAdmin = await createAdmin.save();
-            // Respond with success message
+            const newHash = await (0, Encryption_1.decrypt)(insertAdmin["password"]);
+            const mailOptions = {
+                from: 'balan9133civil@gmail.com',
+                to: insertAdmin.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${insertAdmin.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAdmin.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
+            };
+            commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                }
+                else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Admin profile created and email sent login credentials', admin: insertAdmin });
+                }
+            });
             (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, {
                 admin: insertAdmin,
-                superAdminId: superAdmin._id
             }, 'Admin created successfully by SuperAdmin.');
         }
         catch (err) {
-            // Handle server error
             (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     }
     else {
-        // Request body validation failed, respond with error message
         (0, commonResponseHandler_1.response)(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };

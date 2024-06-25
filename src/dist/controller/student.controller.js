@@ -302,23 +302,17 @@ let createStudentBySuperAdmin = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const studentDetails = req.body;
-            // const superAdminDetails: SuperAdminDocument = req.body;
-            // const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
-            // const randomPassword = generateRandomPassword();
-            // if (!superAdmin) {
-            //     return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-            // }
             studentDetails.studentCode = await generateNextStudentCode();
+            req.body.password = await (0, Encryption_1.encrypt)(req.body.password);
             const createStudent = new student_model_1.Student(studentDetails);
             const insertStudent = await createStudent.save();
-            console.log("lll", insertStudent);
+            const newHash = await (0, Encryption_1.decrypt)(insertStudent["password"]);
             const mailOptions = {
                 from: 'balan9133civil@gmail.com',
                 to: insertStudent.email,
                 subject: 'Welcome to EduFynd',
-                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${insertStudent.password}\n\nPlease change your password after logging in for the first time.\n\nThank you!`
+                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.~\n\nThank you!`
             };
-            console.log("kk", mailOptions);
             commonResponseHandler_1.transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error('Error sending email:', error);
