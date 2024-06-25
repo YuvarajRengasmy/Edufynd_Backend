@@ -55,6 +55,8 @@ console.log("mm", app)
  // Return the new Applicantion Code
  return `ST_${formattedCounter}`;
 };
+
+
 export let saveStudent = async (req, res, next) => {
 
     const errors = validationResult(req);

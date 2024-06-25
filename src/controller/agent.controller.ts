@@ -3,7 +3,7 @@ import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
 import csv = require('csvtojson')
@@ -162,35 +162,37 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
 
     if (errors.isEmpty()) {
         try {
-            const superAdminDetails: SuperAdminDocument = req.body;
             const agentDetails: AgentDocument = req.body;
-
-            // Find the superAdmin in the database
-            const superAdmin = await SuperAdmin.findOne({ _id: req.query._id })
-            if (!superAdmin) {
-                return res.status(400).json({ success: false, message: 'Super Admin ID is required' });
-
-            }
-            // SuperAdmin exist, proceed to create a new agent
-            const createAgent = new Agent({ ...agentDetails, superAdminId: superAdmin._id });
-
-            // Save the agent to the database
+            agentDetails.agentCode = await generateNextAgentID();
+            req.body.password = await encrypt(req.body.password)
+            const createAgent = new Agent(agentDetails);
             const insertAgent = await createAgent.save();
-
-            // Respond with success message
+            const newHash = await decrypt(insertAgent["password"]);
+            const mailOptions = {
+                from: 'balan9133civil@gmail.com', 
+                to: insertAgent.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${insertAgent.agentName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAgent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
+            };
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
+                }
+            });
             response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
                 agent: insertAgent,
-                superAdminId: superAdmin._id
+    
 
             }, 'Agent created successfully by SuperAdmin.');
 
         } catch (err: any) {
-            // Handle server error
-
             response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
-        // Request body validation failed, respond with error message
         response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
