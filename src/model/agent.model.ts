@@ -24,7 +24,7 @@ export interface AgentDocument extends mongoose.Document {
   countryInterested?: string[];
 
   resetOtp?: string;
-    resetOtpExpires?: number;
+  resetOtpExpires?: number;
   isDeleted?: boolean;
 
   privileges?: string;
@@ -68,7 +68,7 @@ const agentSchema = new mongoose.Schema({
   confirmPassword: { type: String },
 
   resetOtp: { type: String },
-    resetOtpExpires: { type: Number },
+  resetOtpExpires: { type: Number },
 
   isDeleted: { type: Boolean, default: false },
   privileges: { type: String },

@@ -9,11 +9,14 @@ export interface AdminDocument extends mongoose.Document{
     password?: string;
     confirmPassword?: string;
     role?:string;
-    isDeleted?: boolean;
-
+    studentId?: any;
+    agentId?: any;
+    universityId?: any;
+    programId?: any;
     resetOtp?: string;
     resetOtpExpires?: number;
-    
+
+    isDeleted?: boolean;
     privileges?: string;
     createdOn?: Date;
     createdBy?: string;
@@ -30,14 +33,15 @@ const adminSchema = new mongoose.Schema({
     password: {type: String},
     confirmPassword: {type: String},
     role: {type: String},
-
-
+    studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
+    agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
+    universityId: {type: mongoose.Types.ObjectId, ref: 'University'},
+    programId: { type: mongoose.Types.ObjectId, ref : 'Program'},
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
 
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},
-
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

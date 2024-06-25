@@ -116,6 +116,39 @@ export let deleteAdmin = async (req, res, next) => {
 };
 
 
+export let getFilteredAdmin = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
+        }
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId })
+        }
+        if (req.body.universityId) {
+            andList.push({ universityId: req.body.universityId })
+        }
+        if (req.body.programId) {
+            andList.push({ programId: req.body.programId })
+        }
+       
+
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const adminList = await Admin.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+
+        const adminCount = await Admin.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-FilterAdmin', true, 200, { adminList, adminCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-FilterAdmin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
 
 export let createAdminBySuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
@@ -212,6 +245,68 @@ export let createStudentByAdmin = async (req, res, next) => {
 
 
 
+export const editStudentProfileByAdmin = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+
+            const studentDetails: StudentDocument = req.body;
+            const updateData = await Student.findOneAndUpdate({ _id: studentDetails._id }, {
+                $set: {
+                    name: studentDetails.name,
+                    passportNo: studentDetails.passportNo,
+                    expiryDate: studentDetails.expiryDate,
+                    dob: studentDetails.dob,
+                    citizenship: studentDetails.citizenship,
+                    gender: studentDetails.gender,
+                    whatsAppNumber: studentDetails.whatsAppNumber,
+                    degreeName: studentDetails.degreeName,
+                    academicYear: studentDetails.academicYear,
+                    institution: studentDetails.institution,
+                    percentage: studentDetails.percentage,
+                    doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                    englishTestType: studentDetails.englishTestType,
+                    testScore: studentDetails.testScore,
+                    dateOfTest: studentDetails.dateOfTest,
+                    country: studentDetails.country,
+                    desiredUniversity: studentDetails.desiredUniversity,
+                    desiredCourse: studentDetails.desiredCourse,
+                    workExperience: studentDetails.workExperience,
+                    anyVisaRejections: studentDetails.anyVisaRejections,
+                    visaReason: studentDetails.visaReason,
+                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                    travelReason: studentDetails.travelReason,
+                    finance: studentDetails.finance,
+                    twitter: studentDetails.twitter,
+                    facebook: studentDetails.facebook,
+                    instagram: studentDetails.instagram,
+                    linkedIn: studentDetails.linkedIn,
+                    photo: studentDetails.photo,
+                    resume: studentDetails.resume,
+                    passport: studentDetails.passport,
+                    sslc: studentDetails.sslc,
+                    hsc: studentDetails.hsc,
+                    degree: studentDetails.degree,
+                    additional: studentDetails.additional,
+
+                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedBy: studentDetails.modifiedBy,
+                }
+
+            });
+            response(req, res, activity, 'Level-2', 'Update-Student by Admin', true, 200, updateData, clientError.success.updateSuccess);
+        }
+        catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Student by Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Student by Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
+
+
+
 export let createStaffByAdmin = async (req, res, next) => {
     const errors = validationResult(req);
 
@@ -238,3 +333,44 @@ export let createStaffByAdmin = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Staff-By-Admin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
+
+
+export const editStaffProfileByAdmin = async (req, res) => {
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+        try {
+            const staffDetails: StaffDocument = req.body;
+            let staffData = await Staff.findByIdAndUpdate({ _id: staffDetails._id }, {
+                $set: {
+                    photo:staffDetails.photo,
+                    empName: staffDetails.empName,
+                    designation:staffDetails.designation,
+                    jobDescription: staffDetails.jobDescription,
+                    reportingManager:staffDetails.reportingManager,
+                    shiftTiming:staffDetails.shiftTiming,                    
+                    areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,                
+                    address:staffDetails.address,
+                    emergencyContactNo:staffDetails.emergencyContactNo,
+                    probationDuration: staffDetails.probationDuration,
+                    salary: staffDetails.salary,              
+                    privileges:staffDetails.privileges,               
+                    idCard: staffDetails.idCard,                  
+                    manageApplications:staffDetails.manageApplications,         
+                    activeInactive: staffDetails.activeInactive,             
+                    teamLead: staffDetails.teamLead,
+                    status:  staffDetails.status,
+                    modifiedOn: staffDetails.modifiedOn,
+                    modifiedBy:  staffDetails.modifiedBy,
+                }
+            });
+
+            response(req, res, activity, 'Level-2', 'Update-Staff by Admin', true, 200, staffData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Staff by Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Staff by Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
+
