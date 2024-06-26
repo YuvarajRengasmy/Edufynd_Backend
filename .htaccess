@@ -1,4 +1,9 @@
-Options -MultiViews
+<IfModule mod_rewrite.c>
 RewriteEngine On
+RewriteBase /
+RewriteRule ^app\.ts$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ app.ts [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ./app.ts [L]
+</IfModule>

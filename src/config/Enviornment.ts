@@ -7,7 +7,7 @@ export const ENVIRONMENT = process.env.NODE_ENV;
 switch (ENVIRONMENT) {
     case 'production': {
         if (fs.existsSync(path.join(process.cwd(), '/.env.production'))) {
-            dotenv.config({ path: ".env" });
+            dotenv.config({ path: ".env.production" });
         } else {
             process.exit(1);
         }
@@ -40,7 +40,7 @@ switch (ENVIRONMENT) {
 }
 
 export const SERVER = {
-    APP_NAME: 'Upturn',
+    APP_NAME: 'edufynd',
     PORT: process.env['PORT'],
     MONGODB_URL: process.env['MONGODB_URL'] || '',
     CREDENTIALS: process.env['MONGODB_URL'] || '',

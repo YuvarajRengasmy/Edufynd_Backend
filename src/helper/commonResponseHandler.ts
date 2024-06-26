@@ -40,9 +40,9 @@ export let response = function (req, res, activity, level, method, success, stat
 
 export const transporter = nodemailer.createTransport({
     service: 'Gmail', // You can use any email service
-    // host: 'smtp.gmail.com',
-    // secure: false,
-    // port: 587,
+    host: 'smtp.gmail.com',
+    secure: false,
+    port: 587,
     auth: {
         user: 'balan9133civil@gmail.com',
         pass: 'ewlm tlbx tqjj svrg'

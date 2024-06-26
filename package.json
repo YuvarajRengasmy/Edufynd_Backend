@@ -2,14 +2,13 @@
   "name": "edufynd",
   "version": "1.0.0",
   "description": " ",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export NODE_ENV=production&& ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-    "local": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-    "testing": "export NODE_ENV=testing&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast"
-  },
+  "build": "tsc",
+   "start": "set NODE_ENV=production && node ./src/bin/server.ts",
+  "dev": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
+  "local": "set NODE_ENV=testing && node ./src/bin/server.ts"
+},
   "author": "",
   "license": "ISC",
   "dependencies": {
