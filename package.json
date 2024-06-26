@@ -5,11 +5,9 @@
   "main": "app.ts",
   "scripts": {
   "build": "tsc",
-   "start": "set NODE_ENV=production && node ./server/bin/server.js",
-  "dev": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./server/bin/server.js --fast",
-  "local": "set NODE_ENV=testing && node .server/bin/server.js"
- 
-
+   "start": "set NODE_ENV=production && node ./src/bin/server.ts",
+  "dev": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
+  "local": "set NODE_ENV=testing && node ./src/bin/server.ts"
 },
   "author": "",
   "license": "ISC",
