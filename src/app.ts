@@ -1,13 +1,29 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-
-
 import * as path from 'path';
 import * as cors from 'cors';
 
 import { Request, Response, NextFunction } from 'express';
 import { mongoconnect } from './utils/database';
 import routes from './router'
+// const os = require('os');
+// import { URL } from 'url';
+
+
+
+
+
+// // Get server details
+// const hostname = os.hostname();
+// const serverName = process.env.SERVER_NAME || 'EduFynd Server'; // Assuming SERVER_NAME is set in your .env file
+// const url = new URL('https://crm.edufynd.in');
+// console.log("ss", url)
+// const domain = url.hostname;
+
+// // Log server details
+// console.log(`Server Name: ${serverName}`);
+// console.log(`Hostname: ${hostname}`);
+// console.log(`Domain: ${domain}`);
 
 
 export const app: any = {

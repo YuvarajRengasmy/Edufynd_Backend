@@ -1,6 +1,6 @@
-import { app } from ".././app";
+import {app} from '../app';
 import { Server } from 'http';
-import { SERVER } from "../config";
+import { SERVER } from '../config';
 /**
  * Get port from environment and store in Express.
  */
@@ -14,9 +14,11 @@ app.instance.set('port', port);
  */
 
  const server: Server = new Server(app.instance);
+
  /**
   * Listen on provided port, on all network interfaces.
   */
+
  app.init().then(() => {
      server.listen(port,'0.0.0.0');
  });
@@ -29,6 +31,7 @@ app.instance.set('port', port);
  */
 
  function normalizePort(val: any) {
+
 	const portNumber = parseInt(val, 10);
 
 	if (isNaN(portNumber)) {
@@ -50,6 +53,7 @@ app.instance.set('port', port);
  */
 
  function onError(error: any) {
+
 	if (error.syscall !== 'listen') {
 		throw error;
 	}
@@ -77,6 +81,8 @@ app.instance.set('port', port);
 
 function onListening() {
 	const addr = server.address() || '';
+
 	const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 	console.info('Listening on ' + bind);
+	// console.info(`Listening on https://${HOST}`);
 }

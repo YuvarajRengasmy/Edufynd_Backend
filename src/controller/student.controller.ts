@@ -34,6 +34,11 @@ export let getSingleStudent = async (req, res, next) => {
 const generateNextStudentCode = async (): Promise<string> => {
  // Retrieve all applicant IDs to determine the highest existing applicant counter
  const student = await Student.find({}, 'studentCode').exec();
+
+//  if (student.length === 0) {
+//     // If no student codes exist, start with ST_101
+//     return 'ST_101';
+//   }
  const maxCounter = student.reduce((max, app) => {
      const appCode = app.studentCode;
      const parts = appCode.split('_')
@@ -332,6 +337,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             }, 'Student created successfully by SuperAdmin.');
 
         } catch (err: any) {
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {

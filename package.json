@@ -1,14 +1,15 @@
 {
   "name": "edufynd",
   "version": "1.0.0",
-  "description": " ",
+  "description": "Edufynd Project",
   "main": "app.ts",
+ 
   "scripts": {
-  "build": "tsc",
-   "start": "set NODE_ENV=production && node ./src/bin/server.ts",
-  "dev": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
-  "local": "set NODE_ENV=testing && node ./src/bin/server.ts"
-},
+    "build": "tsc",
+    "start": "set NODE_ENV=production && node ./src/bin/server.ts",
+    "dev": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
+    "local": "set NODE_ENV=testing && node ./src/bin/server.ts"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
