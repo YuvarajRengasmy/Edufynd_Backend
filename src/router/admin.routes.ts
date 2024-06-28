@@ -8,14 +8,14 @@ const router:Router=Router();
 
 router.get('/',                      //get all admin
     basicAuthUser,
-     checkSession,
+    //  checkSession,
     getAllAdmin
 );
 
 
 router.get('/getSingleAdmin',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleAdmin,
 );
@@ -28,7 +28,7 @@ router.post('/',
 
 router.delete('/',                  //delete admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     deleteAdmin
 );
@@ -36,7 +36,7 @@ router.delete('/',                  //delete admin
 
 router.post('/createAdminBySuperAdmin',             //create admin by super Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createAdminBySuperAdmin
 );
@@ -45,7 +45,7 @@ router.post('/createAdminBySuperAdmin',             //create admin by super Admi
 
 router.post('/createStudentByAdmin',             //create student by Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createStudentByAdmin
 );
@@ -53,7 +53,7 @@ router.post('/createStudentByAdmin',             //create student by Admin
 
 router.post('/createStaffByAdmin',             //create staff by  Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createStaffByAdmin
 );

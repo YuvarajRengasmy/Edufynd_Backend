@@ -14,7 +14,7 @@ router.post('/',
 
 router.put('/getFilterSuperAdmin',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getFilteredSuperAdmin,
 );
 

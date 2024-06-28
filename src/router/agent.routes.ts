@@ -12,13 +12,13 @@ const router: Router = Router();
 
 router.get('/',                                //get all agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getAllAgent
 );
 
 router.get('/getSingleAgent',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleAgent,
 );
@@ -38,7 +38,7 @@ router.post('/contact',
 
 router.put('/',                          //update agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkRequestBodyParams('_id'),
     updateAgent
 );
@@ -46,27 +46,27 @@ router.put('/',                          //update agent
 
 router.delete('/',                  //delete agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     deleteAgent
 );
 
 router.post('/createAgentBySuperAdmin',             //create agent by super Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createAgentBySuperAdmin
 );
 
 router.put('/getFilterStudentByAgent',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getFilteredStudentByAgent,
 );
 
 router.get('/viewStudentByAgent',             //View student by agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // validateAgentId,
     checkQuery('studentId'),
     viewStudentProfileByAgent
@@ -74,21 +74,21 @@ router.get('/viewStudentByAgent',             //View student by agent
 
 router.post('/createStudentByAgent',             //create student by agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // validateAgentId,
     createStudentProfileByAgent
 );
 
 router.put('/updateStudentByAgent',             //Update student by agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // validateAgentId,
     editStudentProfileByAgent
 );
 
 router.delete('/deleteStudentByAgent',             //Delete student by agent
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // validateAgentId,
     deleteStudentByAgent
 );
