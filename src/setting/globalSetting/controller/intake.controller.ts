@@ -60,8 +60,12 @@ export const updateInTake = async (req, res) => {
                     modifiedOn: intakeData.modifiedOn,
                     modifiedBy:  intakeData.modifiedBy,
                 },
+               
               
-            });
+            },
+            {new:true}
+        );
+           
 
             response(req, res, activity, 'Level-2', 'Update-InTakeData', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
