@@ -23,6 +23,11 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     incomeDetails?: string;
     willyouSubmitYourCollateral?: String;
 
+    createdOn?: Date;
+    createdBy?: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
+
 
 }
 
@@ -47,7 +52,12 @@ const loanEnquirySchema = new mongoose.Schema({
     age: {type: String},
     employmentStatus: {type: String},
     incomeDetails: {type: String},
-    willyouSubmitYourCollateral: {type: String}
+    willyouSubmitYourCollateral: {type: String},
+
+    createdOn: { type: Date },
+    createdBy: { type: String },
+    modifiedOn: { type: Date },
+    modifiedBy: { type: String },
 
 })
 
