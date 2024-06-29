@@ -51,7 +51,7 @@ export const updateInTake = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const intakeData: InTakeDocument = req.body;
-            let statusData = await InTake.findByIdAndUpdate({ _id: intakeData._id }, {
+            let statusData = await InTake.findByIdAndUpdate({_id: req.query._id }, {
                 $set: {
                     inTakeName: intakeData.intakeName,
                     startDate: intakeData.startDate,

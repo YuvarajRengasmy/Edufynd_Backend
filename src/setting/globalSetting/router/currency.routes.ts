@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/getAllCurrency',                //get all Currency
+router.get('/',                //get all Currency
     basicAuthUser,
     getAllCurrency
 );

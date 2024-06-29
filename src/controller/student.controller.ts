@@ -23,38 +23,44 @@ export let getAllStudent = async (req, res, next) => {
 
 export let getSingleStudent = async (req, res, next) => {
     try {
+
+
         const student = await Student.findOne({ _id: req.query._id });
-        response(req, res, activity, 'Level-1', 'Get-Single-Student', true, 200, student, clientError.success.fetchedSuccessfully);
+        const newHash = await decrypt(student["password"]);
+        const newHash1 = await decrypt(student["confirmPassword"]);
+
+        response(req, res, activity, 'Level-1', 'Get-Single-Student', true, 200, { ...student.toObject(), password: newHash, confirmPassword: newHash1 }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
+        console.log("gg", err)
         response(req, res, activity, 'Level-3', 'Get-Single-Student', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
 
 const generateNextStudentCode = async (): Promise<string> => {
- // Retrieve all applicant IDs to determine the highest existing applicant counter
- const student = await Student.find({}, 'studentCode').exec();
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const student = await Student.find({}, 'studentCode').exec();
 
-//  if (student.length === 0) {
-//     // If no student codes exist, start with ST_101
-//     return 'ST_101';
-//   }
- const maxCounter = student.reduce((max, app) => {
-     const appCode = app.studentCode;
-     const parts = appCode.split('_')
-     if(parts.length === 2){
-         const counter = parseInt(parts[1], 10)
-         return counter > max ? counter : max;
-     }
-     return max;
- }, 100);
+    //  if (student.length === 0) {
+    //     // If no student codes exist, start with ST_101
+    //     return 'ST_101';
+    //   }
+    const maxCounter = student.reduce((max, app) => {
+        const appCode = app.studentCode;
+        const parts = appCode.split('_')
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
 
- // Increment the counter
- const newCounter = maxCounter + 1;
- // Format the counter as a string with leading zeros
- const formattedCounter = String(newCounter).padStart(3, '0');
- // Return the new Applicantion Code
- return `ST_${formattedCounter}`;
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `ST_${formattedCounter}`;
 };
 
 
@@ -69,6 +75,7 @@ export let saveStudent = async (req, res, next) => {
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 const studentDetails: StudentDocument = req.body;
+                studentDetails.createdOn = new Date();
                 studentDetails.studentCode = await generateNextStudentCode();
                 const createData = new Student(studentDetails);
                 let insertData = await createData.save();
@@ -101,89 +108,96 @@ export let saveStudent = async (req, res, next) => {
     }
 }
 
+
 export let updateStudent = async (req, res, next) => {
     const errors = validationResult(req);
+
     if (errors.isEmpty()) {
         try {
             const studentDetails: StudentDocument = req.body;
 
-             // Handling file uploads
-             if (req.files['photo']) {
+            // Handling file uploads
+            if (req.files && req.files['photo']) {
                 studentDetails.photo = `${req.protocol}://${req.get('host')}/uploads/${req.files['photo'][0].filename}`;
             }
-            if (req.files['resume']) {
+            if (req.files && req.files['resume']) {
                 studentDetails.resume = `${req.protocol}://${req.get('host')}/uploads/${req.files['resume'][0].filename}`;
             }
-            if (req.files['passport']) {
+            if (req.files && req.files['passport']) {
                 studentDetails.passport = `${req.protocol}://${req.get('host')}/uploads/${req.files['passport'][0].filename}`;
             }
-            if (req.files['sslc']) {
+            if (req.files && req.files['sslc']) {
                 studentDetails.sslc = `${req.protocol}://${req.get('host')}/uploads/${req.files['sslc'][0].filename}`;
             }
-            if (req.files['hsc']) {
+            if (req.files && req.files['hsc']) {
                 studentDetails.hsc = `${req.protocol}://${req.get('host')}/uploads/${req.files['hsc'][0].filename}`;
             }
-            if (req.files['degree']) {
+            if (req.files && req.files['degree']) {
                 studentDetails.degree = req.files['degree'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
             }
-            if (req.files['additional']) {
+            if (req.files && req.files['additional']) {
                 studentDetails.additional = req.files['additional'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
             }
 
-            const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, {
-                $set: {
-                    name: studentDetails.name,
-                    passportNo: studentDetails.passportNo,
-                    expiryDate: studentDetails.expiryDate,
-                    dob: studentDetails.dob,
-                    citizenship: studentDetails.citizenship,
-                    gender: studentDetails.gender,
-                    whatsAppNumber: studentDetails.whatsAppNumber,
-                    degreeName: studentDetails.degreeName,
-                    academicYear: studentDetails.academicYear,
-                    institution: studentDetails.institution,
-                    percentage: studentDetails.percentage,
-                    doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
-                    englishTestType: studentDetails.englishTestType,
-                    testScore: studentDetails.testScore,
-                    dateOfTest: studentDetails.dateOfTest,
-                    country: studentDetails.country,
-                    desiredUniversity: studentDetails.desiredUniversity,
-                    desiredCourse: studentDetails.desiredCourse,
-                    workExperience: studentDetails.workExperience,
-                    anyVisaRejections: studentDetails.anyVisaRejections,
-                    visaReason: studentDetails.visaReason,
-                    doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
-                    travelReason: studentDetails.travelReason,
-                    finance: studentDetails.finance,
-                    twitter: studentDetails.twitter,
-                    facebook: studentDetails.facebook,
-                    instagram: studentDetails.instagram,
-                    linkedIn: studentDetails.linkedIn,
-                    photo: studentDetails.photo,
-                    resume: studentDetails.resume,
-                    passport: studentDetails.passport,
-                    sslc: studentDetails.sslc,
-                    hsc: studentDetails.hsc,
-                    degree: studentDetails.degree,
-                    additional: studentDetails.additional,
+            const updateFields = {
+                name: studentDetails.name,
+                passportNo: studentDetails.passportNo,
+                expiryDate: studentDetails.expiryDate,
+                dob: studentDetails.dob,
+                citizenship: studentDetails.citizenship,
+                gender: studentDetails.gender,
+                whatsAppNumber: studentDetails.whatsAppNumber,
+                degreeName: studentDetails.degreeName,
+                academicYear: studentDetails.academicYear,
+                institution: studentDetails.institution,
+                percentage: studentDetails.percentage,
+                doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                englishTestType: studentDetails.englishTestType,
+                testScore: studentDetails.testScore,
+                dateOfTest: studentDetails.dateOfTest,
+                country: studentDetails.country,
+                desiredUniversity: studentDetails.desiredUniversity,
+                desiredCourse: studentDetails.desiredCourse,
+                workExperience: studentDetails.workExperience,
+                anyVisaRejections: studentDetails.anyVisaRejections,
+                visaReason: studentDetails.visaReason,
+                doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                travelReason: studentDetails.travelReason,
+                finance: studentDetails.finance,
+                twitter: studentDetails.twitter,
+                facebook: studentDetails.facebook,
+                instagram: studentDetails.instagram,
+                linkedIn: studentDetails.linkedIn,
+                photo: studentDetails.photo,
+                resume: studentDetails.resume,
+                passport: studentDetails.passport,
+                sslc: studentDetails.sslc,
+                hsc: studentDetails.hsc,
+                degree: studentDetails.degree,
+                additional: studentDetails.additional,
+                modifiedOn: studentDetails.modifiedOn,
+                modifiedBy: studentDetails.modifiedBy,
+            };
 
-                    modifiedOn: studentDetails.modifiedOn,
-                    modifiedBy: studentDetails.modifiedBy,
-                }
+            // Conditionally add file fields to updateFields
+            if (studentDetails.photo) updateFields.photo = studentDetails.photo;
+            if (studentDetails.resume) updateFields.resume = studentDetails.resume;
+            if (studentDetails.passport) updateFields.passport = studentDetails.passport;
+            if (studentDetails.sslc) updateFields.sslc = studentDetails.sslc;
+            if (studentDetails.hsc) updateFields.hsc = studentDetails.hsc;
+            if (studentDetails.degree) updateFields.degree = studentDetails.degree;
+            if (studentDetails.additional) updateFields.additional = studentDetails.additional;
 
-            });
-            response(req, res, activity, 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
+            const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: updateFields }, { new: true });
+
+            response(req, res, 'Update-Student', 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, 'Update-Student', 'Level-3', 'Update-Student', false, 500, {}, errorMessage.internalServer, err.message);
         }
-        catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Student', false, 500, {}, errorMessage.internalServer, err.message);
-        }
+    } else {
+        response(req, res, 'Update-Student', 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-    else {
-        response(req, res, activity, 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
-}
-
+};
 
 
 
@@ -312,16 +326,16 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 
 
             const newHash = await decrypt(insertStudent["password"]);
-         
+
             const mailOptions = {
-                from: 'balan9133civil@gmail.com', 
+                from: 'balan9133civil@gmail.com',
                 to: insertStudent.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
-   
+
                 if (error) {
                     console.error('Error sending email:', error);
                     return res.status(500).json({ message: 'Error sending email' });
@@ -332,7 +346,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             });
             response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
                 student: insertStudent,
-    
+
 
             }, 'Student created successfully by SuperAdmin.');
 

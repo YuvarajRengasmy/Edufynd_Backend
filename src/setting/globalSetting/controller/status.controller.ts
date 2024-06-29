@@ -46,29 +46,67 @@ export let createStatus = async (req, res, next) => {
 };
 
 
+// export const updateStatus = async (req, res) => {
+//     const errors = validationResult(req)
+//     if (errors.isEmpty()) {
+//         try {
+//             const statusDetails: StatusDocument = req.body;
+//             let statusData = await Status.findByIdAndUpdate({ _id: statusDetails._id }, {
+//                 $set: {
+//                     statusName: statusDetails.statusName,
+//                     duration: statusDetails.duration,
+//                     modifiedOn: statusDetails.modifiedOn,
+//                     modifiedBy:  statusDetails.modifiedBy,
+//                 }
+//             });
+
+//             response(req, res, activity, 'Level-2', 'Update-Status Details', true, 200, statusData, clientError.success.updateSuccess);
+//         } catch (err: any) {
+//             console.log("jj", err)
+//             response(req, res, activity, 'Level-3', 'Update-Status Details', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Update-Status Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
+
+
 export const updateStatus = async (req, res) => {
-    const errors = validationResult(req)
+    const errors = validationResult(req);
+
+
     if (errors.isEmpty()) {
         try {
             const statusDetails: StatusDocument = req.body;
-            let statusData = await Status.findByIdAndUpdate({ _id: statusDetails._id }, {
-                $set: {
-                    statusName: statusDetails.statusName,
-                    duration: statusDetails.duration,
-                    modifiedOn: statusDetails.modifiedOn,
-                    modifiedBy:  statusDetails.modifiedBy,
-                }
-            });
+
+            const statusData = await Status.findByIdAndUpdate(
+                { _id: req.query._id },
+                {
+                    $set: {
+                        statusName: statusDetails.statusName,
+                        duration: statusDetails.duration,
+                        modifiedOn: statusDetails.modifiedOn,
+                        modifiedBy: statusDetails.modifiedBy,
+                    },
+                },
+                { new: true }
+            );
+
+            if (!statusData) {
+                return response(req, res, activity, 'Level-2', 'Update-Status Details', false, 404, {},  'Status not found');
+            }
 
             response(req, res, activity, 'Level-2', 'Update-Status Details', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
+            console.log("Error updating status:", err);
             response(req, res, activity, 'Level-3', 'Update-Status Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
-    }
-    else {
+    } else {
         response(req, res, activity, 'Level-3', 'Update-Status Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-}
+};
+
 
 export let deleteStatus = async (req, res, next) => {
   
