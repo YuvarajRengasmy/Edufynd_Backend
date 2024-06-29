@@ -26,7 +26,7 @@ export let CreateJWTToken = (data: any = {}) => {
         tokenData['id'] = data['id']
     }
   
-    const token = jwt.sign(tokenData, 'masterin', { expiresIn: '24h' });
+    const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '24h' });
     return token;
 }
 
@@ -49,7 +49,7 @@ export let checkSession = async (req, res, next) => {
         const tokenValue = token.split(' ')[1].trim();
         if (headerType.trim() === "Bearer") {
             try {
-                jwt.verify(tokenValue, 'masterin', function (err, tokendata) {
+                await jwt.verify(tokenValue, 'edufynd', function (err, tokendata) {
                     if (err) {
                         return res.status(400).json({ message: clientError.token.sessionExpire })
                                 }

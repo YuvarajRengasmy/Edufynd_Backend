@@ -101,6 +101,48 @@ export let createAdmin = async (req, res, next) => {
 }
 
 
+// export let updateAdmin = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const adminDetails: AdminDocument = req.body;
+//             const updateData = await Admin.findOneAndUpdate({ _id: adminDetails._id }, {
+//                 $set: {
+
+//                     businessName: agentDetails.businessName,
+//                     whatsAppNumber: agentDetails.whatsAppNumber,
+//                     bankDetail: agentDetails.bankDetail,
+//                     panNumberIndividual: agentDetails.panNumberIndividual,
+//                     panNumberCompany: agentDetails.panNumberCompany,
+//                     gstn: agentDetails.gstn,
+//                     inc: agentDetails.inc,
+//                     agentsCommission: agentDetails.agentsCommission,
+//                     agentBusinessLogo: agentDetails.agentBusinessLogo,
+//                     countryInterested: agentDetails.countryInterested,
+//                     privileges: agentDetails.privileges,
+//                     addressLine1: agentDetails.addressLine1,
+//                     addressLine2: agentDetails.addressLine2,
+//                     addressLine3: agentDetails.addressLine3,
+//                     staffName: agentDetails.staffName,
+//                     staffContactNo: agentDetails.staffContactNo,
+
+
+//                     modifiedOn: agentDetails.modifiedOn,
+//                     modifiedBy: agentDetails.modifiedBy,
+//                 }
+
+
+//             });
+//             response(req, res, activity, 'Level-2', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
+//         }
+//         catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Update-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Update-Agent', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
 
 
 export let deleteAdmin = async (req, res, next) => {
