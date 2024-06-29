@@ -45,7 +45,7 @@ export const transporter = nodemailer.createTransport({
     port: 587,
     auth: {
         user: 'balan9133civil@gmail.com',
-        pass: 'ewlm tlbx tqjj svrg'
+        pass: 'tdfa fpeg mzvn jvcl'
     }
 });
 
@@ -57,7 +57,7 @@ export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
         secure: false, // true for 465, false for other ports
         auth: {
             user: 'balan9133civil@gmail.com', 
-            pass: 'goqc wrqi hsqy vcoy'
+            pass: 'tdfa fpeg mzvn jvcl'
         }
     });
 
