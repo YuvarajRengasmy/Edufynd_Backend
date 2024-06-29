@@ -51,7 +51,7 @@ export const updateTemplate = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const templateData: EmailDocument = req.body;
-            let statusData = await Email.findByIdAndUpdate({ _id: templateData._id }, {
+            let statusData = await Email.findByIdAndUpdate({_id: req.query._id }, {
                 $set: {
                     subject: templateData.subject,
                     content: templateData.content,

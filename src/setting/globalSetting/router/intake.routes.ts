@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/getAllInTake',                //get all InTake
+router.get('/',                //get all InTake
     basicAuthUser,
     getAllInTake
 );

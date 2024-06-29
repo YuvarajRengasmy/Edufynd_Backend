@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/getAllCountry',                //get all Country
+router.get('/',                //get all Country
     basicAuthUser,
     getAllCountry
 );

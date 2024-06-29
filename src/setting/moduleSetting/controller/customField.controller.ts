@@ -51,7 +51,7 @@ export const updateCustomField = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const customLabel: CustomFieldDocument = req.body;
-            let statusData = await CustomField.findByIdAndUpdate({ _id: customLabel._id }, {
+            let statusData = await CustomField.findByIdAndUpdate({ _id: req.query._id}, {
                 $set: {
                     customFieldFor:customLabel.customFieldFor,
                     fieldLabel: customLabel.fieldLabel,

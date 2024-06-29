@@ -39,6 +39,7 @@ export let encrypt = (textToConvert) => {
  * @param {String} text
  */
 export let decrypt = (textToConvert) => {
+
   return (conversionOutput = CryptoJS.AES.decrypt(textToConvert.trim(),password.trim()).toString(CryptoJS.enc.Utf8));
 };
 

@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose'
 
 export interface StatusDocument extends mongoose.Document{
+    _id?: any;
     statusName?: string;
     duration?: string;
 
@@ -11,6 +12,7 @@ export interface StatusDocument extends mongoose.Document{
 }
 
 export const statusSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, auto: true },
     statusName: {type: String},
     duration:{ type: String},
 
