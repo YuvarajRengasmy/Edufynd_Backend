@@ -11,14 +11,14 @@ const router: Router = Router();
 
 router.get('/',                //get all university
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getAllUniversity
 );
 
 
 router.get('/getSingleUniversity',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleUniversity,
 );
@@ -27,7 +27,7 @@ router.get('/getSingleUniversity',
 
 router.post('/',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     saveUniversity
 );
 
@@ -35,7 +35,7 @@ router.post('/',
 
 router.put('/',                    // update 
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateUniversity
@@ -44,7 +44,7 @@ router.put('/',                    // update
 
 router.delete('/',                  //delete university
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     deleteUniversity
 );
@@ -52,7 +52,7 @@ router.delete('/',                  //delete university
 
 router.put('/getFilterUniversity',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getFilteredUniversity,
 );
 
@@ -64,7 +64,7 @@ router.get('/getAllUniversityForWeb',         // get all university for web //wi
 
 router.put('/agentFilterUniversity',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getFilteredUniversityForAgent,
 );
 

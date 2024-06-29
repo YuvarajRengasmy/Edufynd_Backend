@@ -33,8 +33,8 @@ export let CreateJWTToken = (data: any = {}) => {
 
 
 /**
- * @author Balan K K
- * @date 01-05-2024
+ * @author Ponjothi S
+ * @date 07-09-2023
  * @param {Object} req 
  * @param {Object} res 
  * @param {Function} next  
@@ -49,7 +49,7 @@ export let checkSession = async (req, res, next) => {
         const tokenValue = token.split(' ')[1].trim();
         if (headerType.trim() === "Bearer") {
             try {
-                await jwt.verify(tokenValue, 'edufynd', function (err, tokendata) {
+                jwt.verify(tokenValue, 'edufynd', function (err, tokendata) {
                     if (err) {
                         return res.status(400).json({ message: clientError.token.sessionExpire })
                                 }
