@@ -1,8 +1,9 @@
 import {Router} from 'express';
 import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
     createStudentBySuperAdmin,getFilteredStudent,
-    forgotPassword,
+  
     editStudentProfileBySuperAdmin} from '../controller/student.controller';
+    import { forgotPassword } from '../controller/login.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
