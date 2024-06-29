@@ -106,6 +106,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
 
             const staffDetails: StaffDocument = req.body;
             req.body.password = await encrypt(req.body.password)
+            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
             const createStaff = new Staff(staffDetails);
             const insertStaff = await createStaff.save();
             const newHash = await decrypt(insertStaff["password"]);

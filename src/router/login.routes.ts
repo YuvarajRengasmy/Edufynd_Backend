@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { loginEmail} from '../controller/login.controller';
+import { loginEmail, forgotPassword, resetPassword} from '../controller/login.controller';
 const router: Router = Router();
 
 router.post('/',
@@ -12,12 +12,11 @@ router.post('/',
     loginEmail
 );
 
-// router.put('/forgotPassword',
-//     basicAuthUser,
-//     checkRequestBodyParams('email'),
-//     checkRequestBodyParams('link'),
-//     forgotPassword
-// );
+router.put('/forgotPassword',
+    basicAuthUser,
+    checkRequestBodyParams('email'),
+    forgotPassword
+);
 
 // router.put('/updatePassword',
 //     basicAuthUser,

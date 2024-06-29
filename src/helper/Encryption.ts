@@ -2,7 +2,8 @@ import * as crypto from "crypto";
 import * as Config from "../config/Enviornment";
 import * as CryptoJS from "crypto-js";
 
-let password = "1234";
+ let password = "";
+ let confirmPassword = ""
 let conversionOutput: string;
 
 /**
@@ -12,7 +13,7 @@ let conversionOutput: string;
  * @param {String} text
  */
 export let hashPassword = async (text) => {
-  console.log(text)
+
   return await new Promise((resolve, reject) => {
     const hash = crypto.createHmac("sha256", Config.SERVER.SALT);
     hash.update(text.toString());
@@ -27,6 +28,7 @@ export let hashPassword = async (text) => {
  * @param {String} encrypted
  */
 export let encrypt = (textToConvert) => {
+
   return (conversionOutput = CryptoJS.AES.encrypt(textToConvert.trim(),password.trim()).toString());
 };
 
