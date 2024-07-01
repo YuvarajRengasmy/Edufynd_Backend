@@ -56,8 +56,6 @@ const accommodationSchema = new mongoose.Schema({
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 
-  
-
 })
 
 export const Accommodation = mongoose.model("Accommodation", accommodationSchema)
