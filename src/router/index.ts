@@ -17,6 +17,12 @@ import Client from './client.routes'
 import Staff from './staff.routes'
 import Blog from './blog.routes'
 
+// All Enquiry Routes
+import StudentEnquiry from '../enquiries/routes/studentEnquiry.route'
+import LoanEnquiry  from '../enquiries/routes/loanEnquiry.route';
+import Accommodation from '../enquiries/routes/accommodation.route'
+import Forex from '../enquiries/routes/forex.route'
+
 //Global Setting Routes
 import Status from '../setting/globalSetting/router/status.routes'
 import Country from '../setting/globalSetting/router/country.routes'
@@ -34,7 +40,7 @@ import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
 import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
 import Tax from '../setting/moduleSetting/router/tax.route'
 import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
-import { forgotPassword } from 'src/controller/login.controller';
+
 
 
 
@@ -52,6 +58,15 @@ router.use('/contact', Contact)
 router.use('/client', Client)
 router.use('/staff', Staff)
 router.use('/blog', Blog)
+
+
+//All Enquiry API
+router.use('/studentEnquiry', StudentEnquiry)
+router.use('/loan', LoanEnquiry)
+router.use('/accommodation', Accommodation)
+router.use('/forex', Forex)
+
+
 
 //Global Setting API
 router.use('/status', Status )

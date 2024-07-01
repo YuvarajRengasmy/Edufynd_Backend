@@ -1,8 +1,7 @@
 import { LoanEnquiry, LoanEnquiryDocument } from '../model/loanEnquiry.model'
 import { validationResult } from "express-validator";
-
-import { response, transporter } from "../helper/commonResponseHandler";
-import { clientError, errorMessage } from "../helper/ErrorMessage";
+import { response, transporter } from "../../helper/commonResponseHandler";
+import { clientError, errorMessage } from "../../helper/ErrorMessage";
 
 
 var activity = "LoanEnquiry";

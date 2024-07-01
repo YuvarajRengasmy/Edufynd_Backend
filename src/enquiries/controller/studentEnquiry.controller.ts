@@ -1,8 +1,8 @@
 import { StudentEnquiry, StudentEnquiryDocument } from '../model/studentEnquiry.model'
 import { validationResult } from "express-validator";
-import * as TokenManager from "../utils/tokenManager";
-import { response, transporter } from "../helper/commonResponseHandler";
-import { clientError, errorMessage } from "../helper/ErrorMessage";
+import * as TokenManager from "../../utils/tokenManager";
+import { response, transporter } from "../../helper/commonResponseHandler";
+import { clientError, errorMessage } from "../../helper/ErrorMessage";
 import csv = require("csvtojson")
 
 var activity = "StudentEnquiry";
