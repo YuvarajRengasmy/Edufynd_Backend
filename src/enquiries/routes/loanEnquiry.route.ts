@@ -1,8 +1,8 @@
 import {Router} from 'express';
 import { getAllLoanEnquiry,getSingleLoanEnquiry, createLoanEnquiry,updateLoanEnquiry, deleteLoanEnquiry,getFilteredLoanEnquiry} from '../controller/loanEnquiry.controller';
-import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
+import { basicAuthUser } from '../../middleware/checkAuth';
+import { checkSession } from '../../utils/tokenManager';
 
 const router:Router=Router();
 
@@ -27,7 +27,7 @@ router.post('/',
          createLoanEnquiry
 );
 
-router.put('/',             // update Enquiry
+router.put('/',          
     basicAuthUser,
     // checkSession,
     checkRequestBodyParams('_id'),

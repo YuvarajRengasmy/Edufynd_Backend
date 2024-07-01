@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose'
 
 
+
 export interface CountryDocument extends mongoose.Document {
     country?: string;
     createdOn?: Date;
@@ -17,5 +18,6 @@ const countrySchema = new mongoose.Schema({
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
+
 
 export const Country = mongoose.model("CountryName", countrySchema)

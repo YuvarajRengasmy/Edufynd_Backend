@@ -4,6 +4,7 @@ export interface AgentDocument extends mongoose.Document {
   _id?: any;
   studentId?: any;
   agentCode?: string;
+  agentName?: string;
   businessName?: string;
   addressLine1?: string;
   addressLine2?: string;
@@ -11,7 +12,12 @@ export interface AgentDocument extends mongoose.Document {
   email?: string;
   mobileNumber?: string;
   whatsAppNumber?: string;
-  bankDetail?: string;
+// Bank Details
+  accountName?: string;
+  accountNumber?: string;
+  bankName?: string;
+  ifsc?: string;
+  branch?: string;
   panNumberIndividual?: string;
   panNumberCompany?: string; // If applicable
   gstn?: string; // Optional
@@ -50,7 +56,12 @@ const agentSchema = new mongoose.Schema({
   email: { type: String, required: true },
   mobileNumber: { type: String, required: true },
   whatsAppNumber: { type: String },
-  bankDetail: { type: String },
+  // Bank Details
+  accountName: {type: String},
+  accountNumber: {type: String},
+  bankName: {type: String},
+  ifsc: {type: String},
+  branch: {type: String},
   panNumberIndividual: { type: String },
   panNumberCompany: { type: String },   //(if applicable)
   gstn: { type: String },

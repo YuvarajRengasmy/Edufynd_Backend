@@ -1,8 +1,7 @@
 import { LoanEnquiry, LoanEnquiryDocument } from '../model/loanEnquiry.model'
 import { validationResult } from "express-validator";
-
-import { response, transporter } from "../helper/commonResponseHandler";
-import { clientError, errorMessage } from "../helper/ErrorMessage";
+import { response, transporter } from "../../helper/commonResponseHandler";
+import { clientError, errorMessage } from "../../helper/ErrorMessage";
 
 
 var activity = "LoanEnquiry";
@@ -69,7 +68,7 @@ export let updateLoanEnquiry = async (req, res, next) => {
                     didYouApplyForLoanElsewhere: loanEnquiryDetails.didYouApplyForLoanElsewhere,
                     chooseTheBankYouPreviouslyApplied: loanEnquiryDetails.chooseTheBankYouPreviouslyApplied,
                     statusOfPreviousApplication: loanEnquiryDetails.statusOfPreviousApplication,
-                    name: loanEnquiryDetails.name,
+                    coApplicantName: loanEnquiryDetails.coApplicantName,
                     age: loanEnquiryDetails.age,
                     employmentStatus: loanEnquiryDetails.employmentStatus,
                     incomeDetails: loanEnquiryDetails.incomeDetails,

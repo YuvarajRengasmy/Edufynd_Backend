@@ -30,6 +30,7 @@ export const getSingleCountry = async (req, res) => {
 
 
 export let createCountry = async (req, res, next) => {
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {

@@ -108,7 +108,11 @@ export let updateAgent = async (req, res, next) => {
 
                     businessName: agentDetails.businessName,
                     whatsAppNumber: agentDetails.whatsAppNumber,
-                    bankDetail: agentDetails.bankDetail,
+                    accountName: agentDetails.accountName,
+                    accountNumber:agentDetails.accountNumber,
+                    bankName: agentDetails.bankName,
+                    ifsc:agentDetails.ifsc,
+                    branch: agentDetails.branch,
                     panNumberIndividual: agentDetails.panNumberIndividual,
                     panNumberCompany: agentDetails.panNumberCompany,
                     gstn: agentDetails.gstn,
