@@ -49,7 +49,7 @@ export let checkSession = async (req, res, next) => {
         const tokenValue = token.split(' ')[1].trim();
         if (headerType.trim() === "Bearer") {
             try {
-                jwt.verify(tokenValue, 'edufynd', function (err, tokendata) {
+                await jwt.verify(tokenValue, 'edufynd', function (err, tokendata) {
                     if (err) {
                         return res.status(400).json({ message: clientError.token.sessionExpire })
                                 }

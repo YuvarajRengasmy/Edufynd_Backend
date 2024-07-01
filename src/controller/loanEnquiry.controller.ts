@@ -69,7 +69,7 @@ export let updateLoanEnquiry = async (req, res, next) => {
                     didYouApplyForLoanElsewhere: loanEnquiryDetails.didYouApplyForLoanElsewhere,
                     chooseTheBankYouPreviouslyApplied: loanEnquiryDetails.chooseTheBankYouPreviouslyApplied,
                     statusOfPreviousApplication: loanEnquiryDetails.statusOfPreviousApplication,
-                    name: loanEnquiryDetails.name,
+                    coApplicantName: loanEnquiryDetails.coApplicantName,
                     age: loanEnquiryDetails.age,
                     employmentStatus: loanEnquiryDetails.employmentStatus,
                     incomeDetails: loanEnquiryDetails.incomeDetails,

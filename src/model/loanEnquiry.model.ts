@@ -17,7 +17,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     chooseTheBankYouPreviouslyApplied?: string;
     statusOfPreviousApplication?: string;
     // Who is your co-applicant?
-    name?: string;
+    coApplicantName?: string;
     age?: string;
     employmentStatus?: string
     incomeDetails?: string;
@@ -48,7 +48,7 @@ const loanEnquirySchema = new mongoose.Schema({
     chooseTheBankYouPreviouslyApplied: {type: String},
     statusOfPreviousApplication: {type: String},
     // Who is your co-applicant?
-    name: {type: String},
+    coApplicantName: {type: String},
     age: {type: String},
     employmentStatus: {type: String},
     incomeDetails: {type: String},
