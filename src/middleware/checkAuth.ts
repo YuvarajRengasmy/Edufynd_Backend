@@ -28,7 +28,9 @@ import { Agent, AgentDocument } from '../model/agent.model'
 // }
 
 export let basicAuthUser = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
+    // const authHeader = req.headers['authorization'];
+    var authHeader = auth(req);
+    console.log("pp",authHeader )
     if (authHeader && authHeader.startsWith('Basic ')) {
         const base64Credentials = authHeader.split(' ')[1];
         const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');

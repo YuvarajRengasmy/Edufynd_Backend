@@ -5,6 +5,7 @@ export interface AgentDocument extends mongoose.Document {
   studentId?: any;
   agentCode?: string;
   agentName?: string;
+  source?: string;
   businessName?: string;
   addressLine1?: string;
   addressLine2?: string;
@@ -50,6 +51,7 @@ export interface AgentDocument extends mongoose.Document {
 const agentSchema = new mongoose.Schema({
   _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
   agentCode: { type: String },
+  source: {type: String},
   studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
   agentName: { type: String },
   businessName: { type: String },
