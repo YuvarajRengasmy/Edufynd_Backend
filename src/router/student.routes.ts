@@ -1,8 +1,6 @@
 import {Router} from 'express';
 import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
-    createStudentBySuperAdmin,getFilteredStudent,
-   
-    editStudentProfileBySuperAdmin} from '../controller/student.controller';
+    createStudentBySuperAdmin,getFilteredStudent,editStudentProfileBySuperAdmin} from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
@@ -15,14 +13,14 @@ const router:Router=Router();
 
 router.get('/',                          //get all users
     basicAuthUser,
-    //  checkSession,
+     checkSession,
     getAllStudent
 );
 
 
 router.get('/getSingleStudent',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleStudent,
 );
@@ -37,7 +35,7 @@ router.post('/contact', createContact);
 
 router.put('/',             // update user
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkRequestBodyParams('_id'),
     upload.fields([
         { name: 'photo', maxCount: 1 },
@@ -54,7 +52,7 @@ router.put('/',             // update user
 
 router.delete('/',                //delete user
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     deleteStudent
 );
@@ -62,14 +60,14 @@ router.delete('/',                //delete user
 
 router.put('/getFilterStudent',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredStudent,
 );
 
 
 router.put('/getFilterStudentBySuperAdmin',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredStudentBySuperAdmin,
 );
 
@@ -82,20 +80,20 @@ router.post('/import',      // CSV File to json and Store into Database
 
 router.put('/createStudentBySuperAdmin',             //create student by super Admin
     basicAuthUser,
-    // checkSession,
+    checkSession,
     // checkQuery('_id'),
     createStudentBySuperAdmin
 );
 
 router.put('/editStudentBySuperAdmin',             //Update student by super Admin
     basicAuthUser,
-    // checkSession,
+    checkSession,
     editStudentProfileBySuperAdmin
 );
 
 router.put('/forgot',             //create student by super Admin
     basicAuthUser,
-    // checkSession,
+    checkSession,
     // // checkQuery('_id'),
     forgotPassword
 );
