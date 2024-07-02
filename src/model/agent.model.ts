@@ -71,7 +71,7 @@ const agentSchema = new mongoose.Schema({
   // agentPayout: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AgentPayout' }],//•Agent payout (List, Add, Edit, Delete)
   agentsCommission: { type: Number },  // (Will be calculated based on the University Commission & Agent Payout) Decimal value to the nearest – To be viewed only for agents
   agentBusinessLogo: { type: String },  // (Optional)
-  countryInterested: { type: String },
+  countryInterested:[String],
   password: { type: String },
   confirmPassword: { type: String },
 
