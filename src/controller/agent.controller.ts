@@ -107,6 +107,8 @@ export let updateAgent = async (req, res, next) => {
                 $set: {
 
                     businessName: agentDetails.businessName,
+                    agentName: agentDetails.agentName,
+                    mobileNumber: agentDetails.mobileNumber,
                     whatsAppNumber: agentDetails.whatsAppNumber,
                     accountName: agentDetails.accountName,
                     accountNumber:agentDetails.accountNumber,

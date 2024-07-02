@@ -1,5 +1,6 @@
 import * as auth from 'basic-auth';
 import { clientError } from '../helper/ErrorMessage';
+import * as jwt from 'jsonwebtoken';
 import { Agent, AgentDocument } from '../model/agent.model'
 
 /**
@@ -9,21 +10,47 @@ import { Agent, AgentDocument } from '../model/agent.model'
  */
 
 
-export let basicAuthUser = function (req, res, next) {
-    console.log("basicauth verify")
-    var credentials = auth(req);
-    console.log('credentials',credentials);
-    if (!credentials || credentials.name != process.env.basicAuthUser || credentials.pass != process.env.basicAuthKey) {
-        res.setHeader('WWW-Authenticate', 'Basic realm="example"')
-        return res.status(401).json({
-            success: false,
-            statusCode: 499,
-            message: clientError.token.unauthRoute,
-        });
-    } else {
-        next();
+// export let basicAuthUser = function (req, res, next) {
+//     console.log("basicauth verify")
+   
+//     var credentials = auth(req);
+//     console.log('credentials',credentials);
+//     if (!credentials || credentials.name != process.env.basicAuthUser || credentials.pass != process.env.basicAuthKey) {
+//         res.setHeader('WWW-Authenticate', 'Basic realm="example"')
+//         return res.status(401).json({
+//             success: false,
+//             statusCode: 499,
+//             message: clientError.token.unauthRoute,
+//         });
+//     } else {
+//         next();
+//     }
+// }
+
+export let basicAuthUser = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Basic ')) {
+        const base64Credentials = authHeader.split(' ')[1];
+        const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+        const [username, password] = credentials.split(':');
+
+        // Validate credentials (this should be replaced with your own validation logic)
+        if (username === process.env.basicAuthUser && password === process.env.basicAuthKey) {
+            const tokenData = { name: username }; // Add any other data needed in the token
+            const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '24h' });
+
+            // Replace the Basic header with Bearer token
+            req.headers['authorization'] = `Bearer ${token}`;
+        } else {
+            return res.status(401).json({
+                success: false,
+                statusCode: 499,
+                message: 'Invalid credentials',
+            });
+        }
     }
-}
+    next();
+};
 
 
 // export const validateSuperAdminId = async (req, res, next) => {
