@@ -3,7 +3,7 @@ import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
-import { response, transporter} from "../helper/commonResponseHandler";
+import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
 import csv = require('csvtojson')
@@ -105,15 +105,15 @@ export let updateAgent = async (req, res, next) => {
             const agentDetails: AgentDocument = req.body;
             const updateData = await Agent.findOneAndUpdate({ _id: agentDetails._id }, {
                 $set: {
-
+                    source: agentDetails.source,
                     businessName: agentDetails.businessName,
                     agentName: agentDetails.agentName,
                     mobileNumber: agentDetails.mobileNumber,
                     whatsAppNumber: agentDetails.whatsAppNumber,
                     accountName: agentDetails.accountName,
-                    accountNumber:agentDetails.accountNumber,
+                    accountNumber: agentDetails.accountNumber,
                     bankName: agentDetails.bankName,
-                    ifsc:agentDetails.ifsc,
+                    ifsc: agentDetails.ifsc,
                     branch: agentDetails.branch,
                     panNumberIndividual: agentDetails.panNumberIndividual,
                     panNumberCompany: agentDetails.panNumberCompany,
@@ -173,7 +173,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             const insertAgent = await createAgent.save();
             const newHash = await decrypt(insertAgent["password"]);
             const mailOptions = {
-                from: 'balan9133civil@gmail.com', 
+                from: 'balan9133civil@gmail.com',
                 to: insertAgent.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertAgent.agentName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAgent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
@@ -189,7 +189,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             });
             response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
                 agent: insertAgent,
-    
+
 
             }, 'Agent created successfully by SuperAdmin.');
 
@@ -351,19 +351,19 @@ export const csvToJson = async (req, res) => {
                 agentName: csvData[i].AgentName,
                 businessName: csvData[i].BusinessName,
                 email: csvData[i].Email,
-                mobileNumber:csvData[i].MobileNumber,
-                whatsAppNumber:csvData[i].WhatsAppNumber,
+                mobileNumber: csvData[i].MobileNumber,
+                whatsAppNumber: csvData[i].WhatsAppNumber,
                 addressLine1: csvData[i].addressLine1,
                 addressLine2: csvData[i].addressLine2,
                 addressLine3: csvData[i].addressLine3,
                 panNumberIndividual: csvData[i].PanNumberIndividual,
-                panNumberCompany: csvData[i].PanNumberCompany,   
-                gstn:csvData[i].GSTN,
-                inc: csvData[i].INC,  
+                panNumberCompany: csvData[i].PanNumberCompany,
+                gstn: csvData[i].GSTN,
+                inc: csvData[i].INC,
                 staffName: csvData[i].StaffName,
                 staffContactNo: csvData[i].StaffContactNo,
-                agentsCommission:csvData[i].AcademicRequirementgentsCommission, 
-                countryInterested:csvData[i].CountryInterested,
+                agentsCommission: csvData[i].AcademicRequirementgentsCommission,
+                countryInterested: csvData[i].CountryInterested,
 
             });
         }
