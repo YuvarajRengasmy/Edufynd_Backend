@@ -128,12 +128,7 @@ export let updateAgent = async (req, res, next) => {
                     addressLine3: agentDetails.addressLine3,
                     staffName: agentDetails.staffName,
                     staffContactNo: agentDetails.staffContactNo,
-                    mobileNumber:agentDetails.mobileNumber,
                     email: agentDetails.email,
-                    agentName: agentDetails.agentName,
-
-
-
                     modifiedOn: agentDetails.modifiedOn,
                     modifiedBy: agentDetails.modifiedBy,
                 }
