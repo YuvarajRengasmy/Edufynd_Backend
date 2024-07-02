@@ -1,8 +1,6 @@
 import { Router } from 'express';
 const router: Router = Router();
 
-
-
 // All Module Routes
 import SuperAdmin from './superAdmin.routes'
 import Admin from './admin.routes'
@@ -22,6 +20,7 @@ import StudentEnquiry from '../enquiries/routes/studentEnquiry.route'
 import LoanEnquiry  from '../enquiries/routes/loanEnquiry.route';
 import Accommodation from '../enquiries/routes/accommodation.route'
 import Forex from '../enquiries/routes/forex.route'
+import Flight from '../enquiries/routes/flightTicket.route'
 
 //Global Setting Routes
 import Status from '../setting/globalSetting/router/status.routes'
@@ -65,6 +64,7 @@ router.use('/studentEnquiry', StudentEnquiry)
 router.use('/loan', LoanEnquiry)
 router.use('/accommodation', Accommodation)
 router.use('/forex', Forex)
+router.use('/flight', Flight)
 
 
 
@@ -85,7 +85,7 @@ router.use('/countryName', CountryName)
 router.use('/offerTAT', OfferTAT)
 router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
- router.use('/typeOfClient', TypeOfClient)
+router.use('/typeOfClient', TypeOfClient)
 
 
 

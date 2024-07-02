@@ -20,5 +20,39 @@ export interface FlightDocument extends mongoose.Document {
     to?: string;
     dateOfTravel?: string;
 
-
+    isDeleted?: boolean;
+    createdOn?: Date;
+    createdBy?: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
 }
+
+
+const flightTicketSchema = new mongoose.Schema({
+    source: {type: String},
+    //If Student request for the following
+    studentName: {type: String},
+    passportNo: {type: String},
+    dob: {type: String},
+    primaryNumber: {type: String},
+    whatsAppNumber: {type: String},
+    email: {type: String},
+    //If Agent request for the following
+    agentName: {type: String},
+    businessName: {type: String},
+    agentPrimaryNumber: {type: String},
+    agentWhatsAppNumber: {type: String},
+    agentEmail: {type: String},
+    from: {type: String},
+    to: {type: String},
+    dateOfTravel: {type: String},
+
+    isDeleted: { type: Boolean, default: false },
+    createdOn: { type: Date },
+    createdBy: { type: String },
+    modifiedOn: { type: Date },
+    modifiedBy: { type: String },
+
+})
+
+export const Flight = mongoose.model("FlightTicket", flightTicketSchema)

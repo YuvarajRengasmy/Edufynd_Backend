@@ -36,7 +36,7 @@ router.put('/',
 );
 
 
-router.delete('/',                //delete Enquiry
+router.delete('/',               
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),

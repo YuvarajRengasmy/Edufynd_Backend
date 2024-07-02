@@ -27,7 +27,7 @@ router.post('/',
          createStudentEnquiry
 );
 
-router.put('/',             // update Enquiry
+router.put('/',            
     basicAuthUser,
     // checkSession,
     checkRequestBodyParams('_id'),
@@ -36,7 +36,7 @@ router.put('/',             // update Enquiry
 );
 
 
-router.delete('/',                //delete Enquiry
+router.delete('/',              
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
