@@ -55,7 +55,7 @@ router.post('/createAdminBySuperAdmin',             //create admin by super Admi
 
 router.put('/editAdminBySuperAdmin',             //Update admin by super Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     editAdminProfileBySuperAdmin
 );
 
