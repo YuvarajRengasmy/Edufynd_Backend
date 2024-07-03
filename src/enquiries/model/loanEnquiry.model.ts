@@ -19,7 +19,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     // Who is your co-applicant?
     coApplicantName?: string;
     age?: string;
-    employmentStatus?: string
+    employmentStatus?: string;
     incomeDetails?: string;
     willyouSubmitYourCollateral?: String;
 
