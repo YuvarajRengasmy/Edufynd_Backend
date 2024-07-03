@@ -24,16 +24,13 @@ export interface AgentDocument extends mongoose.Document {
   gstn?: string; // Optional
   inc?: string; // If applicable
   staffName?: string;
-  staffContactNo?: string;
-  // agentPayout?: string[]; // List of payouts
+  staffContactNo?: string; // agentPayout?: string[]; // List of payouts
   agentsCommission?: number; // Will be calculated based on the University Commission & Agent Payout
   agentBusinessLogo?: string; // Optional
   countryInterested?: string[];
-
   resetOtp?: string;
   resetOtpExpires?: number;
   isDeleted?: boolean;
-
   privileges?: string;
   createdOn?: Date;
   createdBy?: string;
