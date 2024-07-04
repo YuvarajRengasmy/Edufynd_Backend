@@ -400,7 +400,7 @@ export const editStaffProfileByAdmin = async (req, res) => {
                     manageApplications:staffDetails.manageApplications,         
                     activeInactive: staffDetails.activeInactive,             
                     teamLead: staffDetails.teamLead,
-                    status:  staffDetails.status,
+                 
                     modifiedOn: staffDetails.modifiedOn,
                     modifiedBy:  staffDetails.modifiedBy,
                 }

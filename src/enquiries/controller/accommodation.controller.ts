@@ -27,6 +27,29 @@ export let getSingleAccommodation = async (req, res, next) => {
     }
 }
 
+const generateNextAccommodationID = async (): Promise<string> => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const enquiry = await Accommodation.find({}, 'accommodationID').exec();
+
+    const maxCounter = enquiry.reduce((max, app) => {
+        const appCode = app.accommodationID;
+        const parts = appCode.split('_')
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
+
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `EA_${formattedCounter}`;
+};
+
+
 
 export let createAccommodation = async (req, res, next) => {
     const errors = validationResult(req);
@@ -35,6 +58,7 @@ export let createAccommodation = async (req, res, next) => {
 
             const accommodationDetails: AccommodationDocument = req.body;
             accommodationDetails.createdOn = new Date();
+            accommodationDetails.accommodationID = await generateNextAccommodationID()
             const createData = new Accommodation(accommodationDetails);
             let insertData = await createData.save();
 

@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose'
 
 export interface AccommodationDocument extends mongoose.Document {
+    accommodationID?: any;
     studentName?: string;
     passportNumber?: string;
     source?: string;
@@ -30,6 +31,7 @@ export interface AccommodationDocument extends mongoose.Document {
 }
 
 const accommodationSchema = new mongoose.Schema({
+    accommodationID: {type: String},
     studentName: {type: String},
     passportNumber: {type: String},
     source: {type: String},
