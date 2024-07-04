@@ -358,7 +358,7 @@ export let createStaffByAdmin = async (req, res, next) => {
             const staffDetails: StaffDocument = req.body;
 
             // Admin exist, proceed to create a new staff
-            const createstaff = new Admin(staffDetails);
+            const createstaff = new Staff(staffDetails);
 
             // Save the staff to the database
             const insertStaff = await createstaff.save();

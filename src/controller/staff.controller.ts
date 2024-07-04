@@ -28,12 +28,41 @@ export const getSingleStaff = async (req, res) => {
     }
 }
 
+const generateNextStaffID = async (): Promise<string> => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const staff = await Staff.find({}, 'employeeID').exec();
+   
+
+    //  if (student.length === 0) {
+    //     // If no student codes exist, start with ST_101
+    //     return 'ST_101';
+    //   }
+    const maxCounter = staff.reduce((max, app) => {
+        const appCode = app.employeeID;
+        const parts = appCode.split('_')
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
+
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `EM_${formattedCounter}`;
+};
+
 
 export let createStaff = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const staffDetails: StaffDocument = req.body;
+            staffDetails.createdOn = new Date();
+            staffDetails.employeeID = await generateNextStaffID();
             const createData = new Staff(staffDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-Staff', true, 200, insertData, clientError.success.savedSuccessfully);
@@ -107,6 +136,8 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             const staffDetails: StaffDocument = req.body;
             req.body.password = await encrypt(req.body.password)
             req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+            staffDetails.createdOn = new Date();
+            staffDetails.employeeID = await generateNextStaffID();
             const createStaff = new Staff(staffDetails);
             const insertStaff = await createStaff.save();
             const newHash = await decrypt(insertStaff["password"]);
@@ -135,6 +166,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             }, 'Staff created successfully by SuperAdmin.');
 
         } catch (err: any) {
+        
             response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {

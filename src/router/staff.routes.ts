@@ -48,12 +48,12 @@ router.delete('/',                  //delete staff
 
 router.post('/createStaffBySuperAdmin',             //create staff by super Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createStaffBySuperAdmin
 );
 
-router.put('/getFilterStaff',
+router.put('/getFilterStaffSuperAdmin',
     basicAuthUser,
     checkSession,
     getFilteredStaff,
