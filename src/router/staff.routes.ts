@@ -9,13 +9,13 @@ const router: Router = Router();
 
 router.get('/',                //get all staff Details
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getAllStaff
 );
 
 router.get('/getSingleStaff',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleStaff,
 );
@@ -23,14 +23,14 @@ router.get('/getSingleStaff',
 
 router.post('/',           // create staff
     basicAuthUser,
-    checkSession,
+    // checkSession,
     createStaff
 );
 
 
 router.put('/',                    // update Staff Details
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateStaff
@@ -39,7 +39,7 @@ router.put('/',                    // update Staff Details
 
 router.delete('/',                  //delete staff
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     deleteStaff
 );
@@ -48,14 +48,14 @@ router.delete('/',                  //delete staff
 
 router.post('/createStaffBySuperAdmin',             //create staff by super Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createStaffBySuperAdmin
 );
 
 router.put('/getFilterStaff',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getFilteredStaff,
 );
 

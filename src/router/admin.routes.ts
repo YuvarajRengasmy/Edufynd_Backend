@@ -79,7 +79,7 @@ router.put('/editStudentByAdmin',             //Update student by Admin
 
 router.post('/createStaffByAdmin',             //create staff by  Admin
     basicAuthUser,
-    checkSession,
+    // checkSession,
     // checkQuery('_id'),
     createStaffByAdmin
 );
