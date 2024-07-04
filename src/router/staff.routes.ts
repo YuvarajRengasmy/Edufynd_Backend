@@ -53,7 +53,7 @@ router.post('/createStaffBySuperAdmin',             //create staff by super Admi
     createStaffBySuperAdmin
 );
 
-router.put('/getFilterStaff',
+router.put('/getFilterStaffSuperAdmin',
     basicAuthUser,
     // checkSession,
     getFilteredStaff,
