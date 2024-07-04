@@ -29,9 +29,9 @@ export let getSingleLoanEnquiry = async (req, res, next) => {
 
 const generateNextLoanID = async (): Promise<string> => {
     // Retrieve all applicant IDs to determine the highest existing applicant counter
-    const forex = await LoanEnquiry.find({}, 'loanID').exec();
+    const loan = await LoanEnquiry.find({}, 'loanID').exec();
 
-    const maxCounter = forex.reduce((max, app) => {
+    const maxCounter = loan.reduce((max, app) => {
         const appCode = app.loanID;
         const parts = appCode.split('_')
         if (parts.length === 2) {
@@ -62,6 +62,7 @@ export let createLoanEnquiry = async (req, res, next) => {
 
             response(req, res, activity, 'Level-2', 'LoanEnquiry-Created', true, 200, insertData, clientError.success.registerSuccessfully);
         } catch (err: any) {
+          
             response(req, res, activity, 'Level-3', 'LoanEnquiry-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }

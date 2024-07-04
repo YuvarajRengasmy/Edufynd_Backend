@@ -22,12 +22,21 @@ import Accommodation from '../enquiries/routes/accommodation.route'
 import Forex from '../enquiries/routes/forex.route'
 import Flight from '../enquiries/routes/flightTicket.route'
 
+
+// Invoice Routes
+import SenderInvoice from '../finance/routes/senderInvoice.route';
+import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
+
+
+
 //Global Setting Routes
 import Status from '../setting/globalSetting/router/status.routes'
 import Country from '../setting/globalSetting/router/country.routes'
 import InTake from '../setting/globalSetting/router/intake.routes'
 import Email from '../setting/globalSetting/router/email.routes'
 import Currency from '../setting/globalSetting/router/currency.routes'
+
+
 
 //Drop Down Setting Routes
 import CourseType from '../setting/moduleSetting/router/courseType.route'
@@ -65,6 +74,12 @@ router.use('/loan', LoanEnquiry)
 router.use('/accommodation', Accommodation)
 router.use('/forex', Forex)
 router.use('/flight', Flight)
+
+// Invoice API
+router.use('/senderInvoice', SenderInvoice)
+router.use('/receiverInvoice', ReceiverInvoice)
+
+
 
 
 

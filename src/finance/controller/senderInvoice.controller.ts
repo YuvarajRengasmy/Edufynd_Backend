@@ -56,6 +56,10 @@ export let createSenderInvoice = async (req, res, next) => {
             const invoiceDetails: SenderInvoiceDocument = req.body;
             invoiceDetails.createdOn = new Date();
             invoiceDetails.invoiceNumber = await generateSenderInvoice()
+            let a = Number(invoiceDetails.amountReceivedInINRAndCurrency)/ Number(invoiceDetails)
+            if(invoiceDetails.commission === "Fixed"){
+                
+            }
             const createData = new SenderInvoice(invoiceDetails);
             let insertData = await createData.save();
 
