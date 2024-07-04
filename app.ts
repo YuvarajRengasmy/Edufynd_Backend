@@ -27,8 +27,8 @@ export const app: any = {
 
 	initConfig() {
 		this.instance.use(cors());
-		this.instance.use(bodyParser.json());
-		this.instance.use(bodyParser.urlencoded({ extended: false }));
+		this.instance.use(bodyParser.json({limit: "50mb"}));
+		this.instance.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
 		this.instance.use(function (req, res, next) {
 			res.header("Access-Control-Allow-Origin", "*");
 			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, authtoken, access_token, Accept, authorization");

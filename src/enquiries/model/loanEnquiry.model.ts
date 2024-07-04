@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface LoanEnquiryDocument extends mongoose.Document {
+    loanID?: string;
     studentName?: string;
     whatsAppNumber?: string;
     primaryNumber?: string;
@@ -34,6 +35,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
 
 
 const loanEnquirySchema = new mongoose.Schema({
+    loanID: {type: String},
     studentName: {type: String},
     whatsAppNumber: {type: String},
     primaryNumber: {type: String},

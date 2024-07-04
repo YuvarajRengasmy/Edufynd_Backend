@@ -52,7 +52,7 @@ const generateNextStaffID = async (): Promise<string> => {
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
     // Return the new Applicantion Code
-    return `EM_${formattedCounter}`;
+    return `EMP_${formattedCounter}`;
 };
 
 
@@ -98,7 +98,7 @@ export const updateStaff = async (req, res) => {
                     manageApplications:staffDetails.manageApplications,         
                     activeInactive: staffDetails.activeInactive,             
                     teamLead: staffDetails.teamLead,
-                    status:  staffDetails.status,
+                
                     modifiedOn: staffDetails.modifiedOn,
                     modifiedBy:  staffDetails.modifiedBy,
                 }
