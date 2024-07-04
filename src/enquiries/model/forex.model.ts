@@ -3,7 +3,6 @@ import * as mongoose from 'mongoose'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
     source?: string
-    //If Student request for the following
     studentName?: string;
     country?: string;
     currency?: string;
@@ -13,7 +12,6 @@ export interface ForexDocument extends mongoose.Document {
     primaryNumber?: string;
     whatsAppNumber?: string;
     email?: string;
-    //If Agent request for the following
     agentName?: string;
     businessName?: string;
     agentPrimaryNumber?: string;
