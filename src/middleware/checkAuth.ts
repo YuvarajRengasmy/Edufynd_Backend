@@ -27,6 +27,31 @@ export let basicAuthUser = function (req, res, next) {
     }
 }
 
+
+
+// export let basicAuthUser = function (req, res, next) {
+//     console.log("basicauth verify")
+   
+//     var credentials = auth(req);
+//     console.log('credentials',credentials);
+// if (credentials.name === process.env.basicAuthUser &&  credentials.pass === process.env.basicAuthKey) {
+//     const tokenData = { name: credentials.name }; // Add any other data needed in the token
+//     const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '24h' });
+
+//     // Replace the Basic header with Bearer token
+//     req.headers['authorization'] = `Bearer ${token}`;
+//     next();
+// } else {
+//     return res.status(401).json({
+//         success: false,
+//         statusCode: 499,
+//         message: 'Invalid credentials',
+//     });
+// }
+// }
+
+
+
 // export let basicAuthUser = (req, res, next) => {
 //     // const authHeader = req.headers['authorization'];
 //     var authHeader = auth(req);
@@ -34,11 +59,11 @@ export let basicAuthUser = function (req, res, next) {
 //     if (authHeader && authHeader.startsWith('Basic ')) {
 //         const base64Credentials = authHeader.split(' ')[1];
 //         const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-//         const [username, password] = credentials.split(':');
+//         const [name, pass] = credentials.split(':');
 
 //         // Validate credentials (this should be replaced with your own validation logic)
-//         if (username === process.env.basicAuthUser && password === process.env.basicAuthKey) {
-//             const tokenData = { name: username }; // Add any other data needed in the token
+//         if (name === process.env.basicAuthUser && pass === process.env.basicAuthKey) {
+//             const tokenData = { name: name }; // Add any other data needed in the token
 //             const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '24h' });
 
 //             // Replace the Basic header with Bearer token

@@ -64,7 +64,9 @@ export let createAgent = async (req, res, next) => {
 
                 const agentDetails: AgentDocument = req.body;
                 // const createData = new Agent(agentDetails);
+                agentDetails.createdOn = new Date()
                 agentDetails.agentCode = await generateNextAgentID();
+              
                 const createData = new Agent(agentDetails);
 
                 let insertData = await createData.save();
