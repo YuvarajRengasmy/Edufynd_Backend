@@ -21,12 +21,12 @@ export interface StaffDocument extends mongoose.Document {
     idCard?: boolean;    // – Yes / No (If ‘Yes’ card to be generated)
     manageApplications?: string;   // Yes/No
     //If Yes, List Country & University The user can only handle applications of these universities and country
-    activeInactive?: boolean    // – User
+    activeInactive?:string;   // – User
     teamLead?: string;     // – Select Employees and permission to be viewed.
     password?: string;
     confirmPassword?: string;
     isDeleted?: boolean;
-    status?: number;
+  
     privileges?: string;
     createdOn?: Date;
     createdBy?: string;
@@ -58,7 +58,7 @@ const staffSchema = new mongoose.Schema({
     password: { type: String },
     confirmPassword: { type: String },  
     isDeleted: { type: Boolean, default: false },
-    status: { type: Number, default: 1 },
+  
     privileges: {type: String},  //(To be assigned by Super Admin) 
     createdOn: { type: Date },
     createdBy: { type: String },
