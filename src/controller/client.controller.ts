@@ -93,7 +93,7 @@ export let updateClient = async (req, res, next) => {
                     emailID: clientDetails.emailID,
                     staffStatus: clientDetails.staffStatus,
                     privileges: clientDetails.privileges,
-                    modifiedOn: clientDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: clientDetails.modifiedBy,
                 }
             });

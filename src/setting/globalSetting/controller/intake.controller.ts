@@ -57,7 +57,7 @@ export const updateInTake = async (req, res) => {
                     startDate: intakeData.startDate,
                     endDate: intakeData.endDate,
                  
-                    modifiedOn: intakeData.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:  intakeData.modifiedBy,
                 },
               

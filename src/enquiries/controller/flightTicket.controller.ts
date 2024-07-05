@@ -26,27 +26,27 @@ export let getSingleFlightTicketEnquiry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Flight Ticket Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
-// const generateNextFlightId = async (): Promise<string> => {
-//     // Retrieve all applicant IDs to determine the highest existing applicant counter
-//     const forex = await Flight.find({}, 'flightID').exec();
+const generateNextFlightId = async (): Promise<string> => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const forex = await Flight.find({}, 'flightID').exec();
 
-//     const maxCounter = forex.reduce((max, app) => {
-//         const appCode = app.flightID;
-//         const parts = appCode.split('_')
-//         if (parts.length === 2) {
-//             const counter = parseInt(parts[1], 10)
-//             return counter > max ? counter : max;
-//         }
-//         return max;
-//     }, 100);
+    const maxCounter = forex.reduce((max, app) => {
+        const appCode = app.flightID;
+        const parts = appCode.split('_')
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
 
-//     // Increment the counter
-//     const newCounter = maxCounter + 1;
-//     // Format the counter as a string with leading zeros
-//     const formattedCounter = String(newCounter).padStart(3, '0');
-//     // Return the new Applicantion Code
-//     return `EF_${formattedCounter}`;
-// };
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `ET_${formattedCounter}`;
+};
 
 
 
@@ -57,6 +57,7 @@ export let createFlightTicketEnquiry = async (req, res, next) => {
 
             const flightDetails: FlightDocument = req.body;
             flightDetails.createdOn = new Date();
+            flightDetails.flightID = await generateNextFlightId()
             const createData = new Flight(flightDetails);
             let insertData = await createData.save();
 
@@ -89,8 +90,7 @@ export let updateFlightTicketEnquiry = async (req, res, next) => {
                     from: flightEnquiryDetails.from,
                     to: flightEnquiryDetails.to,
                     dateOfTravel: flightEnquiryDetails.dateOfTravel,
-
-                    modifiedOn: flightEnquiryDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:flightEnquiryDetails.modifiedBy,
                 }
 

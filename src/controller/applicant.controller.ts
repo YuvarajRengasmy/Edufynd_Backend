@@ -145,7 +145,7 @@ export let updateApplicant = async (req, res, next) => {
                     assignTo: applicantDetails.assignTo,
 
                     status: applicantDetails.status,
-                    modifiedOn: applicantDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: applicantDetails.modifiedBy,
                 }
             });

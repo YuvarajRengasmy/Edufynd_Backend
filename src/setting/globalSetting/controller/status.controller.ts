@@ -61,7 +61,7 @@ export const updateStatus = async (req, res) => {
                     $set: {
                         statusName: statusDetails.statusName,
                         duration: statusDetails.duration,
-                        modifiedOn: statusDetails.modifiedOn,
+                        modifiedOn: new Date(),
                         modifiedBy: statusDetails.modifiedBy,
                     },
                 },

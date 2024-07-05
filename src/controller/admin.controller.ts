@@ -358,7 +358,7 @@ export let createStaffByAdmin = async (req, res, next) => {
             const staffDetails: StaffDocument = req.body;
 
             // Admin exist, proceed to create a new staff
-            const createstaff = new Admin(staffDetails);
+            const createstaff = new Staff(staffDetails);
 
             // Save the staff to the database
             const insertStaff = await createstaff.save();
@@ -400,8 +400,8 @@ export const editStaffProfileByAdmin = async (req, res) => {
                     manageApplications:staffDetails.manageApplications,         
                     activeInactive: staffDetails.activeInactive,             
                     teamLead: staffDetails.teamLead,
-                    status:  staffDetails.status,
-                    modifiedOn: staffDetails.modifiedOn,
+                 
+                    modifiedOn: new Date(),
                     modifiedBy:  staffDetails.modifiedBy,
                 }
             });
