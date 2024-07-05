@@ -2,6 +2,7 @@ import { SenderInvoice, SenderInvoiceDocument } from '../model/senderInvoice.mod
 import { validationResult } from "express-validator";
 import { response,} from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
+import { toWords } from 'number-to-words';
 
 
 var activity = "Sender Invoice";
@@ -49,6 +50,7 @@ const generateSenderInvoice = async (): Promise<string> => {
 };
 
 export let createSenderInvoice = async (req, res, next) => {
+    console.log("gssst")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -56,10 +58,29 @@ export let createSenderInvoice = async (req, res, next) => {
             const invoiceDetails: SenderInvoiceDocument = req.body;
             invoiceDetails.createdOn = new Date();
             invoiceDetails.invoiceNumber = await generateSenderInvoice()
-            let a = Number(invoiceDetails.amountReceivedInINRAndCurrency)/ Number(invoiceDetails)
-            if(invoiceDetails.commission === "Fixed"){
-                
+
+            let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency)/Number(invoiceDetails.amountToBeReceivedCurrency))
+            commissionReceived = parseFloat(commissionReceived.toFixed(2));
+            invoiceDetails.INRValue = commissionReceived
+
+            let final;
+            // Now, GST and TDS calculated
+            if (invoiceDetails.tax === "yes") {
+                const withoutGST = commissionReceived / 1.18;
+                const addGST = withoutGST * 0.18;
+                const addTDS = withoutGST * 0.05;
+                final = commissionReceived - addTDS;
+            } else {
+                const addGST = commissionReceived * 0.18;
+                const addTDS = commissionReceived * 0.05;
+                final = commissionReceived - addTDS;
             }
+
+            final = parseFloat(final.toFixed(2));
+            invoiceDetails.netAmount = final;
+            invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
+        
+
             const createData = new SenderInvoice(invoiceDetails);
             let insertData = await createData.save();
 
@@ -94,8 +115,7 @@ export let updateSenderInvoice = async (req, res, next) => {
                     INRValue: invoiceDetails.INRValue,    
                     date: invoiceDetails.date,
                     
-           
-                    modifiedOn: invoiceDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:invoiceDetails.modifiedBy,
                 }
 

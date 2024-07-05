@@ -132,7 +132,7 @@ export let updateAgent = async (req, res, next) => {
                     staffContactNo: agentDetails.staffContactNo,
 
 
-                    modifiedOn: agentDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: agentDetails.modifiedBy,
                 }
 
@@ -284,7 +284,7 @@ export const editStudentProfileByAgent = async (req, res) => {
                     instagram: studentDetails.instagram,
                     linkedIn: studentDetails.linkedIn,
 
-                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,
                 }
 

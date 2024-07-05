@@ -99,7 +99,7 @@ export let updateStudentEnquiry = async (req, res, next) => {
                     doYouNeedSupportForLoan:  studentEnquiryDetails.doYouNeedSupportForLoan,
                     assignedTo:  studentEnquiryDetails.assignedTo,
 
-                    modifiedOn:  studentEnquiryDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:  studentEnquiryDetails.modifiedBy,
                 }
 

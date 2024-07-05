@@ -7,6 +7,7 @@ export interface ForexDocument extends mongoose.Document {
     studentName?: string;
     country?: string;
     currency?: string;
+    flag?: string;
     universityName?: string;
     studentID?: string;
     passportNo?: string;
@@ -39,6 +40,7 @@ const forexSchema = new mongoose.Schema({
     studentName: {type: String},
     country: {type: String},
     currency: {type: String},
+    flag: {type: String},
     universityName: {type: String},
     studentID: {type: String},
     passportNo: {type: String},

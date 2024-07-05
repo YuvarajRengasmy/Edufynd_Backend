@@ -92,7 +92,7 @@ export let updateReceiverInvoice = async (req, res, next) => {
                     amount: invoiceDetails.amount,
                     paymentMethod: invoiceDetails.paymentMethod,
            
-                    modifiedOn: invoiceDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:invoiceDetails.modifiedBy,
                 }
 
