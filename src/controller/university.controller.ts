@@ -67,6 +67,7 @@ export let updateUniversity = async (req, res, next) => {
                     banner: universityDetails.banner,
                     universityLogo: universityDetails.universityLogo,
                     countryName: universityDetails.countryName,
+                    about: universityDetails.about,
                     courseType: universityDetails.courseType,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
@@ -79,9 +80,6 @@ export let updateUniversity = async (req, res, next) => {
                     offerTAT: universityDetails.offerTAT,
                     founded: universityDetails.founded,
                     institutionType: universityDetails.institutionType,
-                    applicationFees: universityDetails.applicationFees,
-                    costOfLiving: universityDetails.costOfLiving,
-                    grossTuition: universityDetails.grossTuition,
                     paymentMethod: universityDetails.paymentMethod,
                     amount: universityDetails.amount,
                     percentage: universityDetails.percentage,
@@ -93,6 +91,11 @@ export let updateUniversity = async (req, res, next) => {
 
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
+
+
+                    // applicationFees: universityDetails.applicationFees,
+                    // costOfLiving: universityDetails.costOfLiving,
+                    // grossTuition: universityDetails.grossTuition,
 
                 }
             });
