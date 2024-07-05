@@ -7,6 +7,7 @@ export interface UniversityDocument extends mongoose.Document {
     appliedStudentId?: any;
     businessName?: string;
     universityName?: string; // University Name
+    about?: string;
     courseType?: any[];
     email?: string;
     banner?: string;
@@ -31,15 +32,16 @@ export interface UniversityDocument extends mongoose.Document {
     commissionPaidOn?: string;
     founded?: string;
     institutionType?: string;
-    applicationFees?: string;
-    costOfLiving?: string;
-    grossTuition?: string;
-
+   
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
+
+    // applicationFees?: string;
+    // costOfLiving?: string;
+    // grossTuition?: string;
 }
 
 
@@ -49,6 +51,7 @@ const universitySchema = new mongoose.Schema({
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
     universityName: { type: String },
+    about: {type: String},
     courseType: [String] ,
     email: { type: String },
     country: {type: String},
@@ -71,9 +74,6 @@ const universitySchema = new mongoose.Schema({
     commissionPaidOn: { type: String },
     founded: { type: String },
     institutionType: { type: String },
-    applicationFees: { type: String },
-    costOfLiving: { type: String },
-    grossTuition: { type: String },
     businessName: { type: String },      // Client Name
     banner: {type: String},
     universityLogo: { type: String },
@@ -83,6 +83,10 @@ const universitySchema = new mongoose.Schema({
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
+
+    // applicationFees: { type: String },
+    // costOfLiving: { type: String },
+    // grossTuition: { type: String },
 })
 
 
