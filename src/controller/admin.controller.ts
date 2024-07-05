@@ -401,7 +401,7 @@ export const editStaffProfileByAdmin = async (req, res) => {
                     activeInactive: staffDetails.activeInactive,             
                     teamLead: staffDetails.teamLead,
                  
-                    modifiedOn: staffDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:  staffDetails.modifiedBy,
                 }
             });

@@ -89,7 +89,7 @@ export let updateProgram = async (req, res, next) => {
                     greGmatRequirement: programDetails.greGmatRequirement,
                     academicRequirement: programDetails.academicRequirement,
                     commission: programDetails.commission,
-                    modifiedOn: programDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:  programDetails.modifiedBy,
                 },
 

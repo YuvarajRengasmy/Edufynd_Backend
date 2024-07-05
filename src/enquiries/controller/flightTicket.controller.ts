@@ -90,8 +90,7 @@ export let updateFlightTicketEnquiry = async (req, res, next) => {
                     from: flightEnquiryDetails.from,
                     to: flightEnquiryDetails.to,
                     dateOfTravel: flightEnquiryDetails.dateOfTravel,
-
-                    modifiedOn: flightEnquiryDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:flightEnquiryDetails.modifiedBy,
                 }
 

@@ -64,7 +64,7 @@ export const updateCustomField = async (req, res) => {
                     visibleForClient: customLabel.visibleForClient,
                     active: customLabel.active,
 
-                    modifiedOn: customLabel.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: customLabel.modifiedBy,
                 }
             });

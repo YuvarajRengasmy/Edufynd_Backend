@@ -175,7 +175,7 @@ export let updateStudent = async (req, res, next) => {
                 hsc: studentDetails.hsc,
                 degree: studentDetails.degree,
                 additional: studentDetails.additional,
-                modifiedOn: studentDetails.modifiedOn,
+                modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
             };
 
@@ -404,7 +404,7 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
                     degree: studentDetails.degree,
                     additional: studentDetails.additional,
 
-                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,
                 }
 

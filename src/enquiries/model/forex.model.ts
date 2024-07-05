@@ -6,6 +6,7 @@ export interface ForexDocument extends mongoose.Document {
     studentName?: string;
     country?: string;
     currency?: string;
+    flag?: string;
     universityName?: string;
     studentID?: string;
     passportNo?: string;

@@ -15,8 +15,11 @@ currency?: string;    // (Auto Fetch from ‘University’)
 commission?: string;   // (Auto fetch from ‘Program’)
 amountToBeReceivedCurrency?: string;
 amountReceivedInINRAndCurrency?: string;  // (To be entered manually)
-INRValue?: string;    // (Amount received in Currency / Amount Received in INR
+INRValue?: number;    // (Amount received in Currency / Amount Received in INR
 date?: string;
+
+netAmount?: number;
+netInWords?: string;
 
 createdOn?: Date;
 createdBy?: string;
@@ -40,8 +43,10 @@ currency: {type: String, ref: "University"},    // (Auto Fetch from ‘Universit
 commission: {type: String, ref: "Program"},  // (Auto fetch from ‘Program’)
 amountToBeReceivedCurrency: {type: String},
 amountReceivedInINRAndCurrency: {type: String},  // (To be entered manually)
-INRValue: {type: String},    // (Amount received in Currency / Amount Received in INR
+INRValue: {type: Number},    // (Amount received in Currency / Amount Received in INR
 date: {type: String},
+netAmount: {type: Number},
+netInWords : {type: String},
 
 createdOn: { type: Date },
 createdBy: { type: String },

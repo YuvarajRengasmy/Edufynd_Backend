@@ -55,7 +55,7 @@ export const updateTemplate = async (req, res) => {
                 $set: {
                     subject: templateData.subject,
                     content: templateData.content,
-                    modifiedOn: templateData.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:  templateData.modifiedBy,
                 }
             });

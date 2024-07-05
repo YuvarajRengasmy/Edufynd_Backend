@@ -13,3 +13,18 @@ createdBy?: string;
 modifiedOn?: Date;
 modifiedBy?: string;
 }
+
+const incomeSchema = new mongoose.Schema({
+    incomeDate: {type: String},
+nameOfIncome: {type: String},
+receivedFrom: {type: String},
+incomeAmount: {type: String},
+
+createdOn: { type: Date },
+createdBy: { type: String },
+modifiedOn: { type: Date },
+modifiedBy: { type: String },
+
+})
+
+export const Income = mongoose.model("Income", incomeSchema)
