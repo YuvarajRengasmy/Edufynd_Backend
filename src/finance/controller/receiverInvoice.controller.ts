@@ -56,6 +56,7 @@ export let createReceiverInvoice = async (req, res, next) => {
             const invoiceDetails: ReceiverInvoiceDocument = req.body;
             invoiceDetails.createdOn = new Date();
             invoiceDetails.invoiceNumber = await generateReceiverInvoice()
+            invoiceDetails.amountPaid = Number(Number(invoiceDetails.commission)/100) * invoiceDetails.amountPaid
            
             const createData = new ReceiverInvoice(invoiceDetails);
             let insertData = await createData.save();

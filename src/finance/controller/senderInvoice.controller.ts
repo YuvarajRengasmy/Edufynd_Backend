@@ -50,7 +50,6 @@ const generateSenderInvoice = async (): Promise<string> => {
 };
 
 export let createSenderInvoice = async (req, res, next) => {
-    console.log("gssst")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
