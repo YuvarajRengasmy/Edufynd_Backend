@@ -63,31 +63,28 @@ export let createSenderInvoice = async (req, res, next) => {
             commissionReceived = parseFloat(commissionReceived.toFixed(2));
             invoiceDetails.INRValue = commissionReceived
 
-            let final: any, courseValue: any, paidvalue: any
+            let final: any, courseValue: any, paidValue: any, fixedValue: any
         
             if (invoiceDetails.paymentMethod === "CourseFees") {
-            let afterScholarship =  invoiceDetails.courseFeesAmount - invoiceDetails.scholarshipAmount
+            let afterScholarship =  invoiceDetails.courseFeesAmount - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
             courseValue = afterScholarship * (invoiceDetails.commission/100)
         
 
             } if(invoiceDetails.paymentMethod === "PaidFees") {
-                paidvalue =invoiceDetails.paidFeesAmount * (invoiceDetails.commission/100)
+                paidValue =invoiceDetails.paidFeesAmount * (invoiceDetails.commission/100)
             }
              if(invoiceDetails.paymentMethod === "Fixed") {
-            paidvalue =invoiceDetails.paidFeesAmount * (invoiceDetails.commission/100)
+            fixedValue =invoiceDetails.fixedAmount
         }
 
-            invoiceDetails.netAmount = courseValue ?? paidvalue;
-  
-        
-
+            invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue;
             const createData = new SenderInvoice(invoiceDetails);
        
             let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+            response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.Sinvoice);
         } catch (err: any) {
-            console.log("ll", err)
+      
             response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }

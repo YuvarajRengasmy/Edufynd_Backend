@@ -64,7 +64,7 @@ export let createReceiverInvoice = async (req, res, next) => {
             const createData = new ReceiverInvoice(invoiceDetails);
             let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+            response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.Rinvoice);
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
