@@ -1,6 +1,6 @@
 import { SenderInvoice, SenderInvoiceDocument } from '../model/senderInvoice.model'
 import { validationResult } from "express-validator";
-import { response,} from "../../helper/commonResponseHandler";
+import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
 import { toWords } from 'number-to-words';
 
@@ -19,7 +19,7 @@ export let getAllSenderInvoice = async (req, res, next) => {
 };
 
 
-export let getSingleSenderInvoice= async (req, res, next) => {
+export let getSingleSenderInvoice = async (req, res, next) => {
     try {
         const invoice = await SenderInvoice.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Sender Invoice', true, 200, invoice, clientError.success.fetchedSuccessfully);
@@ -59,32 +59,28 @@ export let createSenderInvoice = async (req, res, next) => {
             invoiceDetails.createdOn = new Date();
             invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
 
-            let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency)/Number(invoiceDetails.amountToBeReceivedCurrency))
+            let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency) / Number(invoiceDetails.amountToBeReceivedCurrency))
             commissionReceived = parseFloat(commissionReceived.toFixed(2));
             invoiceDetails.INRValue = commissionReceived
 
             let final: any, courseValue: any, paidValue: any, fixedValue: any
-        
             if (invoiceDetails.paymentMethod === "CourseFees") {
-            let afterScholarship =  invoiceDetails.courseFeesAmount - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
-            courseValue = afterScholarship * (invoiceDetails.commission/100)
-        
-
-            } if(invoiceDetails.paymentMethod === "PaidFees") {
-                paidValue =invoiceDetails.paidFeesAmount * (invoiceDetails.commission/100)
+                let afterScholarship = invoiceDetails.courseFeesAmount - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
+                courseValue = afterScholarship * (invoiceDetails.commission / 100)
+            } if (invoiceDetails.paymentMethod === "PaidFees") {
+                paidValue = invoiceDetails.paidFeesAmount * (invoiceDetails.commission / 100)
             }
-             if(invoiceDetails.paymentMethod === "Fixed") {
-            fixedValue =invoiceDetails.fixedAmount
-        }
+            if (invoiceDetails.paymentMethod === "Fixed") {
+                fixedValue = invoiceDetails.fixedAmount
+            }
 
             invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue;
             const createData = new SenderInvoice(invoiceDetails);
-       
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.Sinvoice);
         } catch (err: any) {
-      
+
             response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
@@ -123,7 +119,7 @@ export let createSenderInvoice = async (req, res, next) => {
 //             final = parseFloat(final.toFixed(2));
 //             invoiceDetails.netAmount = final;
 //             invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
-        
+
 
 //             const createData = new SenderInvoice(invoiceDetails);
 //             let insertData = await createData.save();
@@ -148,19 +144,19 @@ export let updateSenderInvoice = async (req, res, next) => {
                     tax: invoiceDetails.tax,
                     gst: invoiceDetails.gst,
                     tds: invoiceDetails.tds,
-                  
-                    clientName:invoiceDetails.clientName,
+
+                    clientName: invoiceDetails.clientName,
                     universityName: invoiceDetails.universityName,
-                    applicationID:invoiceDetails.applicationID,     
-                    currency: invoiceDetails.currency,    
-                    commission: invoiceDetails.commission,  
+                    applicationID: invoiceDetails.applicationID,
+                    currency: invoiceDetails.currency,
+                    commission: invoiceDetails.commission,
                     amountToBeReceivedCurrency: invoiceDetails.amountToBeReceivedCurrency,
-                    amountReceivedInINRAndCurrency: invoiceDetails.amountReceivedInINRAndCurrency,  
-                    INRValue: invoiceDetails.INRValue,    
+                    amountReceivedInINRAndCurrency: invoiceDetails.amountReceivedInINRAndCurrency,
+                    INRValue: invoiceDetails.INRValue,
                     date: invoiceDetails.date,
-                    
+
                     modifiedOn: new Date(),
-                    modifiedBy:invoiceDetails.modifiedBy,
+                    modifiedBy: invoiceDetails.modifiedBy,
                 }
 
             });

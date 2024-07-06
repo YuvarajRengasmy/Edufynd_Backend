@@ -1,4 +1,5 @@
 import { ReceiverInvoice, ReceiverInvoiceDocument } from '../model/receiverInvoice.model'
+import { SenderInvoice } from '../model/senderInvoice.model';
 import { validationResult } from "express-validator";
 import { response} from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
@@ -28,10 +29,10 @@ export let getSingleReceiverInvoice= async (req, res, next) => {
 }
 const generateReceiverInvoice = async (): Promise<string> => {
     // Retrieve all IDs to determine the highest existing applicant counter
-    const invoice = await ReceiverInvoice.find({}, 'invoiceNumber').exec();
+    const invoice = await ReceiverInvoice.find({}, 'receiverInvoiceNumber').exec();
 
     const maxCounter = invoice.reduce((max, app) => {
-        const appCode = app.invoiceNumber;
+        const appCode = app.receiverInvoiceNumber;
         const parts = appCode.split('_')
         if (parts.length === 2) {
             const counter = parseInt(parts[1], 10)
@@ -49,22 +50,29 @@ const generateReceiverInvoice = async (): Promise<string> => {
 };
 
 
+
 export let createReceiverInvoice = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        try {
+    try {
+        const receiverInvoiceDetails: ReceiverInvoiceDocument = req.body;
 
-            const invoiceDetails: ReceiverInvoiceDocument = req.body;
-            invoiceDetails.createdOn = new Date();
-            invoiceDetails.receiverInvoiceNumber = await generateReceiverInvoice()
-
-     
+        // Populate the senderId field to get the senderInvoice document
+        const senderInvoice = await SenderInvoice.findById(receiverInvoiceDetails.senderId);
         
-           
-            const createData = new ReceiverInvoice(invoiceDetails);
-            let insertData = await createData.save();
+        if (!senderInvoice) {
+            return response(req, res,activity, 'Level-3', 'Sender Invoice Not Found', false, 404, {}, "Not Found the Amount");
+        }
 
-            response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.Rinvoice);
+        // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
+      let percent = senderInvoice.netAmount;
+      let amount = percent * (receiverInvoiceDetails.commission/100)
+        receiverInvoiceDetails.amountPaid = amount
+
+        const createData = new ReceiverInvoice(receiverInvoiceDetails);
+        let insertData = await createData.save();
+
+        response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
@@ -73,7 +81,6 @@ export let createReceiverInvoice = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
-
 
 
 

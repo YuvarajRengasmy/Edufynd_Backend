@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose'
 export interface ReceiverInvoiceDocument extends mongoose.Document {
   //Invoice (Tax value to be added)
   receiverInvoiceNumber?: string;
-  senderId: any;
+  senderId?: any;
   tax?: string;
   gst?: string;
   tds?: string;
@@ -12,10 +12,10 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
   agentName?: string;
   applicationID?: any;  // (List only Application ID where commission received. These Application IDs should be of the Agent)
   universityName?: string;     // (Auto fetch based on Application ID)
-  commission?: string;        // (Calculate based on Agent Payout)
+  commission?: number;        // (Calculate based on Agent Payout)
   amountPaid?: number;       // (To be calculated on the course fee after scholarship – auto fetch from Applicant, if on course fees | If partial fees, calculate on Paid Fees – auto fetch from Applicant)
   totalInvoiceAmount?: string;      // (Net of ‘Amount – Sender’ and ‘Amount Paid – Receiver’)
-  transactions?; string;       // (Add multiple)
+  transactions?: string;       // (Add multiple)
   transactionsDate?: string;
   amount?: string;
   paymentMethod?: string;
@@ -30,17 +30,17 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
 
 const receiverInvoiceSchema = new mongoose.Schema({
   senderId: { type: mongoose.Types.ObjectId, ref: "SenderInvoice" },
-  invoiceNumber: { type: String },
+  receiverInvoiceNumber: { type: String },
   gst: { type: String },
   tds: { type: String },
-  // Receiver Name    // (To be generated as separate invoice where the invoice number will be ‘Invoice Number’/Agent Code)
+ 
   agentName: { type: String },
   applicationID: { type: mongoose.Types.ObjectId, ref: "Applicant" },  // (List only Application ID where commission received. These Application IDs should be of the Agent)
-  universityName: { type: String, ref: "University" },    // (Auto fetch based on Application ID)
-  commission: { type: String, ref: "Program" },       // (Calculate based on Agent Payout)
-  amountPaid: { type: Number },       // (To be calculated on the course fee after scholarship – auto fetch from Applicant, if on course fees | If partial fees, calculate on Paid Fees – auto fetch from Applicant)
-  totalInvoiceAmount: { type: String },      // (Net of ‘Amount – Sender’ and ‘Amount Paid – Receiver’)
-  transactions: { type: String },       // (Add multiple)
+  universityName: { type: String, ref: "University" },   
+  commission: { type: Number, ref: "Program" },      
+  amountPaid: { type: Number },       
+  totalInvoiceAmount: { type: String },     
+  transactions: { type: String },      
   transactionsDate: { type: String },
   amount: { type: String },
   paymentMethod: { type: String },
