@@ -17,7 +17,7 @@ export interface AccommodationDocument extends mongoose.Document {
     primaryNumber?: string;
     whatsAppNumber?: string;
     email?: string;
-    UniversityName?: string;
+    universityName?: string;
     holdingOfferFromTheUniversity?: string;
     locationWhereAccommodationIsRequired?: string;
     assignedTo?: string;
@@ -47,7 +47,7 @@ const accommodationSchema = new mongoose.Schema({
     primaryNumber: {type: String},
     whatsAppNumber: {type: String},
     email: {type: String},
-    UniversityName: {type: String},
+    universityName: {type: String},
     holdingOfferFromTheUniversity: {type: String},
     locationWhereAccommodationIsRequired: {type: String},
     assignedTo: {type: String},
