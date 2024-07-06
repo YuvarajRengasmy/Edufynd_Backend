@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose'
 
 export interface SenderInvoiceDocument extends mongoose.Document{
 //Invoice (Tax value to be added)
-invoiceNumber?: string;
+senderInvoiceNumber?: string;
 tax?: string; 
 gst?: string;
 tds?: string;
@@ -18,6 +18,13 @@ amountReceivedInINRAndCurrency?: string;  // (To be entered manually)
 INRValue?: number;    // (Amount received in Currency / Amount Received in INR
 date?: string;
 
+paymentMethod?: string;
+fixedAmount?: number;
+courseFeesAmount? : number;
+courseFeesPercent?: number;
+scholarshipAmount?: number;
+paidFeesAmount?: number;
+paidFeesPercent?: number;
 netAmount?: number;
 netInWords?: string;
 

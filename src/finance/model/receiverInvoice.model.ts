@@ -3,7 +3,8 @@ import * as mongoose from 'mongoose'
 
 export interface ReceiverInvoiceDocument extends mongoose.Document {
   //Invoice (Tax value to be added)
-  invoiceNumber?: string;
+  receiverInvoiceNumber?: string;
+  senderId: any;
   tax?: string;
   gst?: string;
   tds?: string;
@@ -28,6 +29,7 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
 }
 
 const receiverInvoiceSchema = new mongoose.Schema({
+  senderId: { type: mongoose.Types.ObjectId, ref: "SenderInvoice" },
   invoiceNumber: { type: String },
   gst: { type: String },
   tds: { type: String },

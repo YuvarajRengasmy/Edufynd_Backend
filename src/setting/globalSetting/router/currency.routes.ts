@@ -24,7 +24,7 @@ router.post('/',
 );
 
 
-router.delete('/',                  //delete Currency
+router.delete('/',               
     basicAuthUser,
     checkQuery('_id'),
     deleteCurrency

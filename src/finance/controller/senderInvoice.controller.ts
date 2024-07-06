@@ -49,6 +49,49 @@ const generateSenderInvoice = async (): Promise<string> => {
     return `SINV_${formattedCounter}`;
 };
 
+
+// export let createSenderInvoice = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+
+//             const invoiceDetails: SenderInvoiceDocument = req.body;
+//             invoiceDetails.createdOn = new Date();
+//             invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
+
+//             let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency)/Number(invoiceDetails.amountToBeReceivedCurrency))
+//             commissionReceived = parseFloat(commissionReceived.toFixed(2));
+//             invoiceDetails.INRValue = commissionReceived
+
+//             let final, courseValue, paidvalue
+//             // Now, GST and TDS calculated
+//             if (invoiceDetails.paymentMethod === "courseFees") {
+//             let afterScholarship =  invoiceDetails.courseFeesAmount - invoiceDetails.scholarshipAmount
+//             courseValue = afterScholarship * (invoiceDetails.courseFeesPercent/100)
+
+//             } if(invoiceDetails.paymentMethod === "paidFees") {
+//                 paidvalue =invoiceDetails.paidFeesAmount * (invoiceDetails.paidFeesPercent/100)
+//             }
+
+//             final = parseFloat(final.toFixed(2));
+//             invoiceDetails.netAmount = final;
+//             invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
+        
+
+//             const createData = new SenderInvoice(invoiceDetails);
+//             let insertData = await createData.save();
+
+//             response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
+
+
 export let createSenderInvoice = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -56,7 +99,7 @@ export let createSenderInvoice = async (req, res, next) => {
 
             const invoiceDetails: SenderInvoiceDocument = req.body;
             invoiceDetails.createdOn = new Date();
-            invoiceDetails.invoiceNumber = await generateSenderInvoice()
+            invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
 
             let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency)/Number(invoiceDetails.amountToBeReceivedCurrency))
             commissionReceived = parseFloat(commissionReceived.toFixed(2));
