@@ -37,7 +37,7 @@ export let saveUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-         
+            universityDetails.createdOn = new Date()
             const createData = new University(universityDetails);
 
             let insertData = await createData.save();

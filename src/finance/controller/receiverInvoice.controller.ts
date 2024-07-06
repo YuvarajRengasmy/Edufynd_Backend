@@ -48,6 +48,7 @@ const generateReceiverInvoice = async (): Promise<string> => {
     return `RINV_${formattedCounter}`;
 };
 
+
 export let createReceiverInvoice = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -55,7 +56,10 @@ export let createReceiverInvoice = async (req, res, next) => {
 
             const invoiceDetails: ReceiverInvoiceDocument = req.body;
             invoiceDetails.createdOn = new Date();
-            invoiceDetails.invoiceNumber = await generateReceiverInvoice()
+            invoiceDetails.receiverInvoiceNumber = await generateReceiverInvoice()
+
+     
+        
            
             const createData = new ReceiverInvoice(invoiceDetails);
             let insertData = await createData.save();
@@ -69,6 +73,32 @@ export let createReceiverInvoice = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+
+
+// export let createReceiverInvoice = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+
+//             const invoiceDetails: ReceiverInvoiceDocument = req.body;
+//             invoiceDetails.createdOn = new Date();
+//             invoiceDetails.invoiceNumber = await generateReceiverInvoice()
+//             invoiceDetails.amountPaid = Number(Number(invoiceDetails.commission)/100) * invoiceDetails.amountPaid
+           
+//             const createData = new ReceiverInvoice(invoiceDetails);
+//             let insertData = await createData.save();
+
+//             response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
 
 export let updateReceiverInvoice = async (req, res, next) => {
     const errors = validationResult(req);
