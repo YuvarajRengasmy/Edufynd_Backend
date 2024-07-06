@@ -83,7 +83,7 @@ export let updateAccommodation = async (req, res, next) => {
                     source: accommodationDetails.source,
                     passportNumber: accommodationDetails.passportNumber,
                     whatsAppNumber:accommodationDetails.whatsAppNumber,
-                    UniversityName: accommodationDetails.UniversityName,
+                    universityName: accommodationDetails.universityName,
                     holdingOfferFromTheUniversity:accommodationDetails.holdingOfferFromTheUniversity,
                     locationWhereAccommodationIsRequired: accommodationDetails.locationWhereAccommodationIsRequired,
                     agentName:accommodationDetails.agentName,
