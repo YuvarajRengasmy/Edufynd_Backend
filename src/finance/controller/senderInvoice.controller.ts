@@ -194,7 +194,7 @@ export let updateSenderInvoice = async (req, res, next) => {
                     gst: invoiceDetails.gst,
                     tds: invoiceDetails.tds,
                   
-                    clientName:invoiceDetails.clientName,
+                    businessName:invoiceDetails.businessName,
                     universityName: invoiceDetails.universityName,
                     applicationID:invoiceDetails.applicationID,     
                     currency: invoiceDetails.currency,    
