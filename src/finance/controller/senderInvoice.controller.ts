@@ -1,6 +1,6 @@
 import { SenderInvoice, SenderInvoiceDocument } from '../model/senderInvoice.model'
 import { validationResult } from "express-validator";
-import { response,} from "../../helper/commonResponseHandler";
+import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
 import { toWords } from 'number-to-words';
 
@@ -19,7 +19,7 @@ export let getAllSenderInvoice = async (req, res, next) => {
 };
 
 
-export let getSingleSenderInvoice= async (req, res, next) => {
+export let getSingleSenderInvoice = async (req, res, next) => {
     try {
         const invoice = await SenderInvoice.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Sender Invoice', true, 200, invoice, clientError.success.fetchedSuccessfully);
@@ -132,12 +132,12 @@ export let createSenderInvoice = async (req, res, next) => {
 
         } catch (err: any) {
             response(req, res, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    } else {
+}
+    }
+    else {
         response(req, res, 'Level-3', 'Sender Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
-
 
 // export let createSenderInvoice = async (req, res, next) => {
 //     const errors = validationResult(req);
@@ -168,7 +168,7 @@ export let createSenderInvoice = async (req, res, next) => {
 //             final = parseFloat(final.toFixed(2));
 //             invoiceDetails.netAmount = final;
 //             invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
-        
+
 
 //             const createData = new SenderInvoice(invoiceDetails);
 //             let insertData = await createData.save();
@@ -196,16 +196,16 @@ export let updateSenderInvoice = async (req, res, next) => {
                   
                     businessName:invoiceDetails.businessName,
                     universityName: invoiceDetails.universityName,
-                    applicationID:invoiceDetails.applicationID,     
-                    currency: invoiceDetails.currency,    
-                    commission: invoiceDetails.commission,  
+                    applicationID: invoiceDetails.applicationID,
+                    currency: invoiceDetails.currency,
+                    commission: invoiceDetails.commission,
                     amountToBeReceivedCurrency: invoiceDetails.amountToBeReceivedCurrency,
-                    amountReceivedInINRAndCurrency: invoiceDetails.amountReceivedInINRAndCurrency,  
-                    INRValue: invoiceDetails.INRValue,    
+                    amountReceivedInINRAndCurrency: invoiceDetails.amountReceivedInINRAndCurrency,
+                    INRValue: invoiceDetails.INRValue,
                     date: invoiceDetails.date,
-                    
+
                     modifiedOn: new Date(),
-                    modifiedBy:invoiceDetails.modifiedBy,
+                    modifiedBy: invoiceDetails.modifiedBy,
                 }
 
             });
