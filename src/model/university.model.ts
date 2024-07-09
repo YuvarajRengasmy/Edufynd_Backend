@@ -35,6 +35,7 @@ export interface UniversityDocument extends mongoose.Document {
     paidFeesPercentage?: number;
     founded?: string;
     institutionType?: string;
+    website?: string;
    
     isDeleted?: boolean;
     createdOn?: Date;
@@ -83,6 +84,7 @@ const universitySchema = new mongoose.Schema({
     businessName: { type: String },      // Client Name
     banner: {type: String},
     universityLogo: { type: String },
+    website: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

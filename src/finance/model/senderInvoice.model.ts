@@ -56,4 +56,4 @@ const senderInvoiceSchema = new mongoose.Schema({
   modifiedBy: { type: String }
 });
 
-export const SenderInvoice = mongoose.model<SenderInvoiceDocument>("SenderInvoice", senderInvoiceSchema);
+export const SenderInvoice = mongoose.model("SenderInvoice", senderInvoiceSchema);
