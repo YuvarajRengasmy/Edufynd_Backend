@@ -17,6 +17,7 @@ export interface SenderInvoiceDocument extends mongoose.Document {
   paymentMethod?: string;
   fixedAmount?: number;
   courseFeesAmount?: number;
+  paidFeesAmount?: number;
   scholarshipAmount?: number;
   paidFeesPercentage?: number;
   courseFeesPercentage?: number;
@@ -45,6 +46,7 @@ const senderInvoiceSchema = new mongoose.Schema({
   paymentMethod: { type: String,ref: "University" },
   fixedAmount: { type: Number ,ref: "University"},
   courseFeesAmount: { type: Number, ref: "Applicant"},
+  paidFeesAmount:  { type: Number, ref: "Applicant"},
   scholarshipAmount: { type: Number },
   paidFeesPercentage: { type: Number,ref: "University" },
   courseFeesPercentage: { type: Number,ref: "University" },

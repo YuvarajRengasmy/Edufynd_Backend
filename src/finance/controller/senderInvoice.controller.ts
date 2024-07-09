@@ -71,8 +71,8 @@ export let createSenderInvoice = async (req, res, next) => {
         
 
             } if(invoiceDetails.paymentMethod === "PaidFees") {
-                console.log("55",invoiceDetails.paidFeesPercentage )
-                paidValue =Number(invoiceDetails.paidFeesPercentage) * (invoiceDetails.commission/100)
+                console.log("55",invoiceDetails.paidFeesAmount )
+                paidValue =Number(invoiceDetails.paidFeesAmount) * (invoiceDetails.commission/100)
                 console.log("jj", paidValue)
             }
              if(invoiceDetails.paymentMethod === "Fixed") {
