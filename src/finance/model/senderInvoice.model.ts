@@ -37,7 +37,7 @@ const senderInvoiceSchema = new mongoose.Schema({
   universityName: { type: String, ref: "University" },
   applicationID: { type: String, ref: "Applicant" },
   currency: { type: String },
-  // commission: { type: Number },
+  commission: { type: Number },
   amountToBeReceivedCurrency: { type: String },
   amountReceivedInINRAndCurrency: { type: String },
   // INRValue: { type: Number },
