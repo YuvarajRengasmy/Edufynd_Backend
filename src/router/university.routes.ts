@@ -3,6 +3,7 @@ import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
      getUniversityWithProgramDetails} from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
+
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
@@ -90,5 +91,8 @@ router.get('/getProgramByUniversity',    /// Get university details with that un
     getUniversityWithProgramDetails  
 );
 
+// router.get('/universities/:clientName',
+//      getUniversitiesByClient
+//     );
 
 export default router

@@ -12,7 +12,7 @@ export interface SenderInvoiceDocument extends mongoose.Document {
   commission?: number;
   amountToBeReceivedCurrency?: string;
   amountReceivedInINRAndCurrency?: string;
-  INRValue?: number;
+  // INRValue?: number;
   date?: Date;
   paymentMethod?: string;
   fixedAmount?: number;
@@ -37,17 +37,17 @@ const senderInvoiceSchema = new mongoose.Schema({
   universityName: { type: String, ref: "University" },
   applicationID: { type: String, ref: "Applicant" },
   currency: { type: String },
-  commission: { type: Number },
+  // commission: { type: Number },
   amountToBeReceivedCurrency: { type: String },
   amountReceivedInINRAndCurrency: { type: String },
-  INRValue: { type: Number },
+  // INRValue: { type: Number },
   date: { type: Date },
-  paymentMethod: { type: String },
-  fixedAmount: { type: Number },
-  courseFeesAmount: { type: Number },
+  paymentMethod: { type: String,ref: "University" },
+  fixedAmount: { type: Number ,ref: "University"},
+  courseFeesAmount: { type: Number, ref: "Applicant"},
   scholarshipAmount: { type: Number },
-  paidFeesPercentage: { type: Number },
-  courseFeesPercentage: { type: Number },
+  paidFeesPercentage: { type: Number,ref: "University" },
+  courseFeesPercentage: { type: Number,ref: "University" },
   netAmount: { type: Number },
   netInWords: { type: String },
   createdOn: { type: Date, default: Date.now },

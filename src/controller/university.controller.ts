@@ -1,9 +1,11 @@
 import { University, UniversityDocument } from '../model/university.model'
 import { SuperAdmin } from "../model/superAdmin.model";
+import { Client } from '../model/client.model';
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
+import { basicAuthUser } from 'src/middleware/checkAuth';
 
 
 
@@ -474,3 +476,24 @@ export const getUniversityWithProgramDetails = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
+
+// export const getUniversitiesByClient = async (req, res) => {
+//     const { businessName } = req.params;
+
+//     try {
+//         const client = await Client.findOne({ businessName: businessName });
+
+//         if (!client) {
+//             return res.status(404).json({ message: 'Client not found' });
+//         }
+
+//         const universities = await University.find({ clientBusinessName: client.businessName });
+
+//         res.status(200).json({ result: universities });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server Error', error });
+//     }
+// };
+
+

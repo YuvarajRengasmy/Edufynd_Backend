@@ -12,7 +12,7 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
     commission?: string;
     // Sender
     clientName?: string;
-    INRValue?: number;
+     INRValue?: number;
     // Receiver
     agentName?: string;
     amountPaid?: number;       // (To be calculated on the course fee after scholarship – auto fetch from Applicant, if on course fees | If partial fees, calculate on Paid Fees – auto fetch from Applicant)
