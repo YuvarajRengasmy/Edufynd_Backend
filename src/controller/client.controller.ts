@@ -171,7 +171,7 @@ export const csvToJson = async (req, res) => {
                 businessMailID: csvData[i].BusinessMailID,
                 businessContactNo: csvData[i].BusinessContactNo,
                 website: csvData[i].Website,
-                gstn: csvData[i].GST,
+                whatAppNumber: csvData[i].WhatAppNumber,
                 addressLine1: csvData[i].AddressLine1, 
                 addressLine2: csvData[i].AddressLine2, 
                 addressLine3: csvData[i].AddressLine3, 
