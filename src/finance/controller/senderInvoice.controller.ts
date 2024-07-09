@@ -71,20 +71,23 @@ export let createSenderInvoice = async (req, res, next) => {
         
 
             } if(invoiceDetails.paymentMethod === "PaidFees") {
-                paidValue =Number(invoiceDetails.paidFeesPercentage) * (invoiceDetails.commission/100)
+                console.log("55",invoiceDetails.paidFeesAmount )
+                paidValue =Number(invoiceDetails.paidFeesAmount) * (invoiceDetails.commission/100)
+                console.log("jj", paidValue)
             }
              if(invoiceDetails.paymentMethod === "Fixed") {
             fixedValue =Number(invoiceDetails.fixedAmount)
         }
 
-            invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue;
+            invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
+            console.log("ll", typeof invoiceDetails.netAmount)
             const createData = new SenderInvoice(invoiceDetails);
        
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.Sinvoice);
         } catch (err: any) {
-      
+      console.log("77", err)
             response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }

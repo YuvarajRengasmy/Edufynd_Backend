@@ -116,6 +116,8 @@ export let updateUniversity = async (req, res, next) => {
                     tax: universityDetails.tax,
                     courseFeesPercentage: universityDetails.courseFeesPercentage,
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
+                    website: universityDetails.website,
+                    inTake: universityDetails.inTake,
 
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
