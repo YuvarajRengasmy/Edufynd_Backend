@@ -67,19 +67,23 @@ export let createSenderInvoice = async (req, res, next) => {
         
             if (invoiceDetails.paymentMethod === "CourseFees") {
             let afterScholarship =  Number(invoiceDetails.courseFeesAmount) - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
-            courseValue = afterScholarship * (invoiceDetails.commission/100)
+            final = afterScholarship * (invoiceDetails.courseFeesPercentage/100)
+            console.log("44", courseValue)
         
 
             } if(invoiceDetails.paymentMethod === "PaidFees") {
                 console.log("55",invoiceDetails.paidFeesAmount )
-                paidValue =Number(invoiceDetails.paidFeesAmount) * (invoiceDetails.commission/100)
+                final =Number(invoiceDetails.paidFeesAmount) * (invoiceDetails.paidFeesPercentage/100)
                 console.log("jj", paidValue)
             }
              if(invoiceDetails.paymentMethod === "Fixed") {
-            fixedValue =Number(invoiceDetails.fixedAmount)
+                final =Number(invoiceDetails.fixedAmount)
         }
 
             invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
+            final = parseFloat(final.toFixed(2));
+                        invoiceDetails.netAmount = final;
+                        invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
             console.log("ll", typeof invoiceDetails.netAmount)
             const createData = new SenderInvoice(invoiceDetails);
        
