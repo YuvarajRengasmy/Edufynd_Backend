@@ -114,7 +114,8 @@ export let updateUniversity = async (req, res, next) => {
                     currency: universityDetails.currency,
                     paymentTAT: universityDetails.paymentTAT,
                     tax: universityDetails.tax,
-                    commissionPaidOn: universityDetails.commissionPaidOn,
+                    courseFeesPercent: universityDetails.courseFeesPercent,
+                    paidFeesPercent: universityDetails.paidFeesPercent,
 
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
@@ -382,7 +383,8 @@ export const csvToJson = async (req, res) => {
                 currency: csvData[i].Currency,
                 paymentTAT: csvData[i].PaymentTAT,
                 tax: csvData[i].Tax,
-                commissionPaidOn: csvData[i].CommissionPaidOn,
+             
+                // courseFeesPercent: csvData[i].CourseFeesPercent,
             });
         }
 
