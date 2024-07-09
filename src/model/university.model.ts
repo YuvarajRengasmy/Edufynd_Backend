@@ -5,7 +5,7 @@ export interface UniversityDocument extends mongoose.Document {
     _id?: any;
     universityCode?: string;
     superAdminId?: any;
-    clientId?: any;
+    // clientId?: any;
     appliedStudentId?: any;
     businessName?: string;
     universityName?: string; // University Name
@@ -31,8 +31,8 @@ export interface UniversityDocument extends mongoose.Document {
     currency?: string;
     paymentTAT?: string;
     tax?: string;
-    courseFeesPercent?: number;
-    paidFeesPercent?: number;
+    courseFeesPercentage?: number;
+    paidFeesPercentage?: number;
     founded?: string;
     institutionType?: string;
    
@@ -54,7 +54,7 @@ const universitySchema = new mongoose.Schema({
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
-    clientId: { type: mongoose.Types.ObjectId, ref: 'Client', required: true },
+    // clientId: { type: mongoose.Types.ObjectId, ref: 'Client', required: true },
     universityName: { type: String },
     about: {type: String},
     courseType: [String] ,
@@ -76,8 +76,8 @@ const universitySchema = new mongoose.Schema({
     currency: { type: String },
     paymentTAT: { type: String },
     tax: { type: String },
-    courseFeesPercent: { type: Number },
-    paidFeesPercent: { type: Number },
+    courseFeesPercentage: { type: Number },
+    paidFeesPercentage: { type: Number },
     founded: { type: String },
     institutionType: { type: String },
     businessName: { type: String },      // Client Name
