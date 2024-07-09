@@ -66,15 +66,15 @@ export let createSenderInvoice = async (req, res, next) => {
             let final: any, courseValue: any, paidValue: any, fixedValue: any
         
             if (invoiceDetails.paymentMethod === "CourseFees") {
-            let afterScholarship =  invoiceDetails.courseFeesAmount - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
+            let afterScholarship =  Number(invoiceDetails.courseFeesAmount) - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
             courseValue = afterScholarship * (invoiceDetails.commission/100)
         
 
             } if(invoiceDetails.paymentMethod === "PaidFees") {
-                paidValue =invoiceDetails.paidFeesPercentage * (invoiceDetails.commission/100)
+                paidValue =Number(invoiceDetails.paidFeesPercentage) * (invoiceDetails.commission/100)
             }
              if(invoiceDetails.paymentMethod === "Fixed") {
-            fixedValue =invoiceDetails.fixedAmount
+            fixedValue =Number(invoiceDetails.fixedAmount)
         }
 
             invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue;
