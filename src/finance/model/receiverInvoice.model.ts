@@ -19,6 +19,7 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
   transactionsDate?: string;
   amount?: string;
   paymentMethod?: string;
+  netInWords?: string;
 
   createdOn?: Date;
   createdBy?: string;
@@ -44,6 +45,7 @@ const receiverInvoiceSchema = new mongoose.Schema({
   transactionsDate: { type: String },
   amount: { type: String },
   paymentMethod: { type: String },
+  netInWords: {type: String},
 
 
   createdOn: { type: Date },

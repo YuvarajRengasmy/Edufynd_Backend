@@ -3,6 +3,7 @@ import { SenderInvoice } from '../model/senderInvoice.model';
 import { validationResult } from "express-validator";
 import { response} from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
+import { toWords } from 'number-to-words';
 
 
 var activity = "Receiver Invoice";
@@ -66,9 +67,11 @@ export let createReceiverInvoice = async (req, res, next) => {
 
         // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
       let percent = senderInvoice.netAmount;
+      console.log("22", percent)
       let amount = percent * (receiverInvoiceDetails.commission/100)
+      console.log("77", amount)
         receiverInvoiceDetails.amountPaid = amount
-
+        receiverInvoiceDetails.netInWords = toWords(amount).replace(/,/g, '') + ' only';
         const createData = new ReceiverInvoice(receiverInvoiceDetails);
         let insertData = await createData.save();
 
