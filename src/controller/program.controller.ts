@@ -80,7 +80,7 @@ export let updateProgram = async (req, res, next) => {
                     currency: programDetails.currency,
                     flag: programDetails.flag,
                     discountedValue: programDetails.discountedValue,
-                    campus: programDetails.campus,
+                    campuses: programDetails.campuses,
                     // courseFee: programDetails.courseFee,
                     // inTake: programDetails.inTake,
                     // duration: programDetails.duration,
@@ -334,7 +334,7 @@ export const getProgramsByUniversityName = async (req, res) => {
                         programTitle: program.programTitle,
                         // courseFee: program.courseFee,
                         // inTake: program.inTake,
-                        campus: program.campus,
+                        campuses: program.campuses,
                     }))
                 }
             }
