@@ -50,7 +50,14 @@ const programSchema = new mongoose.Schema({
     currency: { type: String },
     flag: {type: String},
     discountedValue: { type: String },
-    campus: [String ],  //(Fetch campus details from ‘UNIVERSITY’ based on the university selected) / (Multiple Add) 
+    // campus: [String ],  //(Fetch campus details from ‘UNIVERSITY’ based on the university selected) / (Multiple Add)
+    
+    campus: [{
+        inTake: {type: String},
+        duration: {type: String},
+        courseType: {type: String}
+    }], 
+    
     courseFee: { type: Number },  // (To be added for each campus)
     inTake: [String],
     duration: { type: String }, // (Month & Year in numbers like 1 - 12),
