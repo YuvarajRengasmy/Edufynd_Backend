@@ -1,6 +1,7 @@
 import { Router } from 'express';
 const router: Router = Router();
 
+
 // All Module Routes
 import SuperAdmin from './superAdmin.routes'
 import Admin from './admin.routes'
@@ -14,6 +15,9 @@ import Contact from './contact.routes'
 import Client from './client.routes'
 import Staff from './staff.routes'
 import Blog from './blog.routes'
+import Commission from './commission.routes'
+
+
 
 // All Enquiry Routes
 import StudentEnquiry from '../enquiries/routes/studentEnquiry.route'
@@ -66,6 +70,7 @@ router.use('/contact', Contact)
 router.use('/client', Client)
 router.use('/staff', Staff)
 router.use('/blog', Blog)
+router.use('/commission', Commission)
 
 
 //All Enquiry API
@@ -78,8 +83,6 @@ router.use('/flight', Flight)
 // Invoice API
 router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
-
-
 
 
 
