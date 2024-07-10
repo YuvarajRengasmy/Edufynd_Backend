@@ -81,9 +81,9 @@ export let updateProgram = async (req, res, next) => {
                     flag: programDetails.flag,
                     discountedValue: programDetails.discountedValue,
                     campus: programDetails.campus,
-                    courseFee: programDetails.courseFee,
-                    inTake: programDetails.inTake,
-                    duration: programDetails.duration,
+                    // courseFee: programDetails.courseFee,
+                    // inTake: programDetails.inTake,
+                    // duration: programDetails.duration,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
                     greGmatRequirement: programDetails.greGmatRequirement,
@@ -332,8 +332,8 @@ export const getProgramsByUniversityName = async (req, res) => {
                     country: university.country,
                     programDetails: programs.map(program => ({
                         programTitle: program.programTitle,
-                        courseFee: program.courseFee,
-                        inTake: program.inTake,
+                        // courseFee: program.courseFee,
+                        // inTake: program.inTake,
                         campus: program.campus,
                     }))
                 }
