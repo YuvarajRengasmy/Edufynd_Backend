@@ -3,7 +3,9 @@ import * as mongoose from 'mongoose'
 
 export interface UniversityDocument extends mongoose.Document {
     _id?: any;
+    universityCode?: string;
     superAdminId?: any;
+    // clientId?: any;
     appliedStudentId?: any;
     businessName?: string;
     universityName?: string; // University Name
@@ -29,9 +31,12 @@ export interface UniversityDocument extends mongoose.Document {
     currency?: string;
     paymentTAT?: string;
     tax?: string;
-    commissionPaidOn?: string;
+    courseFeesPercentage?: number;
+    paidFeesPercentage?: number;
     founded?: string;
     institutionType?: string;
+    website?: string;
+    inTake?: any[];
    
     isDeleted?: boolean;
     createdOn?: Date;
@@ -47,9 +52,11 @@ export interface UniversityDocument extends mongoose.Document {
 
 const universitySchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    universityCode: {type: String},
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
+    // clientId: { type: mongoose.Types.ObjectId, ref: 'Client', required: true },
     universityName: { type: String },
     about: {type: String},
     courseType: [String] ,
@@ -71,12 +78,15 @@ const universitySchema = new mongoose.Schema({
     currency: { type: String },
     paymentTAT: { type: String },
     tax: { type: String },
-    commissionPaidOn: { type: String },
+    courseFeesPercentage: { type: Number },
+    paidFeesPercentage: { type: Number },
     founded: { type: String },
     institutionType: { type: String },
     businessName: { type: String },      // Client Name
     banner: {type: String},
     universityLogo: { type: String },
+    website: {type: String},
+    inTake: [String],
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

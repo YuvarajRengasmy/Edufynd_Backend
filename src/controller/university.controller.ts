@@ -1,9 +1,11 @@
 import { University, UniversityDocument } from '../model/university.model'
 import { SuperAdmin } from "../model/superAdmin.model";
+import { Client } from '../model/client.model';
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
+import { basicAuthUser } from 'src/middleware/checkAuth';
 
 
 
@@ -30,14 +32,39 @@ export let getSingleUniversity = async (req, res, next) => {
     }
 }
 
+const generateNextUniversityCode = async (): Promise<string> => {
+    // Retrieve all applicant IDs to determine the highest existing applicant counter
+    const univesity = await University.find({}, 'universityCode').exec();
 
+    //  if (student.length === 0) {
+    //     // If no student codes exist, start with ST_101
+    //     return 'ST_101';
+    //   }
+    const maxCounter = univesity.reduce((max, app) => {
+        const appCode = app.universityCode;
+        const parts = appCode.split('_')
+        if (parts.length === 2) {
+            const counter = parseInt(parts[1], 10)
+            return counter > max ? counter : max;
+        }
+        return max;
+    }, 100);
+
+    // Increment the counter
+    const newCounter = maxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    // Return the new Applicantion Code
+    return `UN_${formattedCounter}`;
+};
 export let saveUniversity = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const universityDetails: UniversityDocument = req.body;
-         
+            universityDetails.createdOn = new Date()
+            universityDetails.universityCode= await generateNextUniversityCode()
             const createData = new University(universityDetails);
 
             let insertData = await createData.save();
@@ -87,7 +114,10 @@ export let updateUniversity = async (req, res, next) => {
                     currency: universityDetails.currency,
                     paymentTAT: universityDetails.paymentTAT,
                     tax: universityDetails.tax,
-                    commissionPaidOn: universityDetails.commissionPaidOn,
+                    courseFeesPercentage: universityDetails.courseFeesPercentage,
+                    paidFeesPercentage: universityDetails.paidFeesPercentage,
+                    website: universityDetails.website,
+                    inTake: universityDetails.inTake,
 
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
@@ -355,7 +385,8 @@ export const csvToJson = async (req, res) => {
                 currency: csvData[i].Currency,
                 paymentTAT: csvData[i].PaymentTAT,
                 tax: csvData[i].Tax,
-                commissionPaidOn: csvData[i].CommissionPaidOn,
+             
+                // courseFeesPercent: csvData[i].CourseFeesPercent,
             });
         }
 
@@ -449,3 +480,24 @@ export const getUniversityWithProgramDetails = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
+
+// export const getUniversitiesByClient = async (req, res) => {
+//     const { businessName } = req.params;
+
+//     try {
+//         const client = await Client.findOne({ businessName: businessName });
+
+//         if (!client) {
+//             return res.status(404).json({ message: 'Client not found' });
+//         }
+
+//         const universities = await University.find({ clientBusinessName: client.businessName });
+
+//         res.status(200).json({ result: universities });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server Error', error });
+//     }
+// };
+
+

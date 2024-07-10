@@ -93,6 +93,8 @@ export let clientError = Object.freeze({
         deleteSuccess: "Deleted successfully",
         updateSuccess: "Updated successfully",
         registerSuccessfully: 'Registered Successfully',
+        Sinvoice: 'Sender Invoice Created Successfully',
+        Rinvoice: 'Receiver Invoice Created Successfully',
         application: 'Application Register Successfully',
         loginSuccess: 'You have successfully Logged-in',
         passwordUpdateSuccess: 'Password has been updated Successfully',

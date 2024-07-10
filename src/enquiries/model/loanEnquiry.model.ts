@@ -9,6 +9,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     email?: string;
     doYouHaveAValidOfferFromAnyUniversity?: string;
     uploadOfferletter?: string;
+    universityName?: string;
     loanAmountRequired?: string;
     desiredCountry?: string;
     whatIsYourMonthlyIncome?: string;
@@ -20,9 +21,9 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     // Who is your co-applicant?
     coApplicantName?: string;
     age?: string;
-    employmentStatus?: string
+    employmentStatus?: string;
     incomeDetails?: string;
-    willyouSubmitYourCollateral?: String;
+    willyouSubmitYourCollateral?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -41,6 +42,7 @@ const loanEnquirySchema = new mongoose.Schema({
     email: {type: String},
     doYouHaveAValidOfferFromAnyUniversity: {type: String},
     uploadOfferletter: {type: String},
+    universityName: {type: String},
     loanAmountRequired: {type: String},
     desiredCountry: {type: String},
     whatIsYourMonthlyIncome: {type: String},

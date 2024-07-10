@@ -8,14 +8,14 @@ const router:Router=Router();
 
 router.get('/',               //get all Blog
     basicAuthUser,
-     checkSession,
+    //  checkSession,
      getAllBlog
 );
 
 
 router.get('/getSingleBlog',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleBlog,
 );
@@ -30,7 +30,7 @@ router.put('/',
 
 router.put('/',                    // update Blog
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     // checkRequestBodyParams('_id'),
     updateBlog
@@ -39,7 +39,7 @@ router.put('/',                    // update Blog
 
 router.delete('/',                  //delete Blog
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     deleteBlog
 );
