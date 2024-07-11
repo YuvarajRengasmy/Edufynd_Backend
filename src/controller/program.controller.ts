@@ -80,10 +80,10 @@ export let updateProgram = async (req, res, next) => {
                     currency: programDetails.currency,
                     flag: programDetails.flag,
                     discountedValue: programDetails.discountedValue,
-                    campus: programDetails.campus,
-                    courseFee: programDetails.courseFee,
-                    inTake: programDetails.inTake,
-                    duration: programDetails.duration,
+                    campuses: programDetails.campuses,
+                    // courseFee: programDetails.courseFee,
+                    // inTake: programDetails.inTake,
+                    // duration: programDetails.duration,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
                     greGmatRequirement: programDetails.greGmatRequirement,
@@ -332,9 +332,9 @@ export const getProgramsByUniversityName = async (req, res) => {
                     country: university.country,
                     programDetails: programs.map(program => ({
                         programTitle: program.programTitle,
-                        courseFee: program.courseFee,
-                        inTake: program.inTake,
-                        campus: program.campus,
+                        // courseFee: program.courseFee,
+                        // inTake: program.inTake,
+                        campuses: program.campuses,
                     }))
                 }
             }
