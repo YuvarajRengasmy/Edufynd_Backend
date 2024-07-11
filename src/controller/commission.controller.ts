@@ -57,10 +57,15 @@ export let updateCommission = async (req, res, next) => {
                     country: commissionDetails.country,
                     universityName: commissionDetails.universityName,
                     paymentMethod: commissionDetails.paymentMethod,
+                    amount: commissionDetails.amount,
+                    percentage:commissionDetails.percentage,
                     commissionPaidOn: commissionDetails.commissionPaidOn,
+                    courseFeesPercentage: commissionDetails.courseFeesPercentage,
+                    paidFeesPercentage:commissionDetails.paidFeesPercentage,
                     eligibility: commissionDetails.eligibility,
                     tax: commissionDetails.tax,
                     paymentType: commissionDetails.paymentType,
+                 
 
                     modifiedOn: new Date(),
                     modifiedBy:  commissionDetails.modifiedBy,
