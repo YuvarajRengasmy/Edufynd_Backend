@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
-     getUniversityWithProgramDetails} from '../controller/university.controller';
+     getUniversityWithProgramDetails, getUniversityByCountry} from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -94,5 +94,11 @@ router.get('/getProgramByUniversity',    /// Get university details with that un
 // router.get('/universities/:clientName',
 //      getUniversitiesByClient
 //     );
+
+
+router.get('/getUniversityByCountry',
+    checkQuery('country'),
+     getUniversityByCountry)
+
 
 export default router

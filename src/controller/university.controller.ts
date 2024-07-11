@@ -501,3 +501,17 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 // };
 
 
+
+
+// router.get('/api/universities', 
+    export const getUniversityByCountry =  async (req, res) => {
+    const { country } = req.query; // Extract country from query params
+    try {
+        // Query universities based on country
+        const universities = await University.find({ country: country });
+        res.json({ success: true, result: universities });
+    } catch (err) {
+        console.error('Error fetching universities:', err);
+        res.status(500).json({ success: false, message: 'Failed to fetch universities' });
+    }
+}
