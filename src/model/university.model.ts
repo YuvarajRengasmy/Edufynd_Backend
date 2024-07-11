@@ -31,6 +31,7 @@ export interface UniversityDocument extends mongoose.Document {
     currency?: string;
     paymentTAT?: string;
     tax?: string;
+    commissionPaidOn?: string;
     courseFeesPercentage?: number;
     paidFeesPercentage?: number;
     founded?: string;
@@ -78,6 +79,7 @@ const universitySchema = new mongoose.Schema({
     currency: { type: String },
     paymentTAT: { type: String },
     tax: { type: String },
+    commissionPaidOn: {type: String},
     courseFeesPercentage: { type: Number },
     paidFeesPercentage: { type: Number },
     founded: { type: String },
