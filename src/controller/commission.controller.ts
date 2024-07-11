@@ -61,8 +61,10 @@ export let updateCommission = async (req, res, next) => {
                     eligibility: commissionDetails.eligibility,
                     tax: commissionDetails.tax,
                     paymentType: commissionDetails.paymentType,
-                    year: commissionDetails.year,
-                    courseType: commissionDetails.courseType
+
+                    modifiedOn: new Date(),
+                    modifiedBy:  commissionDetails.modifiedBy,
+                   
               
                 },
                 $addToSet: {

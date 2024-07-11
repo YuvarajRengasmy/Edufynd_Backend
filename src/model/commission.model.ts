@@ -9,8 +9,8 @@ export interface CommissionDocument extends mongoose.Document{
     eligibility?: string;
     tax?: string;
     paymentType?: string;
-    year?: string;
-    courseType?: string;
+    // year?: string;
+    // courseType?: string;
     inTake?: any;
 
     createdOn?: Date;
@@ -27,9 +27,11 @@ const commissionSchema = new mongoose.Schema({
     eligibility: {type: String},
     tax: {type: String},
     paymentType: {type: String},
-    year: {type: String},
-    courseType: {type: String},
+ 
     inTake: [{
+        year: {type: String},
+        courseType: {type: String},
+
         inTake1: {type: String},
         value1: {type: Number},
 

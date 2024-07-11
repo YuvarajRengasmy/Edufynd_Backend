@@ -39,6 +39,7 @@ import Country from '../setting/globalSetting/router/country.routes'
 import InTake from '../setting/globalSetting/router/intake.routes'
 import Email from '../setting/globalSetting/router/email.routes'
 import Currency from '../setting/globalSetting/router/currency.routes'
+import Year from '../setting/globalSetting/router/year.routes'
 
 
 
@@ -92,6 +93,7 @@ router.use('/country', Country)
 router.use('/intake', InTake)
 router.use('/email', Email)
 router.use('/currency', Currency)
+router.use('/year', Year)
 
 
 //Drop Down - Setting API
