@@ -70,8 +70,11 @@ export let createReceiverInvoice = async (req, res, next) => {
    
       let amount = percent * (receiverInvoiceDetails.commission/100)
     
-        receiverInvoiceDetails.amountPaid = amount
-        receiverInvoiceDetails.netInWords = toWords(amount).replace(/,/g, '') + ' only';
+        receiverInvoiceDetails.amountInCurrency = amount
+        let INR = amount * 100
+        receiverInvoiceDetails.amountInINR = INR 
+        receiverInvoiceDetails.amount = INR 
+        receiverInvoiceDetails.netInWords = toWords(INR).replace(/,/g, '') + ' only';
         const createData = new ReceiverInvoice(receiverInvoiceDetails);
         let insertData = await createData.save();
         response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);

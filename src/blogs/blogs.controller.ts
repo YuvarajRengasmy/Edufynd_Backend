@@ -3,7 +3,7 @@ import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 
-var activity = "Country";
+var activity = "Blog";
 
 
 

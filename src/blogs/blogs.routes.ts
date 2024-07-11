@@ -6,7 +6,7 @@ import { checkSession } from '../utils/tokenManager';
 const router:Router=Router();
 
 
-router.get('/',               //get all Blog
+router.get('/',               
     basicAuthUser,
     //  checkSession,
      getAllBlog
@@ -28,7 +28,7 @@ router.put('/',
 );
 
 
-router.put('/',                    // update Blog
+router.put('/',                   
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
@@ -37,7 +37,7 @@ router.put('/',                    // update Blog
 );
 
 
-router.delete('/',                  //delete Blog
+router.delete('/',                  
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),

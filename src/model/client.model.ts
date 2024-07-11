@@ -5,13 +5,8 @@ export interface ClientDocument extends mongoose.Document {
     _id?: any;
     typeOfClient?: string;    // - Institution, Financial Institution, Other Service Provider
     businessName?: string;
-
-
-
     clientID?: string;
-   
     clientStatus?: string;
-   
     businessMailID?: string;
     businessContactNo?: string;
     website?: string;

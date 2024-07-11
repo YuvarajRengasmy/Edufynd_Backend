@@ -1,7 +1,6 @@
 import {Router} from 'express';
 import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin, deleteAdmin, 
-    createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin,
-    editStudentProfileByAdmin,
+    createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin,editStudentProfileByAdmin,
     editStaffProfileByAdmin} from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -29,7 +28,7 @@ router.post('/',
 );
 
 
-router.delete('/',                  //delete admin
+router.delete('/',                  
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
