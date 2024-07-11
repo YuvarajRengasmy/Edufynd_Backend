@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
-     csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
-     getUniversityWithProgramDetails, getUniversityByCountry} from '../controller/university.controller';
+import {
+    getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
+    csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb,
+    getUniversityWithProgramDetails, getUniversityByCountry
+} from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -88,8 +90,16 @@ router.post('/import',      // CSV File to json and Store into Database
 
 router.get('/getProgramByUniversity',    /// Get university details with that university program          
     checkQuery('universityId'),
-    getUniversityWithProgramDetails  
+    getUniversityWithProgramDetails
 );
+
+
+router.get('/getUniversityByCountry',
+    basicAuthUser,
+    getUniversityByCountry
+)
+
+
 
 // router.get('/universities/:clientName',
 //      getUniversitiesByClient

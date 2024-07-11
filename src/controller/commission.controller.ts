@@ -60,14 +60,12 @@ export let updateCommission = async (req, res, next) => {
                     amount: commissionDetails.amount,
                     percentage:commissionDetails.percentage,
                     commissionPaidOn: commissionDetails.commissionPaidOn,
-                 
                     eligibility: commissionDetails.eligibility,
                     tax: commissionDetails.tax,
                     paymentType: commissionDetails.paymentType,
                     currency:commissionDetails.currency,
                     flag: commissionDetails.flag,
                     clientName:commissionDetails.clientName,
-                 
 
                     modifiedOn: new Date(),
                     modifiedBy:  commissionDetails.modifiedBy,
