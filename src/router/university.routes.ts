@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import {
-    getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
-    csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb,
-    getUniversityWithProgramDetails, getUniversityByCountry
-} from '../controller/university.controller';
+import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
+     csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
+     getUniversityWithProgramDetails, getUniversityByCountry} from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -106,9 +104,6 @@ router.get('/getUniversityByCountry',
 //     );
 
 
-router.get('/getUniversityByCountry',
-    checkQuery('country'),
-     getUniversityByCountry)
 
 
 export default router
