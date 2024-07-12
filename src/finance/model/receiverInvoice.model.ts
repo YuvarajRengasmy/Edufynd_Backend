@@ -51,7 +51,7 @@ const receiverInvoiceSchema = new mongoose.Schema({
   netInWords: {type: String},
 
 
-  createdOn: { type: Date },
+  createdOn: { type: Date, default: Date.now },
   createdBy: { type: String },
   modifiedOn: { type: Date },
   modifiedBy: { type: String },
