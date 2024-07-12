@@ -77,6 +77,7 @@ export let createSenderInvoice = async (req, res, next) => {
             // invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
             final = parseFloat(final.toFixed(2));
             invoiceDetails.amountReceivedInCurrency = final;
+            let rate = invoiceDetails.amountReceivedInINR / final
            let INR = final * 100;
            invoiceDetails.amountReceivedInINR= INR
             invoiceDetails.netAmount = INR;
