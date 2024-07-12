@@ -39,10 +39,8 @@ const commissionSchema = new mongoose.Schema({
     years: [{
         year: {type: String},
         courseType: {type: String},
-
         inTake1: {type: String},
         value1: {type: Number},
-
         inTake2: {type: String},
         value2: {type: Number},
 
