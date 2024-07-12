@@ -11,7 +11,7 @@ const router:Router=Router();
 
 
 
-router.get('/',                          //get all users
+router.get('/',                        
     basicAuthUser,
     //  checkSession,
     getAllStudent
@@ -33,7 +33,7 @@ router.post('/',
 router.post('/contact', createContact);
 
 
-router.put('/',             // update user
+router.put('/',             
     basicAuthUser,
     // checkSession,
     checkRequestBodyParams('_id'),
@@ -50,7 +50,7 @@ router.put('/',             // update user
 );
 
 
-router.delete('/',                //delete user
+router.delete('/',               
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),

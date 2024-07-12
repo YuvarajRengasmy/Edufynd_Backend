@@ -14,7 +14,7 @@ import Applicant from './applicant.routes'
 import Contact from './contact.routes'
 import Client from './client.routes'
 import Staff from './staff.routes'
-import Blog from './blog.routes'
+import Blog from '../blogs/blogs.routes'
 import Commission from './commission.routes'
 
 

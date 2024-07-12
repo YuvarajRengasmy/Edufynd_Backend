@@ -59,8 +59,8 @@ export let createSenderInvoice = async (req, res, next) => {
             invoiceDetails.createdOn = new Date();
             invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
 
-            let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency) / Number(invoiceDetails.amountToBeReceivedCurrency))
-            commissionReceived = parseFloat(commissionReceived.toFixed(2));
+            // let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency) / Number(invoiceDetails.amountToBeReceivedCurrency))
+            // commissionReceived = parseFloat(commissionReceived.toFixed(2));
             // invoiceDetails.INRValue = commissionReceived
 
             let final: any, courseValue: any, paidValue: any, fixedValue: any
@@ -71,13 +71,16 @@ export let createSenderInvoice = async (req, res, next) => {
                 final = Number(invoiceDetails.paidFeesAmount) * (invoiceDetails.paidFeesPercentage / 100)
             }
             if (invoiceDetails.paymentMethod === "Fixed") {
-                final = Number(invoiceDetails.fixedAmount) - (invoiceDetails.scholarshipAmount ? invoiceDetails.scholarshipAmount : 0)
+                final = Number(invoiceDetails.fixedAmount) 
             }
 
-            invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
+            // invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
             final = parseFloat(final.toFixed(2));
-            invoiceDetails.netAmount = final;
-            invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
+            invoiceDetails.amountReceivedInCurrency = final;
+           let INR = final * 100;
+           invoiceDetails.amountReceivedInINR= INR
+            invoiceDetails.netAmount = INR;
+            invoiceDetails.netInWords = toWords(INR).replace(/,/g, '') + ' only';
 
             const createData = new SenderInvoice(invoiceDetails);
 
@@ -94,49 +97,6 @@ export let createSenderInvoice = async (req, res, next) => {
 }
 
 
-// export let createSenderInvoice = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-
-//             const invoiceDetails: SenderInvoiceDocument = req.body;
-//             invoiceDetails.createdOn = new Date();
-//             invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
-
-//             let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency)/Number(invoiceDetails.amountToBeReceivedCurrency))
-//             commissionReceived = parseFloat(commissionReceived.toFixed(2));
-//             invoiceDetails.INRValue = commissionReceived
-
-//             let final;
-//             // Now, GST and TDS calculated
-//             if (invoiceDetails.tax === "yes") {
-//                 const withoutGST = commissionReceived / 1.18;
-//                 const addGST = withoutGST * 0.18;
-//                 const addTDS = withoutGST * 0.05;
-//                 final = commissionReceived - addTDS;
-//             } else {
-//                 const addGST = commissionReceived * 0.18;
-//                 const addTDS = commissionReceived * 0.05;
-//                 final = commissionReceived - addTDS;
-//             }
-
-//             final = parseFloat(final.toFixed(2));
-//             invoiceDetails.netAmount = final;
-//             invoiceDetails.netInWords = toWords(final).replace(/,/g, '') + ' only';
-
-
-//             const createData = new SenderInvoice(invoiceDetails);
-//             let insertData = await createData.save();
-
-//             response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     }
-//     else {
-//         response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// }
 
 export let updateSenderInvoice = async (req, res, next) => {
     const errors = validationResult(req);
@@ -154,8 +114,8 @@ export let updateSenderInvoice = async (req, res, next) => {
                     applicationID: invoiceDetails.applicationID,
                     currency: invoiceDetails.currency,
                     commission: invoiceDetails.commission,
-                    amountToBeReceivedCurrency: invoiceDetails.amountToBeReceivedCurrency,
-                    amountReceivedInINRAndCurrency: invoiceDetails.amountReceivedInINRAndCurrency,
+                    amountReceivedInCurrency: invoiceDetails.amountReceivedInCurrency,
+                    amountReceivedInINR: invoiceDetails.amountReceivedInINR,
                     // INRValue: invoiceDetails.INRValue,    
                     date: invoiceDetails.date,
 

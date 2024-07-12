@@ -34,6 +34,7 @@ export let createCommission = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const commissionDetails: CommissionDocument = req.body;
+            commissionDetails.createdOn = new Date()
             const createData = new Commission(commissionDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-Commission', true, 200, insertData, clientError.success.savedSuccessfully);
@@ -69,8 +70,6 @@ export let updateCommission = async (req, res, next) => {
 
                     modifiedOn: new Date(),
                     modifiedBy:  commissionDetails.modifiedBy,
-                   
-              
                 },
                 $addToSet: {
                     years: commissionDetails.years,

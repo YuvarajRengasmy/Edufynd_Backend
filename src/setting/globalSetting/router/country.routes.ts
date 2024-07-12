@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/',                //get all Country
+router.get('/',               
     basicAuthUser,
     getAllCountry
 );
@@ -24,14 +24,14 @@ router.post('/',
 );
 
 
-router.put('/',                    // update Country
+router.put('/',                    
     basicAuthUser,
     checkQuery('_id'),
     updateCountry
 );
 
 
-router.delete('/',                  //delete Country
+router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
     deleteCountry
