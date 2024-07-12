@@ -1,7 +1,7 @@
 import { ReceiverInvoice, ReceiverInvoiceDocument } from '../model/receiverInvoice.model'
 import { SenderInvoice } from '../model/senderInvoice.model';
 import { validationResult } from "express-validator";
-import { response} from "../../helper/commonResponseHandler";
+import { response } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
 import { toWords } from 'number-to-words';
 
@@ -20,7 +20,7 @@ export let getAllReceiverInvoice = async (req, res, next) => {
 };
 
 
-export let getSingleReceiverInvoice= async (req, res, next) => {
+export let getSingleReceiverInvoice = async (req, res, next) => {
     try {
         const invoice = await ReceiverInvoice.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Receiver Invoice', true, 200, invoice, clientError.success.fetchedSuccessfully);
@@ -55,30 +55,34 @@ const generateReceiverInvoice = async (): Promise<string> => {
 export let createReceiverInvoice = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-    try {
-        const receiverInvoiceDetails: ReceiverInvoiceDocument = req.body;
+        try {
+            const receiverInvoiceDetails: ReceiverInvoiceDocument = req.body;
 
-        // Populate the senderId field to get the senderInvoice document
-        const senderInvoice = await SenderInvoice.findById(receiverInvoiceDetails.senderId);
-        
-        if (!senderInvoice) {
-            return response(req, res,activity, 'Level-3', 'Sender Invoice Not Found', false, 404, {}, "Not Found the Amount");
-        }
+            // Populate the senderId field to get the senderInvoice document
+            const senderInvoice = await SenderInvoice.findById(receiverInvoiceDetails.senderId);
 
-        // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
-      let percent = senderInvoice.amountReceivedInCurrency;
-          //  let rate = INR/Currency
-      let amount = percent * (receiverInvoiceDetails.commission/100)
-    
-        receiverInvoiceDetails.amountInCurrency = amount
-        let INR = receiverInvoiceDetails.amountInINR / amount
- 
-        receiverInvoiceDetails.amountInINR = INR 
-        receiverInvoiceDetails.amount = INR 
-        receiverInvoiceDetails.netInWords = toWords(INR).replace(/,/g, '') + ' only';
-        const createData = new ReceiverInvoice(receiverInvoiceDetails);
-        let insertData = await createData.save();
-        response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+            if (!senderInvoice) {
+                return response(req, res, activity, 'Level-3', 'Sender Invoice Not Found', false, 404, {}, "Not Found the Amount");
+            }
+
+            // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
+            let percent = senderInvoice.amountReceivedInCurrency;
+            //  let rate = INR/Currency
+            let currencyAmount = percent * (receiverInvoiceDetails.commission / 100)
+
+            receiverInvoiceDetails.amountInCurrency = currencyAmount
+            let INR = receiverInvoiceDetails.amountInINR / currencyAmount
+
+
+            // Calculation of GST
+            let commissionReceived = receiverInvoiceDetails.amountInINR
+            let withoutGST = commissionReceived / (118 * 100)
+            let tds = withoutGST * (5 / 100)
+            let netValue = withoutGST - tds
+            receiverInvoiceDetails.netInWords = toWords(netValue).replace(/,/g, '') + ' only';
+            const createData = new ReceiverInvoice(receiverInvoiceDetails);
+            let insertData = await createData.save();
+            response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
@@ -99,7 +103,7 @@ export let createReceiverInvoice = async (req, res, next) => {
 //             invoiceDetails.createdOn = new Date();
 //             invoiceDetails.invoiceNumber = await generateReceiverInvoice()
 //             invoiceDetails.amountPaid = Number(Number(invoiceDetails.commission)/100) * invoiceDetails.amountPaid
-           
+
 //             const createData = new ReceiverInvoice(invoiceDetails);
 //             let insertData = await createData.save();
 
@@ -123,20 +127,20 @@ export let updateReceiverInvoice = async (req, res, next) => {
                     tax: invoiceDetails.tax,
                     gst: invoiceDetails.gst,
                     tds: invoiceDetails.tds,
-                  
+
                     agentName: invoiceDetails.agentName,
-                    applicationID: invoiceDetails.applicationID,  
-                    universityName: invoiceDetails.universityName,   
-                    commission: invoiceDetails.commission,   
-                    amountPaid:invoiceDetails.amountPaid,       
-                    totalInvoiceAmount: invoiceDetails.totalInvoiceAmount,      
-                    transactions: invoiceDetails.transactions,       
+                    applicationID: invoiceDetails.applicationID,
+                    universityName: invoiceDetails.universityName,
+                    commission: invoiceDetails.commission,
+                    amountPaid: invoiceDetails.amountPaid,
+                    totalInvoiceAmount: invoiceDetails.totalInvoiceAmount,
+                    transactions: invoiceDetails.transactions,
                     transactionsDate: invoiceDetails.transactionsDate,
                     amount: invoiceDetails.amount,
                     paymentMethod: invoiceDetails.paymentMethod,
-           
+
                     modifiedOn: new Date(),
-                    modifiedBy:invoiceDetails.modifiedBy,
+                    modifiedBy: invoiceDetails.modifiedBy,
                 }
 
             });

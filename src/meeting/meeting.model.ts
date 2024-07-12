@@ -1,7 +1,5 @@
 import * as mongoose from 'mongoose'
 
-
-
 export interface MeetingDocument extends mongoose.Document {
     hostName?: string;
     attendees?: string;
