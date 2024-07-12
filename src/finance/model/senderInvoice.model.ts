@@ -10,8 +10,8 @@ export interface SenderInvoiceDocument extends mongoose.Document {
   applicationID?: string;
   currency?: string;
   commission?: number;
-  amountToBeReceivedCurrency?: string;
-  amountReceivedInINRAndCurrency?: string;
+  amountReceivedInCurrency?: number;
+  amountReceivedInINR?: number;
   // INRValue?: number;
   date?: Date;
   paymentMethod?: string;
@@ -39,8 +39,8 @@ const senderInvoiceSchema = new mongoose.Schema({
   applicationID: { type: String, ref: "Applicant" },
   currency: { type: String },
   commission: { type: Number },
-  amountToBeReceivedCurrency: { type: String },
-  amountReceivedInINRAndCurrency: { type: String },
+  amountReceivedInCurrency: { type: Number },
+  amountReceivedInINR: { type: Number },
   // INRValue: { type: Number },
   date: { type: Date },
   paymentMethod: { type: String,ref: "University" },

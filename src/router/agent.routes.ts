@@ -10,7 +10,7 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/',                                //get all agent
+router.get('/',                                
     basicAuthUser,
     // checkSession,
     getAllAgent
@@ -36,7 +36,7 @@ router.post('/contact',
 );
 
 
-router.put('/',                          //update agent
+router.put('/',                          
     basicAuthUser,
     // checkSession,
     checkRequestBodyParams('_id'),
@@ -44,7 +44,7 @@ router.put('/',                          //update agent
 );
 
 
-router.delete('/',                  //delete agent
+router.delete('/',                 
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),

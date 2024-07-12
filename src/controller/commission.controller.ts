@@ -34,6 +34,7 @@ export let createCommission = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const commissionDetails: CommissionDocument = req.body;
+            commissionDetails.createdOn = new Date()
             const createData = new Commission(commissionDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-Commission', true, 200, insertData, clientError.success.savedSuccessfully);
@@ -57,16 +58,21 @@ export let updateCommission = async (req, res, next) => {
                     country: commissionDetails.country,
                     universityName: commissionDetails.universityName,
                     paymentMethod: commissionDetails.paymentMethod,
+                    amount: commissionDetails.amount,
+                    percentage:commissionDetails.percentage,
                     commissionPaidOn: commissionDetails.commissionPaidOn,
                     eligibility: commissionDetails.eligibility,
                     tax: commissionDetails.tax,
                     paymentType: commissionDetails.paymentType,
-                    year: commissionDetails.year,
-                    courseType: commissionDetails.courseType
-              
+                    currency:commissionDetails.currency,
+                    flag: commissionDetails.flag,
+                    clientName:commissionDetails.clientName,
+
+                    modifiedOn: new Date(),
+                    modifiedBy:  commissionDetails.modifiedBy,
                 },
                 $addToSet: {
-                    inTake: commissionDetails.inTake,
+                    years: commissionDetails.years,
                  
                 }
                 

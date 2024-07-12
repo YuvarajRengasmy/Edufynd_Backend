@@ -1,45 +1,46 @@
 import { Router } from 'express';
-import { getAllCountry, getSingleCountry, createCountry, updateCountry, deleteCountry, getFilteredCountry } from '../../globalSetting/controller/country.controller';
+import { getAllYear, getSingleYear, createYear, updateYear, deleteYear, getFilteredYear } from '../../globalSetting/controller/year.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();
 
-router.get('/',               
+router.get('/',                
     basicAuthUser,
-    getAllCountry
+    getAllYear
 );
 
-router.get('/getSingleCountry',
+router.get('/getSingleYear',
     basicAuthUser,
     checkQuery('_id'),
-    getSingleCountry,
+    getSingleYear,
 );
 
 
 router.post('/',
     basicAuthUser,
-    createCountry
+    createYear
 );
 
 
-router.put('/',                    
+router.put('/',                   
     basicAuthUser,
     checkQuery('_id'),
-    updateCountry
+    updateYear
 );
 
 
 router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deleteCountry
+    deleteYear
 );
 
-router.put('/getFilterCountry',
+
+router.put('/getFilterYear',
     basicAuthUser,
-    getFilteredCountry,
+    getFilteredYear,
 );
 
 

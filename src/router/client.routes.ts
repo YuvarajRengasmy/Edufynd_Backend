@@ -7,7 +7,7 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/',                //get all client
+router.get('/',                
     basicAuthUser,
     // checkSession,
     getAllClient
@@ -28,7 +28,7 @@ router.post('/',
 );
 
 
-router.put('/',                    // update 
+router.put('/',                    
     basicAuthUser,
     // checkSession,
     // checkQuery('_id'),
@@ -37,7 +37,7 @@ router.put('/',                    // update
 );
 
 
-router.delete('/',                  //delete client
+router.delete('/',                
     basicAuthUser,
     //  checkSession,
     checkQuery('_id'),

@@ -114,6 +114,7 @@ export let updateUniversity = async (req, res, next) => {
                     currency: universityDetails.currency,
                     paymentTAT: universityDetails.paymentTAT,
                     tax: universityDetails.tax,
+                    commissionPaidOn: universityDetails.commissionPaidOn,
                     courseFeesPercentage: universityDetails.courseFeesPercentage,
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
                     website: universityDetails.website,
@@ -480,6 +481,23 @@ export const getUniversityWithProgramDetails = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
+
+export const getUniversityByCountry =  async (req, res) => {
+    const { country } = req.query; // Extract country from query params
+    try {
+        // Query universities based on country
+        const universities = await University.find({ country: country });
+        response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
+    } catch (err) {
+        console.error('Error fetching universities:', err);
+        response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+}
+
+
+
+  
 
 
 // export const getUniversitiesByClient = async (req, res) => {

@@ -10,7 +10,7 @@ import upload from '../utils/fileUploaded';
 
 const router:Router=Router();
 
-router.get('/', //get all program
+router.get('/', 
     basicAuthUser,
     // checkSession,
     getAllProgram
@@ -30,7 +30,7 @@ router.post('/',
 );
 
 
-router.put('/',            // update 
+router.put('/',            
     basicAuthUser,
    //  checkSession,
     // checkQuery('_id'),
@@ -39,7 +39,7 @@ router.put('/',            // update
 );
 
 
-router.delete('/',             //delete program
+router.delete('/',            
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),

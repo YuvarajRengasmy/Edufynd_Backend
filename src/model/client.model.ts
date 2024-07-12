@@ -3,10 +3,10 @@ import * as mongoose from 'mongoose'
 
 export interface ClientDocument extends mongoose.Document {
     _id?: any;
-    clientID?: string;
     typeOfClient?: string;    // - Institution, Financial Institution, Other Service Provider
-    clientStatus?: string;
     businessName?: string;
+    clientID?: string;
+    clientStatus?: string;
     businessMailID?: string;
     businessContactNo?: string;
     website?: string;

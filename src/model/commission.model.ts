@@ -5,13 +5,16 @@ export interface CommissionDocument extends mongoose.Document{
     country?: string;
     universityName?: string;
     paymentMethod?: string;
+    amount?: number;
+    percentage?: number;
     commissionPaidOn?: string;
     eligibility?: string;
     tax?: string;
     paymentType?: string;
-    year?: string;
-    courseType?: string;
-    inTake?: any;
+    currency?: string;
+    flag?: string;
+    clientName?: string;
+    years?: any;
 
     createdOn?: Date;
     createdBy?: string;
@@ -23,13 +26,20 @@ const commissionSchema = new mongoose.Schema({
     country: {type: String},
     universityName: {type:String},
     paymentMethod: {type: String},
+    amount: { type: Number },
+    percentage: { type: Number },
     commissionPaidOn: {type: String},
     eligibility: {type: String},
     tax: {type: String},
     paymentType: {type: String},
-    year: {type: String},
-    courseType: {type: String},
-    inTake: [{
+    currency: { type: String },
+    flag: {type: String},
+    clientName: {type: String},
+ 
+    years: [{
+        year: {type: String},
+        courseType: {type: String},
+
         inTake1: {type: String},
         value1: {type: Number},
 
