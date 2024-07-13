@@ -66,12 +66,13 @@ export let createReceiverInvoice = async (req, res, next) => {
         }
 
         // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
-      let percent = senderInvoice.netAmount;
+      let percent = senderInvoice.amountReceivedInCurrency;
           //  let rate = INR/Currency
       let amount = percent * (receiverInvoiceDetails.commission/100)
     
         receiverInvoiceDetails.amountInCurrency = amount
-        let INR = amount * 100
+        let INR = receiverInvoiceDetails.amountInINR / amount
+ 
         receiverInvoiceDetails.amountInINR = INR 
         receiverInvoiceDetails.amount = INR 
         receiverInvoiceDetails.netInWords = toWords(INR).replace(/,/g, '') + ' only';
