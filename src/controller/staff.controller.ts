@@ -2,7 +2,7 @@ import { Staff, StaffDocument } from '../model/staff.model'
 import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { validationResult } from 'express-validator'
 import { response, transporter } from '../helper/commonResponseHandler'
-import { decrypt, encrypt } from "../helper/Encryption";
+import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import { clientError, errorMessage } from '../helper/ErrorMessage'
 import csv = require('csvtojson')
 
@@ -134,8 +134,10 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
         try {
 
             const staffDetails: StaffDocument = req.body;
-            req.body.password = await encrypt(req.body.password)
-            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+            const password = generateRandomPassword(8);
+            const confirmPassword = password; // Since password and confirmPassword should match
+            staffDetails.password = await encrypt(password)
+            staffDetails.confirmPassword = await encrypt(confirmPassword)
             staffDetails.createdOn = new Date();
             staffDetails.employeeID = await generateNextStaffID();
             const createStaff = new Staff(staffDetails);

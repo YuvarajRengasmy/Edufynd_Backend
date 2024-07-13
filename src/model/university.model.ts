@@ -25,7 +25,7 @@ export interface UniversityDocument extends mongoose.Document {
     admissionRequirement?: string; // Admission Requirement (Text box)
     offerTAT?: string; // Offer TAT
     paymentMethod?: string;
-    amount?: number;  //a
+    amount?: string;
     percentage?: string;
     eligibilityForCommission?: string;
     currency?: string;
@@ -73,7 +73,7 @@ const universitySchema = new mongoose.Schema({
     admissionRequirement: { type: String },
     offerTAT: { type: String },
     paymentMethod: { type: String, },
-    amount: { type: Number },
+    amount: { type: String },
     percentage: { type: String },
     eligibilityForCommission: { type: String },
     currency: { type: String },

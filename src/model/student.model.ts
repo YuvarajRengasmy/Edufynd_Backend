@@ -50,7 +50,7 @@ export interface StudentDocument extends mongoose.Document {
     additional?: any[];
 
     resetOtp?: string;
-    resetOtpExpires?: string;   //a
+    resetOtpExpires?: number;   
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -110,7 +110,7 @@ const studentSchema = new mongoose.Schema({
     additional: [String],
 
     resetOtp: { type: String },
-    resetOtpExpires: { type: String },
+    resetOtpExpires: { type: Number },
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

@@ -14,7 +14,7 @@ export interface AdminDocument extends mongoose.Document{
     universityId?: any;
     programId?: any;
     resetOtp?: string;
-    resetOtpExpires?: string;  //a
+    resetOtpExpires?: number;  
 
     isDeleted?: boolean;
     privileges?: string;
@@ -38,7 +38,7 @@ const adminSchema = new mongoose.Schema({
     universityId: {type: mongoose.Types.ObjectId, ref: 'University'},
     programId: { type: mongoose.Types.ObjectId, ref : 'Program'},
     resetOtp: { type: String },
-    resetOtpExpires: { type: String },
+    resetOtpExpires: { type: Number },
 
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},
