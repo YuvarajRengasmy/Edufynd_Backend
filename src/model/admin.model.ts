@@ -5,7 +5,7 @@ export interface AdminDocument extends mongoose.Document{
     name?: string;
     adminCode?: string;
     email?: string;
-    mobileNumber?: string;
+    mobileNumber?: number;    //a
     password?: string;
     confirmPassword?: string;
     role?:string;
@@ -14,7 +14,7 @@ export interface AdminDocument extends mongoose.Document{
     universityId?: any;
     programId?: any;
     resetOtp?: string;
-    resetOtpExpires?: number;
+    resetOtpExpires?: string;  //a
 
     isDeleted?: boolean;
     privileges?: string;
@@ -29,7 +29,7 @@ const adminSchema = new mongoose.Schema({
     name: {type: String},
     adminCode: {type: String},
     email: { type: String},
-    mobileNumber: {type: String},
+    mobileNumber: {type: Number},   
     password: {type: String},
     confirmPassword: {type: String},
     role: {type: String},
@@ -38,7 +38,7 @@ const adminSchema = new mongoose.Schema({
     universityId: {type: mongoose.Types.ObjectId, ref: 'University'},
     programId: { type: mongoose.Types.ObjectId, ref : 'Program'},
     resetOtp: { type: String },
-    resetOtpExpires: { type: Number },
+    resetOtpExpires: { type: String },
 
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},

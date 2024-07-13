@@ -13,9 +13,8 @@ export interface StudentDocument extends mongoose.Document {
     citizenship?: string;
     gender?: string;
     email?: string;
-    contactNumber?: string;
-    primaryNumber?: string;
-    whatsAppNumber?: string; // Same as primary number if yes
+    primaryNumber?: number;  //a
+    whatsAppNumber?: number; // a
     highestQualification?: string;
     degreeName?: string;
     academicYear?: string;
@@ -51,7 +50,7 @@ export interface StudentDocument extends mongoose.Document {
     additional?: any[];
 
     resetOtp?: string;
-    resetOtpExpires?: number;
+    resetOtpExpires?: string;   //a
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -74,8 +73,8 @@ const studentSchema = new mongoose.Schema({
     citizenship: { type: String },
     gender: { type: String, },
     email: { type: String },
-    mobileNumber: { type: String },
-    whatsAppNumber: { type: String },
+    mobileNumber: { type: Number },
+    whatsAppNumber: { type: Number },
     highestQualification: { type: String },
     degreeName: { type: String, },
     academicYear: { type: String },
@@ -111,7 +110,7 @@ const studentSchema = new mongoose.Schema({
     additional: [String],
 
     resetOtp: { type: String },
-    resetOtpExpires: { type: Number },
+    resetOtpExpires: { type: String },
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
