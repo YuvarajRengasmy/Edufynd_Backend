@@ -13,7 +13,7 @@ export interface InvoiceDocument extends mongoose.Document {
     applicationID?: any;
     agentName?: string;
     commission?: string;
-    paymentMethod?: string; // (upi, bank)
+ 
     INRValue?: number;
      
     amountPaid?: number;       // (To be calculated on the course fee after scholarship – auto fetch from Applicant, if on course fees | If partial fees, calculate on Paid Fees – auto fetch from Applicant)
@@ -21,6 +21,7 @@ export interface InvoiceDocument extends mongoose.Document {
     transactions?: string;       // (Add multiple)
     transactionsDate?: string;
     amount?: string;
+    paymentMethod?: string; // (upi, bank)
 
     createdOn?: Date;
     createdBy?: string;

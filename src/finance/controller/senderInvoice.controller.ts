@@ -51,6 +51,7 @@ const generateSenderInvoice = async (): Promise<string> => {
 
 
 export let createSenderInvoice = async (req, res, next) => {
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -59,9 +60,7 @@ export let createSenderInvoice = async (req, res, next) => {
             invoiceDetails.createdOn = new Date();
             invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
 
-            // let commissionReceived = Number(Number(invoiceDetails.amountReceivedInINRAndCurrency) / Number(invoiceDetails.amountToBeReceivedCurrency))
-            // commissionReceived = parseFloat(commissionReceived.toFixed(2));
-            // invoiceDetails.INRValue = commissionReceived
+ 
 
             let final: any, courseValue: any, paidValue: any, fixedValue: any
             if (invoiceDetails.paymentMethod === "CourseFees") {
@@ -76,12 +75,12 @@ export let createSenderInvoice = async (req, res, next) => {
 
             // invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
             final = parseFloat(final.toFixed(2));
+   
             invoiceDetails.amountReceivedInCurrency = final;
             let rate = invoiceDetails.amountReceivedInINR / final
-           let INR = final * 100;
-           invoiceDetails.amountReceivedInINR= INR
-            invoiceDetails.netAmount = INR;
-            invoiceDetails.netInWords = toWords(INR).replace(/,/g, '') + ' only';
+          
+            invoiceDetails.netAmount = rate;
+            invoiceDetails.netInWords = toWords(rate).replace(/,/g, '') + ' only';
 
             const createData = new SenderInvoice(invoiceDetails);
 
@@ -89,6 +88,7 @@ export let createSenderInvoice = async (req, res, next) => {
 
             response(req, res, activity, 'Level-2', 'Sender Invoice-Created', true, 200, insertData, clientError.success.Sinvoice);
         } catch (err: any) {
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Sender Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }

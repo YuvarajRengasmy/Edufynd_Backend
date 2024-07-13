@@ -36,7 +36,7 @@ const senderInvoiceSchema = new mongoose.Schema({
   tds: { type: String },
   businessName: { type: String,ref: "Client" },
   universityName: { type: String, ref: "University" },
-  applicationID: { type: String, ref: "Applicant" },
+  applicationID: { type: mongoose.Types.ObjectId, ref: "Applicant" },
   currency: { type: String },
   commission: { type: Number },
   amountReceivedInCurrency: { type: Number },

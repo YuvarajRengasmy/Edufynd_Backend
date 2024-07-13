@@ -32,6 +32,13 @@ import SenderInvoice from '../finance/routes/senderInvoice.route';
 import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
 
 
+// Notification
+import Notification from '../notification/notification.routes'
+
+// Meeting
+import Meeting from '../meeting/meeting.routes'
+
+
 
 //Global Setting Routes
 import Status from '../setting/globalSetting/router/status.routes'
@@ -84,6 +91,14 @@ router.use('/flight', Flight)
 // Invoice API
 router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
+
+
+// Notification
+router.use('/notification', Notification)
+
+// Meeting
+router.use('/meeting', Meeting)
+
 
 
 
