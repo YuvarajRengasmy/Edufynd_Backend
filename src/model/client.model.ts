@@ -29,7 +29,7 @@ export interface ClientDocument extends mongoose.Document {
 
 const clientSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    clientID: { type: String },
+    clientID: { type: String},
     typeOfClient: { type: String },  // - Institution, Financial Institution, Other Service Provider
     businessName: { type: String },
     clientStatus: { type: String },

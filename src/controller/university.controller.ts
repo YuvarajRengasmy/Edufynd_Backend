@@ -32,31 +32,41 @@ export let getSingleUniversity = async (req, res, next) => {
     }
 }
 
-const generateNextUniversityCode = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
-    const univesity = await University.find({}, 'universityCode').exec();
+// const generateNextUniversityCode = async (): Promise<string> => {
+//     // Retrieve all applicant IDs to determine the highest existing applicant counter
+//     const univesity = await University.find({}, 'universityCode').exec();
 
-    //  if (student.length === 0) {
-    //     // If no student codes exist, start with ST_101
-    //     return 'ST_101';
-    //   }
-    const maxCounter = univesity.reduce((max, app) => {
-        const appCode = app.universityCode;
-        const parts = appCode.split('_')
-        if (parts.length === 2) {
-            const counter = parseInt(parts[1], 10)
-            return counter > max ? counter : max;
-        }
-        return max;
-    }, 100);
+//     const maxCounter = univesity.reduce((max, app) => {
+//         const appCode = app.universityCode;
+//         const parts = appCode.split('_')
+//         if (parts.length === 2) {
+//             const counter = parseInt(parts[1], 10)
+//             return counter > max ? counter : max;
+//         }
+//         return max;
+//     }, 100);
 
+//     // Increment the counter
+//     const newCounter = maxCounter + 1;
+//     // Format the counter as a string with leading zeros
+//     const formattedCounter = String(newCounter).padStart(3, '0');
+//     // Return the new Applicantion Code
+//     return `UN_${formattedCounter}`;
+// };
+
+
+const generateNextUniversityCode = async (currentMaxCounter): Promise<string> => {
     // Increment the counter
-    const newCounter = maxCounter + 1;
+    const newCounter = currentMaxCounter + 1;
+
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-    // Return the new Applicantion Code
+
+    // Return the new client ID
     return `UN_${formattedCounter}`;
 };
+
+
 export let saveUniversity = async (req, res, next) => {
 
     const errors = validationResult(req);
@@ -64,7 +74,21 @@ export let saveUniversity = async (req, res, next) => {
         try {
             const universityDetails: UniversityDocument = req.body;
             universityDetails.createdOn = new Date()
-            universityDetails.universityCode= await generateNextUniversityCode()
+
+            const univesity = await University.find({}, 'universityCode').exec();
+
+            const maxCounter = univesity.reduce((max, app) => {
+                const appCode = app.universityCode;
+                const parts = appCode.split('_')
+                if (parts.length === 2) {
+                    const counter = parseInt(parts[1], 10)
+                    return counter > max ? counter : max;
+                }
+                return max;
+            }, 100);
+
+            let currentMaxCounter = maxCounter;
+            universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
             const createData = new University(universityDetails);
 
             let insertData = await createData.save();
@@ -353,27 +377,43 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-     
+
         // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
 
-        const universityList = await Promise.all(csvData.map(async (data) => {
-            const universityCode= await generateNextUniversityCode()
-            return {
+        const univesity = await University.find({}, 'universityCode').exec();
+
+        const maxCounter = univesity.reduce((max, app) => {
+            const appCode = app.universityCode;
+            const parts = appCode.split('_')
+            if (parts.length === 2) {
+                const counter = parseInt(parts[1], 10)
+                return counter > max ? counter : max;
+            }
+            return max;
+        }, 100);
+
+        let currentMaxCounter = maxCounter;
+
+        const universityList = [];
+        for (const data of csvData) {
+            const universityCode = await  generateNextUniversityCode(currentMaxCounter)
+            currentMaxCounter++; // Increment the counter for the next client ID
+            universityList.push({
                 universityCode: universityCode,
-                universityName:data.UniversityName,
+                universityName: data.UniversityName,
                 universityLogo: data.UniversityLogo,
                 courseType: data.CourseType,
                 businessName: data.BusinessName,
                 banner: data.Banner,
                 country: data.Country,
-                countryName:data.CountryName,
+                countryName: data.CountryName,
                 email: data.Email,
                 // campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
                 ranking: data.Ranking,
                 applicationFees: data.ApplicationFees,
                 averageFees: data.AverageFees,
-                popularCategories: data.PopularCategories ?data.PopularCategories.split(',') : [],
+                popularCategories: data.PopularCategories ? data.PopularCategories.split(',') : [],
                 offerTAT: data.OfferTAT,
                 founded: data.Founded,
                 institutionType: data.InstitutionType,
@@ -383,14 +423,14 @@ export const csvToJson = async (req, res) => {
                 flag: data.Flag,
                 paymentMethod: data.PaymentMethod,
                 amount: data.Amount,
-                percentage:data.Percentage,
+                percentage: data.Percentage,
                 eligibilityForCommission: data.EligibilityForCommission,
-                currency:data.Currency,
+                currency: data.Currency,
                 paymentTAT: data.PaymentTAT,
                 tax: data.Tax,
 
-            }
-        }))
+            })
+        }
 
         // Insert into the database
         await University.insertMany(universityList);
@@ -484,7 +524,7 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 };
 
 
-export const getUniversityByCountry =  async (req, res) => {
+export const getUniversityByCountry = async (req, res) => {
     const { country } = req.query; // Extract country from query params
     try {
         // Query universities based on country
@@ -498,7 +538,7 @@ export const getUniversityByCountry =  async (req, res) => {
 
 
 
-  
+
 
 
 // export const getUniversitiesByClient = async (req, res) => {
