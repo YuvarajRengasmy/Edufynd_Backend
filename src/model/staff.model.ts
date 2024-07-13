@@ -14,8 +14,8 @@ export interface StaffDocument extends mongoose.Document {
     dob?: String;    // (Date of Birth)
     address?: string;
     email?: string;
-    mobileNumber?: string;
-    emergencyContactNo?: string;
+    mobileNumber?: number;  //a
+    emergencyContactNo?: number;   //a
     probationDuration?: string;
     salary?: string    // (Break Up with deduction – Manual)
     idCard?: boolean;    // – Yes / No (If ‘Yes’ card to be generated)
@@ -47,8 +47,8 @@ const staffSchema = new mongoose.Schema({
     dob: {type: String},                     // (Date of Birth)
     address: {type: String},
     email: {type: String},
-    mobileNumber: {type: String},
-    emergencyContactNo: {type: String},
+    mobileNumber: {type: Number},
+    emergencyContactNo: {type: Number},
     probationDuration: {type: String},
     salary: {type: String},               // (Break Up with deduction – Manual)        
     idCard: {type: String},                     // – Yes / No (If ‘Yes’ card to be generated)

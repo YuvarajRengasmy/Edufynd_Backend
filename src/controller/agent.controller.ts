@@ -5,7 +5,7 @@ import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-import { decrypt, encrypt } from "../helper/Encryption";
+import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import csv = require('csvtojson')
 
 var activity = "Agent";
@@ -170,8 +170,10 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
         try {
             const agentDetails: AgentDocument = req.body;
             agentDetails.agentCode = await generateNextAgentID();
-            req.body.password = await encrypt(req.body.password)
-            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+            const password = generateRandomPassword(8);
+            const confirmPassword = password; // Since password and confirmPassword should match
+            agentDetails.password = await encrypt(password)
+            agentDetails.confirmPassword = await encrypt(confirmPassword)
             const createAgent = new Agent(agentDetails);
             const insertAgent = await createAgent.save();
             const newHash = await decrypt(insertAgent["password"]);

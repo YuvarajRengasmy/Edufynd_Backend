@@ -10,8 +10,8 @@ export interface ApplicantDocument extends mongoose.Document {
     dob?: string,             //(Auto Fetch from Students)
     passportNo?: string,       // (Auto Fetch from Students)
     email?: string,         //(Auto Fetch from Students)
-    primaryNumber?: string,
-    whatsAppNumber?: string,
+    primaryNumber?: number,  //a
+    whatsAppNumber?: number,  //a
     inTake?: string,
     universityName?: string,
     course?: string,
@@ -38,8 +38,8 @@ const applicantSchema = new mongoose.Schema({
     dob: { type: String, ref: 'Student' },
     passportNo: { type: String, ref: 'Student' },
     email: { type: String, ref: 'Student' },
-    primaryNumber: { type: String, ref: 'Student' },
-    whatsAppNumber: { type: String, ref: 'Student' },
+    primaryNumber: { type: Number, ref: 'Student' },
+    whatsAppNumber: { type: Number, ref: 'Student' },
     inTake: { type: String },
     universityName: { type: String, ref: 'University' },
     campus: {type: String},

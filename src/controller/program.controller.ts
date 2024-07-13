@@ -51,6 +51,7 @@ export let createProgram = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const programDetails: ProgramDocument = req.body;
+            programDetails.finalValue = (programDetails.applicationFee) - (programDetails.discountedValue)
             const createData = new Program(programDetails);
             let insertData = await createData.save();
 

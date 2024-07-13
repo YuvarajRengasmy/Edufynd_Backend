@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose'
 export interface ContactDocument extends mongoose.Document{
     name?: string;
     email?: string;
-    mobileNumber?: string;
+    mobileNumber?: number;   //a
     message?: string;
     createdOn?: Date;
     createdBy?: string;
@@ -16,7 +16,7 @@ export interface ContactDocument extends mongoose.Document{
 const contactSchema = new mongoose.Schema({
     name: {type: String},
     email: {type: String},
-    mobileNumber: {type: String},
+    mobileNumber: {type: Number},
     message: {type: String},
     createdOn: { type: Date },
     createdBy: { type: String },

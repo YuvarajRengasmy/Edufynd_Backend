@@ -96,6 +96,7 @@ export let updateUniversity = async (req, res, next) => {
                     countryName: universityDetails.countryName,
                     about: universityDetails.about,
                     courseType: universityDetails.courseType,
+                    email: universityDetails.email,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
                     state: universityDetails.state,
@@ -352,44 +353,44 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-        let universityList = [];
+     
         // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
 
-        // Process CSV data
-        for (let i = 0; i < csvData.length; i++) {
-            universityList.push({
-                universityName: csvData[i].UniversityName,
-                universityLogo: csvData[i].UniversityLogo,
-                courseType: csvData[i].CourseType,
-                businessName: csvData[i].BusinessName,
-                banner: csvData[i].Banner,
-                country: csvData[i].Country,
-                countryName: csvData[i].CountryName,
-                email: csvData[i].Email,
+        const universityList = await Promise.all(csvData.map(async (data) => {
+            const universityCode= await generateNextUniversityCode()
+            return {
+                universityCode: universityCode,
+                universityName:data.UniversityName,
+                universityLogo: data.UniversityLogo,
+                courseType: data.CourseType,
+                businessName: data.BusinessName,
+                banner: data.Banner,
+                country: data.Country,
+                countryName:data.CountryName,
+                email: data.Email,
                 // campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
-                ranking: csvData[i].Ranking,
-                applicationFees: csvData[i].ApplicationFees,
-                averageFees: csvData[i].AverageFees,
-                popularCategories: csvData[i].PopularCategories ? csvData[i].PopularCategories.split(',') : [],
-                offerTAT: csvData[i].OfferTAT,
-                founded: csvData[i].Founded,
-                institutionType: csvData[i].InstitutionType,
-                costOfLiving: csvData[i].CostOfLiving,
-                admissionRequirement: csvData[i].AdmissionRequirement,
-                grossTuition: csvData[i].GrossTuition,
-                flag: csvData[i].Flag,
-                paymentMethod: csvData[i].PaymentMethod,
-                amount: csvData[i].Amount,
-                percentage: csvData[i].Percentage,
-                eligibilityForCommission: csvData[i].EligibilityForCommission,
-                currency: csvData[i].Currency,
-                paymentTAT: csvData[i].PaymentTAT,
-                tax: csvData[i].Tax,
-             
-                // courseFeesPercent: csvData[i].CourseFeesPercent,
-            });
-        }
+                ranking: data.Ranking,
+                applicationFees: data.ApplicationFees,
+                averageFees: data.AverageFees,
+                popularCategories: data.PopularCategories ?data.PopularCategories.split(',') : [],
+                offerTAT: data.OfferTAT,
+                founded: data.Founded,
+                institutionType: data.InstitutionType,
+                costOfLiving: data.CostOfLiving,
+                admissionRequirement: data.AdmissionRequirement,
+                grossTuition: data.GrossTuition,
+                flag: data.Flag,
+                paymentMethod: data.PaymentMethod,
+                amount: data.Amount,
+                percentage:data.Percentage,
+                eligibilityForCommission: data.EligibilityForCommission,
+                currency:data.Currency,
+                paymentTAT: data.PaymentTAT,
+                tax: data.Tax,
+
+            }
+        }))
 
         // Insert into the database
         await University.insertMany(universityList);

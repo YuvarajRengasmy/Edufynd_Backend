@@ -84,6 +84,7 @@ export let updateClient = async (req, res, next) => {
                     businessMailID: clientDetails.businessMailID,
                     clientStatus: clientDetails.clientStatus,
                     businessContactNo: clientDetails.businessContactNo,
+                    whatsAppNumber: clientDetails.whatsAppNumber,
                     website: clientDetails.website,
                     addressLine1: clientDetails.addressLine1,
                     addressLine2: clientDetails.addressLine2,
@@ -158,38 +159,88 @@ export let getFilteredClient = async (req, res, next) => {
 
 
 
+// export const csvToJson = async (req, res) => {
+//     try {
+//         const clientDetails: ClientDocument = req.body;
+
+//         // Generate the next client ID
+//         // clientDetails.clientID = await generateNextClientID();
+//         let clientList = [];
+//         // Parse CSV file
+//         const csvData = await csv().fromFile(req.file.path);
+
+//         // Process CSV data
+//         for (let i = 0; i < csvData.length; i++) {
+//             clientList.push({
+              
+//                 typeOfClient: csvData[i].TypeOfClient,  
+//                 clientStatus: csvData[i].ClientStatus,
+//                 businessMailID: csvData[i].BusinessMailID,
+//                 businessContactNo: csvData[i].BusinessContactNo,
+//                 website: csvData[i].Website,
+//                 whatAppNumber: csvData[i].WhatAppNumber,
+//                 addressLine1: csvData[i].AddressLine1, 
+//                 addressLine2: csvData[i].AddressLine2, 
+//                 addressLine3: csvData[i].AddressLine3, 
+//                 name: csvData[i].StaffName,
+//                 contactNo:csvData[i].StaffContactNo,
+//                 emailID: csvData[i].StaffMailId,
+//                 staffStatus: csvData[i].staffStatus,
+
+//             });
+//         }
+
+//         // Insert into the database
+//         await Client.insertMany(clientList);
+//         console.log("hh", clientList)
+//         // Send success response
+//         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for client module', true, 200, { clientList }, 'Successfully CSV File Store Into Database');
+//     } catch (err) {
+//         // Send error response
+//         console.log("w", err)
+//         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
+//     }
+// };
+
+
+
 export const csvToJson = async (req, res) => {
     try {
-        let clientList = [];
-        // Parse CSV file
+        const clientDetails: ClientDocument = req.body;
+
+    
         const csvData = await csv().fromFile(req.file.path);
 
         // Process CSV data
-        for (let i = 0; i < csvData.length; i++) {
-            clientList.push({
-                typeOfClient: csvData[i].TypeOfClient,  
-                clientStatus: csvData[i].ClientStatus,
-                businessMailID: csvData[i].BusinessMailID,
-                businessContactNo: csvData[i].BusinessContactNo,
-                website: csvData[i].Website,
-                whatAppNumber: csvData[i].WhatAppNumber,
-                addressLine1: csvData[i].AddressLine1, 
-                addressLine2: csvData[i].AddressLine2, 
-                addressLine3: csvData[i].AddressLine3, 
-                name: csvData[i].StaffName,
-                contactNo:csvData[i].StaffContactNo,
-                emailID: csvData[i].StaffMailId,
-                staffStatus: csvData[i].staffStatus,
-
-            });
-        }
+        const clientList = await Promise.all(csvData.map(async (data) => {
+            const clientID = await generateNextClientID();
+            return {
+                clientID: clientID,
+                typeOfClient: data.TypeOfClient,  
+                clientStatus: data.ClientStatus,
+                businessMailID: data.BusinessMailID,
+                businessName: data.BusinessName,
+                businessContactNo: data.BusinessContactNo,
+                website: data.Website,
+                whatAppNumber: data.WhatAppNumber,
+                addressLine1: data.AddressLine1, 
+                addressLine2: data.AddressLine2, 
+                addressLine3: data.AddressLine3, 
+                name: data.StaffName,
+                contactNo: data.StaffContactNo,
+                emailID: data.StaffMailId,
+                staffStatus: data.staffStatus,
+            };
+        }))
 
         // Insert into the database
         await Client.insertMany(clientList);
+        console.log("hh", clientList)
         // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for client module', true, 200, { clientList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         // Send error response
+        console.log("w", err)
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
