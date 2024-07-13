@@ -4,7 +4,7 @@ import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-import { decrypt, encrypt } from "../helper/Encryption";
+import { decrypt, encrypt, generateRandomPassword} from "../helper/Encryption";
 import csv = require("csvtojson")
 
 var activity = "Student";
@@ -317,10 +317,12 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
         try {
 
             const studentDetails: StudentDocument = req.body;
-
             studentDetails.studentCode = await generateNextStudentCode();
-            req.body.password = await encrypt(req.body.password)
-            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+            // Generate random passwords
+            const password = generateRandomPassword(8);
+            const confirmPassword = password; // Since password and confirmPassword should match
+            studentDetails.password = await encrypt(password)
+            studentDetails.confirmPassword = await encrypt(confirmPassword)
             const createStudent = new Student(studentDetails);
             const insertStudent = await createStudent.save();
 

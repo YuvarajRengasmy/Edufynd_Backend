@@ -6,7 +6,7 @@ import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-import { decrypt, encrypt } from "../helper/Encryption";
+import { decrypt, encrypt,generateRandomPassword } from "../helper/Encryption";
 
 var activity = "Admin";
 
@@ -199,8 +199,10 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
             const adminDetails: AdminDocument = req.body;
 
             adminDetails.adminCode = await generateNextAdminCode();
-            req.body.password = await encrypt(req.body.password)
-            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+            const password = generateRandomPassword(8);
+            const confirmPassword = password; // Since password and confirmPassword should match
+            adminDetails.password = await encrypt(password)
+            adminDetails.confirmPassword = await encrypt(confirmPassword)
             const createAdmin = new Admin(adminDetails);
             const insertAdmin = await createAdmin.save();
 
