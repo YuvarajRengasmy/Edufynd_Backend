@@ -11,11 +11,11 @@ export interface AgentDocument extends mongoose.Document {
   addressLine2?: string;
   addressLine3?: String;
   email?: string;
-  mobileNumber?: string;
-  whatsAppNumber?: string;
+  mobileNumber?: number;  //a
+  whatsAppNumber?: number; //a
 // Bank Details
   accountName?: string;
-  accountNumber?: string;
+  accountNumber?: number;  //a
   bankName?: string;
   ifsc?: string;
   branch?: string;
@@ -24,12 +24,12 @@ export interface AgentDocument extends mongoose.Document {
   gstn?: string; // Optional
   inc?: string; // If applicable
   staffName?: string;
-  staffContactNo?: string; // agentPayout?: string[]; // List of payouts
-  agentsCommission?: number; // Will be calculated based on the University Commission & Agent Payout
+  staffContactNo?: number; //a       // agentPayout?: string[]; // List of payouts
+  agentsCommission?: number;        // Will be calculated based on the University Commission & Agent Payout
   agentBusinessLogo?: string; // Optional
   countryInterested?: string[];
   resetOtp?: string;
-  resetOtpExpires?: number;
+  resetOtpExpires?: string;  //a
   isDeleted?: boolean;
   privileges?: string;
   createdOn?: Date;
@@ -55,12 +55,12 @@ const agentSchema = new mongoose.Schema({
   addressLine1: { type: String },
   addressLine2: { type: String },
   addressLine3: { type: String },
-  email: { type: String, required: true },
-  mobileNumber: { type: String, required: true },
-  whatsAppNumber: { type: String },
+  email: { type: String },
+  mobileNumber: { type: Number},
+  whatsAppNumber: { type: Number },
   // Bank Details
   accountName: {type: String},
-  accountNumber: {type: String},
+  accountNumber: {type: Number},
   bankName: {type: String},
   ifsc: {type: String},
   branch: {type: String},
@@ -69,7 +69,7 @@ const agentSchema = new mongoose.Schema({
   gstn: { type: String },
   inc: { type: String },  // (if applicable)
   staffName: { type: String },
-  staffContactNo: { type: String },
+  staffContactNo: { type: Number },
   // agentPayout: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AgentPayout' }],//•Agent payout (List, Add, Edit, Delete)
   agentsCommission: { type: Number },  // (Will be calculated based on the University Commission & Agent Payout) Decimal value to the nearest – To be viewed only for agents
   agentBusinessLogo: { type: String },  // (Optional)
@@ -78,7 +78,7 @@ const agentSchema = new mongoose.Schema({
   confirmPassword: { type: String },
 
   resetOtp: { type: String },
-  resetOtpExpires: { type: Number },
+  resetOtpExpires: { type: String },
 
   isDeleted: { type: Boolean, default: false },
   privileges: { type: String },

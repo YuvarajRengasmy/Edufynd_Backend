@@ -5,7 +5,7 @@ export interface SuperAdminDocument extends mongoose.Document{
     _id?: any;
     name?: string;
     email?: string;
-    mobileNumber?: string;
+    mobileNumber?: number;   //a
     password?: string;
     confirmPassword?: string;
     studentId?: any;
@@ -22,7 +22,7 @@ const superAdminSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     name: {type: String},
     email: { type: String},
-    mobileNumber: {type: String},
+    mobileNumber: {type: Number},
     password: {type: String},
     confirmPassword: {type: String},
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },

@@ -8,15 +8,15 @@ export interface ClientDocument extends mongoose.Document {
     clientID?: string;
     clientStatus?: string;
     businessMailID?: string;
-    businessContactNo?: string;
+    businessContactNo?: number;  //a
     website?: string;
     addressLine1?: string;
     name?: string;
-    contactNo?: string;
+    contactNo?: number;   //a
     emailID?: string;
     addressLine2?: string;
     addressLine3?: string;      // Street Address, City, State, Postal Code, Country
-    whatAppNumber?: string;
+    whatAppNumber?: number;   //a
     staffStatus?: string;     // (Active/Inactive)
     isDeleted?: boolean;
     privileges?: string;
@@ -34,15 +34,15 @@ const clientSchema = new mongoose.Schema({
     businessName: { type: String },
     clientStatus: { type: String },
     businessMailID: { type: String },
-    businessContactNo: { type: String },
+    businessContactNo: { type: Number },
     website: { type: String },
     addressLine1: { type: String }, // No Street Address, 
     addressLine2: { type: String },// , City, State, 
     addressLine3: { type: String },   //  Postal Code, Country
     name: { type: String },
-    contactNo: { type: String },
+    contactNo: { type: Number },
     emailID: { type: String },
-    whatAppNumber: { type: String },
+    whatAppNumber: { type: Number },
     staffStatus: { type: String },    // (Active/Inactive)
     isDeleted: { type: Boolean, default: false },
     privileges: { type: String },
