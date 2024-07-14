@@ -90,7 +90,7 @@ export let updateClient = async (req, res, next) => {
                     addressLine2: clientDetails.addressLine2,
                     addressLine3: clientDetails.addressLine3,
                     name: clientDetails.name,
-                    whatsAppNumber: clientDetails.whatsAppNumber,
+               
                     contactNo: clientDetails.contactNo,
                     emailID: clientDetails.emailID,
                     staffStatus: clientDetails.staffStatus,
