@@ -78,7 +78,6 @@ export let updateClient = async (req, res, next) => {
             const clientDetails: ClientDocument = req.body;
             let clientData = await Client.findByIdAndUpdate({ _id: clientDetails._id }, {
                 $set: {
-
                     typeOfClient: clientDetails.typeOfClient,
                     businessName: clientDetails.businessName,
                     businessMailID: clientDetails.businessMailID,
@@ -86,6 +85,9 @@ export let updateClient = async (req, res, next) => {
                     businessContactNo: clientDetails.businessContactNo,
                     whatsAppNumber: clientDetails.whatsAppNumber,
                     website: clientDetails.website,
+                    country: clientDetails.country,
+                    lga: clientDetails.lga,
+                    state: clientDetails.state,
                     addressLine1: clientDetails.addressLine1,
                     addressLine2: clientDetails.addressLine2,
                     addressLine3: clientDetails.addressLine3,

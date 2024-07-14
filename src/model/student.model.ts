@@ -5,7 +5,7 @@ export interface StudentDocument extends mongoose.Document {
     studentCode?: string;
     superAdminId?: any;
     agentId?: any;
-    source?: string[];
+    source?: string;
     name?: string;
     passportNo?: string;
     expiryDate?: Date;
@@ -40,7 +40,6 @@ export interface StudentDocument extends mongoose.Document {
     facebook?: string;
     instagram?: string;
     linkedIn?: string;
-
     photo?: string;
     resume?: string;
     passport?: string;
