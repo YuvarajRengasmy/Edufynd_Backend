@@ -111,6 +111,8 @@ export let updateClient = async (req, res, next) => {
                     addressLine1: clientDetails.addressLine1,
                     addressLine2: clientDetails.addressLine2,
                     addressLine3: clientDetails.addressLine3,
+                    state: clientDetails.state,
+                    lga: clientDetails.lga,
                     name: clientDetails.name,
                
                     contactNo: clientDetails.contactNo,

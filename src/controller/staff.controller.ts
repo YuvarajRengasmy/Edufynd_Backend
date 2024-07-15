@@ -31,12 +31,7 @@ export const getSingleStaff = async (req, res) => {
 const generateNextStaffID = async (): Promise<string> => {
     // Retrieve all applicant IDs to determine the highest existing applicant counter
     const staff = await Staff.find({}, 'employeeID').exec();
-   
 
-    //  if (student.length === 0) {
-    //     // If no student codes exist, start with ST_101
-    //     return 'ST_101';
-    //   }
     const maxCounter = staff.reduce((max, app) => {
         const appCode = app.employeeID;
         const parts = appCode.split('_')
@@ -82,25 +77,45 @@ export const updateStaff = async (req, res) => {
             const staffDetails: StaffDocument = req.body;
             let staffData = await Staff.findByIdAndUpdate({ _id: staffDetails._id }, {
                 $set: {
-                    photo:staffDetails.photo,
+                    photo: staffDetails.photo,
                     empName: staffDetails.empName,
-                    designation:staffDetails.designation,
+                    designation: staffDetails.designation,
                     jobDescription: staffDetails.jobDescription,
-                    reportingManager:staffDetails.reportingManager,
-                    shiftTiming:staffDetails.shiftTiming,                    
-                    areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,                
-                    address:staffDetails.address,
-                    emergencyContactNo:staffDetails.emergencyContactNo,
+                    reportingManager: staffDetails.reportingManager,
+                    shiftTiming: staffDetails.shiftTiming,
+                    areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,
+                    address: staffDetails.address,
+                    emergencyContactNo: staffDetails.emergencyContactNo,
                     probationDuration: staffDetails.probationDuration,
-                    salary: staffDetails.salary,              
-                    privileges:staffDetails.privileges,               
-                    idCard: staffDetails.idCard,                  
-                    manageApplications:staffDetails.manageApplications,         
-                    activeInactive: staffDetails.activeInactive,             
+                    salary: staffDetails.salary,
+                    privileges: staffDetails.privileges,
+                    idCard: staffDetails.idCard,
+                    manageApplications: staffDetails.manageApplications,
+                    activeInactive: staffDetails.activeInactive,
                     teamLead: staffDetails.teamLead,
-                
+
+                    // Newly added fields
+                    team: staffDetails.team,
+                    address2:staffDetails.address2,
+                    pin: staffDetails.pin,
+                    country:staffDetails.country,
+                    state: staffDetails.state,
+                    city: staffDetails.city,
+                    status: staffDetails.status,
+                    companyAssests: staffDetails.companyAssests,
+                    mobileName: staffDetails.mobileName,
+                    brandName:staffDetails.brandName,
+                    IMEI: staffDetails.IMEI,
+                    phoneNumber: staffDetails.phoneNumber,
+                    laptopName: staffDetails.laptopName,
+                    brand: staffDetails.brand,
+                    modelName: staffDetails.modelName,
+                    ipAddress: staffDetails.ipAddress,
+                    userName: staffDetails.userName,
+                    loginPassword: staffDetails.loginPassword,
+
                     modifiedOn: new Date(),
-                    modifiedBy:  staffDetails.modifiedBy,
+                    modifiedBy: staffDetails.modifiedBy,
                 }
             });
 
@@ -115,7 +130,7 @@ export const updateStaff = async (req, res) => {
 }
 
 export let deleteStaff = async (req, res, next) => {
-  
+
     try {
         let id = req.query._id;
         const staff = await Staff.findByIdAndDelete({ _id: id })
@@ -143,16 +158,16 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             const createStaff = new Staff(staffDetails);
             const insertStaff = await createStaff.save();
             const newHash = await decrypt(insertStaff["password"]);
-         
+
             const mailOptions = {
-                from: 'balan9133civil@gmail.com', 
+                from: 'balan9133civil@gmail.com',
                 to: insertStaff.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
-   
+
                 if (error) {
                     console.error('Error sending email:', error);
                     return res.status(500).json({ message: 'Error sending email' });
@@ -163,12 +178,12 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             });
             response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {
                 agent: insertStaff,
-    
+
 
             }, 'Staff created successfully by SuperAdmin.');
 
         } catch (err: any) {
-        
+
             response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
@@ -232,27 +247,27 @@ export const csvToJson = async (req, res) => {
         // Process CSV data
         for (let i = 0; i < csvData.length; i++) {
             staffList.push({
-                empName:csvData[i].EmpName,
-                designation:csvData[i].Designation,
+                empName: csvData[i].EmpName,
+                designation: csvData[i].Designation,
                 jobDescription: csvData[i].JobDescription,
                 reportingManager: csvData[i].ReportingManager,
-                shiftTiming: csvData[i].ShiftTiming,                       
-                areTheyEligibleForCasualLeave: csvData[i].AreTheyEligibleForCasualLeave,          
-                doj: csvData[i].DOJ,                    
-                dob: csvData[i].DOB,                   
-                addressline1:csvData[i].AddressLine1,
-                addressline2:csvData[i].AddressLine2,
-                addressline3:csvData[i].AddressLine3,
+                shiftTiming: csvData[i].ShiftTiming,
+                areTheyEligibleForCasualLeave: csvData[i].AreTheyEligibleForCasualLeave,
+                doj: csvData[i].DOJ,
+                dob: csvData[i].DOB,
+                addressline1: csvData[i].AddressLine1,
+                addressline2: csvData[i].AddressLine2,
+                addressline3: csvData[i].AddressLine3,
                 email: csvData[i].Email,
                 mobileNumber: csvData[i].MobileNo,
                 emergencyContactNo: csvData[i].EmergencyContactNo,
                 probationDuration: csvData[i].ProbationDuration,
-                salary:csvData[i].salary,                   
-                idCard: csvData[i].IDCard,                    
-                manageApplications: csvData[i].ManageApplications,         
-                activeInactive: csvData[i].ActiveInactive,              
-                teamLead: csvData[i].TeamLead,     
-                
+                salary: csvData[i].salary,
+                idCard: csvData[i].IDCard,
+                manageApplications: csvData[i].ManageApplications,
+                activeInactive: csvData[i].ActiveInactive,
+                teamLead: csvData[i].TeamLead,
+
             });
         }
 
