@@ -213,7 +213,7 @@ export let getFilteredProgram = async (req, res, next) => {
         }
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
-        const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const programList = await Program.find(findQuery).sort({ programCode: -1 }).limit(limit).skip(page)
         const programCount = await Program.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterProgram', true, 200, { programList, programCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {

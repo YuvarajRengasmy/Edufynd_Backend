@@ -10,7 +10,7 @@ var activity = "Staff"
 
 export const getAllStaff = async (req, res) => {
     try {
-        const data = await Staff.find({ isDeleted: false })
+        const data = await Staff.find({ isDeleted: false }).sort({employeeID: -1})
         response(req, res, activity, 'Level-1', 'GetAll-Staff', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -227,7 +227,7 @@ export let getFilteredStaff = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const staffList = await Staff.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page)
 
         const staffCount = await Staff.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStaff', true, 200, { staffList, staffCount }, clientError.success.fetchedSuccessfully);
