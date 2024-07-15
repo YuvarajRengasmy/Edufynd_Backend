@@ -267,7 +267,7 @@ export let getFilteredStudent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const studentList = await Student.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page)
 
         const studentCount = await Student.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStudent', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
