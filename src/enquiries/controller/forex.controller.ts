@@ -1,6 +1,6 @@
 import { Forex, ForexDocument } from '../model/forex.model'
 import { validationResult } from "express-validator";
-import { response,} from "../../helper/commonResponseHandler";
+import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
 
 
@@ -87,14 +87,21 @@ export let updateForexEnquiry = async (req, res, next) => {
                     agentName: forexEnquiryDetails.agentName,
                     businessName: forexEnquiryDetails.businessName,
                     agentPrimaryNumber: forexEnquiryDetails.agentPrimaryNumber,
-                    agentWhatsAppNumber:forexEnquiryDetails.agentWhatsAppNumber,
+                    agentWhatsAppNumber: forexEnquiryDetails.agentWhatsAppNumber,
                     agentEmail: forexEnquiryDetails.agentEmail,
                     paymentType: forexEnquiryDetails.paymentType,
                     amountInCurrency: forexEnquiryDetails.amountInCurrency,
                     assignedTo: forexEnquiryDetails.assignedTo,
 
+                    // New added Fields
+                    expiryDate:forexEnquiryDetails.expiryDate,
+                    courseType:forexEnquiryDetails.courseType,
+                    value: forexEnquiryDetails.value,
+                    markUp:forexEnquiryDetails.markUp,
+                    profit: forexEnquiryDetails.profit,
+
                     modifiedOn: new Date(),
-                    modifiedBy:forexEnquiryDetails.modifiedBy,
+                    modifiedBy: forexEnquiryDetails.modifiedBy,
                 }
 
             });

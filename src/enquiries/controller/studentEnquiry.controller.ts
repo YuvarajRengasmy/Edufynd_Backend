@@ -60,7 +60,7 @@ export let createStudentEnquiry = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-          
+
             const enquiryDetails: StudentEnquiryDocument = req.body;
             enquiryDetails.createdOn = new Date();
             enquiryDetails.studentCode = await generateNextStudentCode();
@@ -85,22 +85,36 @@ export let updateStudentEnquiry = async (req, res, next) => {
             const updateData = await StudentEnquiry.findOneAndUpdate({ _id: req.body._id }, {
                 $set: {
                     source: studentEnquiryDetails.source,
-                    name:  studentEnquiryDetails.name,
+                    name: studentEnquiryDetails.name,
                     dob: studentEnquiryDetails.dob,
                     passportNo: studentEnquiryDetails.passportNo,
                     qualification: studentEnquiryDetails.qualification,
-                    whatsAppNumber:  studentEnquiryDetails.whatsAppNumber,
-                    primaryNumber:  studentEnquiryDetails.primaryNumber,
-                    email:  studentEnquiryDetails.email,
-                    cgpa:  studentEnquiryDetails.cgpa,
-                    yearPassed:  studentEnquiryDetails.yearPassed,
-                    desiredCountry:  studentEnquiryDetails.desiredCountry,
+                    whatsAppNumber: studentEnquiryDetails.whatsAppNumber,
+                    primaryNumber: studentEnquiryDetails.primaryNumber,
+                    email: studentEnquiryDetails.email,
+                    cgpa: studentEnquiryDetails.cgpa,
+                    yearPassed: studentEnquiryDetails.yearPassed,
+                    desiredCountry: studentEnquiryDetails.desiredCountry,
                     desiredCourse: studentEnquiryDetails.desiredCourse,
-                    doYouNeedSupportForLoan:  studentEnquiryDetails.doYouNeedSupportForLoan,
-                    assignedTo:  studentEnquiryDetails.assignedTo,
+                    doYouNeedSupportForLoan: studentEnquiryDetails.doYouNeedSupportForLoan,
+                    assignedTo: studentEnquiryDetails.assignedTo,
+
+
+                    // New Added Field
+                    gender: studentEnquiryDetails.gender,
+                    citizenShip: studentEnquiryDetails.citizenShip,
+                    expiryDate: studentEnquiryDetails.expiryDate,
+                    desiredUniversity: studentEnquiryDetails.desiredUniversity,
+                    doYouHoldAnyOtherOffer: studentEnquiryDetails.doYouHoldAnyOtherOffer,
+                    country: studentEnquiryDetails.country,
+                    universityName: studentEnquiryDetails.universityName,
+                    programName: studentEnquiryDetails.programName,
+                    refereeName: studentEnquiryDetails.refereeName,
+                    refereeContactNo: studentEnquiryDetails.refereeContactNo,
+                    registerForIELTSClass: studentEnquiryDetails.registerForIELTSClass,
 
                     modifiedOn: new Date(),
-                    modifiedBy:  studentEnquiryDetails.modifiedBy,
+                    modifiedBy: studentEnquiryDetails.modifiedBy,
                 }
 
             });
