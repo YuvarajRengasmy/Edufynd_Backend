@@ -5,42 +5,43 @@ export interface StudentDocument extends mongoose.Document {
     studentCode?: string;
     superAdminId?: any;
     agentId?: any;
-    source?: string[];
+    source?: string;
     name?: string;
+    citizenship?: string;
+    dob?: string;
     passportNo?: string;
     expiryDate?: Date;
-    dob?: string;
-    citizenship?: string;
     gender?: string;
     email?: string;
     primaryNumber?: number;  //a
     whatsAppNumber?: number; // a
     highestQualification?: string;
     degreeName?: string;
+    percentage?: string;
+    institution?: string;
     academicYear?: string;
     yearPassed?: string;
-    institution?: string;
-    percentage?: string;
+    workExperience?: string; // In years
     doHaveAnyEnglishLanguageTest?: string;
     englishTestType?: any[]; // Only EnglishLanguageTest is true
     testScore?: number; // Only EnglishLanguageTest is true
     dateOfTest?: Date; // Only EnglishLanguageTest is true
-    country?: string;
-    desiredUniversity?: string;
-    desiredCourse?: string;
-    workExperience?: string; // In years
+    doYouHaveTravelHistory?: string; // Only TravelHistory is true
     anyVisaRejections?: string; // Only VisaRejections is true
     visaReason?: string;
-    doYouHaveTravelHistory?: string; // Only TravelHistory is true
     travelReason?: string;
+    country?: string;
+    desiredCourse?: string;
     finance?: any[];
+
+
+    desiredUniversity?: string;
     password?: string;
     confirmPassword?: string;
     twitter?: string;
     facebook?: string;
     instagram?: string;
     linkedIn?: string;
-
     photo?: string;
     resume?: string;
     passport?: string;
@@ -48,9 +49,19 @@ export interface StudentDocument extends mongoose.Document {
     hsc?: string;
     degree?: any[];
     additional?: any[];
-
     resetOtp?: string;
     resetOtpExpires?: number;   
+
+// Newly Added
+    duration?: string;
+    lastEmployeer?: string;
+    lastDesignation?: string;
+    date?: string;
+    purpose?: string;
+    countryName?: string;
+    dateVisa?: string;
+    purposeVisa?: string;
+    countryNameVisa?: string;
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -73,7 +84,7 @@ const studentSchema = new mongoose.Schema({
     citizenship: { type: String },
     gender: { type: String, },
     email: { type: String },
-    mobileNumber: { type: Number },
+    primaryNumber: { type: Number },
     whatsAppNumber: { type: Number },
     highestQualification: { type: String },
     degreeName: { type: String, },
@@ -108,9 +119,19 @@ const studentSchema = new mongoose.Schema({
     hsc: { type: String },
     degree: [String],
     additional: [String],
-
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
+
+    // Newly Added
+    duration: {type: String},
+    lastEmployeer: {type: String},
+    lastDesignation: {type: String},
+    date: {type: String},
+    purpose: {type: String},
+    countryName: {type: String},
+    dateVisa: {type: String},
+    purposeVisa: {type: String},
+    countryNameVisa: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

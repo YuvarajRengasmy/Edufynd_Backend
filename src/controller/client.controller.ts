@@ -12,7 +12,7 @@ var activity = "Client";
 
 export let getAllClient = async (req, res, next) => {
     try {
-        const data = await Client.find({ isDeleted: false });
+        const data = await Client.find({ isDeleted: false }).sort({clientID: -1});
         response(req, res, activity, 'Level-1', 'GetAll-Client', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Client', false, 500, {}, errorMessage.internalServer, err.message);
@@ -98,7 +98,6 @@ export let updateClient = async (req, res, next) => {
             const clientDetails: ClientDocument = req.body;
             let clientData = await Client.findByIdAndUpdate({ _id: clientDetails._id }, {
                 $set: {
-
                     typeOfClient: clientDetails.typeOfClient,
                     businessName: clientDetails.businessName,
                     businessMailID: clientDetails.businessMailID,
@@ -106,10 +105,15 @@ export let updateClient = async (req, res, next) => {
                     businessContactNo: clientDetails.businessContactNo,
                     whatsAppNumber: clientDetails.whatsAppNumber,
                     website: clientDetails.website,
+                    country: clientDetails.country,
+                    lga: clientDetails.lga,
+                    state: clientDetails.state,
                     addressLine1: clientDetails.addressLine1,
                     addressLine2: clientDetails.addressLine2,
                     addressLine3: clientDetails.addressLine3,
+                   
                     name: clientDetails.name,
+               
                     contactNo: clientDetails.contactNo,
                     emailID: clientDetails.emailID,
                     staffStatus: clientDetails.staffStatus,
@@ -166,7 +170,7 @@ export let getFilteredClient = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const clientList = await Client.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const clientList = await Client.find(findQuery).sort({clientID: -1}).limit(limit).skip(page)
 
         const clientCount = await Client.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterClient', true, 200, { clientList, clientCount }, clientError.success.fetchedSuccessfully);

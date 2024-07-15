@@ -14,7 +14,7 @@ var activity = "Agent";
 
 export let getAllAgent = async (req, res, next) => {
     try {
-        const data = await Agent.find({ isDeleted: false });
+        const data = await Agent.find({ isDeleted: false }).sort({agentCode: -1});
         response(req, res, activity, 'Level-1', 'GetAll-Agent', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
@@ -66,7 +66,7 @@ export let createAgent = async (req, res, next) => {
                 // const createData = new Agent(agentDetails);
                 agentDetails.createdOn = new Date()
                 agentDetails.agentCode = await generateNextAgentID();
-              
+
                 const createData = new Agent(agentDetails);
 
                 let insertData = await createData.save();
@@ -130,6 +130,20 @@ export let updateAgent = async (req, res, next) => {
                     addressLine3: agentDetails.addressLine3,
                     staffName: agentDetails.staffName,
                     staffContactNo: agentDetails.staffContactNo,
+
+                    // Newly Added Field
+                    businessWebsite: agentDetails.businessWebsite,
+                    pin: agentDetails.pin,
+                    city: agentDetails.city,
+                    state: agentDetails.state,
+                    country: agentDetails.country,
+                    registrationNo: agentDetails.registrationNo,
+                    whatsApp: agentDetails.whatsApp,
+                    accountType: agentDetails.accountType,
+                    swift: agentDetails.swift,
+                    desiredCountry: agentDetails.desiredCountry,
+                    requireVisaFilingSupport: agentDetails.requireVisaFilingSupport,
+                    visaCommission: agentDetails.visaCommission,
 
 
                     modifiedOn: new Date(),
@@ -332,7 +346,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const agentList = await Agent.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
+        const agentList = await Agent.find(findQuery).sort({agentCode: -1}).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
 
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);

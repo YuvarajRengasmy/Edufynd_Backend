@@ -13,7 +13,7 @@ var activity = "Applicant";
 
 export let getAllApplicant = async (req, res, next) => {
     try {
-        const data = await Applicant.find({ isDeleted: false });
+        const data = await Applicant.find({ isDeleted: false }).sort({applicationCode: -1});
         response(req, res, activity, 'Level-1', 'GetAll-Applicant', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
@@ -208,7 +208,7 @@ export let getFilteredApplication = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const applicantList = await Applicant.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const applicantList = await Applicant.find(findQuery).sort({applicationCode: -1}).limit(limit).skip(page)
 
         const applicantCount = await Applicant.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterApplicant', true, 200, { applicantList, applicantCount }, clientError.success.fetchedSuccessfully);

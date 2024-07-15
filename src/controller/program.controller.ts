@@ -85,6 +85,7 @@ export let createProgram = async (req, res, next) => {
             response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertData, clientError.success.savedSuccessfully);
 
         } catch (err: any) {
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
@@ -212,7 +213,7 @@ export let getFilteredProgram = async (req, res, next) => {
         }
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
-        const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const programList = await Program.find(findQuery).sort({ programCode: -1 }).limit(limit).skip(page)
         const programCount = await Program.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterProgram', true, 200, { programList, programCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {

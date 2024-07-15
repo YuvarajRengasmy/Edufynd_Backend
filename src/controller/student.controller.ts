@@ -13,7 +13,7 @@ var activity = "Student";
 
 export let getAllStudent = async (req, res, next) => {
     try {
-        const data = await Student.find({ isDeleted: false });
+        const data = await Student.find({ isDeleted: false }).sort({ studentCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Student', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Student', false, 500, {}, errorMessage.internalServer, err.message);
@@ -166,6 +166,7 @@ export let updateStudent = async (req, res, next) => {
                 citizenship: studentDetails.citizenship,
                 gender: studentDetails.gender,
                 whatsAppNumber: studentDetails.whatsAppNumber,
+                primaryNumber: studentDetails.primaryNumber,
                 degreeName: studentDetails.degreeName,
                 academicYear: studentDetails.academicYear,
                 institution: studentDetails.institution,
@@ -194,6 +195,16 @@ export let updateStudent = async (req, res, next) => {
                 hsc: studentDetails.hsc,
                 degree: studentDetails.degree,
                 additional: studentDetails.additional,
+
+                duration: studentDetails.duration,
+                lastEmployeer: studentDetails.lastEmployeer,
+                lastDesignation: studentDetails.lastDesignation,
+                date: studentDetails.date,
+                purpose: studentDetails.purpose,
+                countryName: studentDetails.countryName,
+                dateVisa: studentDetails.dateVisa,
+                purposeVisa: studentDetails.purposeVisa,
+                countryNameVisa: studentDetails.countryNameVisa,
                 modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
             };
@@ -259,7 +270,7 @@ export let getFilteredStudent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const studentList = await Student.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page)
 
         const studentCount = await Student.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStudent', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
@@ -268,6 +279,47 @@ export let getFilteredStudent = async (req, res, next) => {
     }
 };
 
+
+// export let getFilteredStudent = async (req, res, next) => {
+//     try {
+//         let findQuery = {};
+//         let andList = [];
+//         let limit = req.body.limit ? parseInt(req.body.limit) : 10;
+//         let page = req.body.page ? parseInt(req.body.page) : 1;
+
+//         andList.push({ isDeleted: false });
+//         andList.push({ status: 1 });
+
+//         if (req.body.studentCode) {
+//             andList.push({ studentCode: req.body.studentCode });
+//         }
+//         if (req.body.name) {
+//             andList.push({ name: req.body.name });
+//         }
+//         if (req.body.passportNo) {
+//             andList.push({ passportNo: req.body.passportNo });
+//         }
+//         if (req.body.email) {
+//             andList.push({ email: req.body.email });
+//         }
+//         if (req.body.mobileNumber) {
+//             andList.push({ mobileNumber: req.body.mobileNumber });
+//         }
+
+//         findQuery = andList.length > 0 ? { $and: andList } : {};
+
+//         const studentList = await Student.find(findQuery)
+//             .sort({ createdAt: -1 }) // Sort by createdAt in descending order
+//             .limit(limit)
+//             .skip((page - 1) * limit);
+
+//         const studentCount = await Student.countDocuments(findQuery);
+
+//         response(req, res,activity, 'Get-FilterStudent', 'Level-1', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
+//     } catch (err) {
+//         response(req, res,activity, 'Get-FilterStudent', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
+//     }
+// };
 
 
 export const csvToJson = async (req, res) => {
@@ -451,6 +503,13 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
                     hsc: studentDetails.hsc,
                     degree: studentDetails.degree,
                     additional: studentDetails.additional,
+
+                    duration: studentDetails.duration,
+                    lastEmployeer: studentDetails.lastEmployeer,
+                    lastDesignation: studentDetails.lastDesignation,
+                    date: studentDetails.date,
+                    purpose: studentDetails.purpose,
+                    countryName: studentDetails.countryName,
 
                     modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,

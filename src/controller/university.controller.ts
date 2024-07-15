@@ -15,7 +15,7 @@ var activity = "University";
 
 export let getAllUniversity = async (req, res, next) => {
     try {
-        const data = await University.find({ isDeleted: false });
+        const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -72,6 +72,8 @@ export let saveUniversity = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
+            const university = await University.findOne({ universityName: req.body.universityName });
+            if(!university){
             const universityDetails: UniversityDocument = req.body;
             universityDetails.createdOn = new Date()
 
@@ -94,7 +96,10 @@ export let saveUniversity = async (req, res, next) => {
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
-
+        }
+        else {
+            response(req, res, activity, 'Level-3', 'Save-University', true, 422, {}, 'University Name already registered');
+        }
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -243,7 +248,7 @@ export let getFilteredUniversity = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const universityList = await University.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const universityList = await University.find(findQuery).sort({ universityCode: -1 }).limit(limit).skip(page)
 
         const universityCount = await University.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterUniversity', true, 200, { universityList, universityCount }, clientError.success.fetchedSuccessfully);
@@ -537,26 +542,5 @@ export const getUniversityByCountry = async (req, res) => {
 }
 
 
-
-
-
-
-// export const getUniversitiesByClient = async (req, res) => {
-//     const { businessName } = req.params;
-
-//     try {
-//         const client = await Client.findOne({ businessName: businessName });
-
-//         if (!client) {
-//             return res.status(404).json({ message: 'Client not found' });
-//         }
-
-//         const universities = await University.find({ clientBusinessName: client.businessName });
-
-//         res.status(200).json({ result: universities });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Server Error', error });
-//     }
-// };
 
 
