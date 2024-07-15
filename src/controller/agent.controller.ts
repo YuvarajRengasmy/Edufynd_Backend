@@ -66,7 +66,7 @@ export let createAgent = async (req, res, next) => {
                 // const createData = new Agent(agentDetails);
                 agentDetails.createdOn = new Date()
                 agentDetails.agentCode = await generateNextAgentID();
-              
+
                 const createData = new Agent(agentDetails);
 
                 let insertData = await createData.save();
@@ -130,6 +130,20 @@ export let updateAgent = async (req, res, next) => {
                     addressLine3: agentDetails.addressLine3,
                     staffName: agentDetails.staffName,
                     staffContactNo: agentDetails.staffContactNo,
+
+                    // Newly Added Field
+                    businessWebsite: agentDetails.businessWebsite,
+                    pin: agentDetails.pin,
+                    city: agentDetails.city,
+                    state: agentDetails.state,
+                    country: agentDetails.country,
+                    registrationNo: agentDetails.registrationNo,
+                    whatsApp: agentDetails.whatsApp,
+                    accountType: agentDetails.accountType,
+                    swift: agentDetails.swift,
+                    desiredCountry: agentDetails.desiredCountry,
+                    requireVisaFilingSupport: agentDetails.requireVisaFilingSupport,
+                    visaCommission: agentDetails.visaCommission,
 
 
                     modifiedOn: new Date(),
