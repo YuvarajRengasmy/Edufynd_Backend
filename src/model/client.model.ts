@@ -10,6 +10,9 @@ export interface ClientDocument extends mongoose.Document {
     businessContactNo?: number;  //a
     name?: string;
     contactNo?: number;
+    country?: string;
+    lga?: any[];
+    state?: any[];
     emailID?: string;
     clientID?: string;
     country?: string;

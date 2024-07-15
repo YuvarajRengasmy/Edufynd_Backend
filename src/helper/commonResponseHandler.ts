@@ -1,5 +1,6 @@
 import { saveLog } from "../controller/logs.controller";
 import { LogsDocument, Logs } from "../model/logs.model";
+import * as config from '../config';
 var nodemailer = require('nodemailer');
 
 
@@ -44,8 +45,8 @@ export const transporter = nodemailer.createTransport({
     secure: false,
     port: 587,
     auth: {
-        user: 'balan9133civil@gmail.com',
-        pass: 'tdfa fpeg mzvn jvcl'
+        user: config.SERVER.EMAIL_USER,
+        pass: config.SERVER.EMAIL_PASS
     }
 });
 

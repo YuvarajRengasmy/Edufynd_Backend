@@ -14,7 +14,7 @@ var activity = "Admin";
 
 export let getAllAdmin = async (req, res, next) => {
     try {
-        const data = await Admin.find({ isDeleted: false });
+        const data = await Admin.find({ isDeleted: false }).sort({adminCode: -1});
         response(req, res, activity, 'Level-1', 'GetAll-Admin', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Admin', false, 500, {}, errorMessage.internalServer, err.message);
@@ -182,7 +182,7 @@ export let getFilteredAdmin = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const adminList = await Admin.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const adminList = await Admin.find(findQuery).sort({adminCode: -1}).limit(limit).skip(page)
 
         const adminCount = await Admin.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterAdmin', true, 200, { adminList, adminCount }, clientError.success.fetchedSuccessfully);
