@@ -13,7 +13,7 @@ var activity = "Student";
 
 export let getAllStudent = async (req, res, next) => {
     try {
-        const data = await Student.find({ isDeleted: false });
+        const data = await Student.find({ isDeleted: false }).sort({ studentCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Student', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Student', false, 500, {}, errorMessage.internalServer, err.message);
