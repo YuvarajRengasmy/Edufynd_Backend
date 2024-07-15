@@ -202,6 +202,9 @@ export let updateStudent = async (req, res, next) => {
                 date: studentDetails.date,
                 purpose: studentDetails.purpose,
                 countryName: studentDetails.countryName,
+                dateVisa: studentDetails.dateVisa,
+                purposeVisa: studentDetails.purposeVisa,
+                countryNameVisa: studentDetails.countryNameVisa,
                 modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
             };

@@ -59,6 +59,9 @@ export interface StudentDocument extends mongoose.Document {
     date?: string;
     purpose?: string;
     countryName?: string;
+    dateVisa?: string;
+    purposeVisa?: string;
+    countryNameVisa?: string;
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -126,6 +129,9 @@ const studentSchema = new mongoose.Schema({
     date: {type: String},
     purpose: {type: String},
     countryName: {type: String},
+    dateVisa: {type: String},
+    purposeVisa: {type: String},
+    countryNameVisa: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

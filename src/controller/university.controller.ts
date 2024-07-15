@@ -72,6 +72,8 @@ export let saveUniversity = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
+            const university = await University.findOne({ universityName: req.body.universityName });
+            if(!university){
             const universityDetails: UniversityDocument = req.body;
             universityDetails.createdOn = new Date()
 
@@ -94,7 +96,10 @@ export let saveUniversity = async (req, res, next) => {
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
-
+        }
+        else {
+            response(req, res, activity, 'Level-3', 'Save-University', true, 422, {}, 'University Name already registered');
+        }
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
