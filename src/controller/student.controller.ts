@@ -4,7 +4,7 @@ import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-import { decrypt, encrypt, generateRandomPassword} from "../helper/Encryption";
+import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import csv = require("csvtojson")
 
 var activity = "Student";
@@ -31,35 +31,42 @@ export let getSingleStudent = async (req, res, next) => {
 
         response(req, res, activity, 'Level-1', 'Get-Single-Student', true, 200, { ...student.toObject(), password: newHash, confirmPassword: newHash1 }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        console.log("gg", err)
+      
         response(req, res, activity, 'Level-3', 'Get-Single-Student', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
 
-const generateNextStudentCode = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
-    const student = await Student.find({}, 'studentCode').exec();
+// const generateNextStudentCode = async (): Promise<string> => {
+//     // Retrieve all applicant IDs to determine the highest existing applicant counter
+//     const student = await Student.find({}, 'studentCode').exec();
 
-    //  if (student.length === 0) {
-    //     // If no student codes exist, start with ST_101
-    //     return 'ST_101';
-    //   }
-    const maxCounter = student.reduce((max, app) => {
-        const appCode = app.studentCode;
-        const parts = appCode.split('_')
-        if (parts.length === 2) {
-            const counter = parseInt(parts[1], 10)
-            return counter > max ? counter : max;
-        }
-        return max;
-    }, 100);
+//     const maxCounter = student.reduce((max, app) => {
+//         const appCode = app.studentCode;
+//         const parts = appCode.split('_')
+//         if (parts.length === 2) {
+//             const counter = parseInt(parts[1], 10)
+//             return counter > max ? counter : max;
+//         }
+//         return max;
+//     }, 100);
 
+//     // Increment the counter
+//     const newCounter = maxCounter + 1;
+//     // Format the counter as a string with leading zeros
+//     const formattedCounter = String(newCounter).padStart(3, '0');
+//     // Return the new Applicantion Code
+//     return `ST_${formattedCounter}`;
+// };
+
+const generateNextStudentCode = async (currentMaxCounter): Promise<string> => {
     // Increment the counter
-    const newCounter = maxCounter + 1;
+    const newCounter = currentMaxCounter + 1;
+
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-    // Return the new Applicantion Code
+
+    // Return the new client ID
     return `ST_${formattedCounter}`;
 };
 
@@ -76,7 +83,19 @@ export let saveStudent = async (req, res, next) => {
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 const studentDetails: StudentDocument = req.body;
                 studentDetails.createdOn = new Date();
-                studentDetails.studentCode = await generateNextStudentCode();
+
+                const student = await Student.find({}, 'studentCode').exec();
+                const maxCounter = student.reduce((max, app) => {
+                    const appCode = app.studentCode;
+                    const parts = appCode.split('_')
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10)
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100);
+                let currentMaxCounter = maxCounter;
+                studentDetails.studentCode = await generateNextStudentCode(currentMaxCounter);
                 const createData = new Student(studentDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -175,6 +194,13 @@ export let updateStudent = async (req, res, next) => {
                 hsc: studentDetails.hsc,
                 degree: studentDetails.degree,
                 additional: studentDetails.additional,
+
+                duration: studentDetails.duration,
+                lastEmployeer: studentDetails.lastEmployeer,
+                lastDesignation: studentDetails.lastDesignation,
+                date: studentDetails.date,
+                purpose: studentDetails.purpose,
+                countryName: studentDetails.countryName,
                 modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
             };
@@ -253,46 +279,62 @@ export let getFilteredStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-        let studentList = [];
+      
         // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
 
+        const student = await Student.find({}, 'studentCode').exec();
+                const maxCounter = student.reduce((max, app) => {
+                    const appCode = app.studentCode;
+                    const parts = appCode.split('_')
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10)
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100);
+                let currentMaxCounter = maxCounter;
+
         // Process CSV data
-        for (let i = 0; i < csvData.length; i++) {
+        let studentList = [];
+        for (const data of csvData) {
+            const studentCode = await generateNextStudentCode(currentMaxCounter);
+            currentMaxCounter++;
             studentList.push({
-                name: csvData[i].Name,
-                email: csvData[i].Email,
-                mobileNumber: csvData[i].MobileNumber,
-                whatsAppNumber: csvData[i].WhatsAppNumber,
-                gender: csvData[i].GreGmatRequirementender,
-                dob: csvData[i].DOB,
-                source: csvData[i].Source,
-                passportNo: csvData[i].PassportNo,
-                expiryDate: csvData[i].ExpiryDate,
-                citizenship: csvData[i].Citizenship,
-                highestQualification: csvData[i].HighestQualification,
-                degreeName: csvData[i].DegreeName,
-                academicYear: csvData[i].AcademicYear,
-                yearPassed: csvData[i].YearPassed,
-                institution: csvData[i].Institution,
-                percentage: csvData[i].Percentage,
-                country: csvData[i].Country,
-                desiredUniversity: csvData[i].DesiredUniversity,
-                desiredCourse: csvData[i].DesiredCourse,
-                doHaveAnyEnglishLanguageTest: csvData[i].DoHaveAnyEnglishLanguageTest,
-                englishTestType: csvData[i].EnglishTestType,
-                testScore: csvData[i].TestScore,
-                dateOfTest: csvData[i].DateOfTest,
-                workExperience: csvData[i].WorkExperience,
-                anyVisaRejections: csvData[i].AnyVisaRejections,
-                visaReason: csvData[i].VisaReason,
-                doYouHaveTravelHistory: csvData[i].DoYouHaveTravelHistory,
-                travelReason: csvData[i].TravelReason,
-                finance: csvData[i].Finance,
-                twitter: csvData[i].Twitter,
-                instagram: csvData[i].Instagram,
-                facebook: csvData[i].Facebook,
-                linkedIn: csvData[i].LinkedIn,
+                studentCode: studentCode,
+                name:data.Name,
+                email: data.Email,
+                mobileNumber: data.MobileNumber,
+                whatsAppNumber: data.WhatsAppNumber,
+                gender:data.GreGmatRequirementender,
+                dob: data.DOB,
+                source: data.Source,
+                passportNo: data.PassportNo,
+                expiryDate: data.ExpiryDate,
+                citizenship:data.Citizenship,
+                highestQualification: data.HighestQualification,
+                degreeName: data.DegreeName,
+                academicYear: data.AcademicYear,
+                yearPassed: data.YearPassed,
+                institution:data.Institution,
+                percentage: data.Percentage,
+                country: data.Country,
+                desiredUniversity: data.DesiredUniversity,
+                desiredCourse: data.DesiredCourse,
+                doHaveAnyEnglishLanguageTest: data.DoHaveAnyEnglishLanguageTest,
+                englishTestType:data.EnglishTestType,
+                testScore: data.TestScore,
+                dateOfTest: data.DateOfTest,
+                workExperience: data.WorkExperience,
+                anyVisaRejections: data.AnyVisaRejections,
+                visaReason: data.VisaReason,
+                doYouHaveTravelHistory: data.DoYouHaveTravelHistory,
+                travelReason: data.TravelReason,
+                finance: data.Finance,
+                twitter: data.Twitter,
+                instagram: data.Instagram,
+                facebook: data.Facebook,
+                linkedIn: data.LinkedIn,
 
             });
         }
@@ -317,7 +359,18 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
         try {
 
             const studentDetails: StudentDocument = req.body;
-            studentDetails.studentCode = await generateNextStudentCode();
+            const student = await Student.find({}, 'studentCode').exec();
+            const maxCounter = student.reduce((max, app) => {
+                const appCode = app.studentCode;
+                const parts = appCode.split('_')
+                if (parts.length === 2) {
+                    const counter = parseInt(parts[1], 10)
+                    return counter > max ? counter : max;
+                }
+                return max;
+            }, 100);
+            let currentMaxCounter = maxCounter;
+            studentDetails.studentCode = await generateNextStudentCode(currentMaxCounter);
             // Generate random passwords
             const password = generateRandomPassword(8);
             const confirmPassword = password; // Since password and confirmPassword should match
@@ -405,6 +458,13 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
                     hsc: studentDetails.hsc,
                     degree: studentDetails.degree,
                     additional: studentDetails.additional,
+
+                    duration: studentDetails.duration,
+                    lastEmployeer: studentDetails.lastEmployeer,
+                    lastDesignation: studentDetails.lastDesignation,
+                    date: studentDetails.date,
+                    purpose: studentDetails.purpose,
+                    countryName: studentDetails.countryName,
 
                     modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,

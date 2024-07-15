@@ -29,17 +29,29 @@ export let getSingleClient = async (req, res, next) => {
     }
 }
 
-const generateNextClientID = async (): Promise<string> => {
-    // Retrieve all client IDs to determine the highest existing client counter
-    const clients = await Client.find({}, 'clientID').exec();
-    const maxCounter = clients.reduce((max, client) => {
-        const clientID = client.clientID;
-        const counter = parseInt(clientID.split('_')[1], 10);
-        return counter > max ? counter : max;
-    }, 100);
+// const generateNextClientID = async (): Promise<string> => {
+//     // Retrieve all client IDs to determine the highest existing client counter
+//     const clients = await Client.find({}, 'clientID').exec();
+//     const maxCounter = clients.reduce((max, client) => {
+//         const clientID = client.clientID;
+//         const counter = parseInt(clientID.split('_')[1], 10);
+//         return counter > max ? counter : max;
+//     }, 100);
 
+//     // Increment the counter
+//     const newCounter = maxCounter + 1;
+
+//     // Format the counter as a string with leading zeros
+//     const formattedCounter = String(newCounter).padStart(3, '0');
+
+//     // Return the new client ID
+//     return `CL_${formattedCounter}`;
+// };
+
+
+const generateNextClientID = async (currentMaxCounter): Promise<string> => {
     // Increment the counter
-    const newCounter = maxCounter + 1;
+    const newCounter = currentMaxCounter + 1;
 
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
@@ -55,7 +67,15 @@ export let saveClient = async (req, res, next) => {
             const clientDetails: ClientDocument = req.body;
 
             // Generate the next client ID
-            clientDetails.clientID = await generateNextClientID();
+            const clients = await Client.find({}, 'clientID').exec();
+            const maxCounter = clients.reduce((max, client) => {
+                const clientID = client.clientID;
+                const counter = parseInt(clientID.split('_')[1], 10);
+                return counter > max ? counter : max;
+            }, 100);
+
+            let currentMaxCounter = maxCounter;
+            clientDetails.clientID = await generateNextClientID(currentMaxCounter);
             const createData = new Client(clientDetails);
             let insertData = await createData.save();
 
@@ -145,8 +165,8 @@ export let getFilteredClient = async (req, res, next) => {
         if (req.body.businessName) {
             andList.push({ businessName: req.body.businessName })
         }
-        
-        
+
+
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const clientList = await Client.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
@@ -160,89 +180,53 @@ export let getFilteredClient = async (req, res, next) => {
 
 
 
-
-// export const csvToJson = async (req, res) => {
-//     try {
-//         const clientDetails: ClientDocument = req.body;
-
-//         // Generate the next client ID
-//         // clientDetails.clientID = await generateNextClientID();
-//         let clientList = [];
-//         // Parse CSV file
-//         const csvData = await csv().fromFile(req.file.path);
-
-//         // Process CSV data
-//         for (let i = 0; i < csvData.length; i++) {
-//             clientList.push({
-              
-//                 typeOfClient: csvData[i].TypeOfClient,  
-//                 clientStatus: csvData[i].ClientStatus,
-//                 businessMailID: csvData[i].BusinessMailID,
-//                 businessContactNo: csvData[i].BusinessContactNo,
-//                 website: csvData[i].Website,
-//                 whatAppNumber: csvData[i].WhatAppNumber,
-//                 addressLine1: csvData[i].AddressLine1, 
-//                 addressLine2: csvData[i].AddressLine2, 
-//                 addressLine3: csvData[i].AddressLine3, 
-//                 name: csvData[i].StaffName,
-//                 contactNo:csvData[i].StaffContactNo,
-//                 emailID: csvData[i].StaffMailId,
-//                 staffStatus: csvData[i].staffStatus,
-
-//             });
-//         }
-
-//         // Insert into the database
-//         await Client.insertMany(clientList);
-//         console.log("hh", clientList)
-//         // Send success response
-//         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for client module', true, 200, { clientList }, 'Successfully CSV File Store Into Database');
-//     } catch (err) {
-//         // Send error response
-//         console.log("w", err)
-//         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
-//     }
-// };
-
-
-
 export const csvToJson = async (req, res) => {
     try {
         const clientDetails: ClientDocument = req.body;
-
-    
         const csvData = await csv().fromFile(req.file.path);
 
+
+        const clients = await Client.find({}, 'clientID').exec();
+        const maxCounter = clients.reduce((max, client) => {
+            const clientID = client.clientID;
+            const counter = parseInt(clientID.split('_')[1], 10);
+            return counter > max ? counter : max;
+        }, 100);
+
+        let currentMaxCounter = maxCounter;
+
         // Process CSV data
-        const clientList = await Promise.all(csvData.map(async (data) => {
-            const clientID = await generateNextClientID();
-            return {
+        const clientList = [];
+        for (const data of csvData) {
+            const clientID = await generateNextClientID(currentMaxCounter);
+            currentMaxCounter++; // Increment the counter for the next client ID
+            clientList.push({
                 clientID: clientID,
-                typeOfClient: data.TypeOfClient,  
+                typeOfClient: data.TypeOfClient,
                 clientStatus: data.ClientStatus,
                 businessMailID: data.BusinessMailID,
-                businessName: data.BusinessName,
                 businessContactNo: data.BusinessContactNo,
                 website: data.Website,
                 whatAppNumber: data.WhatAppNumber,
-                addressLine1: data.AddressLine1, 
-                addressLine2: data.AddressLine2, 
-                addressLine3: data.AddressLine3, 
+                addressLine1: data.AddressLine1,
+                addressLine2: data.AddressLine2,
+                addressLine3: data.AddressLine3,
                 name: data.StaffName,
                 contactNo: data.StaffContactNo,
                 emailID: data.StaffMailId,
                 staffStatus: data.staffStatus,
-            };
-        }))
+            });
+
+        }
 
         // Insert into the database
         await Client.insertMany(clientList);
-        console.log("hh", clientList)
+
         // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for client module', true, 200, { clientList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         // Send error response
-        console.log("w", err)
+
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
     }
-};
+}

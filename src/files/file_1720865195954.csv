@@ -1,0 +1,4 @@
+TypeOfClient ,ClientStatus,BusinessName,BusinessMailID,BusinessContactNo,Website,GST,AddressLine1,AddressLine2,AddressLine3,StaffName,StaffContactNo,StaffMailId,StaffStatus
+Institution,Active,Afynd,inrecruit@afynd.com,797778089,www.afynd.com,9%,No.8,"AlwarThirunagar, Valasarvakkam","Chennai, TamilNadu-600 100",suresh,9150003828,test@gmail.com,Active
+Institution,Active,KPTL,inrecruit@afynd.com,797778089,www.afynd.com,9%,No.8,"AlwarThirunagar, Valasarvakkam","Chennai, TamilNadu-600 100",Ramesh,9150003828,test@gmail.com,Active
+Institution,Active,KEC,inrecruit@afynd.com,797778089,www.afynd.com,9%,No.8,"AlwarThirunagar, Valasarvakkam","Chennai, TamilNadu-600 100",Ganesh,9150003828,test@gmail.com,Active
