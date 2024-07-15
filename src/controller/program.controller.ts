@@ -15,16 +15,16 @@ export const getAllProgram = async (req, res, next) => {
     try {
         var findQuery;
         var andList: any = []
-        var limit = req.body.limit ? req.body.limit :0;
+        var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         const program = await Program.find({ isDeleted: false })
-        
+
         findQuery = (andList.length > 0) ? { $and: andList } : {}
         const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
         const programCount = await Program.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'GetAll-Program', true, 200, { programList, programCount }, clientError.success.fetchedSuccessfully);
- 
+
 
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Program', false, 500, {}, errorMessage.internalServer, err.message)
@@ -46,11 +46,38 @@ export const getSingleProgram = async (req, res, next) => {
     }
 }
 
+
+const generateNextProgramCode = async (currentMaxCounter): Promise<string> => {
+    // Increment the counter
+    const newCounter = currentMaxCounter + 1;
+
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+
+    // Return the new client ID
+    return `PG_${formattedCounter}`;
+};
+
 export let createProgram = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const programDetails: ProgramDocument = req.body;
+            const program = await Program.find({}, 'programCode').exec();
+
+            const maxCounter = program.reduce((max, app) => {
+                const appCode = app.programCode;
+                const parts = appCode.split('_')
+                if (parts.length === 2) {
+                    const counter = parseInt(parts[1], 10)
+                    return counter > max ? counter : max;
+                }
+                return max;
+            }, 100);
+
+            let currentMaxCounter = maxCounter;
+            programDetails.programCode = await generateNextProgramCode(currentMaxCounter)
+
             programDetails.finalValue = (programDetails.applicationFee) - (programDetails.discountedValue)
             const createData = new Program(programDetails);
             let insertData = await createData.save();
@@ -91,7 +118,7 @@ export let updateProgram = async (req, res, next) => {
                     academicRequirement: programDetails.academicRequirement,
                     commission: programDetails.commission,
                     modifiedOn: new Date(),
-                    modifiedBy:  programDetails.modifiedBy,
+                    modifiedBy: programDetails.modifiedBy,
                 },
 
             })
@@ -183,7 +210,7 @@ export let getFilteredProgram = async (req, res, next) => {
         if (req.body.inTake) {
             andList.push({ inTake: req.body.inTake })
         }
-    
+
         findQuery = (andList.length > 0) ? { $and: andList } : {}
         const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
         const programCount = await Program.find(findQuery).count()
@@ -255,41 +282,55 @@ export let getFilteredProgramForAppliedStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-        let programList = [];
+
         // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
+        const program = await Program.find({}, 'programCode').exec();
+
+        const maxCounter = program.reduce((max, app) => {
+            const programCode = app.programCode;
+            const counter = parseInt(programCode.split('_')[1], 10);
+            return counter > max ? counter : max;
+        }, 100);
+
+        let currentMaxCounter = maxCounter;
+
         // Process CSV data
-        for (let i = 0; i < csvData.length; i++) {
+        let programList = [];
+        for (const data of csvData) {
+            const programCode = await generateNextProgramCode(currentMaxCounter);
+            currentMaxCounter++;
             programList.push({
-                universityName: csvData[i].UniversityName,
-                campus: csvData[i].Campus ? csvData[i].Campus.split(','): [], 
-                applicationFee: csvData[i].ApplicationFee,
-                country: csvData[i].Country,
-                courseType:  csvData[i].CourseType ? csvData[i].CourseType.split(',') : [], 
-                programTitle:  csvData[i].ProgramTitle,
-                currency: csvData[i].Currency,
-                flag: csvData[i].Flag,
-                discountedValue: csvData[i].DiscountedValue,
-                courseFee: csvData[i].CourseFee, 
-                inTake:  csvData[i].InTake ? csvData[i].InTake.split(','): [],
-                duration: csvData[i].Duration,
-                englishlanguageTest:csvData[i].EnglishlanguageTest,
-                textBox: csvData[i].TextBox,
-                universityInterview : csvData[i].UniversityInterview,   
-                greGmatRequirement : csvData[i].GreGmatRequirement, 
-                score: csvData[i].Score,
-                academicRequirement : csvData[i].AcademicRequirement,    
-                commission: csvData[i].Commission,
+                programCode: programCode,
+                universityName: data.UniversityName,
+                campus: data.Campus ? data.Campus.split(',') : [],
+                applicationFee: data.ApplicationFee,
+                country: data.Country,
+                courseType: data.CourseType ? data.CourseType.split(',') : [],
+                programTitle: data.ProgramTitle,
+                currency: data.Currency,
+                flag: data.Flag,
+                discountedValue: data.DiscountedValue,
+                courseFee: data.CourseFee,
+                inTake: data.InTake ? data.InTake.split(',') : [],
+                duration: data.Duration,
+                englishlanguageTest: data.EnglishlanguageTest,
+                textBox: data.TextBox,
+                universityInterview: data.UniversityInterview,
+                greGmatRequirement: data.GreGmatRequirement,
+                score: data.Score,
+                academicRequirement: data.AcademicRequirement,
+                commission: data.Commission,
             });
         }
         // Insert into the database
         await Program.insertMany(programList);
         // Send success response
-        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, {programList}, 'Successfully CSV File Store Into Database');
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { programList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         console.error(err);
         // Send error response
-        response(req, res,activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
 
@@ -310,13 +351,13 @@ export const getProgramsByUniversityName = async (req, res) => {
         const universityId = req.query.universityId;
 
         if (!universityId) {
-            return res.status(400).json({success: false,message: 'University ID is required'});
+            return res.status(400).json({ success: false, message: 'University ID is required' });
         }
 
         const university = await University.findById(universityId).lean();
 
         if (!university) {
-            return res.status(404).json({success: false,message: 'University not found'});
+            return res.status(404).json({ success: false, message: 'University not found' });
         }
 
         const programs = await Program.find({ universityId: university._id })
@@ -345,7 +386,7 @@ export const getProgramsByUniversityName = async (req, res) => {
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({success: false,message: 'Server error'});
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 };
 
@@ -364,7 +405,7 @@ export const getProgramsByUniversityName = async (req, res) => {
 //         if (req.body.universityId) {
 //             andList.push({ universityId: req.body.universityId })
 //         }
-       
+
 //         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
 //         const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('universityId',{universityLogo:1});
@@ -420,7 +461,7 @@ export const updateProgramApplications = async (req, res, next) => {
                     { new: true }
                 );
 
-                response(req, res, activity,'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student application removed successfully');
+                response(req, res, activity, 'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student application removed successfully');
             } else {
                 // Student not applied, add the student
                 const updatedProgram = await Program.findByIdAndUpdate(
@@ -431,7 +472,7 @@ export const updateProgramApplications = async (req, res, next) => {
                     { new: true }
                 );
 
-                response(req, res, activity,  'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student applied successfully');
+                response(req, res, activity, 'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student applied successfully');
             }
         } catch (err) {
             response(req, res, activity, 'Level-3', 'Update-Program-Applications', false, 500, {}, 'Internal server error', err.message);

@@ -32,11 +32,23 @@ import SenderInvoice from '../finance/routes/senderInvoice.route';
 import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
 
 
+// Marketing
+import Marketing from '../marketing/marketing.routes'
+
 // Notification
 import Notification from '../notification/notification.routes'
 
+// Promotion
+import Promotion from '../promotion/promotion.routes'
+
 // Meeting
 import Meeting from '../meeting/meeting.routes'
+
+// Training
+import Training from '../training/training.routes'
+
+// Events
+import Event from '../events/event.routes'
 
 
 
@@ -92,12 +104,24 @@ router.use('/flight', Flight)
 router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
 
+// Marketing
+router.use('/marketing', Marketing)
+
 
 // Notification
 router.use('/notification', Notification)
 
 // Meeting
 router.use('/meeting', Meeting)
+
+// Promotion
+router.use('/promotion', Promotion)
+
+// Training
+router.use('/training', Training)
+
+// Events
+router.use('/event', Event)
 
 
 
