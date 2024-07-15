@@ -12,7 +12,7 @@ var activity = "Client";
 
 export let getAllClient = async (req, res, next) => {
     try {
-        const data = await Client.find({ isDeleted: false });
+        const data = await Client.find({ isDeleted: false }).sort({clientID: -1});
         response(req, res, activity, 'Level-1', 'GetAll-Client', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Client', false, 500, {}, errorMessage.internalServer, err.message);
@@ -168,7 +168,7 @@ export let getFilteredClient = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const clientList = await Client.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const clientList = await Client.find(findQuery).sort({clientID: -1}).limit(limit).skip(page)
 
         const clientCount = await Client.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterClient', true, 200, { clientList, clientCount }, clientError.success.fetchedSuccessfully);
