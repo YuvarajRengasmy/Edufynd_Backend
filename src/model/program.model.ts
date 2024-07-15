@@ -77,7 +77,7 @@ const programSchema = new mongoose.Schema({
     commission: { type: String },           // (Edit only for the program)
     isDeleted: { type: Boolean, default: false },
     status: { type: Number, default: 1 },
-    createdOn: { type: Date },
+    createdOn: { type: Date, default: new Date()},
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },

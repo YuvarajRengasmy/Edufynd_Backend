@@ -33,6 +33,7 @@ export interface StaffDocument extends mongoose.Document {
 
 // Newly added fields
     team?: string;
+    staffList?: string;
     address2?: string;
     pin?: number;
     country?: string;
@@ -85,6 +86,7 @@ const staffSchema = new mongoose.Schema({
     
     // Newly added fields
     team: {type: String},
+    staffList: {type: String},
     address2:  { type: String },
     pin:  { type: Number },
     country:  { type: String },
