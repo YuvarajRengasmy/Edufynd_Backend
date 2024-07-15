@@ -544,24 +544,3 @@ export const getUniversityByCountry = async (req, res) => {
 
 
 
-
-
-// export const getUniversitiesByClient = async (req, res) => {
-//     const { businessName } = req.params;
-
-//     try {
-//         const client = await Client.findOne({ businessName: businessName });
-
-//         if (!client) {
-//             return res.status(404).json({ message: 'Client not found' });
-//         }
-
-//         const universities = await University.find({ clientBusinessName: client.businessName });
-
-//         res.status(200).json({ result: universities });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Server Error', error });
-//     }
-// };
-
-

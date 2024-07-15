@@ -85,6 +85,7 @@ export let createProgram = async (req, res, next) => {
             response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertData, clientError.success.savedSuccessfully);
 
         } catch (err: any) {
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {

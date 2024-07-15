@@ -5,7 +5,7 @@ export interface StudentDocument extends mongoose.Document {
     studentCode?: string;
     superAdminId?: any;
     agentId?: any;
-    source?: string[];
+    source?: string;
     name?: string;
     citizenship?: string;
     dob?: string;

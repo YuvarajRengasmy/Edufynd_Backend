@@ -16,9 +16,7 @@ export interface ClientDocument extends mongoose.Document {
     addressLine1?: string;
     addressLine2?: string;
     addressLine3?: string;      // Street Address, City, State, Postal Code, Country
-    whatsAppNumber?: number;   //a
-    state?: any[];
-    lga?: any[];
+    whatsAppNumber?: string;
     staffStatus?: string;     // (Active/Inactive)
     isDeleted?: boolean;
     privileges?: string;
@@ -42,11 +40,12 @@ const clientSchema = new mongoose.Schema({
     addressLine2: { type: String },// , City, State, 
     addressLine3: { type: String },   //  Postal Code, Country
     name: { type: String },
+    country: { type: String },
+    state: [ String ],
+    lga: [ String],
     contactNo: { type: Number },
     emailID: { type: String },
-    whatsAppNumber: { type: Number },
-    state: [String],
-    lga: [String],
+    whatsAppNumber: { type: String },
     staffStatus: { type: String },    // (Active/Inactive)
     isDeleted: { type: Boolean, default: false },
     privileges: { type: String },
