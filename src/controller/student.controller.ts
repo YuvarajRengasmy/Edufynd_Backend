@@ -6,6 +6,7 @@ import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import csv = require("csvtojson")
+import * as config from '../config';
 
 var activity = "Student";
 
@@ -421,6 +422,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             const confirmPassword = password; // Since password and confirmPassword should match
             studentDetails.password = await encrypt(password)
             studentDetails.confirmPassword = await encrypt(confirmPassword)
+            studentDetails.createdOn = new Date()
             const createStudent = new Student(studentDetails);
             const insertStudent = await createStudent.save();
 
@@ -428,7 +430,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             const newHash = await decrypt(insertStudent["password"]);
 
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: insertStudent.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`

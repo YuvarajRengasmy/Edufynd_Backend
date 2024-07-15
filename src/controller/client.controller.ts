@@ -75,7 +75,9 @@ export let saveClient = async (req, res, next) => {
             }, 100);
 
             let currentMaxCounter = maxCounter;
+            clientDetails.createdOn = new Date();
             clientDetails.clientID = await generateNextClientID(currentMaxCounter);
+           
             const createData = new Client(clientDetails);
             let insertData = await createData.save();
 
@@ -111,7 +113,6 @@ export let updateClient = async (req, res, next) => {
                     addressLine1: clientDetails.addressLine1,
                     addressLine2: clientDetails.addressLine2,
                     addressLine3: clientDetails.addressLine3,
-                   
                     name: clientDetails.name,
                
                     contactNo: clientDetails.contactNo,

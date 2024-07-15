@@ -33,6 +33,8 @@ export interface StaffDocument extends mongoose.Document {
 
 // Newly added fields
     team?: string;
+    staffList?: any[];
+    personalMail?: string;
     address2?: string;
     pin?: number;
     country?: string;
@@ -66,8 +68,8 @@ const staffSchema = new mongoose.Schema({
     reportingManager: {type: String},
     shiftTiming: {type: String},                        // (Attendance to be calculated based on this)
     areTheyEligibleForCasualLeave: {type: String},           // – Yes/No (Yes – Casual to be considered | No – Casual leave restricted)
-    doj: {type: String},                    // (Date of Joining)
-    dob: {type: String},                     // (Date of Birth)
+    doj: {type: String},                   
+    dob: {type: String},                  
     address: {type: String},
     email: {type: String},
     mobileNumber: {type: Number},
@@ -85,6 +87,8 @@ const staffSchema = new mongoose.Schema({
     
     // Newly added fields
     team: {type: String},
+    staffList: [String],
+    personalMail: {type: String},
     address2:  { type: String },
     pin:  { type: Number },
     country:  { type: String },

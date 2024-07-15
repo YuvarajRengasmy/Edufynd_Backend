@@ -4,6 +4,7 @@ import { validationResult } from 'express-validator'
 import { response, transporter } from '../helper/commonResponseHandler'
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import { clientError, errorMessage } from '../helper/ErrorMessage'
+import * as config from '../config';
 import csv = require('csvtojson')
 
 var activity = "Staff"
@@ -96,6 +97,8 @@ export const updateStaff = async (req, res) => {
 
                     // Newly added fields
                     team: staffDetails.team,
+                    staffList: staffDetails.staffList,
+                    personalMail: staffDetails.personalMail,
                     address2:staffDetails.address2,
                     pin: staffDetails.pin,
                     country:staffDetails.country,
@@ -160,7 +163,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             const newHash = await decrypt(insertStaff["password"]);
 
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: insertStaff.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`

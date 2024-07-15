@@ -7,6 +7,7 @@ import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt,generateRandomPassword } from "../helper/Encryption";
+import * as config from '../config';
 
 var activity = "Admin";
 
@@ -209,7 +210,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
             const newHash = await decrypt(insertAdmin["password"]);
 
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: insertAdmin.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertAdmin.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAdmin.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`

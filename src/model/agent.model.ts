@@ -112,7 +112,7 @@ const agentSchema = new mongoose.Schema({
   requireVisaFilingSupport: { type: String },
   visaCommission: { type: Number },
 
-  createdOn: { type: Date },
+  createdOn: { type: Date, default: Date.now()},
   createdBy: { type: String },
   modifiedOn: { type: Date },
   modifiedBy: { type: String },
