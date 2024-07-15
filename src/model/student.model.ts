@@ -81,7 +81,7 @@ const studentSchema = new mongoose.Schema({
     citizenship: { type: String },
     gender: { type: String, },
     email: { type: String },
-    mobileNumber: { type: Number },
+    primaryNumber: { type: Number },
     whatsAppNumber: { type: Number },
     highestQualification: { type: String },
     degreeName: { type: String, },

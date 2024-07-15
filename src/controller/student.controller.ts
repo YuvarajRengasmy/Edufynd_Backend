@@ -166,6 +166,7 @@ export let updateStudent = async (req, res, next) => {
                 citizenship: studentDetails.citizenship,
                 gender: studentDetails.gender,
                 whatsAppNumber: studentDetails.whatsAppNumber,
+                primaryNumber: studentDetails.primaryNumber,
                 degreeName: studentDetails.degreeName,
                 academicYear: studentDetails.academicYear,
                 institution: studentDetails.institution,
