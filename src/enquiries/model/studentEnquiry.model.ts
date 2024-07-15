@@ -7,14 +7,15 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     name?: string;
     dob?: string;
     passportNo?: string;
-    qualification?: string;
-    whatsAppNumber?: string; 
-    primaryNumber?: string;
     email?: string;
-    cgpa?: string;
+    primaryNumber?: string;
+    whatsAppNumber?: string; 
+    qualification?: string;
     yearPassed?: string;
+    cgpa?: string;
     desiredCountry?: string;
     desiredCourse?: string;
+
     doYouNeedSupportForLoan?: string;
     assignedTo?: string;
 
@@ -23,6 +24,15 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
+
+
+// New Added Field
+gender?: string;
+citizenShip?: string;
+expiryDate?: Date;
+desiredUniversity?: string;
+doYouHoldAnyOtherOffer?: string;
+
 
 };
 

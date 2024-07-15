@@ -44,7 +44,7 @@ export interface StaffDocument extends mongoose.Document {
     companyAssests?: string;
     mobileName?: string;
     brandName?: string;
-    IMEI?: string;
+    imei?: string;
     phoneNumber?: number;
     laptopName?: string;
     brand?: string;
@@ -98,7 +98,7 @@ const staffSchema = new mongoose.Schema({
     companyAssests:  { type: String },
     mobileName:  { type: String },
     brandName:  { type: String },
-    IMEI: { type: String },
+    imei: { type: String },
     phoneNumber:  { type: Number },
     laptopName: { type: String },
     brand:  { type: String },
