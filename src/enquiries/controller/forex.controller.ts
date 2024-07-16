@@ -92,6 +92,7 @@ export let updateForexEnquiry = async (req, res, next) => {
                     paymentType: forexEnquiryDetails.paymentType,
                     amountInCurrency: forexEnquiryDetails.amountInCurrency,
                     assignedTo: forexEnquiryDetails.assignedTo,
+                    message: forexEnquiryDetails.message,
 
                     // New added Fields
                     expiryDate:forexEnquiryDetails.expiryDate,

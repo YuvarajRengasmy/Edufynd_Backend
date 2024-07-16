@@ -4,6 +4,8 @@ import * as mongoose from 'mongoose'
 export interface FlightDocument extends mongoose.Document {
     flightID?: any;
     source?: string;
+   
+    message?: string;
     //If Student request for the following
     studentName?: string;
     passportNo?: string;
@@ -33,6 +35,8 @@ export interface FlightDocument extends mongoose.Document {
 const flightTicketSchema = new mongoose.Schema({
     flightID: {type: String},
     source: {type: String},
+    message: {type: String},
+  
     //If Student request for the following
     studentName: {type: String},
     passportNo: {type: String},

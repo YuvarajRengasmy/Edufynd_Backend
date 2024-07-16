@@ -98,6 +98,7 @@ export let updateStudentEnquiry = async (req, res, next) => {
                     desiredCourse: studentEnquiryDetails.desiredCourse,
                     doYouNeedSupportForLoan: studentEnquiryDetails.doYouNeedSupportForLoan,
                     assignedTo: studentEnquiryDetails.assignedTo,
+                    message: studentEnquiryDetails.message,
 
 
                     // New Added Field
