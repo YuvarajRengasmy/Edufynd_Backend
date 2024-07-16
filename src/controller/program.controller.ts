@@ -58,6 +58,7 @@ const generateNextProgramCode = async (currentMaxCounter): Promise<string> => {
     return `PG_${formattedCounter}`;
 };
 
+
 export let createProgram = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
