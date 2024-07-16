@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
     source?: string
-    message?: string;
+
     agentName?: string;
     businessName?: string;
     agentEmail?: string;
@@ -68,7 +68,7 @@ const forexSchema = new mongoose.Schema({
     paymentType: {type: String},
     amountInCurrency: {type: String},
     assignedTo: {type: String},
-    message: {type: String},
+  
 
 
     // New added Fields

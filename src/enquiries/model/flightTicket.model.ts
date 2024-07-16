@@ -5,7 +5,7 @@ export interface FlightDocument extends mongoose.Document {
     flightID?: any;
     source?: string;
    
-    message?: string;
+
     //If Student request for the following
     studentName?: string;
     passportNo?: string;
@@ -53,7 +53,7 @@ const flightTicketSchema = new mongoose.Schema({
     from: {type: String},
     to: {type: String},
     dateOfTravel: {type: String},
-     message: {type: String},
+ 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
     createdBy: { type: String },

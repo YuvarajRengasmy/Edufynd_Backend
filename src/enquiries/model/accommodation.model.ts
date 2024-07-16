@@ -5,7 +5,7 @@ export interface AccommodationDocument extends mongoose.Document {
     studentName?: string;
     passportNumber?: string;
     source?: string;
-    message?: string;
+
     // If Agent request for the following (Auto Fetch User Detail)
     agentID?: string;
     agentName?: string;
@@ -45,7 +45,7 @@ const accommodationSchema = new mongoose.Schema({
     agentPrimaryNumber: {type: String},
     agentWhatsAppNumber: {type: String},
     agentEmail: {type: String},
-    message: {type: String},
+  
     // If Student request for the following
     primaryNumber: {type: String},
     whatsAppNumber: {type: String},
