@@ -91,6 +91,9 @@ export let updateFlightTicketEnquiry = async (req, res, next) => {
                     to: flightEnquiryDetails.to,
                     dateOfTravel: flightEnquiryDetails.dateOfTravel,
                     message: flightEnquiryDetails.message,
+                    studentId: flightEnquiryDetails.studentId,
+                    country: flightEnquiryDetails.country,
+                    universityName: flightEnquiryDetails.universityName,
                     modifiedOn: new Date(),
                     modifiedBy:flightEnquiryDetails.modifiedBy,
                 }

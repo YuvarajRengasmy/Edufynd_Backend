@@ -41,19 +41,51 @@ export let response = function (req, res, activity, level, method, success, stat
 
 export const transporter = nodemailer.createTransport({
     service: 'Gmail', // You can use any email service
-    host:  config.SERVER.EMAIL_HOST,
+    host: config.SERVER.EMAIL_HOST || 'smtp.gmail.com',
     secure: true,
     port:  config.SERVER.EMAIL_PORT,
     auth: {
         user: config.SERVER.EMAIL_USER,
         pass: config.SERVER.EMAIL_PASS
-    }
+    },
+    // tls: {
+    //     rejectUnauthorized: false
+    // },
+    // greetingTimeout: 10000, // 10 seconds
+    // connectionTimeout: 20000, // 20 seconds
+    // socketTimeout: 20000 // 20 seconds
 });
+
+
+
+
+// Convert the EMAIL_PORT to a number before comparison
+// const emailPort = parseInt(config.SERVER.EMAIL_PORT, 10);
+
+// if (isNaN(emailPort)) {
+//     throw new Error('EMAIL_PORT is not a valid number');
+// }
+
+// export const transporter  = nodemailer.createTransport({
+//     host: config.SERVER.EMAIL_HOST,
+//     port: emailPort,
+//     secure: emailPort === 465,// true for port 465, false for other ports
+//     auth: {
+//         user: config.SERVER.EMAIL_USER,
+//         pass: config.SERVER.EMAIL_PASS
+//     },
+//     // tls: {
+//     //     rejectUnauthorized: false // Allow self-signed certificates
+//     // },
+//     // greetingTimeout: 20000, // 20 seconds
+//     // connectionTimeout: 30000, // 30 seconds
+//     // socketTimeout: 30000 // 30 seconds
+// });
 
 
 export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
     var sender = nodemailer.createTransport({
-        service: 'Gmail',
+        service: 'edufynd.in',
         port:  config.SERVER.EMAIL_PORT,
         secure: true, // true for 465, false for other ports
         auth: {

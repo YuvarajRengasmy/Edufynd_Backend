@@ -91,6 +91,9 @@ export let updateAccommodation = async (req, res, next) => {
                     agentWhatsAppNumber: accommodationDetails.agentWhatsAppNumber,
                     assignedTo: accommodationDetails.assignedTo,
                     message: accommodationDetails.message,
+                    studentId: accommodationDetails.studentId,
+                    country: accommodationDetails.country,
+                   
                 
                     modifiedOn: new Date(),
                     modifiedBy: accommodationDetails.modifiedBy,

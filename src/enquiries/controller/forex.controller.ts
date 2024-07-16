@@ -93,6 +93,8 @@ export let updateForexEnquiry = async (req, res, next) => {
                     amountInCurrency: forexEnquiryDetails.amountInCurrency,
                     assignedTo: forexEnquiryDetails.assignedTo,
                     message: forexEnquiryDetails.message,
+                    studentId: forexEnquiryDetails.studentId,
+                
 
                     // New added Fields
                     expiryDate:forexEnquiryDetails.expiryDate,

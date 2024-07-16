@@ -23,6 +23,8 @@ const blogSchema = new mongoose.Schema({
   content2: {type: String},
   content3: {type: String},
   tags: [String],
+  icon: {type: String},
+  photo: {type: String},
  
     createdOn: { type: Date },
     createdBy: { type: String },
