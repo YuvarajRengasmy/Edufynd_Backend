@@ -41,9 +41,9 @@ export let response = function (req, res, activity, level, method, success, stat
 
 export const transporter = nodemailer.createTransport({
     service: 'Gmail', // You can use any email service
-    host: 'smtp.gmail.com',
-    secure: false,
-    port: 587,
+    host:  config.SERVER.EMAIL_HOST,
+    secure: true,
+    port:  config.SERVER.EMAIL_PORT,
     auth: {
         user: config.SERVER.EMAIL_USER,
         pass: config.SERVER.EMAIL_PASS
@@ -54,16 +54,16 @@ export const transporter = nodemailer.createTransport({
 export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
     var sender = nodemailer.createTransport({
         service: 'Gmail',
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        port:  config.SERVER.EMAIL_PORT,
+        secure: true, // true for 465, false for other ports
         auth: {
-            user: 'balan9133civil@gmail.com', 
-            pass: 'tdfa fpeg mzvn jvcl'
+            user: config.SERVER.EMAIL_USER, 
+            pass:  config.SERVER.EMAIL_PASS
         }
     });
 
     var composemail = {
-        from: 'balan9133civil@gmail.com',
+        from: config.SERVER.EMAIL_USER, 
         to: toMail,
         subject: subject,
         text: text
