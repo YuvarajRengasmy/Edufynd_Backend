@@ -8,6 +8,7 @@ import { Admin } from "../model/admin.model";
 import { Student } from "../model/student.model";
 import { Agent } from "../model/agent.model";
 import { v4 as uuidv4 } from 'uuid'
+import * as config from '../config';
 
 
 
@@ -151,7 +152,7 @@ export const forgotPassword = async (req, res) => {
 
             await student.save();
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: student.email,
                 subject: 'Password Reset Request',
                 text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\n Best regards\nAfynd Private Limited\nChennai.`
@@ -174,7 +175,7 @@ export const forgotPassword = async (req, res) => {
 
             await admin.save();
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: admin.email,
                 subject: 'Password Reset Request',
                 text: `Hello ${admin.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
@@ -197,7 +198,7 @@ export const forgotPassword = async (req, res) => {
 
             await agent.save();
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: agent.email,
                 subject: 'Password Reset Request',
                 text: `Hello ${agent.agentName},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`

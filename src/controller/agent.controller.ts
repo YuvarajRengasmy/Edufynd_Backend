@@ -6,6 +6,7 @@ import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
+import * as config from '../config';
 import csv = require('csvtojson')
 
 var activity = "Agent";
@@ -59,11 +60,9 @@ export let createAgent = async (req, res, next) => {
             const agent = await Agent.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
 
             if (!agent) {
+                const agentDetails: AgentDocument = req.body;
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
-
-                const agentDetails: AgentDocument = req.body;
-                // const createData = new Agent(agentDetails);
                 agentDetails.createdOn = new Date()
                 agentDetails.agentCode = await generateNextAgentID();
 
@@ -188,11 +187,12 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             const confirmPassword = password; // Since password and confirmPassword should match
             agentDetails.password = await encrypt(password)
             agentDetails.confirmPassword = await encrypt(confirmPassword)
+            agentDetails.createdOn = new Date();
             const createAgent = new Agent(agentDetails);
             const insertAgent = await createAgent.save();
             const newHash = await decrypt(insertAgent["password"]);
             const mailOptions = {
-                from: 'balan9133civil@gmail.com',
+                from: config.SERVER.EMAIL_USER,
                 to: insertAgent.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertAgent.agentName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAgent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
@@ -213,7 +213,8 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             }, 'Agent created successfully by SuperAdmin.');
 
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+          
+            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Field validation error', err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
