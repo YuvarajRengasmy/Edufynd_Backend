@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllGeneralEnquiry,getSingleGeneralEnquiry, createGeneralEnquiry,updateGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry} from '../controller/generalEnquiry.controller';
+import { getAllBusinessEnquiry,getSingleBusinessEnquiry, createBusinessEnquiry,updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry} from '../controller/businessEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -11,27 +11,27 @@ const router:Router=Router();
 router.get('/',                          
     basicAuthUser,
     //  checkSession,
-    getAllGeneralEnquiry
+    getAllBusinessEnquiry
 );
 
 
-router.get('/getSingleGeneralEnquiry',
+router.get('/getSingleBusinessEnquiry',
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
-    getSingleGeneralEnquiry,
+    getSingleBusinessEnquiry,
 );
 
 router.post('/', 
          checkRequestBodyParams('email'),
-         createGeneralEnquiry
+         createBusinessEnquiry
 );
 
 router.put('/',          
     basicAuthUser,
     // checkSession,
     checkRequestBodyParams('_id'),
-    updateGeneralEnquiry,
+    updateBusinessEnquiry,
  
 );
 
@@ -40,14 +40,14 @@ router.delete('/',
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
-    deleteGeneralEnquiry
+    deleteBusinessEnquiry
 );
 
 
-router.put('/getFilterGeneralEnquiry',
+router.put('/getFilterBusinessEnquiry',
     basicAuthUser,
     // checkSession,
-    getFilteredGeneralEnquiry,
+    getFilteredBusinessEnquiry,
 );
 
 
