@@ -46,6 +46,36 @@ export let createGeneralEnquiry = async (req, res, next) => {
     }
 }
 
+export let updateGeneralEnquiry = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const EnquiryDetails: GeneralEnquiryDocument = req.body;
+            const updateData = await GeneralEnquiry.findOneAndUpdate({ _id: req.body._id }, {
+                $set: {
+                 
+                    name: EnquiryDetails.name,
+                    email: EnquiryDetails.email,
+                    mobileNumber:  EnquiryDetails.mobileNumber,
+                    message:  EnquiryDetails.message,
+                  
+                    modifiedOn: new Date(),
+                    modifiedBy: EnquiryDetails.modifiedBy,
+                }
+
+            });
+            response(req, res, activity, 'Level-2', 'Update-LoanEnquiryDetails', true, 200, updateData, clientError.success.updateSuccess);
+        }
+        catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-LoanEnquiryDetails', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-LoanEnquiryDetails', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
+
+
 
 
 export let deleteGeneralEnquiry = async (req, res, next) => {
@@ -70,15 +100,11 @@ export let getFilteredGeneralEnquiry = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-        if (req.body.desiredCountry) {
-            andList.push({ desiredCountry: req.body.desiredCountry })
+       
+        if (req.body.name) {
+            andList.push({ name: req.body.name })
         }
-        if (req.body.studentName) {
-            andList.push({ studentName: req.body.studentName })
-        }
-        if (req.body.passportNo) {
-            andList.push({ passportNo: req.body.passportNo })
-        }
+    
         if (req.body.email) {
             andList.push({ email: req.body.email })
         }
@@ -91,8 +117,8 @@ export let getFilteredGeneralEnquiry = async (req, res, next) => {
         const generalEnquiryList = await GeneralEnquiry.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
 
         const generalEnquiryCount = await GeneralEnquiry.find(findQuery).count()
-        response(req, res, activity, 'Level-1', 'Get-FilterLoanEnquiry', true, 200, { generalEnquiryList, generalEnquiryCount }, clientError.success.fetchedSuccessfully);
+        response(req, res, activity, 'Level-1', 'Get-Filter General Enquiry', true, 200, { generalEnquiryList, generalEnquiryCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-FilterLoanEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Get-Filter General Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };

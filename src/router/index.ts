@@ -20,6 +20,7 @@ import Commission from './commission.routes'
 
 
 // All Enquiry Routes
+import GeneralEnquiry  from '../enquiries/routes/generalEnquiry.route';
 import StudentEnquiry from '../enquiries/routes/studentEnquiry.route'
 import LoanEnquiry  from '../enquiries/routes/loanEnquiry.route';
 import Accommodation from '../enquiries/routes/accommodation.route'
@@ -94,6 +95,7 @@ router.use('/commission', Commission)
 
 
 //All Enquiry API
+router.use('/generalEnquiry', GeneralEnquiry)
 router.use('/studentEnquiry', StudentEnquiry)
 router.use('/loan', LoanEnquiry)
 router.use('/accommodation', Accommodation)

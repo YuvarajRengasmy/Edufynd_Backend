@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllGeneralEnquiry,getSingleGeneralEnquiry, createGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry} from '../controller/generalEnquiry.controller';
+import { getAllGeneralEnquiry,getSingleGeneralEnquiry, createGeneralEnquiry,updateGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry} from '../controller/generalEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -27,7 +27,13 @@ router.post('/',
          createGeneralEnquiry
 );
 
-
+router.put('/',          
+    basicAuthUser,
+    // checkSession,
+    checkRequestBodyParams('_id'),
+    updateGeneralEnquiry,
+ 
+);
 
 
 router.delete('/',               
