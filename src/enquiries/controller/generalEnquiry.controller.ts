@@ -58,6 +58,7 @@ export let updateGeneralEnquiry = async (req, res, next) => {
                     email: EnquiryDetails.email,
                     mobileNumber:  EnquiryDetails.mobileNumber,
                     message:  EnquiryDetails.message,
+                    typeOfUser: EnquiryDetails.typeOfUser,
                   
                     modifiedOn: new Date(),
                     modifiedBy: EnquiryDetails.modifiedBy,
