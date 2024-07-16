@@ -90,6 +90,7 @@ export let updateAccommodation = async (req, res, next) => {
                     businessName:accommodationDetails.businessName,
                     agentWhatsAppNumber: accommodationDetails.agentWhatsAppNumber,
                     assignedTo: accommodationDetails.assignedTo,
+                    message: accommodationDetails.message,
                 
                     modifiedOn: new Date(),
                     modifiedBy: accommodationDetails.modifiedBy,

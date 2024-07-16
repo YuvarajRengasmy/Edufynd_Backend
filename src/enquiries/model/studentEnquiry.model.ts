@@ -4,6 +4,7 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     _id?: any;
     studentCode?: string;
     source?: string;
+    message?: string;
     name?: string;
     dob?: string;
     passportNo?: string;
@@ -45,6 +46,7 @@ export interface StudentEnquiryDocument extends mongoose.Document {
 const studentEnquirySchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     studentCode: { type: String },
+    message: {type: String},
     source: { type: String },
     name: { type: String },
     dob: { type: Date },
