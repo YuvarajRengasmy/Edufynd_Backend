@@ -108,7 +108,7 @@ export const updateStaff = async (req, res) => {
                     companyAssests: staffDetails.companyAssests,
                     mobileName: staffDetails.mobileName,
                     brandName:staffDetails.brandName,
-                    IMEI: staffDetails.IMEI,
+                    imei: staffDetails.imei,
                     phoneNumber: staffDetails.phoneNumber,
                     laptopName: staffDetails.laptopName,
                     brand: staffDetails.brand,
