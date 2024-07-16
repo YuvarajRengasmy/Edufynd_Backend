@@ -2,6 +2,9 @@ import * as mongoose from 'mongoose'
 
 
 export interface GeneralEnquiryDocument extends mongoose.Document{
+    studentId?: string,
+    country?: string;
+    universityName?: string;
     name?: string;
     email?: string;
     mobileNumber?: number;   //a
@@ -15,12 +18,15 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
 
 
 const generalEnquirySchema = new mongoose.Schema({
+    studentId: {type: String},
+    country: {type: String},
+    universityName: {type: String},
     name: {type: String},
     email: {type: String},
     mobileNumber: {type: Number},
     message: {type: String},
     typeOfUser: {type: String},
-    createdOn: { type: Date },
+    createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
