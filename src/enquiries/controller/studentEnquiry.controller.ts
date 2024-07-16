@@ -113,6 +113,9 @@ export let updateStudentEnquiry = async (req, res, next) => {
                     refereeName: studentEnquiryDetails.refereeName,
                     refereeContactNo: studentEnquiryDetails.refereeContactNo,
                     registerForIELTSClass: studentEnquiryDetails.registerForIELTSClass,
+                    studentId: studentEnquiryDetails.studentId,
+                 
+
 
                     modifiedOn: new Date(),
                     modifiedBy: studentEnquiryDetails.modifiedBy,

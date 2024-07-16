@@ -5,6 +5,9 @@ export interface AccommodationDocument extends mongoose.Document {
     studentName?: string;
     passportNumber?: string;
     source?: string;
+    studentId?: string,
+    country?: string;
+  
     message?: string;
     // If Agent request for the following (Auto Fetch User Detail)
     agentID?: string;
@@ -33,6 +36,9 @@ export interface AccommodationDocument extends mongoose.Document {
 
 const accommodationSchema = new mongoose.Schema({
     accommodationID: {type: String},
+    studentId: {type: String},
+    country: {type: String},
+  
     studentName: {type: String},
     passportNumber: {type: String},
     source: {type: String},

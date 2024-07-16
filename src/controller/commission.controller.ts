@@ -22,6 +22,7 @@ export const getAllCommission = async (req, res) => {
 export const getSingleCommission = async (req, res) => {
     try {
         const data = await Commission.findOne({ _id: req.query._id })
+        console.log("66", data.years[0].courseTypes[0].value)
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', false, 500, {}, errorMessage.internalServer, err.message)
@@ -105,6 +106,30 @@ export let updateCommission = async (req, res, next) => {
         }
         catch (err: any) {
             response(req, res, activity, 'Level-3', 'Deleted the Commission', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    };
+
+
+    export let deleteCourseType = async (req, res, next) => {
+        try {
+            let commissionId = req.query.commissionId; // The main document's _id
+            let yearId = req.query.yearId; // The _id of the year containing the courseType
+            let courseTypeId = req.query.courseTypeId; // The _id of the courseType to be deleted
+    
+            const updateResult = await Commission.updateOne(
+                { _id: commissionId, 'years._id': yearId },
+                { $pull: { 'years.$.courseTypes': { _id: courseTypeId } } }
+            );
+    
+            if (updateResult.modifiedCount === 0) {
+                return response(req, res, 'activity', 'Level-3', 'Delete Course Type', false, 404, {}, 'Course Type not found');
+            }
+    
+            const updatedDocument = await Commission.findById(commissionId);
+    
+            response(req, res, 'activity', 'Level-2', 'Deleted the Course Type', true, 200, updatedDocument, 'Successfully removed the course type');
+        } catch (err) {
+            response(req, res, 'activity', 'Level-3', 'Delete Course Type', false, 500, {}, 'Internal Server Error', err.message);
         }
     };
 
