@@ -3,25 +3,36 @@ import * as mongoose from 'mongoose'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
     source?: string
-    studentName?: string;
-    country?: string;
-    currency?: string;
-  
-    universityName?: string;
-    studentID?: string;
-    passportNo?: string;
-    primaryNumber?: string;
-    whatsAppNumber?: string;
-    email?: string;
     agentName?: string;
     businessName?: string;
+    agentEmail?: string;
     agentPrimaryNumber?: string;
     agentWhatsAppNumber?: string;
-    agentEmail?: string;
+    
+    studentName?: string;
+    passportNo?: string;
+    email?: string;
+    primaryNumber?: string;
+    whatsAppNumber?: string;
+    universityName?: string;
     paymentType?: string;
-    amountInCurrency?: string;
+    country?: string;
+    currency?: string;
     assignedTo?: string;
+
+    studentID?: string;
+    amountInCurrency?: string;
     flag?: string
+
+
+// New added Fields
+    expiryDate?: Date;
+    courseType?: string;
+    value?: string;
+    markUp?: string;
+    profit?: string;
+  
+
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -54,6 +65,14 @@ const forexSchema = new mongoose.Schema({
     paymentType: {type: String},
     amountInCurrency: {type: String},
     assignedTo: {type: String},
+
+
+    // New added Fields
+    expiryDate:{type: Date},
+    courseType: {type: String},
+    value:{type: String},
+    markUp: {type: String},
+    profit: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
