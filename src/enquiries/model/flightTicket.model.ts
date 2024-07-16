@@ -20,6 +20,7 @@ export interface FlightDocument extends mongoose.Document {
     from?: string;
     to?: string;
     dateOfTravel?: string;
+    message?: string;
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -48,7 +49,7 @@ const flightTicketSchema = new mongoose.Schema({
     from: {type: String},
     to: {type: String},
     dateOfTravel: {type: String},
-
+     message: {type: String},
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
     createdBy: { type: String },
