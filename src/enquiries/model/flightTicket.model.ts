@@ -55,7 +55,7 @@ const flightTicketSchema = new mongoose.Schema({
     dateOfTravel: {type: String},
  
     isDeleted: { type: Boolean, default: false },
-    createdOn: { type: Date },
+    createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },

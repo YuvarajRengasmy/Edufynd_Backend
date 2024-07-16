@@ -21,7 +21,7 @@ const expenseSchema = new mongoose.Schema({
     paidAgainst: { type: String },
     expenseAmount: { type: String },
 
-    createdOn: { type: Date },
+    createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
