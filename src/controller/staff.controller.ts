@@ -98,6 +98,7 @@ export const updateStaff = async (req, res) => {
                     // Newly added fields
                     team: staffDetails.team,
                     staffList: staffDetails.staffList,
+                    personalMail: staffDetails.personalMail,
                     address2:staffDetails.address2,
                     pin: staffDetails.pin,
                     country:staffDetails.country,
@@ -107,7 +108,7 @@ export const updateStaff = async (req, res) => {
                     companyAssests: staffDetails.companyAssests,
                     mobileName: staffDetails.mobileName,
                     brandName:staffDetails.brandName,
-                    IMEI: staffDetails.IMEI,
+                    imei: staffDetails.imei,
                     phoneNumber: staffDetails.phoneNumber,
                     laptopName: staffDetails.laptopName,
                     brand: staffDetails.brand,
