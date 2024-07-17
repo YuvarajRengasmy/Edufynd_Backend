@@ -2,6 +2,9 @@ import * as mongoose from 'mongoose'
 
 
 export interface BusinessEnquiryDocument extends mongoose.Document{
+    studentId?: string,
+    country?: string;
+    universityName?: string;
     name?: string;
     email?: string;
     mobileNumber?: number;   //a
@@ -14,6 +17,9 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
 
 
 const businessEnquirySchema = new mongoose.Schema({
+    studentId: {type: String},
+    country: {type: String},
+    universityName: {type: String},
     name: {type: String},
     email: {type: String},
     mobileNumber: {type: Number},

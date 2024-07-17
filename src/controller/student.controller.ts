@@ -433,7 +433,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                 from: config.SERVER.EMAIL_USER,
                 to: insertStudent.email,
                 subject: 'Welcome to EduFynd',
-                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
+                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
