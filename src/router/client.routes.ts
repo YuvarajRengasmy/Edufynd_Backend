@@ -9,13 +9,13 @@ const router: Router = Router();
 
 router.get('/',                
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getAllClient
 );
 
 router.get('/getSingleClient',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleClient,
 );
@@ -23,14 +23,14 @@ router.get('/getSingleClient',
 
 router.post('/',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     saveClient
 );
 
 
 router.put('/',                    
     basicAuthUser,
-    // checkSession,
+    checkSession,
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateClient
@@ -39,7 +39,7 @@ router.put('/',
 
 router.delete('/',                
     basicAuthUser,
-    //  checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteClient
 );
@@ -48,7 +48,7 @@ router.delete('/',
 
 router.put('/getFilterClient',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredClient,
 );
 

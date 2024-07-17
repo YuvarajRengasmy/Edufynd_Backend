@@ -80,20 +80,20 @@ router.post('/import',      // CSV File to json and Store into Database
 
 router.put('/createStudentBySuperAdmin',             //create student by super Admin
     basicAuthUser,
-    // checkSession,
+    checkSession,
     // checkQuery('_id'),
     createStudentBySuperAdmin
 );
 
 router.put('/editStudentBySuperAdmin',             //Update student by super Admin
     basicAuthUser,
-    // checkSession,
+    checkSession,
     editStudentProfileBySuperAdmin
 );
 
 router.put('/forgot',             //create student by super Admin
     basicAuthUser,
-    // checkSession,
+    checkSession,
     // // checkQuery('_id'),
     forgotPassword
 );
