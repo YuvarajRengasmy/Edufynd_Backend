@@ -13,14 +13,14 @@ const router:Router=Router();
 
 router.get('/',                        
     basicAuthUser,
-    //  checkSession,
+     checkSession,
     getAllStudent
 );
 
 
 router.get('/getSingleStudent',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleStudent,
 );
@@ -35,7 +35,7 @@ router.post('/contact', createContact);
 
 router.put('/',             
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkRequestBodyParams('_id'),
     upload.fields([
         { name: 'photo', maxCount: 1 },
@@ -52,7 +52,7 @@ router.put('/',
 
 router.delete('/',               
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     deleteStudent
 );
@@ -60,14 +60,14 @@ router.delete('/',
 
 router.put('/getFilterStudent',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredStudent,
 );
 
 
 router.put('/getFilterStudentBySuperAdmin',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredStudentBySuperAdmin,
 );
 

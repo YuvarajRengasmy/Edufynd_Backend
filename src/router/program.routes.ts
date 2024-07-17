@@ -12,27 +12,27 @@ const router:Router=Router();
 
 router.get('/', 
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getAllProgram
 );
 
 router.get('/getSingleProgram',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleProgram,
 );
 
 router.post('/', 
         basicAuthUser,
-        // checkSession,
+        checkSession,
         createProgram
 );
 
 
 router.put('/',            
     basicAuthUser,
-   //  checkSession,
+    checkSession,
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateProgram
@@ -41,27 +41,28 @@ router.put('/',
 
 router.delete('/',            
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     deleteProgram
 );
 
 router.get('/getAllProgramForWeb',         // get all program for web //without checking session
     basicAuthUser,
+     checkSession,
     getAllProgramForWeb
 );
 
 
 router.put('/getUniversityFilterProgram',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredProgram,
 );
 
 
 router.put('/appliedStudent',    // Filter for Applied Student of University
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredProgramForAppliedStudent,
 );
 

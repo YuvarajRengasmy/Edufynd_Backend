@@ -157,10 +157,10 @@ export let deleteProgram = async (req, res, next) => {
 export let getAllProgramForWeb = async (req, res, next) => {
     try {
         const programDetails = await Program.find({ isDeleted: false }).sort({ createdAt: -1 });
-        response(req, res, activity, 'Level-2', 'Get-All-Program', true, 200, programDetails, clientError.success.fetchedSuccessfully);
+        response(req, res, activity, 'Level-2', 'Get-All-Program for web', true, 200, programDetails, clientError.success.fetchedSuccessfully);
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-All-Program', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Get-All-Program for web', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 

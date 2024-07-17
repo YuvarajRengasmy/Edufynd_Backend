@@ -55,13 +55,31 @@ export let updateBlog = async (req, res, next) => {
             const updateData = await Blog.findOneAndUpdate({ _id: req.body._id }, {
                 $set: {  
                     title: blogDetails.title,
-                    introduction:blogDetails.introduction,
-                    content1:blogDetails.content1,
-                    content2: blogDetails.content2,
-                    content3: blogDetails.content3,
-                    tags: blogDetails.tags,
+                    slug: blogDetails.slug,
+                    summary: blogDetails.summary,
+                    keyWords: blogDetails.keyWords,
+                    show: blogDetails.show,
+                    hide: blogDetails.hide,
+                    addToFeatured: blogDetails.addToFeatured,
+                    addToBreaking:blogDetails.addToBreaking,
+                    addToSlider: blogDetails.addToSlider,
+                    addToRecommended:blogDetails.addToRecommended,
+                    showOnlyToRegisteredUsers: blogDetails.showOnlyToRegisteredUsers,
+                    tags:blogDetails.tags,
+                    optionalURL: blogDetails.optionalURL,
+                    content:blogDetails.content,
+                    uploadImage: blogDetails.uploadImage,
+                    addImageURL: blogDetails.addImageURL,
+                    imageDescription: blogDetails.imageDescription,
+                    uploadFiles: blogDetails.uploadFiles,
+                    language:blogDetails.language,
+                    category:blogDetails.category,
+                    subCategory: blogDetails.subCategory,
+                    schedulePost:blogDetails.schedulePost,
+                    dateOfPublished: blogDetails.dateOfPublished,
+                  
 
-                    modifiedOn:blogDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy:blogDetails.modifiedBy,
                 }
                 
