@@ -48,12 +48,7 @@ export const transporter = nodemailer.createTransport({
         user: config.SERVER.EMAIL_USER,
         pass: config.SERVER.EMAIL_PASS
     },
-    // tls: {
-    //     rejectUnauthorized: false
-    // },
-    // greetingTimeout: 10000, // 10 seconds
-    // connectionTimeout: 20000, // 20 seconds
-    // socketTimeout: 20000 // 20 seconds
+   
 });
 
 

@@ -433,6 +433,7 @@ export const csvToJson = async (req, res) => {
                 currency: data.Currency,
                 paymentTAT: data.PaymentTAT,
                 tax: data.Tax,
+                inTake:  data.InTake ? data.InTake.split(',') : [],
 
             })
         }
