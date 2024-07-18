@@ -37,7 +37,7 @@ const blogSchema = new mongoose.Schema({
   title: {type: String},
   slug: {type: String},
   summary: {type: String},
-  keyWords: {type: String},
+  keyWords: {type:String},
   show: {type: String},
   hide: {type: String},
   addToFeatured: {type: String},
@@ -57,6 +57,7 @@ const blogSchema = new mongoose.Schema({
   subCategory: {type: String},
   schedulePost: {type: String},
   dateOfPublished: {type: Date},
+
 
   createdOn: { type: Date, default: Date.now() },
   createdBy: { type: String },
