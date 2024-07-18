@@ -10,7 +10,7 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/',                //get all university
+router.get('/',             
     basicAuthUser,
     checkSession,
     getAllUniversity
@@ -34,7 +34,7 @@ router.post('/',
 
 
 
-router.put('/',                    // update 
+router.put('/',                   
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
@@ -43,7 +43,7 @@ router.put('/',                    // update
 );
 
 
-router.delete('/',                  //delete university
+router.delete('/',                 
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
@@ -97,12 +97,6 @@ router.get('/getUniversityByCountry',
     basicAuthUser,
     getUniversityByCountry
 )
-
-
-
-// router.get('/universities/:clientName',
-//      getUniversitiesByClient
-//     );
 
 
 

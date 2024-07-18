@@ -11,10 +11,10 @@ import { Agent, AgentDocument } from '../model/agent.model'
 
 
 export let basicAuthUser = function (req, res, next) {
-    console.log("basicauth verify")
+    console.log("basicauth verifying...")
    
     var credentials = auth(req);
-    console.log('credentials',credentials);
+    console.log('credential',credentials);
     if (!credentials || credentials.name != process.env.basicAuthUser || credentials.pass != process.env.basicAuthKey) {
         res.setHeader('WWW-Authenticate', 'Basic realm="example"')
         return res.status(401).json({

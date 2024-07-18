@@ -8,14 +8,14 @@ const router:Router=Router();
 
 router.get('/',               
     basicAuthUser,
-    //  checkSession,
+     checkSession,
     getAllApplicant
 );
 
 
 router.get('/getSingleApplicant',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleApplicant,
 );
@@ -23,14 +23,14 @@ router.get('/getSingleApplicant',
 
 router.put('/', 
          basicAuthUser,
-        //  checkSession,
+         checkSession,
          createApplicant
 );
 
 
 router.put('/',                    
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     // checkRequestBodyParams('_id'),
     updateApplicant
@@ -39,7 +39,7 @@ router.put('/',
 
 router.delete('/',                
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     deleteApplicant
 );
@@ -47,7 +47,7 @@ router.delete('/',
 
 router.put('/getFilterApplicant',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredApplication,
 );
 
