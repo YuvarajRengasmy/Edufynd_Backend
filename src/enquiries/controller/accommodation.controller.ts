@@ -93,6 +93,8 @@ export let updateAccommodation = async (req, res, next) => {
                     message: accommodationDetails.message,
                     studentId: accommodationDetails.studentId,
                     country: accommodationDetails.country,
+                    state:accommodationDetails.state,
+                    city: accommodationDetails.city,
                    
                 
                     modifiedOn: new Date(),

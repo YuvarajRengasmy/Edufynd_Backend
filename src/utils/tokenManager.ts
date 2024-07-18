@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { response } from '../helper/commonResponseHandler';
 import { clientError, errorMessage } from '../helper/ErrorMessage';
+import * as config from '../config';
 const activity = 'token';
 
 /**
@@ -117,18 +118,63 @@ export let CreateJWTToken = (data: any = {}) => {
 // };
 
 
+// export let checkSession = async (req, res, next) => {
+//     console.log("Entering checkSession middleware");
+  
+//     let authHeader = req.headers['authorization'];
+//     console.log("Authorization Header:", authHeader);
+  
+   
+
+//     if (authHeader) {
+//         const parts = authHeader.split(' ');
+//         console.log("yy", parts)
+//         const headerType = parts[0];
+//         console.log("77", headerType)
+//         const tokenValue = parts[1]?.trim();
+//         console.log("tt", tokenValue)
+
+//         if (headerType === "Bearer" && tokenValue) {
+//             console.log("Token Value:", tokenValue);
+//             try {
+//                 const tokendata = await jwt.verify(tokenValue, 'edufynd');
+//                 console.log('Token data:', tokendata);
+
+//                 req.body.loginId = tokendata.userId;
+//                 req.body.loginUserName = tokendata.userName;
+//                 req.body.createdBy = tokendata.userName;
+//                 req.body.createdOn = new Date();
+//                 req.body.modifiedBy = tokendata.userName;
+//                 req.body.modifiedOn = new Date();
+//                 next();
+//             } catch (err) {
+//                 console.error("JWT Verification Error:", err);
+//                 return response(req, res,activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute, err.message);
+//             }
+//         } else {
+//             console.error("Invalid token format or missing token");
+//             return response(req, res,activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.sessionExpire);
+//         }
+//     } else {
+//         console.error("Authorization header not found");
+//         return response(req, res, activity,'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute);
+//     }
+// };
+
+
+
+
+
 export let checkSession = async (req, res, next) => {
     console.log("Entering checkSession middleware");
   
     let authHeader = req.headers['authorization'];
     console.log("Authorization Header:", authHeader);
   
-   
-
     if (authHeader) {
         const parts = authHeader.split(' ');
         const headerType = parts[0];
-        const tokenValue = parts[2]?.trim();
+        const tokenValue = parts[1]?.trim();
 
         if (headerType === "Bearer" && tokenValue) {
             console.log("Token Value:", tokenValue);
@@ -145,14 +191,28 @@ export let checkSession = async (req, res, next) => {
                 next();
             } catch (err) {
                 console.error("JWT Verification Error:", err);
-                return response(req, res,activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute, err.message);
+                return response(req, res, activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute, err.message);
+            }
+        } else if (headerType === "Basic" && tokenValue) {
+            const credentials = Buffer.from(tokenValue, 'base64').toString('utf-8').split(':');
+            const username = credentials[0];
+            const password = credentials[1];
+            console.log("Basic Auth - Username:", username);
+            console.log("Basic Auth - Password:", password);
+
+            // Validate the username and password as per your logic here
+            if (username === config.SERVER.BASIC_AUTH_USER && password === config.SERVER.BASIC_AUTH_PWD) {
+                next();
+            } else {
+                console.error("Invalid Basic Auth credentials");
+                return response(req, res, activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute);
             }
         } else {
             console.error("Invalid token format or missing token");
-            return response(req, res,activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.sessionExpire);
+            return response(req, res, activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.sessionExpire);
         }
     } else {
         console.error("Authorization header not found");
-        return response(req, res, activity,'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute);
+        return response(req, res, activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute);
     }
 };

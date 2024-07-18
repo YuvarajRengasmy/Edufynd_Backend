@@ -198,10 +198,10 @@ export let deleteUniversity = async (req, res, next) => {
 export let getAllUniversityForWeb = async (req, res, next) => {
     try {
         const universityDetails = await University.find({ isDeleted: false }).sort({ createdAt: -1 });
-        response(req, res, activity, 'Level-2', 'Get-All-University', true, 200, universityDetails, clientError.success.fetchedSuccessfully);
+        response(req, res, activity, 'Level-2', 'Get-All-University for web', true, 200, universityDetails, clientError.success.fetchedSuccessfully);
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-All-University', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Get-All-University for web', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -433,6 +433,7 @@ export const csvToJson = async (req, res) => {
                 currency: data.Currency,
                 paymentTAT: data.PaymentTAT,
                 tax: data.Tax,
+                inTake:  data.InTake ? data.InTake.split(',') : [],
 
             })
         }

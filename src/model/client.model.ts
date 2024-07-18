@@ -10,11 +10,12 @@ export interface ClientDocument extends mongoose.Document {
     businessContactNo?: number;  //a
     name?: string;
     contactNo?: number;
+    country?: string;
+    lga?: string;
+    state?: string;
     emailID?: string;
     clientID?: string;
-    country?: string;
-    state?: string;
-    lga?: string;
+   
     clientStatus?: string;
     addressLine1?: string;
     addressLine2?: string;
@@ -45,7 +46,7 @@ const clientSchema = new mongoose.Schema({
     name: { type: String },
     country: { type: String },
     state: { type: String },
-    lga: { type: String },
+    lga:{ type: String },
     contactNo: { type: Number },
     emailID: { type: String },
     whatsAppNumber: { type: String },

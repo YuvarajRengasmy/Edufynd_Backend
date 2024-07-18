@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCommission, getSingleCommission, createCommission, updateCommission, deleteCommission, getFilteredCommission} from '../controller/commission.controller';
+import { getAllCommission, getSingleCommission, createCommission, updateCommission, deleteCommission, getFilteredCommission, deleteCourseType } from '../controller/commission.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 
@@ -35,6 +35,14 @@ router.delete('/',
     basicAuthUser,
     checkQuery('_id'),
     deleteCommission
+);
+
+router.delete('/',
+    basicAuthUser,
+    checkQuery('commissionId'),
+    checkQuery('yearId'),
+    checkQuery('courseTypeId'),
+    deleteCourseType
 );
 
 

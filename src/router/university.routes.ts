@@ -10,16 +10,16 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/',                //get all university
+router.get('/',             
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getAllUniversity
 );
 
 
 router.get('/getSingleUniversity',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleUniversity,
 );
@@ -28,24 +28,24 @@ router.get('/getSingleUniversity',
 
 router.post('/',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     saveUniversity
 );
 
 
 
-router.put('/',                    // update 
+router.put('/',                   
     basicAuthUser,
-    // checkSession,
+    checkSession,
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateUniversity
 );
 
 
-router.delete('/',                  //delete university
+router.delete('/',                 
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     deleteUniversity
 );
@@ -53,26 +53,27 @@ router.delete('/',                  //delete university
 
 router.put('/getFilterUniversity',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredUniversity,
 );
 
 router.get('/getAllUniversityForWeb',         // get all university for web //without checking session
     basicAuthUser,
+    checkSession,
     getAllUniversityForWeb
 );
 
 
 router.put('/agentFilterUniversity',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredUniversityForAgent,
 );
 
 
 router.put('/studentFilterUniversity',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getFilteredUniversityForStudent,
 );
 
@@ -96,12 +97,6 @@ router.get('/getUniversityByCountry',
     basicAuthUser,
     getUniversityByCountry
 )
-
-
-
-// router.get('/universities/:clientName',
-//      getUniversitiesByClient
-//     );
 
 
 
