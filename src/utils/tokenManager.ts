@@ -202,6 +202,12 @@ export let checkSession = async (req, res, next) => {
 
             // Validate the username and password as per your logic here
             if (username === config.SERVER.BASIC_AUTH_USER && password === config.SERVER.BASIC_AUTH_PWD) {
+                req.body.loginId = tokenValue.userId;
+                req.body.loginUserName = tokenValue.userName;
+                req.body.createdBy = tokenValue.userName;
+                req.body.createdOn = new Date();
+                req.body.modifiedBy = tokenValue.userName;
+                req.body.modifiedOn = new Date();
                 next();
             } else {
                 console.error("Invalid Basic Auth credentials");
