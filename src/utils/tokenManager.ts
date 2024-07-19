@@ -168,9 +168,10 @@ export let CreateJWTToken = (data: any = {}) => {
 export let checkSession = async (req, res, next) => {
     console.log("Entering checkSession middleware");
   
-    let authHeader = req.headers['authorization'];
+    // let authHeader = req.headers['authorization'];
+    let authHeader = req.headers['token'];
     console.log("Authorization Header:", authHeader);
-  
+//   
     if (authHeader) {
         const parts = authHeader.split(' ');
         const headerType = parts[0];
