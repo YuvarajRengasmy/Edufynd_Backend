@@ -543,5 +543,23 @@ export const getUniversityByCountry = async (req, res) => {
 }
 
 
+export const getUniversityByName = async (req, res) => {
+    const { universityName } = req.query;
+  
+    try {
+      // Use Mongoose to find universities by name
+      const universities = await University.find({ universityName: universityName });
+  
+      if (!universities) {
+        return res.status(404).json({ message: 'No universities found' });
+      }
+  
+      res.status(200).json({ result: universities });
+    } catch (err) {
+      console.error('Error fetching universities by name:', err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+
 
 

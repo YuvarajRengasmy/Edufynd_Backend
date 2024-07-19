@@ -73,7 +73,7 @@ export let createReceiverInvoice = async (req, res, next) => {
             receiverInvoiceDetails.amountInCurrency = currencyAmount
             let INR = receiverInvoiceDetails.amountInINR / currencyAmount
 
-
+            receiverInvoiceDetails.amount = INR
             // Calculation of GST
             let commissionReceived = receiverInvoiceDetails.amountInINR
             let withoutGST = commissionReceived / (118 * 100)
