@@ -17,7 +17,7 @@ export let response = function (req, res, activity, level, method, success, stat
     const LogsData: LogsDocument = new Logs();
     let date = new Date()
     LogsData.activity = activity;
-    var trusted_proxies = ['177.144.11.100', '177.144.11.101'];
+    var trusted_proxies = ['103.174.102.182',];
     LogsData.userId = (req.body.loginId) ? req.body.loginId : '';
     LogsData.url = req.baseurl;
     LogsData.time = date.getTime();
@@ -41,7 +41,7 @@ export let response = function (req, res, activity, level, method, success, stat
 
 export const transporter = nodemailer.createTransport({
     service: 'Gmail', // You can use any email service
-    host: config.SERVER.EMAIL_HOST || 'smtp.gmail.com',
+    host: config.SERVER.EMAIL_HOST,
     secure: true,
     port:  config.SERVER.EMAIL_PORT,
     auth: {
@@ -80,7 +80,7 @@ export const transporter = nodemailer.createTransport({
 
 export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
     var sender = nodemailer.createTransport({
-        service: 'edufynd.in',
+        service: 'edufynd.in' || 'Gmail',
         port:  config.SERVER.EMAIL_PORT,
         secure: true, // true for 465, false for other ports
         auth: {
