@@ -9,7 +9,7 @@ router.get('/',
     basicAuthUser,
     getAllCountry 
 );
-router.get('/getSingleCountry',
+router.get('/getSingleCountryList',
     basicAuthUser,
     checkQuery('_id'),
     getSingleCountry ,
@@ -28,7 +28,7 @@ router.delete('/',
     checkQuery('_id'),
     deleteCountry 
 );
-router.put('/getFilterCountry',
+router.put('/getFilterCountryList',
     basicAuthUser,
     getFilteredCountry ,
 );
