@@ -1,4 +1,5 @@
-import { Country, CountryDocument } from '../model/country.model'
+import { CountryList, CountryDocument } from '../model/country.model'
+import { Country} from '../../globalSetting/model/country.model'
 import { validationResult } from "express-validator";
 import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
@@ -10,21 +11,21 @@ var activity = "ModuleSetting-CountryList";
 
 export const getAllCountry = async (req, res) => {
     try {
-        const data = await Country.find()
-        response(req, res, activity, 'Level-1', 'GetAll-Country', true, 200, data, clientError.success.fetchedSuccessfully)
+        const data = await CountryList.find()
+        response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-Country', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetAll-CountryList', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
 
 export const getSingleCountry = async (req, res) => {
     try {
-        const data = await Country.findOne({ _id: req.query._id })
-        response(req, res, activity, 'Level-1', 'GetSingle-Country', true, 200, data, clientError.success.fetchedSuccessfully)
+        const data = await CountryList.findOne({ _id: req.query._id })
+        response(req, res, activity, 'Level-1', 'GetSingle-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetSingle-Country', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetSingle-CountryList', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
@@ -35,14 +36,14 @@ export let createCountry = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const DropdownListDetails: CountryDocument = req.body;
-            const createData = new Country(DropdownListDetails);
+            const createData = new CountryList(DropdownListDetails);
             let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Country', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Level-2', 'Create-CountryList', true, 200, insertData, clientError.success.savedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Country', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Create-CountryList', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
-        response(req, res, activity, 'Level-3', 'Create-Country', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Create-CountryList', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 
@@ -53,7 +54,7 @@ export const updateCountry = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const countryDetails: CountryDocument = req.body;
-            let statusData = await Country.findByIdAndUpdate({ _id: req.query._id }, {
+            let statusData = await CountryList.findByIdAndUpdate({ _id: req.query._id }, {
                 $set: {
                     name: countryDetails.name,
                     code: countryDetails.code,
@@ -80,11 +81,11 @@ export const updateCountry = async (req, res) => {
 
         try {
             let id = req.query._id;
-            const country = await Country.findByIdAndDelete({ _id: id })
-            response(req, res, activity, 'Level-2', 'Deleted the Country', true, 200, country, 'Successfully Remove this Field');
+            const country = await CountryList.findByIdAndDelete({ _id: id })
+            response(req, res, activity, 'Level-2', 'Deleted the CountryList', true, 200, country, 'Successfully Remove this Field');
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Deleted the Country', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Deleted the CountryList', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
 
@@ -106,12 +107,12 @@ export const updateCountry = async (req, res) => {
             }  
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await Country.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await CountryList.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
 
-            const dropDownCount = await Country.find(findQuery).count()
-            response(req, res, activity, 'Level-1', 'Get-Filter Country', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
+            const dropDownCount = await CountryList.find(findQuery).count()
+            response(req, res, activity, 'Level-1', 'Get-Filter CountryList', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Get-Filter Country', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Get-Filter CountryList', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
 
@@ -120,10 +121,77 @@ export const updateCountry = async (req, res) => {
         const { name } = req.query; // Extract country from query params
         try {
             // Query universities based on country
-            const countryList = await Country.find({ name: name });
-            response(req, res, activity, 'Level-2', 'Get- By Country', true, 200, countryList, clientError.success.fetchedSuccessfully)
+            const countryList = await CountryList.find({ name: name });
+            response(req, res, activity, 'Level-2', 'Get-CountryList By State ', true, 200, countryList, clientError.success.fetchedSuccessfully)
         } catch (err) {
             console.error('Error fetching universities:', err);
-            response(req, res, activity, 'Level-3', 'Get- By Country', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Get-CountryList By State ', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
+
+
+
+    // export const getCountryByStateAndCity = async (req, res) => {
+    //     try {
+    //         const result = req.query.countryName
+    //         console.log("hh", result)
+    //         const data = await Country.find({country: result})
+    //         console.log("88", data)
+    //         const list = await CountryList.find({name: data})
+    //         console.log("zz", list)
+    //         response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, list, clientError.success.fetchedSuccessfully)
+    
+    //     } catch (err: any) {
+    //         response(req, res, activity, 'Level-1', 'GetAll-CountryList', false, 500, {}, errorMessage.internalServer, err.message)
+    //     }
+    // }
+
+    // export const getCountryByStateAndCity = async (req, res) => {
+    //     try {
+    //         const { countryName} = req.query;
+    
+    //         console.log("Country name:", countryName);
+    
+    //         // Find the country in the Country collection
+    //         const country = await Country.findOne({ country: countryName }).exec();
+    
+    //         if (!country) {
+    //             return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
+    //         }
+    
+    //         console.log("Country data:", country);
+    
+    //         // Find the matching state and city in the CountryList collection
+    //         const list = await CountryList.findOne({
+    //             countryName: countryName,
+    //             // 'state.StateName': stateName,
+    //             // 'state.cities': cityName
+    //         }, {
+    //             countryName: 1,
+    //             code: 1,
+    //             'state.$': 1
+    //         }).exec();
+    
+    //         if (!list) {
+    //             return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
+    //         }
+    
+    //         console.log("Country list data:", list);
+    
+    //         // Format the response data
+    //         const data = {
+    //             countryName: list.countryName,
+    //             code: list.code,
+    //             state: list.state[0].StateName,
+    //             cities: list.state[0].cities
+    //         };
+    
+    //         // Send the response
+    //         response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
+    
+    //     } catch (err) {
+    //         console.error(err);
+    //         response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
+    //     }
+    // };
+    

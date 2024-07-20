@@ -110,6 +110,7 @@ export let updateProgram = async (req, res, next) => {
                     flag: programDetails.flag,
                     discountedValue: programDetails.discountedValue,
                     campuses: programDetails.campuses,
+                    popularCategories: programDetails.popularCategories,
                     // courseFee: programDetails.courseFee,
                     // inTake: programDetails.inTake,
                     // duration: programDetails.duration,
