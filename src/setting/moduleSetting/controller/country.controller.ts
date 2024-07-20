@@ -4,7 +4,7 @@ import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
 
 
-var activity = "ModuleSetting-All Module-Program-CourseType";
+var activity = "ModuleSetting-CountryList";
 
 
 
@@ -49,28 +49,31 @@ export let createCountry = async (req, res, next) => {
 
 
 export const updateCountry = async (req, res) => {
-    const DropdownListDetails: CountryDocument = req.body;
-    
-    try {
-      // Check if the module exists
-      const existingModule = await Country.findById({ _id: DropdownListDetails._id });
-   
-      if (!existingModule) {
-        return res.status(404).json({ message: 'Module not found' });
-      }
-      
-      // Update the module with the new data
-      existingModule.name = DropdownListDetails.name; // Assuming courseType is the only field being updated
-      // Save the updated module
-     let updatedModule = await existingModule.save();
-         
-      
-      // Respond with success message and updated module data
-      response(req, res, activity, 'Level-2', 'Update-Country', true, 200, updatedModule, clientError.success.updateSuccess);
-    } catch (err) {
-      response(req, res, activity, 'Level-3', 'Update-Country', false, 500, {}, errorMessage.internalServer, err.message);
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+        try {
+            const countryDetails: CountryDocument = req.body;
+            let statusData = await Country.findByIdAndUpdate({ _id: req.query._id }, {
+                $set: {
+                    name: countryDetails.name,
+                    code: countryDetails.code,
+                    modifiedOn: new Date(),
+                    modifiedBy:  countryDetails.modifiedBy,
+                },
+                $addToSet: {
+                   state: countryDetails.state,
+               }
+            });
+
+            response(req, res, activity, 'Level-2', 'Update-CountryList Details', true, 200, statusData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-CountryList Details', false, 500, {}, errorMessage.internalServer, err.message);
+        }
     }
-  };
+    else {
+        response(req, res, activity, 'Level-3', 'Update-CountryList Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
 
 
     export let deleteCountry = async (req, res, next) => {
@@ -95,9 +98,13 @@ export const updateCountry = async (req, res) => {
             var page = req.body.page ? req.body.page : 0;
             andList.push({ isDeleted: false })
             andList.push({ status: 1 })
-            if (req.body.courseType) {
-                andList.push({ courseType: req.body.courseType })
+            if (req.body.name) {
+                andList.push({ name: req.body.name })
             }
+            if (req.body.code) {
+                andList.push({ code: req.body.code })
+            }
+          
             
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
