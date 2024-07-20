@@ -103,9 +103,7 @@ export const updateCountry = async (req, res) => {
             }
             if (req.body.code) {
                 andList.push({ code: req.body.code })
-            }
-          
-            
+            }  
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
             const dropDownList = await Country.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
