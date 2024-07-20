@@ -146,52 +146,56 @@ export const updateCountry = async (req, res) => {
     //     }
     // }
 
-    // export const getCountryByStateAndCity = async (req, res) => {
-    //     try {
-    //         const { countryName} = req.query;
+    export const getCountryByStateAndCity = async (req, res) => {
+        try {
+            const { countryName} = req.query;
     
-    //         console.log("Country name:", countryName);
+            console.log("Country name:", countryName);
     
-    //         // Find the country in the Country collection
-    //         const country = await Country.findOne({ country: countryName }).exec();
+            // Find the country in the Country collection
+            const country = await Country.findOne({ country: countryName }).exec();
+            console.log("66", country)
     
-    //         if (!country) {
-    //             return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
-    //         }
+            if (!country) {
+                return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
+            }
     
-    //         console.log("Country data:", country);
+            console.log("Country data:", country);
     
-    //         // Find the matching state and city in the CountryList collection
-    //         const list = await CountryList.findOne({
-    //             countryName: countryName,
-    //             // 'state.StateName': stateName,
-    //             // 'state.cities': cityName
-    //         }, {
-    //             countryName: 1,
-    //             code: 1,
-    //             'state.$': 1
-    //         }).exec();
+            // Find the matching state and city in the CountryList collection
+            const list = await CountryList.findOne({
+                name: countryName,
+                // 'state.StateName': stateName,
+                // 'state.cities': cityName
+            }, {
+                name: 1,
+                code: 1,
+                state: 1
+            }).exec();
+    console.log("909", list)
+            if (!list) {
+                return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
+            }
     
-    //         if (!list) {
-    //             return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
-    //         }
+            console.log("Country list data:", list);
     
-    //         console.log("Country list data:", list);
+            // Format the response data
+            const data = {
+                countryName: list.name,
+                code: list.code,
+                state: list.state
+                // state: list.state[0].name,
+                // cities: list.state[0].cities
+            };
+
+            console.log("44", data)
     
-    //         // Format the response data
-    //         const data = {
-    //             countryName: list.countryName,
-    //             code: list.code,
-    //             state: list.state[0].StateName,
-    //             cities: list.state[0].cities
-    //         };
+            // Send the response
+            response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
     
-    //         // Send the response
-    //         response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
-    
-    //     } catch (err) {
-    //         console.error(err);
-    //         response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
-    //     }
-    // };
+        } catch (err) {
+            console.error(err);
+            response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
+        }
+    };
     
