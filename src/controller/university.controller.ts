@@ -1,4 +1,5 @@
 import { University, UniversityDocument } from '../model/university.model'
+import * as mongoose from 'mongoose'
 import { SuperAdmin } from "../model/superAdmin.model";
 import { Client } from '../model/client.model';
 import { validationResult } from "express-validator";
@@ -128,8 +129,8 @@ export let updateUniversity = async (req, res, next) => {
                     email: universityDetails.email,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
-                    state: universityDetails.state,
-                    lga: universityDetails.lga,
+                    // state: universityDetails.state,
+                    // lga: universityDetails.lga,
                     ranking: universityDetails.ranking,
                     averageFees: universityDetails.averageFees,
                     popularCategories: universityDetails.popularCategories,
@@ -158,6 +159,10 @@ export let updateUniversity = async (req, res, next) => {
                     // costOfLiving: universityDetails.costOfLiving,
                     // grossTuition: universityDetails.grossTuition,
 
+                },
+                 $addToSet: {
+                    campus: universityDetails.campus,
+                 
                 }
             });
 
@@ -412,6 +417,15 @@ export const csvToJson = async (req, res) => {
                 businessName: data.BusinessName,
                 banner: data.Banner,
                 country: data.Country,
+                state:  data.State ,
+                lga: data.City ,
+                campus: [
+                    {
+                        state: data.State,
+                        lga: data.City,
+                        _id: new mongoose.Types.ObjectId() // Generate a new ObjectId for _id
+                    }
+                ],
                 countryName: data.CountryName,
                 email: data.Email,
                 // campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
