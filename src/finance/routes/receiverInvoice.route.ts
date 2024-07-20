@@ -10,14 +10,14 @@ const router:Router=Router();
 
 router.get('/',                          
     basicAuthUser,
-    //  checkSession,
+      checkSession,
     getAllReceiverInvoice
 );
 
 
 router.get('/getSingleReceiverInvoice',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     getSingleReceiverInvoice,
 );
@@ -28,7 +28,7 @@ router.post('/',
 
 router.put('/',             
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkRequestBodyParams('_id'),
     updateReceiverInvoice,
  
@@ -37,7 +37,7 @@ router.put('/',
 
 router.delete('/',                
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteReceiverInvoice
 );
@@ -45,7 +45,7 @@ router.delete('/',
 
 router.put('/getFilterSenderInvoice',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     getFilteredReceiverInvoice,
 );
 
