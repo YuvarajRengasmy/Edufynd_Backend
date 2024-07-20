@@ -103,9 +103,7 @@ export const updateCountry = async (req, res) => {
             }
             if (req.body.code) {
                 andList.push({ code: req.body.code })
-            }
-          
-            
+            }  
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
             const dropDownList = await Country.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
@@ -116,3 +114,16 @@ export const updateCountry = async (req, res) => {
             response(req, res, activity, 'Level-3', 'Get-Filter Country', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
+
+
+    export const getCountryByState = async (req, res) => {
+        const { name } = req.query; // Extract country from query params
+        try {
+            // Query universities based on country
+            const countryList = await Country.find({ name: name });
+            response(req, res, activity, 'Level-2', 'Get- By Country', true, 200, countryList, clientError.success.fetchedSuccessfully)
+        } catch (err) {
+            console.error('Error fetching universities:', err);
+            response(req, res, activity, 'Level-3', 'Get- By Country', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
