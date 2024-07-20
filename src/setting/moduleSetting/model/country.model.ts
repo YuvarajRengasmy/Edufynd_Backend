@@ -3,7 +3,9 @@ import * as mongoose from 'mongoose'
 
 
 export interface CountryDocument extends mongoose.Document {
-    country?: string;
+    name?: string;
+    code?: string;
+    state?: any[];
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -12,12 +14,19 @@ export interface CountryDocument extends mongoose.Document {
 
 const countrySchema = new mongoose.Schema({
 
-    country: { type: String },
-    createdOn: { type: Date },
+    name: { type: String },
+    code: {type: String},
+    state: [{
+        name: {type: String},     // State Name
+        cities: [String]          // City Name
+    }],
+    createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
 
-export const Country = mongoose.model("CountryName", countrySchema)
+// export const Country = mongoose.model("CountryName", countrySchema)
+
+export const Country = mongoose.model("CountryList", countrySchema)

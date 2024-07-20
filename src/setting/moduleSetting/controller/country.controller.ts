@@ -60,7 +60,7 @@ export const updateCountry = async (req, res) => {
       }
       
       // Update the module with the new data
-      existingModule.country = DropdownListDetails.country; // Assuming courseType is the only field being updated
+      existingModule.name = DropdownListDetails.name; // Assuming courseType is the only field being updated
       // Save the updated module
      let updatedModule = await existingModule.save();
          

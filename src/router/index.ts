@@ -68,7 +68,7 @@ import Year from '../setting/globalSetting/router/year.routes'
 import CourseType from '../setting/moduleSetting/router/courseType.route'
 import PopularCategory from '../setting/moduleSetting/router/popularCourse.route'
 import CommissionPaid from '../setting/moduleSetting/router/commissionPaid.route'
-import CountryName from '../setting/moduleSetting/router/country.route'
+import CountryList from '../setting/moduleSetting/router/country.route'
 import InstitutionType from '../setting/moduleSetting/router/institutionType.route'
 import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
 import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
@@ -144,7 +144,7 @@ router.use('/course', CourseType )
 router.use('/popularCourse', PopularCategory )
 router.use('/commissionPaid', CommissionPaid)
 router.use('/institutionType', InstitutionType)
-router.use('/countryName', CountryName)
+router.use('/countryList', CountryList)
 router.use('/offerTAT', OfferTAT)
 router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
