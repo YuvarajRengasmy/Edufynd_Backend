@@ -77,7 +77,7 @@ export const updateCountry = async (req, res) => {
 }
 
 
-    export let deleteCountry = async (req, res, next) => {
+export let deleteCountry = async (req, res, next) => {
 
         try {
             let id = req.query._id;
@@ -91,7 +91,7 @@ export const updateCountry = async (req, res) => {
 
 
 
-    export let getFilteredCountry = async (req, res, next) => {
+export let getFilteredCountry = async (req, res, next) => {
         try {
             var findQuery;
             var andList: any = []
@@ -117,7 +117,7 @@ export const updateCountry = async (req, res) => {
     };
 
 
-    export const getCountryByState = async (req, res) => {
+export const getCountryByState = async (req, res) => {
         const { name } = req.query; // Extract country from query params
         try {
             // Query universities based on country
@@ -130,68 +130,145 @@ export const updateCountry = async (req, res) => {
     }
 
 
+export const getCountryByStateAndCity = async (req, res) => {
+        try {
+            const { countryName} = req.query;
+    
+            console.log("Country name:", countryName);
+    
+            // Find the country in the Country collection
+            const country = await Country.findOne({ country: countryName }).exec();
+            console.log("66", country)
+    
+            if (!country) {
+                return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
+            }
+    
+            console.log("Country data:", country);
+    
+            // Find the matching state and city in the CountryList collection
+            const list = await CountryList.findOne({
+                name: countryName,
+                // 'state.StateName': stateName,
+                // 'state.cities': cityName
+            }, {
+                name: 1,
+                code: 1,
+                state: 1
+            }).exec();
+    console.log("909", list)
+            if (!list) {
+                return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
+            }
+    
+            console.log("Country list data:", list);
+    
+            // Format the response data
+            const data = {
+                countryName: list.name,
+                code: list.code,
+                state: list.state
+                // state: list.state[0].name,
+                // cities: list.state[0].cities
+            };
+
+            console.log("44", data)
+    
+            // Send the response
+            response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
+    
+        } catch (err) {
+            console.error(err);
+            response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
+        }
+    };
+
 
     // export const getCountryByStateAndCity = async (req, res) => {
+    //     const { countryName, stateName, cityName } = req.query;
+    
     //     try {
-    //         const result = req.query.countryName
-    //         console.log("hh", result)
-    //         const data = await Country.find({country: result})
-    //         console.log("88", data)
-    //         const list = await CountryList.find({name: data})
-    //         console.log("zz", list)
-    //         response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, list, clientError.success.fetchedSuccessfully)
-    
-    //     } catch (err: any) {
-    //         response(req, res, activity, 'Level-1', 'GetAll-CountryList', false, 500, {}, errorMessage.internalServer, err.message)
-    //     }
-    // }
-
-    // export const getCountryByStateAndCity = async (req, res) => {
-    //     try {
-    //         const { countryName} = req.query;
-    
-    //         console.log("Country name:", countryName);
-    
-    //         // Find the country in the Country collection
-    //         const country = await Country.findOne({ country: countryName }).exec();
-    
-    //         if (!country) {
-    //             return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
-    //         }
-    
-    //         console.log("Country data:", country);
-    
     //         // Find the matching state and city in the CountryList collection
-    //         const list = await CountryList.findOne({
-    //             countryName: countryName,
-    //             // 'state.StateName': stateName,
-    //             // 'state.cities': cityName
+    //         const countryList = await CountryList.findOne({
+    //             name: countryName,
+    //             'state.name': stateName,
+    //             'state.cities': cityName
     //         }, {
-    //             countryName: 1,
+    //             name: 1,
     //             code: 1,
     //             'state.$': 1
     //         }).exec();
     
-    //         if (!list) {
-    //             return response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
+    //         if (!countryList) {
+    //             return res.status(404).json({
+    //                 success: false,
+    //                 message: 'State or city not found in the specified country'
+    //             });
     //         }
     
-    //         console.log("Country list data:", list);
+    //         console.log("Country list data:", countryList);
     
     //         // Format the response data
     //         const data = {
-    //             countryName: list.countryName,
-    //             code: list.code,
-    //             state: list.state[0].StateName,
-    //             cities: list.state[0].cities
+    //             countryName: countryList.name,
+    //             code: countryList.code,
+    //             state: countryList.state[0].name,
+    //             cities: countryList.state[0].cities
     //         };
     
     //         // Send the response
-    //         response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
+    //         res.status(200).json({
+    //             success: true,
+    //             data: data,
+    //             message: 'Data fetched successfully'
+    //         });
     
     //     } catch (err) {
     //         console.error(err);
-    //         response(req, res, 'ActivityName', 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
+    //         res.status(500).json({
+    //             success: false,
+    //             message: 'Internal server error',
+    //             error: err.message
+    //         });
     //     }
     // };
+
+
+    const getAllCities = async (req, res) => {
+        const { countryName, stateName } = req.query;
+    
+        try {
+            const countryList = await CountryList.findOne({
+                name: countryName,
+                'state.name': stateName
+            }, {
+                'state.$': 1
+            }).exec();
+    
+            if (!countryList) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'State not found in the specified country'
+                });
+            }
+    
+            // Extract the cities from the matched state
+            const cities = countryList.state[0].cities;
+    
+            // Send the response
+            res.status(200).json({
+                success: true,
+                cities: cities,
+                message: 'Cities fetched successfully'
+            });
+    
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+                error: err.message
+            });
+        }
+    };
     
