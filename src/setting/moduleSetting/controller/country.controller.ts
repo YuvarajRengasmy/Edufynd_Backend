@@ -167,7 +167,8 @@ export const getCountryByStateAndCity = async (req, res) => {
             const data = {
                 countryName: list.name,
                 code: list.code,
-                state: list.state
+                state: list.state,
+                length: list.state.length
                 // state: list.state[0].name,
                 // cities: list.state[0].cities
             };
