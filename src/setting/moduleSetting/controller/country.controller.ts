@@ -184,6 +184,48 @@ export const getCountryByStateAndCity = async (req, res) => {
     };
 
 
+
+    export const getAllCities = async (req, res) => {
+        const { state } = req.query;
+    
+        try {
+            const countryList = await CountryList.findOne({
+                // name: country,
+                'state.name': state
+            }, {
+                'state.$': 1
+            }).exec();
+    
+            if (!countryList) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'State not found in the specified country'
+                });
+            }
+    
+            // Extract the cities from the matched state
+            const cities = countryList.state[0].cities;
+    
+            // Send the response
+            res.status(200).json({
+                success: true,
+                cities: cities,
+                message: 'Cities fetched successfully'
+            });
+    
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+                error: err.message
+            });
+        }
+    };
+
+
+
+
     // export const getCountryByStateAndCity = async (req, res) => {
     //     const { countryName, stateName, cityName } = req.query;
     
@@ -234,41 +276,5 @@ export const getCountryByStateAndCity = async (req, res) => {
     // };
 
 
-    export const getAllCities = async (req, res) => {
-        const { countryName, stateName } = req.query;
-    
-        try {
-            const countryList = await CountryList.findOne({
-                name: countryName,
-                'state.name': stateName
-            }, {
-                'state.$': 1
-            }).exec();
-    
-            if (!countryList) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'State not found in the specified country'
-                });
-            }
-    
-            // Extract the cities from the matched state
-            const cities = countryList.state[0].cities;
-    
-            // Send the response
-            res.status(200).json({
-                success: true,
-                cities: cities,
-                message: 'Cities fetched successfully'
-            });
-    
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({
-                success: false,
-                message: 'Internal server error',
-                error: err.message
-            });
-        }
-    };
+  
     
