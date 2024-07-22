@@ -235,12 +235,12 @@ export const getCountryByStateAndCity = async (req, res) => {
 
 
     export const getAllCities = async (req, res) => {
-        const { countryName, stateName } = req.query;
+        const { country, state } = req.query;
     
         try {
             const countryList = await CountryList.findOne({
-                name: countryName,
-                'state.name': stateName
+                name: country,
+                'state.name': state
             }, {
                 'state.$': 1
             }).exec();
