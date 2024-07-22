@@ -72,9 +72,9 @@ const universitySchema = new mongoose.Schema({
 // }],
 
     campus: [{
-        country: [String],
-        state: [String],
-        cities: [String],
+        country: {type:String},
+        state: {type:String},
+        cities: {type:String},
     }],
 
     // state: [String ],   
