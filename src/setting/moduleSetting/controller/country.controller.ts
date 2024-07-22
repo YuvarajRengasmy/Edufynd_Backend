@@ -132,15 +132,15 @@ export const getCountryByState = async (req, res) => {
 
 export const getCountryByStateAndCity = async (req, res) => {
         try {
-            const { countryName} = req.query;
+            const { country} = req.query;
     
-            console.log("Country name:", countryName);
+            console.log("Country name:", country);
     
             // Find the country in the Country collection
-            const country = await Country.findOne({ country: countryName }).exec();
+            const countryies = await Country.findOne({ country: country }).exec();
             console.log("66", country)
     
-            if (!country) {
+            if (!countryies) {
                 return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
             }
     
@@ -148,7 +148,7 @@ export const getCountryByStateAndCity = async (req, res) => {
     
             // Find the matching state and city in the CountryList collection
             const list = await CountryList.findOne({
-                name: countryName,
+                name: country,
                 // 'state.StateName': stateName,
                 // 'state.cities': cityName
             }, {
@@ -165,7 +165,7 @@ export const getCountryByStateAndCity = async (req, res) => {
     
             // Format the response data
             const data = {
-                countryName: list.name,
+                country: list.name,
                 code: list.code,
                 state: list.state
                 // state: list.state[0].name,

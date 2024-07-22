@@ -40,7 +40,7 @@ router.get('/getCountryByState',
 )
 
 
-router.get('/getCountryByStateAndCity',
+router.get('/getCountryByStates',
     basicAuthUser,
     getCountryByStateAndCity
 )
