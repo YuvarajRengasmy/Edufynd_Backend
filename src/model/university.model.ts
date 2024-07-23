@@ -5,7 +5,6 @@ export interface UniversityDocument extends mongoose.Document {
     _id?: any;
     universityCode?: string;
     superAdminId?: any;
-    // clientId?: any;
     appliedStudentId?: any;
     businessName?: string;
     universityName?: string; // University Name
@@ -17,9 +16,7 @@ export interface UniversityDocument extends mongoose.Document {
     countryName?: string; // Country
     country?: string;
     flag?: string;
-    countryStateCity?: any[];
-    // state?: any[];
-    // lga?: any[];
+    campus?: any[];
     ranking?: string; // Ranking (Optional)
     averageFees?: number; // Average Fees
     popularCategories?: any[]; // Popular Categories (Multiple)
@@ -38,17 +35,12 @@ export interface UniversityDocument extends mongoose.Document {
     founded?: string;
     institutionType?: string;
     website?: string;
-    inTake?: any[];
-   
+    inTake?: any[];  
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
-
-    // applicationFees?: string;
-    // costOfLiving?: string;
-    // grossTuition?: string;
 }
 
 
@@ -58,7 +50,6 @@ const universitySchema = new mongoose.Schema({
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
-    // clientId: { type: mongoose.Types.ObjectId, ref: 'Client', required: true },
     universityName: { type: String },
     about: {type: String},
     courseType: [String] ,
@@ -66,19 +57,11 @@ const universitySchema = new mongoose.Schema({
     countryName: { type: String },
     flag: {type: String},
     country: {type: String},
-//     campus: [{
-//         state: {type: String},
-//         lga: {type: String},
-// }],
-
-countryStateCity: [{
+    campus: [{
         country: {type:String},
         state: {type:String},
         cities: {type:String},
     }],
-
-    // state: [String ],   
-    // lga: [String],
     ranking: { type: String },
     averageFees: { type: String },
     popularCategories: [ String ],
