@@ -102,7 +102,7 @@ export let updateCommission = async (req, res, next) => {
         try {
             let id = req.query._id;
             const country = await Commission.findByIdAndDelete({ _id: id })
-            response(req, res, activity, 'Level-2', 'Deleted the Commission', true, 200, country, 'Successfully Remove this Field');
+            response(req, res, activity, 'Level-2', 'Deleted the Commission', true, 200, country, 'Successfully Remove the Commission Details');
         }
         catch (err: any) {
             response(req, res, activity, 'Level-3', 'Deleted the Commission', false, 500, {}, errorMessage.internalServer, err.message);

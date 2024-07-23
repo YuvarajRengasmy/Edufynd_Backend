@@ -137,7 +137,7 @@ export let deleteStaff = async (req, res, next) => {
     try {
         let id = req.query._id;
         const staff = await Staff.findByIdAndDelete({ _id: id })
-        response(req, res, activity, 'Level-2', 'Delete-StaffDetail', true, 200, staff, 'Successfully Remove Staff');
+        response(req, res, activity, 'Level-2', 'Delete-StaffDetail', true, 200, staff, 'Successfully Remove the Staff');
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-StaffDetail', false, 500, {}, errorMessage.internalServer, err.message);
