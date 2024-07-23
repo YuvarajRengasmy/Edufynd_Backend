@@ -238,7 +238,7 @@ export let deleteStudent = async (req, res, next) => {
         let id = req.query._id;
         const student = await Student.findByIdAndDelete({ _id: id })
 
-        response(req, res, activity, 'Level-2', 'Delete-Student', true, 200, student, 'Successfully Remove User');
+        response(req, res, activity, 'Level-2', 'Delete-Student', true, 200, student, 'Successfully Remove the Student');
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-Student', false, 500, {}, errorMessage.internalServer, err.message);

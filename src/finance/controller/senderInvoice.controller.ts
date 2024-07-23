@@ -27,7 +27,7 @@ export let getSingleSenderInvoice = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Sender Invoice', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
-const generateSenderInvoice = async (): Promise<string> => {
+const generateSenderInvoice = async () => {
     // Retrieve all IDs to determine the highest existing applicant counter
     const forex = await SenderInvoice.find({}, 'senderInvoiceNumber').exec();
 

@@ -142,10 +142,10 @@ export let deleteStudentEnquiry = async (req, res, next) => {
         let id = req.query._id;
         const student = await StudentEnquiry.findByIdAndDelete({ _id: id })
 
-        response(req, res, activity, 'Level-2', 'Delete-studentEnquiryDetails', true, 200, student, 'Successfully Remove studentEnquiryDetails');
+        response(req, res, activity, 'Level-2', 'Delete-student Enquiry Details', true, 200, student, 'Successfully Remove student Enquiry Details');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-studentEnquiryDetails', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Delete-student Enquiry Details', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
