@@ -1,5 +1,5 @@
 import { CountryList, CountryDocument } from '../model/country.model'
-import { Country} from '../../globalSetting/model/country.model'
+
 import { validationResult } from "express-validator";
 import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
@@ -130,59 +130,7 @@ export const getCountryByState = async (req, res) => {
     }
 
 
-export const getCountryByStateAndCity = async (req, res) => {
-        try {
-            const { country} = req.query;
-    
-            console.log("Country name:", country);
-    
-            // Find the country in the Country collection
-            const countries = await Country.findOne({ country: country }).exec();
-            console.log("66", country)
-    
-            if (!countries) {
-                return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
-            }
-    
-            console.log("Country data:", countries);
-    
-            // Find the matching state and city in the CountryList collection
-            const list = await CountryList.findOne({
-                name: country,
-                // 'state.StateName': stateName,
-                // 'state.cities': cityName
-            }, {
-                name: 1,
-                code: 1,
-                state: 1
-            }).exec();
-    console.log("909", list)
-            if (!list) {
-                return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
-            }
-    
-            console.log("Country list data:", list);
-    
-            // Format the response data
-            const data = {
-                countryName: list.name,
-                code: list.code,
-                state: list.state,
-                length: list.state.length
-                // state: list.state[0].name,
-                // cities: list.state[0].cities
-            };
 
-            console.log("44", data)
-    
-            // Send the response
-            response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
-    
-        } catch (err) {
-            console.error(err);
-            response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
-        }
-    };
 
 
 
