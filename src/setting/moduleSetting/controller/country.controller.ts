@@ -20,7 +20,7 @@ export const getAllCountryList = async (req, res) => {
 }
 
 
-export const getSingleCountry = async (req, res) => {
+export const getSingleCountryList = async (req, res) => {
     try {
         const data = await CountryList.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -30,7 +30,7 @@ export const getSingleCountry = async (req, res) => {
 }
 
 
-export let createCountry = async (req, res, next) => {
+export let createCountryList = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -49,7 +49,7 @@ export let createCountry = async (req, res, next) => {
 
 
 
-export const updateCountry = async (req, res) => {
+export const updateCountryList = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -77,7 +77,7 @@ export const updateCountry = async (req, res) => {
 }
 
 
-export let deleteCountry = async (req, res, next) => {
+export let deleteCountryList = async (req, res, next) => {
 
         try {
             let id = req.query._id;
@@ -91,7 +91,7 @@ export let deleteCountry = async (req, res, next) => {
 
 
 
-export let getFilteredCountry = async (req, res, next) => {
+export let getFilteredCountryList = async (req, res, next) => {
         try {
             var findQuery;
             var andList: any = []
