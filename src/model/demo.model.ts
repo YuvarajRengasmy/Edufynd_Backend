@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 
-export interface CountryDocument extends mongoose.Document {
+export interface DemoDocument extends mongoose.Document {
     name?: string;
     code?: string;
     state?: any[];
@@ -12,7 +12,7 @@ export interface CountryDocument extends mongoose.Document {
     modifiedBy?: string;
 }
 
-const countrySchema = new mongoose.Schema({
+const demoSchema = new mongoose.Schema({
 
     name: { type: String },
     code: {type: String},
@@ -27,6 +27,4 @@ const countrySchema = new mongoose.Schema({
 })
 
 
-// export const Country = mongoose.model("CountryName", countrySchema)
-
-export const CountryList = mongoose.model("CountryList", countrySchema)
+export const Demo = mongoose.model("Demo", demoSchema)
