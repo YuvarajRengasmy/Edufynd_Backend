@@ -66,7 +66,7 @@ const universitySchema = new mongoose.Schema({
     country: { type: String },
     campuses: [{
         state: { type: String },
-        cities: [String],
+         lga: { type: String },
     }],
     ranking: { type: String },
     averageFees: { type: String },
