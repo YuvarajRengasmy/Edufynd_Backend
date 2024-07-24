@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCountry , getSingleCountry , createCountry , updateCountry , deleteCountry , getFilteredCountry,
+import { getAllCountryList , getSingleCountry , createCountry , updateCountry , deleteCountry , getFilteredCountry,
      getCountryByState,getCountryByStateAndCity, getAllCities } from '../../moduleSetting/controller/country.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
@@ -9,8 +9,7 @@ const router: Router = Router();
 
 router.get('/',
     basicAuthUser,
-    checkSession,
-    getAllCountry 
+    getAllCountryList
 );
 router.get('/getSingleCountryList',
     basicAuthUser,
