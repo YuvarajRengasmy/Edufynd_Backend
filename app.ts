@@ -42,12 +42,13 @@ export const app: any = {
 	},
 	
 	initRoutes() {
-		this.instance.use(express.static(path.join(__dirname, 'dist')));
+		// this.instance.use(express.static(path.join(__dirname, 'dist')));
 		this.instance.use('/api', routes);
-		 this.instance.get('*', (req, res) => {
-			res.sendFile(path.join(__dirname, 'dist/index.html'));
+		this.instance.get('/api', routes);
+		//  this.instance.get('*', (req, res) => {
+		// 	res.sendFile(path.join(__dirname, 'dist/index.html'));
 	
-		 });
+		//  });
 		this.instance.use((req: Request, res: Response, next: NextFunction) => {
 			
 			const err = new Error('Not Found');
