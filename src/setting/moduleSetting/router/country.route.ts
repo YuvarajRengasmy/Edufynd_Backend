@@ -3,11 +3,13 @@ import { getAllCountry , getSingleCountry , createCountry , updateCountry , dele
      getCountryByState,getCountryByStateAndCity, getAllCities } from '../../moduleSetting/controller/country.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
+import { checkSession } from '../../../utils/tokenManager';
 
 const router: Router = Router();
 
 router.get('/',
     basicAuthUser,
+    checkSession,
     getAllCountry 
 );
 router.get('/getSingleCountryList',
