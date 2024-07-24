@@ -167,7 +167,7 @@ export let updateAgent = async (req, res, next) => {
 export let deleteAgent = async (req, res, next) => {
     try {
         const agent = await Agent.findOneAndDelete({ _id: req.query._id })
-        response(req, res, activity, 'Level-2', 'Delete-Agent', true, 200, agent, 'Successfully Agent University');
+        response(req, res, activity, 'Level-2', 'Delete-Agent', true, 200, agent, 'Successfully Remove the Agent');
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);

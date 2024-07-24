@@ -127,10 +127,10 @@ export let deleteLoanEnquiry = async (req, res, next) => {
         let id = req.query._id;
         const loan = await LoanEnquiry.findByIdAndDelete({ _id: id })
 
-        response(req, res, activity, 'Level-2', 'Delete-LoanEnquiryDetails', true, 200, loan, 'Successfully Remove LoanEnquiryDetails');
+        response(req, res, activity, 'Level-2', 'Delete-Loan Enquiry Details', true, 200, loan, 'Successfully Remove Loan Enquiry Details');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-LoanEnquiryDetails', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'Delete-Loan Enquiry Details', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
