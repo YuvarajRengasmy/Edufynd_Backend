@@ -550,7 +550,7 @@ export const getUniversityByCountry = async (req, res) => {
     const { countryName } = req.query; // Extract country from query params
     try {
         // Query universities based on country
-        const universities = await University.find({ country: countryName });
+        const universities = await University.find({ countryName: countryName });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
     } catch (err) {
         console.error('Error fetching universities:', err);
