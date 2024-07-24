@@ -17,7 +17,7 @@ export interface UniversityDocument extends mongoose.Document {
     countryName?: string; // Country
     country?:string;
     flag?: string;
-    campus: any[];
+    campuses?: any[];
     ranking?: string; // Ranking (Optional)
     averageFees?: number; // Average Fees
     popularCategories?: any[]; // Popular Categories (Multiple)
@@ -66,7 +66,7 @@ const universitySchema = new mongoose.Schema({
     country: { type: String },
     campuses: [{
         state: { type: String },
-        cities: [String],
+         lga: { type: String },
     }],
     ranking: { type: String },
     averageFees: { type: String },

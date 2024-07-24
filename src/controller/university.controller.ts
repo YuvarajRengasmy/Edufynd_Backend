@@ -161,7 +161,7 @@ export let updateUniversity = async (req, res, next) => {
 
                 },
                  $addToSet: {
-                    campus: universityDetails.campus,
+                    campus: universityDetails.campuses,
                  
                 }
             });
@@ -547,10 +547,10 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 
 
 export const getUniversityByCountry = async (req, res) => {
-    const { country } = req.query; // Extract country from query params
+    const { countryName } = req.query; // Extract country from query params
     try {
         // Query universities based on country
-        const universities = await University.find({ countryName: country, });
+        const universities = await University.find({ countryName: countryName });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
     } catch (err) {
         console.error('Error fetching universities:', err);
