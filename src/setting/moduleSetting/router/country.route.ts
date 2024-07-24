@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCountryList , getSingleCountry , createCountry , updateCountry , deleteCountry , getFilteredCountry,
+import { getAllCountryList , getSingleCountryList , createCountryList , updateCountryList , deleteCountryList , getFilteredCountryList,
      getCountryByState,getCountryByStateAndCity, getAllCities } from '../../moduleSetting/controller/country.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
@@ -13,25 +13,25 @@ router.get('/',
 router.get('/getSingleCountryList',
     basicAuthUser,
     checkQuery('_id'),
-    getSingleCountry ,
+    getSingleCountryList ,
 );
 router.post('/',
     basicAuthUser,
-    createCountry 
+    createCountryList 
 );
 router.put('/',
     basicAuthUser,
     checkQuery('_id'),
-    updateCountry 
+    updateCountryList 
 );
 router.delete('/',
     basicAuthUser,
     checkQuery('_id'),
-    deleteCountry 
+    deleteCountryList 
 );
 router.put('/getFilterCountryList',
     basicAuthUser,
-    getFilteredCountry ,
+    getFilteredCountryList ,
 );
 
 
