@@ -9,7 +9,7 @@ var activity = "ModuleSetting-CountryList";
 
 
 
-export const getAllCountry = async (req, res) => {
+export const getAllCountryList = async (req, res) => {
     try {
         const data = await CountryList.find()
         response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)

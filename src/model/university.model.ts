@@ -13,9 +13,9 @@ export interface UniversityDocument extends mongoose.Document {
     courseType?: any[];
     email?: string;
     banner?: string;
-    universityLogo?:string; // University Logo (Optional)
+    universityLogo?: string; // University Logo (Optional)
     countryName?: string; // Country
-    country?: string;
+    country?:string;
     flag?: string;
     campus: any[];
     ranking?: string; // Ranking (Optional)
@@ -37,7 +37,7 @@ export interface UniversityDocument extends mongoose.Document {
     institutionType?: string;
     website?: string;
     inTake?: any[];
-   
+
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -52,26 +52,25 @@ export interface UniversityDocument extends mongoose.Document {
 
 const universitySchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    universityCode: {type: String},
+    universityCode: { type: String },
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
     // clientId: { type: mongoose.Types.ObjectId, ref: 'Client', required: true },
     universityName: { type: String },
-    about: {type: String},
-    courseType: [String] ,
+    about: { type: String },
+    courseType: [String],
     email: { type: String },
     countryName: { type: String },
-    flag: {type: String},
-    country: {type: String},
-    campus: [{
-        country: {type:String},
-        state: {type:String},
-        cities: {type:String},
+    flag: { type: String },
+    country: { type: String },
+    campuses: [{
+        state: { type: String },
+        cities: [String],
     }],
     ranking: { type: String },
     averageFees: { type: String },
-    popularCategories: [ String ],
+    popularCategories: [String],
     admissionRequirement: { type: String },
     offerTAT: { type: String },
     paymentMethod: { type: String, },
@@ -81,15 +80,15 @@ const universitySchema = new mongoose.Schema({
     currency: { type: String },
     paymentTAT: { type: String },
     tax: { type: String },
-    commissionPaidOn: {type: String},
+    commissionPaidOn: { type: String },
     courseFeesPercentage: { type: Number },
     paidFeesPercentage: { type: Number },
     founded: { type: String },
     institutionType: { type: String },
     businessName: { type: String },      // Client Name
-    banner: {type: String},
+    banner: { type: String },
     universityLogo: { type: String },
-    website: {type: String},
+    website: { type: String },
     inTake: [String],
 
     isDeleted: { type: Boolean, default: false },
