@@ -8,21 +8,21 @@ export interface UniversityDocument extends mongoose.Document {
   
     appliedStudentId?: any;
     businessName?: string;
-    universityName?: string; // University Name
+    universityName?: string;
     about?: string;
     courseType?: any[];
     email?: string;
     banner?: string;
-    universityLogo?: string; // University Logo (Optional)
-    countryName?: string; // Country
-    country?:string;
+    universityLogo?: string;
+    countryName?: string;
+    country?: string;
     flag?: string;
     campuses?: any[];
-    ranking?: string; // Ranking (Optional)
-    averageFees?: number; // Average Fees
-    popularCategories?: any[]; // Popular Categories (Multiple)
-    admissionRequirement?: string; // Admission Requirement (Text box)
-    offerTAT?: string; // Offer TAT
+    ranking?: string;
+    averageFees?: number;
+    popularCategories?: any[];
+    admissionRequirement?: string;
+    offerTAT?: string;
     paymentMethod?: string;
     amount?: string;
     percentage?: string;
@@ -63,8 +63,11 @@ const universitySchema = new mongoose.Schema({
     country: { type: String },
     campuses: [{
         state: { type: String },
-        lga: {type: String },
+        lga: { type: String },
+        states: [String],
+        lgas: [String],
     }],
+
     ranking: { type: String },
     averageFees: { type: String },
     popularCategories: [String],
@@ -82,7 +85,7 @@ const universitySchema = new mongoose.Schema({
     paidFeesPercentage: { type: Number },
     founded: { type: String },
     institutionType: { type: String },
-    businessName: { type: String },      // Client Name
+    businessName: { type: String },
     banner: { type: String },
     universityLogo: { type: String },
     website: { type: String },

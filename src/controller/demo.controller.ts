@@ -10,7 +10,7 @@ var activity = "Demo";
 
 export const getAllDemo = async (req, res) => {
     try {
-        const data = await Demo.find({},{name: 1})
+        const data = await Demo.find()
         response(req, res, activity, 'Level-1', 'GetAll-Demo', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {

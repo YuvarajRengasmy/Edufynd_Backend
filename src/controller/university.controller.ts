@@ -6,7 +6,7 @@ import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
-import { basicAuthUser } from 'src/middleware/checkAuth';
+
 
 
 
@@ -421,8 +421,8 @@ export const csvToJson = async (req, res) => {
                 // lga: data.City ,
                 campuses: [
                     {
-                        state: data.State,
-                        lga: data.City,
+                        state: data.State,               // ? data.State.split(',') : [],
+                        lga: data.City,                  // ? data.City.split(',') : [],
                         _id: new mongoose.Types.ObjectId() // Generate a new ObjectId for _id
                     }
                 ],
