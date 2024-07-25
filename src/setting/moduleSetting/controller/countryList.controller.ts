@@ -1,96 +1,97 @@
-import { Demo, DemoDocument } from '../model/demo.model'
+import { CountryList, CountryDocument } from '../model/countryList.model'
+
 import { validationResult } from "express-validator";
-import { response, } from "../helper/commonResponseHandler";
-import { clientError, errorMessage } from "../helper/ErrorMessage";
+import { response, } from "../../../helper/commonResponseHandler";
+import { clientError, errorMessage } from "../../../helper/ErrorMessage";
 
 
-var activity = "Demo";
+var activity = "ModuleSetting-CountryList";
 
 
 
-export const getAllDemo = async (req, res) => {
+export const getAllCountryList = async (req, res) => {
     try {
-        const data = await Demo.find({},{name: 1})
-        response(req, res, activity, 'Level-1', 'GetAll-Demo', true, 200, data, clientError.success.fetchedSuccessfully)
+        const data = await CountryList.find()
+        response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-Demo', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetAll-CountryList', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
 
-export const getSingleDemo = async (req, res) => {
+export const getSingleCountryList = async (req, res) => {
     try {
-        const data = await Demo.findOne({ _id: req.query._id })
-        response(req, res, activity, 'Level-1', 'GetSingle-Demo', true, 200, data, clientError.success.fetchedSuccessfully)
+        const data = await CountryList.findOne({ _id: req.query._id })
+        response(req, res, activity, 'Level-1', 'GetSingle-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetSingle-Demo', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetSingle-CountryList', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
 
-export let createDemo = async (req, res, next) => {
+export let createCountryList = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const DropdownListDetails: DemoDocument = req.body;
-            const createData = new Demo(DropdownListDetails);
+            const DropdownListDetails: CountryDocument = req.body;
+            const createData = new CountryList(DropdownListDetails);
             let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Demo', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Level-2', 'Create-CountryList', true, 200, insertData, clientError.success.savedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Demo', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Create-CountryList', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
-        response(req, res, activity, 'Level-3', 'Create-Demo', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Create-CountryList', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 
 
 
-export const updateDemo = async (req, res) => {
+export const updateCountryList = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
-            const demoDetails: DemoDocument = req.body;
-            let statusData = await Demo.findByIdAndUpdate({ _id: req.query._id }, {
+            const countryDetails: CountryDocument = req.body;
+            let statusData = await CountryList.findByIdAndUpdate({ _id: req.query._id }, {
                 $set: {
-                    name: demoDetails.name,
-                    code: demoDetails.code,
+                    name: countryDetails.name,
+                    code: countryDetails.code,
                     modifiedOn: new Date(),
-                    modifiedBy:  demoDetails.modifiedBy,
+                    modifiedBy:  countryDetails.modifiedBy,
                 },
                 $addToSet: {
-                   state: demoDetails.state,
+                   state: countryDetails.state,
                }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Demo Details', true, 200, statusData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-2', 'Update-CountryList Details', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Demo Details', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Update-CountryList Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
-        response(req, res, activity, 'Level-3', 'Update-Demo Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Update-CountryList Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
 
 
-export let deleteDemo = async (req, res, next) => {
+export let deleteCountryList = async (req, res, next) => {
 
         try {
             let id = req.query._id;
-            const demo = await Demo.findByIdAndDelete({ _id: id })
-            response(req, res, activity, 'Level-2', 'Deleted the Demo', true, 200, demo, 'Successfully Remove this Field');
+            const country = await CountryList.findByIdAndDelete({ _id: id })
+            response(req, res, activity, 'Level-2', 'Deleted the CountryList', true, 200, country, 'Successfully Remove this Field');
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Deleted the Demo', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Deleted the CountryList', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
 
 
 
-export let getFilteredDemo = async (req, res, next) => {
+export let getFilteredCountryList = async (req, res, next) => {
         try {
             var findQuery;
             var andList: any = []
@@ -106,12 +107,12 @@ export let getFilteredDemo = async (req, res, next) => {
             }  
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await Demo.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await CountryList.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
 
-            const dropDownCount = await Demo.find(findQuery).count()
-            response(req, res, activity, 'Level-1', 'Get-Filter Demo', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
+            const dropDownCount = await CountryList.find(findQuery).count()
+            response(req, res, activity, 'Level-1', 'Get-Filter CountryList', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Get-Filter Demo', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Get-Filter CountryList', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
 
@@ -120,11 +121,11 @@ export const getCountryByState = async (req, res) => {
         const { name } = req.query; // Extract country from query params
         try {
             // Query universities based on country
-            const demo = await Demo.find({ name: name });
-            response(req, res, activity, 'Level-2', 'Get-Demo By State ', true, 200, demo, clientError.success.fetchedSuccessfully)
+            const countryList = await CountryList.find({ name: name });
+            response(req, res, activity, 'Level-2', 'Get-CountryList By State ', true, 200, countryList, clientError.success.fetchedSuccessfully)
         } catch (err) {
             console.error('Error fetching universities:', err);
-            response(req, res, activity, 'Level-3', 'Get-Demo By State ', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Get-CountryList By State ', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
 
@@ -145,8 +146,8 @@ export const getCountryByState = async (req, res) => {
     
 //             console.log("Country data:", countries);
     
-//             // Find the matching state and city in the Demo collection
-//             const list = await Demo.findOne({
+//             // Find the matching state and city in the CountryList collection
+//             const list = await CountryList.findOne({
 //                 name: country,
 //                 // 'state.StateName': stateName,
 //                 // 'state.cities': cityName
@@ -189,7 +190,7 @@ export const getCountryByState = async (req, res) => {
         const { state } = req.query;
     
         try {
-            const countryList = await Demo.findOne({
+            const countryList = await CountryList.findOne({
                 // name: country,
                 'state.name': state
             }, {
@@ -230,8 +231,8 @@ export const getCountryByState = async (req, res) => {
     //     const { countryName, stateName, cityName } = req.query;
     
     //     try {
-    //         // Find the matching state and city in the Demo collection
-    //         const countryList = await Demo.findOne({
+    //         // Find the matching state and city in the CountryList collection
+    //         const countryList = await CountryList.findOne({
     //             name: countryName,
     //             'state.name': stateName,
     //             'state.cities': cityName

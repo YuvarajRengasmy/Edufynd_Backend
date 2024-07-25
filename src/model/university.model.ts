@@ -44,7 +44,6 @@ export interface UniversityDocument extends mongoose.Document {
     modifiedOn?: Date;
     modifiedBy?: string;
 
-  
 }
 
 
@@ -95,7 +94,6 @@ const universitySchema = new mongoose.Schema({
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 
-   
 })
 
 
