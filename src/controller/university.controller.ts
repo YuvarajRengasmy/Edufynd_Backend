@@ -419,7 +419,7 @@ export const csvToJson = async (req, res) => {
                 country: data.Country,
                 state:  data.State ,
                 lga: data.City ,
-                campus: [
+                campuses: [
                     {
                         state: data.State,
                         lga: data.City,
