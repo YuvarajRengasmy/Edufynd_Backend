@@ -56,7 +56,8 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'student';
                     finalResult["studentDetails"] = details;
                     finalResult["token"] = token;
-                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Student Login Successfully");
                 }
             }
             else if (agent) {
@@ -78,7 +79,8 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'agent';
                     finalResult["agentDetails"] = details;
                     finalResult["token"] = token;
-                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Agent Login Successfully");
                 }
             }
             else if (superAdmin) {
@@ -100,7 +102,8 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'superAdmin';
                     finalResult["superAdminDetails"] = details;
                     finalResult["token"] = token;
-                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Super Admin Login Successfully");
                 }
             } else if (admin) {
                 const newHash = await decrypt(admin["password"]);
@@ -121,7 +124,8 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'admin';
                     finalResult["adminDetails"] = details;
                     finalResult["token"] = token;
-                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Admin Login Successfully");
                 }
             }
             else {
