@@ -161,7 +161,7 @@ export let updateUniversity = async (req, res, next) => {
 
                 },
                  $addToSet: {
-                    campus: universityDetails.campuses,
+                    campuses: universityDetails.campuses,
                  
                 }
             });
@@ -417,9 +417,9 @@ export const csvToJson = async (req, res) => {
                 businessName: data.BusinessName,
                 banner: data.Banner,
                 country: data.Country,
-                state:  data.State ,
-                lga: data.City ,
-                campus: [
+                // state:  data.State ,
+                // lga: data.City ,
+                campuses: [
                     {
                         state: data.State,
                         lga: data.City,

@@ -97,9 +97,7 @@ const universitySchema = new mongoose.Schema({
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 
-    // applicationFees: { type: String },
-    // costOfLiving: { type: String },
-    // grossTuition: { type: String },
+
 })
 
 
