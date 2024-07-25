@@ -5,7 +5,7 @@ export interface ForexDocument extends mongoose.Document {
     studentId?: string,
  
     source?: string
-    message?: string;
+
     agentName?: string;
     businessName?: string;
     agentEmail?: string;
@@ -22,7 +22,7 @@ export interface ForexDocument extends mongoose.Document {
     country?: string;
     currency?: string;
     assignedTo?: string;
-
+    message?: string;
     studentID?: string;
     amountInCurrency?: string;
     flag?: string
@@ -71,6 +71,7 @@ const forexSchema = new mongoose.Schema({
     paymentType: {type: String},
     amountInCurrency: {type: String},
     assignedTo: {type: String},
+  
 
 
     // New added Fields

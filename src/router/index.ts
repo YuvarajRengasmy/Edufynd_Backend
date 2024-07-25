@@ -16,6 +16,7 @@ import Client from './client.routes'
 import Staff from './staff.routes'
 import Blog from '../blogs/blogs.routes'
 import Commission from './commission.routes'
+import Demo from './demo.routes'
 
 
 
@@ -68,7 +69,6 @@ import Year from '../setting/globalSetting/router/year.routes'
 import CourseType from '../setting/moduleSetting/router/courseType.route'
 import PopularCategory from '../setting/moduleSetting/router/popularCourse.route'
 import CommissionPaid from '../setting/moduleSetting/router/commissionPaid.route'
-import CountryList from '../setting/moduleSetting/router/country.route'
 import InstitutionType from '../setting/moduleSetting/router/institutionType.route'
 import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
 import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
@@ -93,6 +93,7 @@ router.use('/client', Client)
 router.use('/staff', Staff)
 router.use('/blog', Blog)
 router.use('/commission', Commission)
+router.use('/demo', Demo)
 
 
 //All Enquiry API
@@ -144,7 +145,6 @@ router.use('/course', CourseType )
 router.use('/popularCourse', PopularCategory )
 router.use('/commissionPaid', CommissionPaid)
 router.use('/institutionType', InstitutionType)
-router.use('/countryList', CountryList)
 router.use('/offerTAT', OfferTAT)
 router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
