@@ -44,9 +44,6 @@ export interface UniversityDocument extends mongoose.Document {
     modifiedOn?: Date;
     modifiedBy?: string;
 
-    // applicationFees?: string;
-    // costOfLiving?: string;
-    // grossTuition?: string;
 }
 
 
