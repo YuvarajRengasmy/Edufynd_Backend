@@ -22,7 +22,7 @@ export const getAllCommission = async (req, res) => {
 export const getSingleCommission = async (req, res) => {
     try {
         const data = await Commission.findOne({ _id: req.query._id })
-        console.log("66", data.years[0].courseTypes[0].value)
+      
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', false, 500, {}, errorMessage.internalServer, err.message)
