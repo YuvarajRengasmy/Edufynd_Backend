@@ -93,7 +93,7 @@ export let saveUniversity = async (req, res, next) => {
             let currentMaxCounter = maxCounter;
             universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
             const createData = new University(universityDetails);
-
+            console.log("j", createData)
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
@@ -129,8 +129,7 @@ export let updateUniversity = async (req, res, next) => {
                     email: universityDetails.email,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
-                    // state: universityDetails.state,
-                    // lga: universityDetails.lga,
+            
                     ranking: universityDetails.ranking,
                     averageFees: universityDetails.averageFees,
                     popularCategories: universityDetails.popularCategories,
