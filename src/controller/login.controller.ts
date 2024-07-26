@@ -265,6 +265,7 @@ export let resetPassword = async (req, res, next) => {
             let student = await Student.findById({ _id: req.body._id })
             let admin = await Admin.findById({ _id: req.body._id })
             let agent = await Agent.findById({ _id: req.body._id })
+            let staff = await Staff.findById({ _id: req.body._id })
 
             let { modifiedOn, modifiedBy } = req.body
             let id = req.body._id
@@ -273,6 +274,7 @@ export let resetPassword = async (req, res, next) => {
                 const data = await Student.findByIdAndUpdate({ _id: id }, {
                     $set: {
                         password: req.body.password,
+                        confirmPassword: req.body.confirmPassword,
                         modifiedOn: modifiedOn,
                         modifiedBy: modifiedBy
                     }
@@ -283,6 +285,18 @@ export let resetPassword = async (req, res, next) => {
                 const data = await Admin.findByIdAndUpdate({ _id: id }, {
                     $set: {
                         password: req.body.password,
+                        confirmPassword: req.body.confirmPassword,
+                        modifiedOn: modifiedOn,
+                        modifiedBy: modifiedBy
+                    }
+                })
+                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+            }
+            else if (staff) {
+                const data = await Staff.findByIdAndUpdate({ _id: id }, {
+                    $set: {
+                        password: req.body.password,
+                        confirmPassword: req.body.confirmPassword,
                         modifiedOn: modifiedOn,
                         modifiedBy: modifiedBy
                     }
@@ -293,6 +307,7 @@ export let resetPassword = async (req, res, next) => {
                 const data = await Agent.findByIdAndUpdate({ _id: id }, {
                     $set: {
                         password: req.body.password,
+                        confirmPassword: req.body.confirmPassword,
                         modifiedOn: modifiedOn,
                         modifiedBy: modifiedBy
                     }
