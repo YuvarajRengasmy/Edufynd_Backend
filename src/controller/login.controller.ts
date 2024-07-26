@@ -7,6 +7,7 @@ import { SuperAdmin } from "../model/superAdmin.model";
 import { Admin } from "../model/admin.model";
 import { Student } from "../model/student.model";
 import { Agent } from "../model/agent.model";
+import {Staff } from '../model/staff.model'
 import { v4 as uuidv4 } from 'uuid'
 import * as config from '../config';
 
@@ -34,7 +35,7 @@ export let loginEmail = async (req, res, next) => {
             const superAdmin = await SuperAdmin.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
             const admin = await Admin.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
             const agent = await Agent.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
-
+            const staff = await Staff.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
 
             if (student) {
                 const newHash = await decrypt(student["password"]);
@@ -126,6 +127,28 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["token"] = token;
                     // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Admin Login Successfully");
+                }
+            } else if (staff) {
+                const newHash = await decrypt(admin["password"]);
+                if (staff["status"] === 2) {
+                    response(req, res, activity, 'Level-3', 'Login-Email', false, 499, {}, clientError.account.inActive);
+                } else if (newHash != password) {
+                    response(req, res, activity, 'Level-3', 'Login-Email', false, 403, {}, "Invalid Password !");
+                } else {
+                    const token = await TokenManager.CreateJWTToken({
+                        id: staff["_id"],
+                        name: staff["name"],
+                        loginType: 'staff'
+                    });
+                    const details = {}
+                    details['_id'] = staff._id
+                    details['email'] = staff.email;
+                    let finalResult = {};
+                    finalResult["loginType"] = 'staff';
+                    finalResult["staffDetails"] = details;
+                    finalResult["token"] = token;
+                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
+                    response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Staff Login Successfully");
                 }
             }
             else {
