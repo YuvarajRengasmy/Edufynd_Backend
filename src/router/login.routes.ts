@@ -14,7 +14,7 @@ router.post('/',
 
 router.put('/forgotPassword',
     basicAuthUser,
-    checkRequestBodyParams('email'),
+    checkRequestBodyParams('link'),
     forgotPassword
 );
 
