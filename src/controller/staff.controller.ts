@@ -104,7 +104,7 @@ export const updateStaff = async (req, res) => {
                     country:staffDetails.country,
                     state: staffDetails.state,
                     city: staffDetails.city,
-                    // status: staffDetails.status,
+                    activeStatus: staffDetails.activeStatus,
                     companyAssests: staffDetails.companyAssests,
                     mobileName: staffDetails.mobileName,
                     brandName:staffDetails.brandName,
@@ -166,7 +166,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                 from: config.SERVER.EMAIL_USER,
                 to: insertStaff.email,
                 subject: 'Welcome to EduFynd',
-                text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
+                text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
