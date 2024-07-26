@@ -64,7 +64,7 @@ const universitySchema = new mongoose.Schema({
     campuses: [{
         state: { type: String },
         lga: { type: String },
-       
+   
     }],
 
     ranking: { type: String },
