@@ -18,12 +18,14 @@ router.put('/forgotPassword',
     forgotPassword
 );
 
-// router.put('/updatePassword',
-//     basicAuthUser,
-//     checkRequestBodyParams('_id'),
-//     checkRequestBodyParams('password'),
-//     updatePassword
-// );
+
+router.put('/resetPassword',
+    basicAuthUser,
+    checkRequestBodyParams('_id'),
+    checkRequestBodyParams('password'),
+    checkRequestBodyParams('confirmPassword'),
+    resetPassword
+);
 
 
 
