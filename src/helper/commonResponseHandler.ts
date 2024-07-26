@@ -78,19 +78,50 @@ export const transporter = nodemailer.createTransport({
 // });
 
 
+// export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
+//     console.log("55", toMail,subject, text)
+//     var sender = nodemailer.createTransport({
+//         service: 'edufynd.in' || 'Gmail',
+//         host: config.SERVER.EMAIL_HOST,
+//         secure: true || false,
+//         port:  config.SERVER.EMAIL_PORT || 535 ,
+//         auth: {
+//             user: config.SERVER.EMAIL_USER, 
+//             pass:  config.SERVER.EMAIL_PASS
+//         }
+//     });
+
+//     var composemail = {
+//         from: config.SERVER.EMAIL_USER, 
+//         to: toMail,
+//         subject: subject,
+//         text: text
+//     }
+
+//     await sender.sendMail(composemail, function (error, info) {
+//         if (error) {
+//             console.log("fggf", error);
+//         } else {
+//             console.log('Mail send successfully' + info.response)
+//         }
+//     })
+// }
+
+
+
 export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
     var sender = nodemailer.createTransport({
-        service: 'edufynd.in' || 'Gmail',
-        port:  config.SERVER.EMAIL_PORT,
-        secure: true, // true for 465, false for other ports
+        service: 'Gmail',
+        port: 587,
+        secure: false, // true for 465, false for other ports
         auth: {
-            user: config.SERVER.EMAIL_USER, 
-            pass:  config.SERVER.EMAIL_PASS
+            user: 'study.fyndglobal@gmail.com',
+            pass: 'ogdg kjga ccas qfmh'
         }
     });
 
     var composemail = {
-        from: config.SERVER.EMAIL_USER, 
+        from: 'study.fyndglobal@gmail.com',
         to: toMail,
         subject: subject,
         text: text
@@ -104,4 +135,3 @@ export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
         }
     })
 }
-

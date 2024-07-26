@@ -213,8 +213,10 @@ export let forgotPassword = async (req, res, next) => {
                 }
                 else if (student) {
                     const _id = student._id
+                    console.log("22", _id)
                     sendEmail(req, req.body.email, 'Reset Password', req.body.link + _id)
                         .then(doc => {
+                            console.log("44", doc)
                             response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
                         })
                         .catch(error => {
