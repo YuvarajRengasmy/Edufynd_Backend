@@ -129,7 +129,7 @@ export let loginEmail = async (req, res, next) => {
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Admin Login Successfully");
                 }
             } else if (staff) {
-                const newHash = await decrypt(admin["password"]);
+                const newHash = await decrypt(staff["password"]);
                 if (staff["status"] === 2) {
                     response(req, res, activity, 'Level-3', 'Login-Email', false, 499, {}, clientError.account.inActive);
                 } else if (newHash != password) {
