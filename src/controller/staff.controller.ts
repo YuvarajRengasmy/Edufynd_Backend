@@ -104,7 +104,7 @@ export const updateStaff = async (req, res) => {
                     country:staffDetails.country,
                     state: staffDetails.state,
                     city: staffDetails.city,
-                    status: staffDetails.status,
+                    // status: staffDetails.status,
                     companyAssests: staffDetails.companyAssests,
                     mobileName: staffDetails.mobileName,
                     brandName:staffDetails.brandName,
