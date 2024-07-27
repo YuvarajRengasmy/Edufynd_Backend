@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface StaffDocument extends mongoose.Document {
+    _id?: any;
     employeeID?: string;
     empName?: string;
     dob?: String;    // (Date of Birth)
@@ -59,6 +60,7 @@ export interface StaffDocument extends mongoose.Document {
 }
 
 const staffSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, auto: true },
     employeeID: {type: String},
     photo: {type: String},
     empName: {type: String},
