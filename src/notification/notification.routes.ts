@@ -13,7 +13,7 @@ router.get('/',
 
 router.get('/getSingleNotification',
     basicAuthUser,
-    checkQuery('_id'),
+    // checkQuery('_id'),
     getSingleNotification,
 );
 
