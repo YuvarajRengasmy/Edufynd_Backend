@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,createStaffBySuperAdmin } from '../controller/staff.controller';
+import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
+    createStaffBySuperAdmin, createStudentByStaff } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -7,7 +8,7 @@ import upload from '../utils/fileUploaded';
 
 const router: Router = Router();
 
-router.get('/',                //get all staff Details
+router.get('/',              
     basicAuthUser,
     checkSession,
     getAllStaff
@@ -21,14 +22,14 @@ router.get('/getSingleStaff',
 );
 
 
-router.post('/',           // create staff
+router.post('/',           
     basicAuthUser,
     checkSession,
     createStaff
 );
 
 
-router.put('/',                    // update Staff Details
+router.put('/',                   
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
@@ -37,13 +38,19 @@ router.put('/',                    // update Staff Details
 );
 
 
-router.delete('/',                  //delete staff
+router.delete('/',                  
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     deleteStaff
 );
 
+router.post('/createStudentByStaff',             //create student by staff
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    createStudentByStaff
+);
 
 
 router.post('/createStaffBySuperAdmin',             //create staff by super Admin
@@ -60,7 +67,7 @@ router.put('/getFilterStaffSuperAdmin',
 );
 
 
-router.post('/import',      // CSV File to json and Store into Database
+router.post('/import',    
     upload.single('file'),
     csvToJson
 );

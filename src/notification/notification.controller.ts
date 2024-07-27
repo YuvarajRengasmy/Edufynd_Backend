@@ -1,4 +1,8 @@
 import { Notification, NotificationDocument } from './notification.model'
+import { Student, StudentDocument } from '../model/student.model'
+import { Staff, StaffDocument } from '../model/staff.model'
+import { Admin, AdminDocument } from '../model/admin.model'
+import { Agent, AgentDocument } from '../model/agent.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -44,6 +48,7 @@ export let createNotification = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Notification', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
 
 
 export const updateNotification = async (req, res) => {
@@ -119,3 +124,59 @@ export let getFilteredNotification   = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-FilterNotification', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+export const sendNotificationsToUsers = async (req, res, next) => {
+    try {
+        const notificationData = req.body;
+
+        let users = [];
+
+        // Fetch users based on typeOfUser
+        if (notificationData.typeOfUser === 'student') {
+            users = await Student.find();
+        } else if (notificationData.typeOfUser === 'admin') {
+            users = await Admin.find();
+        } else if (notificationData.typeOfUser === 'agent') {
+            users = await Agent.find();
+        } else if (notificationData.typeOfUser === 'staff') {
+            users = await Staff.find();
+        }
+
+        // Check if any users were found
+        if (users.length > 0) {
+            // Create an array of promises to handle asynchronous operations
+            const notificationPromises = users.map((user) => {
+                const userName = user.name || user.empName || user.agentName || 'Unknown';
+                const notification = new Notification({
+                    ...notificationData,
+                    userName: [userName],
+                });
+                return notification.save();
+            });
+
+            // Wait for all notifications to be saved
+            await Promise.all(notificationPromises);
+
+           response(req, res, activity, 'Level-2', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+        } else {
+            res.status(404).json({ message: "No users found for the specified type." });
+        }
+    } catch (err) {
+        console.error("Error sending notifications:", err);
+        response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+};
+
+
+
+
+export const getSingleNotificationforStudent = async (req, res) => {
+    try {
+        const data = await Notification.findOne({ _id: req.query._id })
+        response(req, res, activity, 'Level-1', 'GetSingle-Notification', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
