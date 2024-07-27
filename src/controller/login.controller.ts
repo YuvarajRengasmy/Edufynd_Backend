@@ -7,7 +7,7 @@ import { SuperAdmin } from "../model/superAdmin.model";
 import { Admin } from "../model/admin.model";
 import { Student } from "../model/student.model";
 import { Agent } from "../model/agent.model";
-import {Staff } from '../model/staff.model'
+import { Staff } from '../model/staff.model'
 import { v4 as uuidv4 } from 'uuid'
 import * as config from '../config';
 import { createAgent } from "./agent.controller";
@@ -164,95 +164,43 @@ export let loginEmail = async (req, res, next) => {
 
 
 
-
 export let forgotPassword = async (req, res, next) => {
-    console.log("kkk")
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            if (req.body.recoveryEmail) {
-                let superAdmin = await SuperAdmin.findOne({ recoveryEmail: req.body.recoveryEmail })
-                if (superAdmin) {
-                    var _id = superAdmin._id
-                    sendEmail(req, req.body.recoveryEmail, 'Reset Password', req.body.link + _id)
-                        .then(doc => {
-                            response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
-                else {
-                    response(req, res, activity, 'Level-3', 'Forgot-Password', true, 422, {}, clientError.user.userDontExist);
-                }
-            } else if (req.body.email) {
-                let superAdmin = await SuperAdmin.findOne({$and:[{ email: req.body.email },{isDeleted:false}]})
-                let admin = await Admin.findOne({$and:[{ email: req.body.email },{isDeleted:false}]})
-                let student = await Student.findOne({$and:[{ email: req.body.email },{isDeleted:false}]})
-                let agent = await Agent.findOne({$and:[{ email: req.body.email },{isDeleted:false}]})
-                let staff = await Staff.findOne({$and:[{ email: req.body.email },{isDeleted:false}]})
-                if (superAdmin) {
-                    const _id = superAdmin._id
-                    sendEmail(req, req.body.email, 'Reset Password', req.body.link + _id)
-                        .then(doc => {
-                            response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
-                else if (admin) {
-                    const _id = admin._id
-                    sendEmail(req, req.body.email, 'Reset Password', req.body.link + _id)
-                        .then(doc => {
-                            response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
-                else if (student) {
-                    const _id = student._id
-                    console.log("22", _id)
-                    sendEmail(req, req.body.email, 'Reset Password', req.body.link + _id)
-                        .then(doc => {
-                            console.log("44", doc)
-                            response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
-                else if (agent) {
-                    const _id = agent._id
-                    sendEmail(req, req.body.email, 'Reset Password', req.body.link + _id)
-                        .then(doc => {
-                            response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
-                else if (staff) {
-                    const _id = staff._id
-                    sendEmail(req, req.body.email, 'Reset Password', req.body.link + _id)
-                        .then(doc => {
-                            response(req, res, activity, 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend)
-                        })
-                        .catch(error => {
-                            console.error(error)
-                        })
-                }
-                else {
-                    response(req, res, activity, 'Level-3', 'Forgot-Password', true, 422, {}, clientError.user.userDontExist);
-                }
-            }
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Forgot-Password', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    }
-}
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return response(req, res, activity, 'Level-3', 'Forgot-Password', false, 422, {}, errors.array());
+    }
+    try {
+        const { recoveryEmail, email, link } = req.body;
+
+        let user;
+        if (recoveryEmail) {
+            user = await SuperAdmin.findOne({ recoveryEmail });
+        } else if (email) {
+            user = await SuperAdmin.findOne({ email, isDeleted: false }) ||
+                await Admin.findOne({ email, isDeleted: false }) ||
+                await Student.findOne({ email, isDeleted: false }) ||
+                await Agent.findOne({ email, isDeleted: false }) ||
+                await Staff.findOne({ email, isDeleted: false });
+        }
+
+        if (user) {
+            const _id = user._id;
+            try {
+                const doc = await sendEmail(req, email || recoveryEmail, 'Reset Password', `${link}${_id}`);
+                response(req, res, "forgotPassword", 'Level-2', 'Forgot-Password', true, 200, doc, clientError.email.emailSend);
+            } catch (error) {
+                console.error(error);
+                response(req, res, "forgotPassword", 'Level-3', 'Forgot-Password', false, 500, {}, errorMessage.internalServer, error.message);
+            }
+        } else {
+            response(req, res, "forgotPassword", 'Level-3', 'Forgot-Password', false, 422, {}, clientError.user.userDontExist);
+        }
+    } catch (err) {
+        console.error(err);
+        response(req, res, "forgotPassword", 'Level-3', 'Forgot-Password', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 
 
@@ -270,6 +218,8 @@ export let resetPassword = async (req, res, next) => {
             let { modifiedOn, modifiedBy } = req.body
             let id = req.body._id
             req.body.password = await encrypt(req.body.password);
+            req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+
             if (student) {
                 const data = await Student.findByIdAndUpdate({ _id: id }, {
                     $set: {
@@ -279,7 +229,7 @@ export let resetPassword = async (req, res, next) => {
                         modifiedBy: modifiedBy
                     }
                 })
-                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+                response(req, res, "Reset-Password", 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
             }
             else if (admin) {
                 const data = await Admin.findByIdAndUpdate({ _id: id }, {
@@ -290,7 +240,7 @@ export let resetPassword = async (req, res, next) => {
                         modifiedBy: modifiedBy
                     }
                 })
-                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+                response(req, res, "Reset-Password", 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
             }
             else if (staff) {
                 const data = await Staff.findByIdAndUpdate({ _id: id }, {
@@ -301,9 +251,9 @@ export let resetPassword = async (req, res, next) => {
                         modifiedBy: modifiedBy
                     }
                 })
-                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+                response(req, res, "Reset-Password", 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
             }
-            else {
+            else  {
                 const data = await Agent.findByIdAndUpdate({ _id: id }, {
                     $set: {
                         password: req.body.password,
@@ -312,104 +262,17 @@ export let resetPassword = async (req, res, next) => {
                         modifiedBy: modifiedBy
                     }
                 })
-                response(req, res, activity, 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
+                response(req, res, "Reset-Password", 'Level-2', 'Update-Password', true, 200, data, clientError.success.updateSuccess)
             }
 
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Password', true, 500, {}, errorMessage.internalServer, err.message)
+            response(req, res, "Reset-Password", 'Level-3', 'Update-Password', true, 500, {}, errorMessage.internalServer, err.message)
         }
     } else {
-        response(req, res, activity, 'Level-3', 'Update-Password', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()))
+        response(req, res, "Reset-Password", 'Level-3', 'Update-Password', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()))
     }
 }
 
 
 
-// export const forgotPassword = async (req, res) => {
-    
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//     try {
-//         const { email } = req.body;
-//         const student = await Student.findOne({ email });
-//         const admin = await Admin.findOne({ email })
-//         const agent = await Agent.findOne({ email })
 
-//         if (student) {
-//             const otp = uuidv4().slice(0, 6); // Generate a 6-character OTP
-//             student.resetOtp = otp;
-//             student.resetOtpExpires = Date.now() + 3600000; // OTP expires in 1 hour
-
-//             await student.save();
-//             const mailOptions = {
-//                 from: config.SERVER.EMAIL_USER,
-//                 to: student.email,
-//                 subject: 'Password Reset Request',
-//                 text: `Hello ${student.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\n Best regards\nAfynd Private Limited\nChennai.`
-//             };
-//             transporter.sendMail(mailOptions, (error, info: any) => {
-
-//                 if (error) {
-//                     console.error('Error sending email:', error);
-//                     return res.status(500).json({ message: 'Error sending email' });
-//                 } else {
-//                     console.log('Email sent:', info.response);
-//                     res.status(200).json({ message: 'OTP sent to email' });
-//                 }
-//             });
-
-//         } else if (admin) {
-//             const otp = uuidv4().slice(0, 6); // Generate a 6-character OTP
-//             admin.resetOtp = otp;
-//             admin.resetOtpExpires = Date.now() + 3600000; // OTP expires in 1 hour
-
-//             await admin.save();
-//             const mailOptions = {
-//                 from: config.SERVER.EMAIL_USER,
-//                 to: admin.email,
-//                 subject: 'Password Reset Request',
-//                 text: `Hello ${admin.name},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
-//             };
-//             transporter.sendMail(mailOptions, (error, info: any) => {
-
-//                 if (error) {
-//                     console.error('Error sending email:', error);
-//                     return res.status(500).json({ message: 'Error sending email' });
-//                 } else {
-//                     console.log('Email sent:', info.response);
-//                     res.status(200).json({ message: 'OTP sent to email' });
-//                 }
-//             });
-
-//         } else if (agent) {
-//             const otp = uuidv4().slice(0, 6); // Generate a 6-character OTP
-//             agent.resetOtp = otp;
-//             agent.resetOtpExpires = Date.now() + 3600000; // OTP expires in 1 hour
-
-//             await agent.save();
-//             const mailOptions = {
-//                 from: config.SERVER.EMAIL_USER,
-//                 to: agent.email,
-//                 subject: 'Password Reset Request',
-//                 text: `Hello ${agent.agentName},\n\nYour OTP for password reset is: ${otp}\n\nThis OTP will expire in 1 hour.\n\nThank you!`
-//             };
-//             transporter.sendMail(mailOptions, (error, info: any) => {
-
-//                 if (error) {
-//                     console.error('Error sending email:', error);
-//                     return res.status(500).json({ message: 'Error sending email' });
-//                 } else {
-//                     console.log('Email sent:', info.response);
-//                     res.status(200).json({ message: 'OTP sent to email' });
-//                 }
-//             });
-
-//         } else {
-//             response(req, res, activity, 'Level-3', 'ForgotPassword', true, 422, {}, 'Invalid Email Id');
-//         }
-//     } catch (error) {
-//         console.error('Error requesting password reset:', error);
-//         response(req, res, activity, 'Level-3', 'ForgotPassword', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(error.mapped()));
-//     }
-// }
-// }
