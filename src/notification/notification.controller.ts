@@ -39,19 +39,20 @@ export let createNotification = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const notificationData: NotificationDocument = req.body;
-            const selectedUserIds = req.body.selectedUserIds || []; // Array of selected user IDs
+            // const selectedUserIds = req.body.selectedUserIds || []; // Array of selected user IDs
+            const userName = req.body.userName
 
             let users = [];
 
             // Fetch users based on typeOfUser
             if (notificationData.typeOfUser === 'student') {
-                users = await Student.find({ _id: { $in: selectedUserIds } });
+                users = await Student.find({ name: { $in: userName } });
             } else if (notificationData.typeOfUser === 'admin') {
-                users = await Admin.find({ _id: { $in: selectedUserIds } });
+                users = await Admin.find({ name: { $in: userName } });
             } else if (notificationData.typeOfUser === 'agent') {
-                users = await Agent.find({ _id: { $in: selectedUserIds } });
+                users = await Agent.find({ agentName: { $in: userName } });
             } else if (notificationData.typeOfUser === 'staff') {
-                users = await Staff.find({ _id: { $in: selectedUserIds } });
+                users = await Staff.find({ empName: { $in: userName } });
             }
  
             // Check if any users were found
