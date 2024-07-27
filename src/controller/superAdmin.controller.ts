@@ -22,7 +22,7 @@ export let getSuperAdminForSearch = async (req, res, next) => {
         try {
             let search = req.query.search
             const universityList = await University.find({ $and: [{ $or: [{ universityName: { $regex: search, $options: 'i' } }, { country: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('popularCategories',{popularCategories:1})
-            const programList = await Program.find({ $and: [{ $or: [{ programTitle: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }, { 'block.studnent': { $nin: req.body.loginId } }] }).populate('student', { name: 1, image: 1 })
+            const programList = await Program.find({ $and: [{ $or: [{ programTitle: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }, { 'block.student': { $nin: req.body.loginId } }] }).populate('student', { name: 1, image: 1 })
             const clientList = await Client.find({ $and: [{ $or: [{typeOfClient: { $regex: search, $options: 'i' } }, { businessName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('name', { name: 1, image: 1 })
 
             response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200, { universityList, programList, clientList }, clientError.success.fetchedSuccessfully);

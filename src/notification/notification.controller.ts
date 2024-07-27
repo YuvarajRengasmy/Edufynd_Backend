@@ -37,10 +37,41 @@ export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const Data: NotificationDocument = req.body;
-            const createData = new Notification(Data);
-            let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Notification', true, 200, insertData, clientError.success.savedSuccessfully);
+            const notificationData: NotificationDocument = req.body;
+    
+            let users = [];
+    
+            // Fetch users based on typeOfUser
+            if (notificationData.typeOfUser === 'student') {
+                users = await Student.find();
+            } else if (notificationData.typeOfUser === 'admin') {
+                users = await Admin.find();
+            } else if (notificationData.typeOfUser === 'agent') {
+                users = await Agent.find();
+            } else if (notificationData.typeOfUser === 'staff') {
+                users = await Staff.find();
+            }
+    
+            // Check if any users were found
+            if (users.length > 0) {
+                // Create an array of promises to handle asynchronous operations
+                const notificationPromises = users.map((user) => {
+                    const userName = user.name || user.empName || user.agentName
+                    const notification = new Notification({
+                        ...notificationData,
+                        userName: [userName],
+                    });
+                    return notification.save();
+                });
+    
+                // Wait for all notifications to be saved
+                await Promise.all(notificationPromises);
+    
+               response(req, res, activity, 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+            } else {
+                response(req, res, activity, 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
+            
+            }
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Notification', false, 500, {}, errorMessage.internalServer, err.message);
         }
@@ -129,7 +160,7 @@ export let getFilteredNotification   = async (req, res, next) => {
 
 export const sendNotificationsToUsers = async (req, res, next) => {
     try {
-        const notificationData = req.body;
+        const notificationData: NotificationDocument = req.body;
 
         let users = [];
 
@@ -148,7 +179,7 @@ export const sendNotificationsToUsers = async (req, res, next) => {
         if (users.length > 0) {
             // Create an array of promises to handle asynchronous operations
             const notificationPromises = users.map((user) => {
-                const userName = user.name || user.empName || user.agentName || 'Unknown';
+                const userName = user.name || user.empName || user.agentName
                 const notification = new Notification({
                     ...notificationData,
                     userName: [userName],
@@ -159,13 +190,14 @@ export const sendNotificationsToUsers = async (req, res, next) => {
             // Wait for all notifications to be saved
             await Promise.all(notificationPromises);
 
-           response(req, res, activity, 'Level-2', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+           response(req, res, activity, 'Level-1', 'Send-Notification', true, 200, {}, "Notifications sent successfully");
         } else {
-            res.status(404).json({ message: "No users found for the specified type." });
+            response(req, res, activity, 'Level-2', 'Send-Notification', false, 404, {}, "No users found for the specified type.");
+        
         }
     } catch (err) {
-        console.error("Error sending notifications:", err);
-        response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
+     
+        response(req, res, activity, 'Level-3', 'Send-Notification', false, 500, {}, errorMessage.internalServer, err.message)
     }
 };
 
