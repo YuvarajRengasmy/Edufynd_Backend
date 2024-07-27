@@ -26,6 +26,7 @@ export const getAllNotification = async (req, res) => {
 export const getSingleNotification = async (req, res) => {
     try {
         const data = await Notification.findOne({ _id: req.query._id })
+        console.log("hh",data)
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
@@ -38,28 +39,31 @@ export let createNotification = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const notificationData: NotificationDocument = req.body;
-    
+            const selectedUserIds = req.body.selectedUserIds || []; // Array of selected user IDs
+
             let users = [];
-    
+
             // Fetch users based on typeOfUser
             if (notificationData.typeOfUser === 'student') {
-                users = await Student.find();
+                users = await Student.find({ _id: { $in: selectedUserIds } });
             } else if (notificationData.typeOfUser === 'admin') {
-                users = await Admin.find();
+                users = await Admin.find({ _id: { $in: selectedUserIds } });
             } else if (notificationData.typeOfUser === 'agent') {
-                users = await Agent.find();
+                users = await Agent.find({ _id: { $in: selectedUserIds } });
             } else if (notificationData.typeOfUser === 'staff') {
-                users = await Staff.find();
+                users = await Staff.find({ _id: { $in: selectedUserIds } });
             }
-    
+ 
             // Check if any users were found
             if (users.length > 0) {
                 // Create an array of promises to handle asynchronous operations
+            
                 const notificationPromises = users.map((user) => {
                     const userName = user.name || user.empName || user.agentName
                     const notification = new Notification({
                         ...notificationData,
                         userName: [userName],
+                        userId: user._id
                     });
                     return notification.save();
                 });
