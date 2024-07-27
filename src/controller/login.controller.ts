@@ -173,7 +173,7 @@ export let forgotPassword = async (req, res, next) => {
     try {
         const { recoveryEmail, email, link } = req.body;
 
-        let user;
+        let user: any;
         if (recoveryEmail) {
             user = await SuperAdmin.findOne({ recoveryEmail });
         } else if (email) {
