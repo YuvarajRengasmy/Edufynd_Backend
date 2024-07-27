@@ -180,3 +180,5 @@ export const getSingleNotificationforStudent = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+
