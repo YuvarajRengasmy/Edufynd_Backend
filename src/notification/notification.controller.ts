@@ -34,13 +34,64 @@ export const getSingleNotification = async (req, res) => {
 }
 
 
+// export let createNotification = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const notificationData: NotificationDocument = req.body;
+//             // const selectedUserIds = req.body.selectedUserIds || []; // Array of selected user IDs
+//             const userName = req.body.userName
+
+//             let users = [];
+
+//             // Fetch users based on typeOfUser
+//             if (notificationData.typeOfUser === 'student') {
+//                 users = await Student.find({ name: { $in: userName } });
+//             } else if (notificationData.typeOfUser === 'admin') {
+//                 users = await Admin.find({ name: { $in: userName } });
+//             } else if (notificationData.typeOfUser === 'agent') {
+//                 users = await Agent.find({ agentName: { $in: userName } });
+//             } else if (notificationData.typeOfUser === 'staff') {
+//                 users = await Staff.find({ empName: { $in: userName } });
+//             }
+ 
+//             // Check if any users were found
+//             if (users.length > 0) {
+//                 // Create an array of promises to handle asynchronous operations
+            
+//                 const notificationPromises = users.map((user) => {
+//                     const userName = user.name || user.empName || user.agentName
+//                     const notification = new Notification({
+//                         ...notificationData,
+//                         userName: [userName],
+//                         userId: user._id
+//                     });
+//                     return notification.save();
+//                 });
+    
+//                 // Wait for all notifications to be saved
+//                 await Promise.all(notificationPromises);
+    
+//                response(req, res, activity, 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+//             } else {
+//                 response(req, res, activity, 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
+            
+//             }
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Create-Notification', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     } else {
+//         response(req, res, activity, 'Level-3', 'Create-Notification', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// };
+
+
 export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const notificationData: NotificationDocument = req.body;
-            // const selectedUserIds = req.body.selectedUserIds || []; // Array of selected user IDs
-            const userName = req.body.userName
+            const notificationData = req.body;
+            const userName = req.body.userName; // Array of selected usernames
 
             let users = [];
 
@@ -54,34 +105,30 @@ export let createNotification = async (req, res, next) => {
             } else if (notificationData.typeOfUser === 'staff') {
                 users = await Staff.find({ empName: { $in: userName } });
             }
- 
+
             // Check if any users were found
             if (users.length > 0) {
-                // Create an array of promises to handle asynchronous operations
-            
-                const notificationPromises = users.map((user) => {
-                    const userName = user.name || user.empName || user.agentName
-                    const notification = new Notification({
-                        ...notificationData,
-                        userName: [userName],
-                        userId: user._id
-                    });
-                    return notification.save();
+                // Collect usernames for the notification
+                const userNames = users.map((user) => user.name || user.empName || user.agentName);
+
+                // Create a single notification document with all selected usernames
+                const notification = new Notification({
+                    ...notificationData,
+                    userName: userNames,
                 });
-    
-                // Wait for all notifications to be saved
-                await Promise.all(notificationPromises);
-    
-               response(req, res, activity, 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+
+                // Save the notification to the database
+                await notification.save();
+
+                response(req, res, 'activity', 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
             } else {
-                response(req, res, activity, 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
-            
+                response(req, res, 'activity', 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
             }
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Notification', false, 500, {}, errorMessage.internalServer, err.message);
+        } catch (err) {
+            response(req, res, 'activity', 'Level-3', 'Create-Notification', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res, activity, 'Level-3', 'Create-Notification', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, 'activity', 'Level-3', 'Create-Notification', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };
 
