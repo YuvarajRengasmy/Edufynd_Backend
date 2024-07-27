@@ -40,7 +40,7 @@ export interface StaffDocument extends mongoose.Document {
     country?: string;
     state?: string;
     city?: string;
-    status?: string;
+    activeStatus?: string;
     companyAssests?: string;
     mobileName?: string;
     brandName?: string;
@@ -94,7 +94,7 @@ const staffSchema = new mongoose.Schema({
     country:  { type: String },
     state: { type: String },
     city:  { type: String },
-    status: { type: String },
+    activeStatus: { type: String },
     companyAssests:  { type: String },
     mobileName:  { type: String },
     brandName:  { type: String },

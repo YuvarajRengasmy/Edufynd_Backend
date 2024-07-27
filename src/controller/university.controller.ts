@@ -17,6 +17,7 @@ var activity = "University";
 export let getAllUniversity = async (req, res, next) => {
     try {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
+        console.log("88", data)
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -153,16 +154,11 @@ export let updateUniversity = async (req, res, next) => {
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
 
-
-                    // applicationFees: universityDetails.applicationFees,
-                    // costOfLiving: universityDetails.costOfLiving,
-                    // grossTuition: universityDetails.grossTuition,
-
                 },
-                 $addToSet: {
-                    campuses: universityDetails.campuses,
+                //  $addToSet: {
+                //     campuses: universityDetails.campuses,
                  
-                }
+                // }
             });
 
             response(req, res, activity, 'Level-2', 'Update-University', true, 200, universityData, clientError.success.updateSuccess);
@@ -238,8 +234,8 @@ export let getFilteredUniversity = async (req, res, next) => {
         if (req.body.country) {
             andList.push({ country: req.body.country })
         }
-        if (req.body.campus) {
-            andList.push({ campus: req.body.campus })
+        if (req.body.campuses) {
+            andList.push({ campus: req.body.campuses })
         }
         if (req.body.ranking) {
             andList.push({ ranking: req.body.ranking })
@@ -349,12 +345,6 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
         if (req.body.country) {
             andList.push({ country: req.body.country })
         }
-        if (req.body.state) {
-            andList.push({ state: req.body.state })
-        }
-        if (req.body.city) {
-            andList.push({ city: req.body.city })
-        }
         if (req.body.ranking) {
             andList.push({ ranking: req.body.ranking })
         }
@@ -416,8 +406,6 @@ export const csvToJson = async (req, res) => {
                 businessName: data.BusinessName,
                 banner: data.Banner,
                 country: data.Country,
-                // state:  data.State ,
-                // lga: data.City ,
                 campuses: [
                     {
                         state: data.State,               // ? data.State.split(',') : [],

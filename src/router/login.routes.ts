@@ -14,16 +14,18 @@ router.post('/',
 
 router.put('/forgotPassword',
     basicAuthUser,
-    checkRequestBodyParams('email'),
+    checkRequestBodyParams('link'),
     forgotPassword
 );
 
-// router.put('/updatePassword',
-//     basicAuthUser,
-//     checkRequestBodyParams('_id'),
-//     checkRequestBodyParams('password'),
-//     updatePassword
-// );
+
+router.put('/resetPassword',
+    basicAuthUser,
+    checkRequestBodyParams('_id'),
+    checkRequestBodyParams('password'),
+    checkRequestBodyParams('confirmPassword'),
+    resetPassword
+);
 
 
 

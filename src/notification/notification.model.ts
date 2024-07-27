@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose'
 
 export interface NotificationDocument extends mongoose.Document {
     typeOfUser?: string;
-    userName?: string;
+    userName?: any[];
     subject?: string;
     content?: string;
     uploadImage?: string;
@@ -18,7 +18,7 @@ export interface NotificationDocument extends mongoose.Document {
 const notificationSchema = new mongoose.Schema({
 
     typeOfUser: {type: String},
-    userName: {type: String},
+    userName: [String],
     subject: {type: String},
     content: {type: String},
     uploadImage: {type: String},
