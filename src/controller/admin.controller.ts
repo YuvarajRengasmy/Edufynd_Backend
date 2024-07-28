@@ -70,7 +70,9 @@ export let createAdmin = async (req, res, next) => {
                 const adminDetails: AdminDocument = req.body;
                 adminDetails.adminCode = await generateNextAdminCode();
 
+              
                 const createData = new Admin(adminDetails);
+                createData.createdBy = 'Admin'
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],
@@ -84,7 +86,6 @@ export let createAdmin = async (req, res, next) => {
                 finalResult["token"] = token;
                 finalResult["loginType"] = 'admin';
                 finalResult["adminDetails"] = result;
-
                 response(req, res, activity, 'Level-2', 'Create-Admin', true, 200, finalResult, clientError.success.registerSuccessfully);
             }
             else {
@@ -205,6 +206,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
             adminDetails.password = await encrypt(password)
             adminDetails.confirmPassword = await encrypt(confirmPassword)
             const createAdmin = new Admin(adminDetails);
+            createAdmin.createdBy = 'Super Admin'
             const insertAdmin = await createAdmin.save();
 
             const newHash = await decrypt(insertAdmin["password"]);
@@ -271,7 +273,7 @@ export let createStudentByAdmin = async (req, res, next) => {
 
             // Admin exist, proceed to create a new student
             const createStudent = new Student(studentDetails);
-
+            createStudent.createdBy = 'Admin'
             // Save the student to the database
             const insertStudent = await createStudent.save();
 
@@ -362,7 +364,7 @@ export let createStaffByAdmin = async (req, res, next) => {
 
             // Admin exist, proceed to create a new staff
             const createstaff = new Staff(staffDetails);
-
+            createstaff.createdBy = 'Admin'
             // Save the staff to the database
             const insertStaff = await createstaff.save();
 

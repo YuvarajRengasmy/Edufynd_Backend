@@ -1,4 +1,8 @@
 import { Meeting, MeetingDocument } from './meeting.model'
+import { Student} from '../model/student.model'
+import { Staff} from '../model/staff.model'
+import { Admin} from '../model/admin.model'
+import { Agent} from '../model/agent.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -33,18 +37,58 @@ export let createMeeting = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const Data: MeetingDocument = req.body;
-            const createData = new Meeting(Data);
-            let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Meeting', true, 200, insertData, clientError.success.savedSuccessfully);
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Meeting', false, 500, {}, errorMessage.internalServer, err.message);
+            const data:  MeetingDocument = req.body;
+            const userName = req.body.attendees; // Array of selected usernames
+            // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
+
+            let users = [];
+
+            // Fetch users based on typeOfUser
+            if (data.hostName === 'student') {
+                users = await Student.find({ name: { $in: userName } });
+            } else if (data.hostName === 'admin') {
+                users = await Admin.find({ name: { $in: userName } });
+            } else if (data.hostName === 'agent') {
+                users = await Agent.find({ agentName: { $in: userName } });
+            } else if (data.hostName === 'staff') {
+                users = await Staff.find({ empName: { $in: userName } });
+            }
+
+            // Check if any users were found
+            if (users.length > 0) {
+                // Collect usernames for the notification
+                const userNames = users.map((user) => user.name || user.empName || user.agentName);
+
+                // Create a single notification document with all selected usernames
+                const notification = new Meeting({
+                    ...data,
+                    userName: userNames,
+                });
+
+                // Save the notification to the database
+                const savedNotification = await notification.save();
+
+                // Add the notification ID to each selected user's notifications array
+                const updatePromises = users.map((user) => {
+                    user.notificationId.push(savedNotification._id);
+                    return user.save();
+                });
+
+                // Wait for all user updates to be saved
+                await Promise.all(updatePromises);
+
+                response(req, res, activity, 'Level-1', 'Create-Meeting', true, 200, {}, " Meeting Notifications sent successfully");
+            } else {
+                response(req, res,  activity, 'Level-2', 'Create-Meeting', false, 404, {}, "No users found for the specified type.");
+            }
+        } catch (err) {
+         
+            response(req, res,  activity, 'Level-3', 'Create-Meeting', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res, activity, 'Level-3', 'Create-Meeting', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res,  activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };
-
 
 export const updateMeeting = async (req, res) => {
     const errors = validationResult(req)

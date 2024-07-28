@@ -65,9 +65,9 @@ export let createAgent = async (req, res, next) => {
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 agentDetails.createdOn = new Date()
                 agentDetails.agentCode = await generateNextAgentID();
-
+               
                 const createData = new Agent(agentDetails);
-
+                createData.createdBy = 'Agent'
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],
@@ -189,6 +189,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             agentDetails.confirmPassword = await encrypt(confirmPassword)
             agentDetails.createdOn = new Date();
             const createAgent = new Agent(agentDetails);
+            createAgent.createdBy = 'Super Admin'
             const insertAgent = await createAgent.save();
             const newHash = await decrypt(insertAgent["password"]);
             const mailOptions = {
