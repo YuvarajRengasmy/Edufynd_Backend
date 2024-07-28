@@ -58,7 +58,8 @@ export interface AgentDocument extends mongoose.Document {
   desiredCountry?: string;
   requireVisaFilingSupport?: string;
   visaCommission?: number;
-
+  notificationId?: any;
+ 
 };
 
 
@@ -111,7 +112,7 @@ const agentSchema = new mongoose.Schema({
   desiredCountry: { type: String },
   requireVisaFilingSupport: { type: String },
   visaCommission: { type: Number },
-
+  notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
   createdOn: { type: Date, default: Date.now()},
   createdBy: { type: String },
   modifiedOn: { type: Date },
