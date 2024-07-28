@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface NotificationDocument extends mongoose.Document {
+    _id?: any;
     userId?: any;
     typeOfUser?: string;
     userName?: any[];
@@ -17,6 +18,7 @@ export interface NotificationDocument extends mongoose.Document {
 }
 
 const notificationSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, auto: true },
     userId: { type: mongoose.Types.ObjectId},
     typeOfUser: {type: String},
     userName: [String],

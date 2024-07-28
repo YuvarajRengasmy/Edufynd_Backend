@@ -65,7 +65,7 @@ export let saveClient = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const clientDetails: ClientDocument = req.body;
-
+        
             // Generate the next client ID
             const clients = await Client.find({}, 'clientID').exec();
             const maxCounter = clients.reduce((max, client) => {
@@ -74,10 +74,12 @@ export let saveClient = async (req, res, next) => {
                 return counter > max ? counter : max;
             }, 100);
 
+          
+           
             let currentMaxCounter = maxCounter;
             clientDetails.createdOn = new Date();
             clientDetails.clientID = await generateNextClientID(currentMaxCounter);
-           
+            
             const createData = new Client(clientDetails);
             let insertData = await createData.save();
 

@@ -37,7 +37,8 @@ router.post('/sendNotification',
 
 router.put('/',                   
     basicAuthUser,
-    checkQuery('_id'),
+    // checkQuery('_id'),
+    // checkRequestBodyParams('_id'),
     updateNotification
 );
 
