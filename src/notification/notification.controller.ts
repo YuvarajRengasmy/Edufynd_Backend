@@ -33,12 +33,15 @@ export const getSingleNotification = async (req, res) => {
     }
 }
 
+
+
 export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const notificationData = req.body;
+            const notificationData: NotificationDocument = req.body;
             const userName = req.body.userName; // Array of selected usernames
+            // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
 
             let users = [];
 
@@ -65,29 +68,39 @@ export let createNotification = async (req, res, next) => {
                 });
 
                 // Save the notification to the database
-                await notification.save();
+                const savedNotification = await notification.save();
 
-                response(req, res, 'activity', 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+                // Add the notification ID to each selected user's notifications array
+                const updatePromises = users.map((user) => {
+                    user.notificationId.push(savedNotification._id);
+                    return user.save();
+                });
+
+                // Wait for all user updates to be saved
+                await Promise.all(updatePromises);
+
+                response(req, res,  activity, 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
             } else {
-                response(req, res, 'activity', 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
+                response(req, res,  activity, 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
             }
         } catch (err) {
-            response(req, res, 'activity', 'Level-3', 'Create-Notification', false, 500, {}, "Internal server error", err.message);
+         
+            response(req, res,  activity, 'Level-3', 'Create-Notification', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res, 'activity', 'Level-3', 'Create-Notification', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        response(req, res,  activity, 'Level-3', 'Create-Notification', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };
+
 
 
 
 export const updateNotification = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
-
         try {
             const notificationData: NotificationDocument = req.body;
-            let statusData = await Notification.findByIdAndUpdate({_id:notificationData._id }, {
+            let statusData = await Notification.findByIdAndUpdate({_id: notificationData._id }, {
                 $set: {
                     typeOfUser: notificationData.typeOfUser,
                     userName:notificationData.userName,
@@ -212,5 +225,3 @@ export const getSingleNotificationforStudent = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
-
-

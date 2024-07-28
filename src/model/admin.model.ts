@@ -16,6 +16,7 @@ export interface AdminDocument extends mongoose.Document{
     programId?: any;
     resetOtp?: string;
     resetOtpExpires?: number;  
+    notificationId?: any;
 
     isDeleted?: boolean;
     privileges?: string;
@@ -41,7 +42,7 @@ const adminSchema = new mongoose.Schema({
     programId: { type: mongoose.Types.ObjectId, ref : 'Program'},
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
-
+    notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},
     createdOn: { type: Date },
