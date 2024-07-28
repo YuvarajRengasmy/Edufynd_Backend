@@ -1,4 +1,5 @@
 import { Staff, StaffDocument } from '../model/staff.model'
+import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { validationResult } from 'express-validator'
 import { response, transporter } from '../helper/commonResponseHandler'
@@ -282,5 +283,33 @@ export const csvToJson = async (req, res) => {
         console.error(err);
         // Send error response
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for staff module', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let createStudentByStaff = async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()) {
+        try {
+            const staffDetails: StaffDocument = req.body;
+            const studentDetails: StudentDocument = req.body;
+
+            // Admin exist, proceed to create a new student
+            const createStudent = new Student(studentDetails);
+
+            // Save the student to the database
+            const insertStudent = await createStudent.save();
+
+            // Respond with success message
+            response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', true, 200, { student: insertStudent }, 'Student created successfully by Staff');
+
+        } catch (err: any) {
+            // Handle server error
+            response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', false, 500, {}, 'Internal server error.', err.message);
+        }
+    } else {
+        // Request body validation failed, respond with error message
+        response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };

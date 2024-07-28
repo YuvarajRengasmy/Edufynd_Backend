@@ -5,7 +5,7 @@ export interface UniversityDocument extends mongoose.Document {
     _id?: any;
     universityCode?: string;
     superAdminId?: any;
-    // clientId?: any;
+  
     appliedStudentId?: any;
     businessName?: string;
     universityName?: string;
@@ -17,7 +17,7 @@ export interface UniversityDocument extends mongoose.Document {
     countryName?: string;
     country?: string;
     flag?: string;
-    // campuses?: any[];
+    campuses?: any[];
     ranking?: string;
     averageFees?: number;
     popularCategories?: any[];
@@ -61,11 +61,11 @@ const universitySchema = new mongoose.Schema({
     countryName: { type: String },
     flag: { type: String },
     country: { type: String },
-    // campuses: [{
-    //     state: { type: String },
-    //     lga: { type: String },
+    campuses: [{
+        state: { type: String },
+        lga: { type: String },
    
-    // }],
+    }],
 
     ranking: { type: String },
     averageFees: { type: String },
@@ -96,21 +96,10 @@ const universitySchema = new mongoose.Schema({
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 
-
 })
 
 
-// // Add a virtual property for createdOn in IST
-// universitySchema.virtual('createdOnIST').get(function() {
-//     if (this.createdOn) {
-//         return moment(this.createdOn).tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
-//     }
-//     return null;
-// });
 
-// // Ensure virtual fields are included in toJSON and toObject output
-// universitySchema.set('toJSON', { virtuals: true });
-// universitySchema.set('toObject', { virtuals: true });
 
 
 export const University = mongoose.model("University", universitySchema)

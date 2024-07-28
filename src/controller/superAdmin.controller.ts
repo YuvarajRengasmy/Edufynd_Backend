@@ -1,4 +1,7 @@
 import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
+import { University, UniversityDocument } from '../model/university.model'
+import { Program, ProgramDocument } from '../model/program.model'
+import { Client, ClientDocument } from '../model/client.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -12,6 +15,24 @@ var activity = "SuperAdmin";
 
 
 
+
+export let getSuperAdminForSearch = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            let search = req.query.search
+            const universityList = await University.find({ $and: [{ $or: [{ universityName: { $regex: search, $options: 'i' } }, { country: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('popularCategories',{popularCategories:1})
+            const programList = await Program.find({ $and: [{ $or: [{ programTitle: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }, { 'block.student': { $nin: req.body.loginId } }] }).populate('student', { name: 1, image: 1 })
+            const clientList = await Client.find({ $and: [{ $or: [{typeOfClient: { $regex: search, $options: 'i' } }, { businessName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('name', { name: 1, image: 1 })
+
+            response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200, { universityList, programList, clientList }, clientError.success.fetchedSuccessfully);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Get-SuperAdminForSeach', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Get-SuperAdminForSeach', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
 
 export let createSuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
@@ -54,7 +75,6 @@ export let createSuperAdmin = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Super-Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
-
 
 export let getFilteredSuperAdmin = async (req, res, next) => {
     try {

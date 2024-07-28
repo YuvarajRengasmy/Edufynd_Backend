@@ -49,10 +49,10 @@ const commissionSchema = new mongoose.Schema({
         year: { type: String },
         courseTypes: [{
             courseType: { type: String },
-            intake: [{
-                type: { type: String },
-                value: { type: Number }
-            }]
+            summer:{type:String},
+            winter:{type:String},
+            fall:{type:String},
+           
         }]
     }],
 

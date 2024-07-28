@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface AdminDocument extends mongoose.Document{
+    _id?: any;
     name?: string;
     adminCode?: string;
     email?: string;
@@ -26,6 +27,7 @@ export interface AdminDocument extends mongoose.Document{
 
 
 const adminSchema = new mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId, auto: true },
     name: {type: String},
     adminCode: {type: String},
     email: { type: String},
