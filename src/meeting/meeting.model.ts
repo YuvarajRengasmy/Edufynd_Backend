@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 
 export interface MeetingDocument extends mongoose.Document {
     hostName?: string;
-    attendees?: string;
+    attendees?: any[];
     subject?: string;
     content?: string;
     date?: Date;
@@ -17,7 +17,7 @@ export interface MeetingDocument extends mongoose.Document {
 const meetingSchema = new mongoose.Schema({
 
     hostName: {type: String},
-    attendees: {type: String},
+    attendees: [String],
     subject: {type: String},
     content: {type: String},
     date: {type: Date},
