@@ -97,7 +97,7 @@ export const updatePromotion = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const promotionData: PromotionDocument = req.body;
-            let statusData = await Promotion.findByIdAndUpdate({_id: req.query._id }, {
+            let statusData = await Promotion.findByIdAndUpdate({_id:promotionData._id }, {
                 $set: {
                     typeOfUser: promotionData.typeOfUser,
                     userName:promotionData.userName,

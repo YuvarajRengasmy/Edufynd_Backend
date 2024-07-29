@@ -22,6 +22,7 @@ const eventSchema = new mongoose.Schema({
     typeOfUser: {type: String},
     userName: [String],
     eventTopic: {type: String},
+    universityName: {type: String},
     date: {type: Date},
     time: {type: String},
     venue: {type: String},
