@@ -9,11 +9,11 @@ export interface TrainingDocument extends mongoose.Document {
     time?: string;
     typeOfUser?: string;
     usersName?: any[];
-   material?: string;
-   name?: string;
-   subject?: string;
-   content?: string;
-   uploadDocument?: string;
+    material?: string;
+    name?: string;
+    subject?: string;
+    content?: string;
+    uploadDocument?: string;
 
 
     createdOn?: Date;
@@ -24,18 +24,18 @@ export interface TrainingDocument extends mongoose.Document {
 
 const trainingSchema = new mongoose.Schema({
 
-    requestTraining: {type: String},
-    trainingTopic: {type: String},
-    date:{type: Date},
-    time:{type: String},
+    requestTraining: { type: String },
+    trainingTopic: { type: String },
+    date: { type: Date },
+    time: { type: String },
 
-    typeOfUser: {type: String},
+    typeOfUser: { type: String },
     usersName: [String],
-    material: {type: String},
-    name: {type: String},
-    subject: {type: String},
-    content: {type: String},
-    uploadDocument: {type: String},
+    material: { type: String },
+    name: { type: String },
+    subject: { type: String },
+    content: { type: String },
+    uploadDocument: { type: String },
 
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
