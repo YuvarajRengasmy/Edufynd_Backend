@@ -95,7 +95,7 @@ export const updateMeeting = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const meetingData: MeetingDocument = req.body;
-            let statusData = await Meeting.findByIdAndUpdate({ _id: req.query._id }, {
+            let statusData = await Meeting.findByIdAndUpdate({ _id:meetingData._id }, {
                 $set: {
                     hostName: meetingData.hostName,
                     attendees: meetingData.attendees,
