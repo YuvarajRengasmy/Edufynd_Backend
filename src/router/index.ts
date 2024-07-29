@@ -28,7 +28,7 @@ import LoanEnquiry  from '../enquiries/routes/loanEnquiry.route';
 import Accommodation from '../enquiries/routes/accommodation.route'
 import Forex from '../enquiries/routes/forex.route'
 import Flight from '../enquiries/routes/flightTicket.route'
-
+import Chat from './chat.routes';
 
 // Invoice Routes
 import SenderInvoice from '../finance/routes/senderInvoice.route';
@@ -99,6 +99,7 @@ router.use('/staff', Staff)
 router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
+router.use('/chat', Chat)
 
 
 //All Enquiry API
