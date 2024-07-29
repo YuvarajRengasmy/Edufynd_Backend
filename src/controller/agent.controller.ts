@@ -58,7 +58,7 @@ export let createAgent = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const agent = await Agent.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
-
+           
             if (!agent) {
                 const agentDetails: AgentDocument = req.body;
                 req.body.password = await encrypt(req.body.password)
@@ -67,7 +67,6 @@ export let createAgent = async (req, res, next) => {
                 agentDetails.agentCode = await generateNextAgentID();
                
                 const createData = new Agent(agentDetails);
-                createData.createdBy = 'Agent'
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],
@@ -189,7 +188,6 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             agentDetails.confirmPassword = await encrypt(confirmPassword)
             agentDetails.createdOn = new Date();
             const createAgent = new Agent(agentDetails);
-            createAgent.createdBy = 'Super Admin'
             const insertAgent = await createAgent.save();
             const newHash = await decrypt(insertAgent["password"]);
             const mailOptions = {

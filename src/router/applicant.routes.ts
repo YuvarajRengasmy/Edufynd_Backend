@@ -2,7 +2,7 @@ import {Router} from 'express';
 import { createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
      getSingleApplicant, updateApplicant, trackApplicationStatus } from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser } from '../middleware/checkAuth';
+import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 const router:Router=Router();
 
@@ -25,6 +25,7 @@ router.get('/getSingleApplicant',
 router.put('/', 
          basicAuthUser,
          checkSession,
+     
          createApplicant
 );
 
