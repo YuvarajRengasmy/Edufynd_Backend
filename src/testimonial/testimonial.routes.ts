@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllMarketing, getSingleMarketing, createMarketing, updateMarketing, deleteMarketing, getFilteredMarketing } from './marketing.controller';
+import { getAllTestimonial, getSingleTestimonial, createTestimonial, updateTestimonial,
+     deleteTestimonial, getFilteredTestimonial } from './testimonial.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 
@@ -8,38 +9,38 @@ const router: Router = Router();
 
 router.get('/',                
     basicAuthUser,
-    getAllMarketing
+    getAllTestimonial
 );
 
-router.get('/getSingleMarketing',
+router.get('/getSingleTestimonial',
     basicAuthUser,
     checkQuery('_id'),
-    getSingleMarketing,
+    getSingleTestimonial,
 );
 
 
 router.post('/',
     basicAuthUser,
-    createMarketing
+    createTestimonial
 );
 
 
 router.put('/',                   
     basicAuthUser,
-    checkQuery('_id'),
-    updateMarketing
+    // checkQuery('_id'),
+    updateTestimonial
 );
 
 
 router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deleteMarketing
+    deleteTestimonial
 );
 
-router.put('/getFilterMarketing',
+router.put('/getFilterTestimonial',
     basicAuthUser,
-    getFilteredMarketing,
+    getFilteredTestimonial,
 );
 
 export default router

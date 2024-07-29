@@ -103,7 +103,7 @@ export const updateTraining = async (req, res) => {
                     date:trainingData.date,
                     time:trainingData.time,
                     typeOfUser: trainingData.typeOfUser,
-                    userName:trainingData.userName,
+                    usersName:trainingData.usersName,
                     material: trainingData.material,
                     name: trainingData.name,
                     subject: trainingData.subject,

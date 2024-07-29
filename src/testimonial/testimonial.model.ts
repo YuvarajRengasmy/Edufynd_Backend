@@ -2,14 +2,14 @@ import * as mongoose from 'mongoose'
 
 
 
-export interface NotificationDocument extends mongoose.Document {
-
-    userId?: any;
+export interface TestimonialDocument extends mongoose.Document {
     typeOfUser?: string;
     userName?: any[];
-    subject?: string;
+    courseOrUniversityName?: string;
+    location?: string;
     content?: string;
     uploadImage?: string;
+    counselorName?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -17,14 +17,14 @@ export interface NotificationDocument extends mongoose.Document {
     modifiedBy?: string;
 }
 
-const notificationSchema = new mongoose.Schema({
- 
-    userId: { type: mongoose.Types.ObjectId},
+const testimonialSchema = new mongoose.Schema({
     typeOfUser: {type: String},
     userName: [String],
-    subject: {type: String},
+    courseOrUniversityName: {type: String},
+    location: {type: String},
     content: {type: String},
     uploadImage: {type: String},
+    counselorName: {type: String},
 
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
@@ -33,4 +33,4 @@ const notificationSchema = new mongoose.Schema({
 })
 
 
-export const Notification = mongoose.model("Notification", notificationSchema)
+export const Testimonial = mongoose.model("Testimonial", testimonialSchema)

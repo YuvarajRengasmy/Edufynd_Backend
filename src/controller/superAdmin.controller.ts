@@ -34,6 +34,16 @@ export let getSuperAdminForSearch = async (req, res, next) => {
     }
 };
 
+export const getSingleSuperAdmin = async (req, res) => {
+    try {
+        const data = await SuperAdmin.findOne({ _id: req.query._id })
+        response(req, res, activity, 'Level-1', 'GetSingle-SuperAdmin', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-SuperAdmin', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
+
+
 export let createSuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

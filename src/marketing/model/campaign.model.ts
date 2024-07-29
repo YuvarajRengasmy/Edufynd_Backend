@@ -1,15 +1,12 @@
 import * as mongoose from 'mongoose'
 
-export interface MarketingDocument extends mongoose.Document {
-    socialMedia?: string;
-    noOfFollowers?: string;
-    noOfCampaigns?: string;
-    noOfLeads?: string;
+export interface CampaignDocument extends mongoose.Document {
     platformName?: Date;
     campaignName?: string;
     budgetRequested?: string;
     budgetAlloted?: string;
     budgetSpent?: string;
+    time?: string;
     leadsGenerated?: string;
     leadsConverted?: string;
 
@@ -19,19 +16,17 @@ export interface MarketingDocument extends mongoose.Document {
     modifiedBy?: string;
 }
 
-const marketingSchema = new mongoose.Schema({
+const campaignSchema = new mongoose.Schema({
 
-    socialMedia: {type: String},
-    noOfFollowers: {type: String},
-    noOfCampaigns: {type: String},
-    noOfLeads: {type: String},
     platformName:{type: String},
     campaignName: {type: String},
     budgetRequested: {type: String},
     budgetAlloted:{type: String},
     budgetSpent: {type: String},
+    time: {type: String},
     leadsGenerated: {type: String},
     leadsConverted: {type: String},
+
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -39,4 +34,4 @@ const marketingSchema = new mongoose.Schema({
 })
 
 
-export const Marketing = mongoose.model("Marketing", marketingSchema)
+export const Campaign = mongoose.model("Campaign", campaignSchema)

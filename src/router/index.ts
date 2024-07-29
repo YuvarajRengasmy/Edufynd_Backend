@@ -28,7 +28,7 @@ import LoanEnquiry  from '../enquiries/routes/loanEnquiry.route';
 import Accommodation from '../enquiries/routes/accommodation.route'
 import Forex from '../enquiries/routes/forex.route'
 import Flight from '../enquiries/routes/flightTicket.route'
-
+import Chat from './chat.routes';
 
 // Invoice Routes
 import SenderInvoice from '../finance/routes/senderInvoice.route';
@@ -36,7 +36,9 @@ import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
 
 
 // Marketing
-import Marketing from '../marketing/marketing.routes'
+import SocialMedia from '../marketing/routes/socialMedia.routes'
+import Campaign from '../marketing/routes/campaign.routes'
+import DailyTask from '../marketing/routes/dailyTask.routes'
 
 // Notification
 import Notification from '../notification/notification.routes'
@@ -52,6 +54,9 @@ import Training from '../training/training.routes'
 
 // Events
 import Event from '../events/event.routes'
+
+//Testimonial
+import Testimonial from '../testimonial/testimonial.routes'
 
 
 
@@ -94,6 +99,7 @@ router.use('/staff', Staff)
 router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
+router.use('/chat', Chat)
 
 
 //All Enquiry API
@@ -110,8 +116,9 @@ router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
 
 // Marketing
-router.use('/marketing', Marketing)
-
+router.use('/socialMedia', SocialMedia)
+router.use('/campaign', Campaign)
+router.use('/dailyTask', DailyTask)
 
 // Notification
 router.use('/notification', Notification)
@@ -127,6 +134,9 @@ router.use('/training', Training)
 
 // Events
 router.use('/event', Event)
+
+//Testimonial
+router.use('/testimonial', Testimonial)
 
 
 
