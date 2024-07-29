@@ -113,11 +113,11 @@ export const updateEvent = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const eventData: EventDocument = req.body;
-            let statusData = await Event.findByIdAndUpdate({ _id: req.query._id }, {
+            let statusData = await Event.findByIdAndUpdate({ _id: eventData._id }, {
                 $set: {
                     typeOfUser: eventData.typeOfUser,
                     userName: eventData.userName,
-
+                    universityName: eventData.universityName,
                     eventTopic: eventData.eventTopic,
                     date: eventData.date,
                     time: eventData.time,
