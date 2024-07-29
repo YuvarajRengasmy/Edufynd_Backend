@@ -38,31 +38,31 @@ export let createTraining = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const data: TrainingDocument = req.body;
-            const userName = req.body.userName; // Array of selected usernames
+            const usersName = req.body.usersName; // Array of selected usernames
             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
 
             let users = [];
 
             // Fetch users based on typeOfUser
             if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: userName } });
+                users = await Student.find({ name: { $in: usersName } });
             } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: userName } });
+                users = await Admin.find({ name: { $in: usersName } });
             } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: userName } });
+                users = await Agent.find({ agentName: { $in: usersName } });
             } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: userName } });
+                users = await Staff.find({ empName: { $in: usersName } });
             }
 
             // Check if any users were found
             if (users.length > 0) {
                 // Collect usernames for the notification
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
+                const usersNames = users.map((user) => user.name || user.empName || user.agentName);
 
                 // Create a single notification document with all selected usernames
                 const notification = new Training({
                     ...data,
-                    userName: userNames,
+                    usersName: usersNames,
                 });
 
                 // Save the notification to the database
@@ -73,6 +73,7 @@ export let createTraining = async (req, res, next) => {
                     user.notificationId.push(savedNotification._id);
                     return user.save();
                 });
+               
 
                 // Wait for all user updates to be saved
                 await Promise.all(updatePromises);
@@ -95,7 +96,7 @@ export const updateTraining = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const trainingData: TrainingDocument = req.body;
-            let statusData = await Training.findByIdAndUpdate({_id: req.query._id }, {
+            let statusData = await Training.findByIdAndUpdate({_id: trainingData._id }, {
                 $set: {
                     requestTraining: trainingData.requestTraining,
                     trainingTopic: trainingData.trainingTopic,
