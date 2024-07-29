@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose'
 
 
-export interface ApplicantTrackDocument extends mongoose.Document {
-   
+export interface ApplicationTrackDocument extends mongoose.Document {
+
     isDeleted?: boolean;
     status?: string;
     createdOn?: Date;
@@ -12,17 +12,20 @@ export interface ApplicantTrackDocument extends mongoose.Document {
 }
 
 
-const applicantTrackStatusSchema = new mongoose.Schema({
-
-
-   
+const applicationTrackStatusSchema = new mongoose.Schema({
+    status: { type: String },
+    submitted: { type: String },
+    processed: { type: String },
+    rejected: { type: String },
+    offered: { type: String },
+    feesPaid: { type: String },
+    enrolled: { type: String },
 
     isDeleted: { type: Boolean, default: false },
-    status: { type: String },
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
-export const Applicant = mongoose.model("Applicant", applicantTrackStatusSchema)
+export const ApplicationTrack = mongoose.model("ApplicantTrack", applicationTrackStatusSchema)

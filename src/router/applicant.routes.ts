@@ -1,5 +1,6 @@
 import {Router} from 'express';
-import { createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication, getSingleApplicant, updateApplicant } from '../controller/applicant.controller';
+import { createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
+     getSingleApplicant, updateApplicant, trackApplicationStatus } from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -34,6 +35,14 @@ router.put('/',
     checkQuery('_id'),
     // checkRequestBodyParams('_id'),
     updateApplicant
+);
+
+router.put('/track',                    
+    basicAuthUser,
+    checkSession,
+    // checkQuery('_id'),
+    // // checkRequestBodyParams('_id'),
+    trackApplicationStatus
 );
 
 

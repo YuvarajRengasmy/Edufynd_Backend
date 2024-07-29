@@ -218,3 +218,35 @@ export let getFilteredApplication = async (req, res, next) => {
 };
 
 
+export const trackApplicationStatus = async (req, res, next) => {
+    console.log("77")
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return response(req, res, activity, 'Level-3', 'Update-Status', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+    }
+    const applicantDetails: ApplicantDocument = req.body;
+
+    const {newStatus } = req.body
+
+    try {
+        // Find the application track record by ID
+        const application = await Applicant.findById({id:applicantDetails._id});
+console.log("pp", application)
+        if (!application) {
+            return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
+        }
+
+        // Update the status
+        applicantDetails.status = newStatus;
+
+        // Update the timestamp for modifiedOn
+        applicantDetails.modifiedOn = new Date();
+
+        // Save the updated application status
+        await application.save();
+
+        response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully");
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 500, {}, "Internal server error", err.message);
+    }
+};
