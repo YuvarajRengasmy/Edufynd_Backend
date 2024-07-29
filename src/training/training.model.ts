@@ -8,7 +8,7 @@ export interface TrainingDocument extends mongoose.Document {
     date?: Date;
     time?: string;
     typeOfUser?: string;
-    usersName?: string;
+    usersName?: any[];
    material?: string;
    name?: string;
    subject?: string;
@@ -30,7 +30,7 @@ const trainingSchema = new mongoose.Schema({
     time:{type: String},
 
     typeOfUser: {type: String},
-    usersName: {type: String},
+    usersName: [String],
     material: {type: String},
     name: {type: String},
     subject: {type: String},
