@@ -90,12 +90,22 @@ basicAuthUser,
 updateProgramApplications
 )
 
-
-
-
 router.get('/getProgramUniversity',
     basicAuthUser,
     checkQuery('universityId'),
     getProgramUniversity,
 );
+
+
+
+
+/// Public API
+router.get('/public', getAllProgram);
+
+router.get('/publicGetSingleProgram',checkQuery('_id'),getSingleProgram);
+
+router.get('/publicGetAllProgramForWeb',getAllProgramForWeb);
+
+router.put('/publicGetUniversityFilterProgram',getFilteredProgram);
+
 export default router

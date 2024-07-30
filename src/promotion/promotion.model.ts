@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose'
 export interface PromotionDocument extends mongoose.Document {
     typeOfUser?: string;
     userName?: any[];
+    userEmail?: any[];
     subject?: string;
     content?: string;
     uploadImage?: string;
@@ -19,6 +20,7 @@ const promotionSchema = new mongoose.Schema({
 
     typeOfUser: {type: String},
     userName: [String],
+    userEmail: [String],
     subject: {type: String},
     content: {type: String},
     uploadImage: {type: String},
