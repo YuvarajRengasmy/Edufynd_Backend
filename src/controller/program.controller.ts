@@ -459,3 +459,19 @@ export const updateProgramApplications = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Program-Applications', false, 422, {}, 'Field validation error', JSON.stringify(errors.mapped()));
     }
 };
+
+
+
+
+// yuvaraj Code
+
+export const getProgramUniversity = async (req, res) => {
+    try {
+        
+        const data = await Program.find({universityId:req.query.universityId})
+  
+        response(req, res, activity, 'Level-1', 'GetSingle-Program', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-Program', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
