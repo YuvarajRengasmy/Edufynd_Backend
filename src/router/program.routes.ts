@@ -1,8 +1,9 @@
 import {Router} from 'express';
 import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProgram, 
     getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, getProgramUniversity,
-    getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,getProgramCategory,
-    updateProgramApplications} from '../controller/program.controller';
+    getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
+    updateProgramApplications,
+    getProgramCategory} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
