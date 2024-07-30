@@ -3,6 +3,7 @@ import { response } from '../helper/commonResponseHandler';
 import { clientError, errorMessage } from '../helper/ErrorMessage';
 import { ChatMessage, chatMessageDocument } from '../model/chat.model';
 import {DateTime} from 'luxon';
+import { Student } from 'src/model/student.model';
 
 
 var activity = "chatuser";
@@ -81,7 +82,41 @@ export const doctorSendMessages = async (req, res, next) => {
    response(req, res, activity, 'Level-3', 'Chat', false, 500, {}, errorMessage.internalServer, err.message);
   }
 };
+export const StudentSendMessages = async (req, res, next) => {
+  try {
+    const chatDetails = req.body;
+    if (!chatDetails.studentId || !chatDetails.staffId) {
+      response(req, res, activity, 'Level-1', 'Chat', false, 400, {}, 'Both studentId and staffId are required');
+    }
+    if (chatDetails.studentId === chatDetails.staffId) {
+      response(req, res, activity, 'Level-3', 'Chat', false, 500, {}, errorMessage.internalServer, 'Cannot send message to yourself');
+    }
 
+    const currentTime = DateTime.now().setZone('Asia/Kolkata');
+    chatDetails.sentOn = currentTime.toFormat('hh:mm a');
+
+    const senderType = 'staff';
+    const newMessage = await ChatMessage.create({
+      studentId: chatDetails.studentId,
+      staffId: chatDetails.staffId,
+      message: chatDetails.message,
+      senderType: senderType,
+      sentOn: chatDetails.sentOn,
+      isSeen:chatDetails.isSeen
+    });
+    const io = req.app.get('socketio');
+    if (io) {
+      io.emit('userStatus', { studentId: chatDetails.studentId, status: 'online' });
+      io.emit('userStatus', { staffId: chatDetails.staffId, status: 'online' });
+    }
+
+    await newMessage.save();
+    const sentOnTime = currentTime.toFormat('hh:mm a');
+    response(req, res, activity, 'Level-2', 'Chat', true, 200, newMessage, clientError.success.fetchedSuccessfully, {sentOnTime});
+  } catch (err:any) {
+   response(req, res, activity, 'Level-3', 'Chat', false, 500, {}, errorMessage.internalServer, err.message);
+  }
+};
 
 
 
@@ -110,9 +145,10 @@ export let getDoctorChats = async (req, res, next) => {
 
 }
 
+
 export let getAllChats = async (req, res, next) => {
   try{
-    const chatDetails = await ChatMessage.find({isDeleted: false}).populate('superAdminId',{name:1,photo:1}).populate('staffId',{empName:1,photo:1});
+    const chatDetails = await ChatMessage.find({isDeleted: false}).populate('superAdminId',{name:1,photo:1}).populate('studentId',{name:1,photo:1}).populate('staffId',{empName:1,photo:1});
     response(req, res, activity, 'Level-2', 'Chat', true, 200, chatDetails, clientError.success.fetchedSuccessfully);
   }
   catch(err:any){

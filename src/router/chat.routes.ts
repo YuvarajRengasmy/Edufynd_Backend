@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDoctorChats,getUserSentChats,doctorSendMessages,userSendMessages,getAllChats,markMessageAsSeen} from '../controller/chat.controller';
+import { getDoctorChats,getUserSentChats,doctorSendMessages,StudentSendMessages,userSendMessages,getAllChats,markMessageAsSeen} from '../controller/chat.controller';
 import { checkRequestBodyParams, checkQuery } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -28,6 +28,14 @@ router.post('/doctorChat', // create chat message for user
   checkRequestBodyParams('staffId'),
   checkRequestBodyParams('message'),
   doctorSendMessages
+);
+router.post('/StudentChat', // create chat message for user
+  basicAuthUser,
+  checkSession,
+  checkRequestBodyParams('studentId'),
+  checkRequestBodyParams('staffId'),
+  checkRequestBodyParams('message'),
+  StudentSendMessages
 );
 
 router.post('/userChat', // create chat message for user

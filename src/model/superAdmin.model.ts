@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose'
 export interface SuperAdminDocument extends mongoose.Document{
     _id?: any;
     name?: string;
+    photo?: string;
     email?: string;
     mobileNumber?: number;   //a
     password?: string;
@@ -24,6 +25,7 @@ const superAdminSchema = new mongoose.Schema({
     name: {type: String},
     email: { type: String},
     mobileNumber: {type: Number},
+    photo: {type: String},
     password: {type: String},
     confirmPassword: {type: String},
     recoveryEmail: {type: String},
