@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose'
 export interface CommissionDocument extends mongoose.Document {
     country?: string;
     universityName?: string;
-    universityId?: string;
+    universityId?: any[];
     paymentMethod?: string;
     amount?: number;
     percentage?: number;
@@ -26,7 +26,7 @@ export interface CommissionDocument extends mongoose.Document {
 const commissionSchema = new mongoose.Schema({
     country: { type: String },
     universityName: { type: String },
-    universityId: { type: String },
+    universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
     paymentMethod: { type: String },
     amount: { type: Number },
     percentage: { type: Number },
