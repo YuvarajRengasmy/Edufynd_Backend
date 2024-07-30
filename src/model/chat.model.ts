@@ -5,7 +5,7 @@ export interface chatMessageDocument extends mongoose.Document{
     _id?: any;
     superAdminId?: Types.ObjectId;
     staffId?:Types.ObjectId;
-    studentId?:Types.ObjectId;
+    //  studentId?:Types.ObjectId;
     // agentId?:Types.ObjectId;
     // adminId?:Types.ObjectId;
      message?:String;
@@ -26,7 +26,7 @@ const chatMessageSchema = new mongoose.Schema({
     _id: { type: Types.ObjectId, required: true, auto: true },
     superAdminId: { type: Types.ObjectId, required: true, ref: 'SuperAdmin' },
     staffId:{ type: Types.ObjectId,required: true, ref: 'Staff' },
-    studentId:{type: Types.ObjectId,required: true, ref: 'Student' },
+      studentId:{type: Types.ObjectId,required: true, ref: 'Student' },
     // agentId:{ type: Types.ObjectId,required: true, ref: 'Agent' },
     // adminId:{ type: Types.ObjectId,required: true, ref: 'Admin' },
     message: { type: String, required: true },

@@ -10,14 +10,14 @@ const router:Router=Router();
 
 router.get('/',                          
     basicAuthUser,
-    //  checkSession,
+      checkSession,
     getAllFlightTicketEnquiry
 );
 
 
 router.get('/getSingleFlightEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     getSingleFlightTicketEnquiry,
 );
@@ -29,7 +29,7 @@ router.post('/',
 
 router.put('/',          
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkRequestBodyParams('_id'),
     updateFlightTicketEnquiry,
  
@@ -38,7 +38,7 @@ router.put('/',
 
 router.delete('/',               
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteFlightTicketEnquiry
 );
@@ -46,7 +46,7 @@ router.delete('/',
 
 router.put('/getFilterFlightEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     getFilteredFlightTicketEnquiry,
 );
 

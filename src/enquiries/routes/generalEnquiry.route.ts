@@ -10,14 +10,14 @@ const router:Router=Router();
 
 router.get('/',                          
     basicAuthUser,
-    //  checkSession,
+     checkSession,
     getAllGeneralEnquiry
 );
 
 
 router.get('/getSingleGeneralEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     getSingleGeneralEnquiry,
 );
@@ -29,7 +29,7 @@ router.post('/',
 
 router.put('/',          
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkRequestBodyParams('_id'),
     updateGeneralEnquiry,
  
@@ -38,7 +38,7 @@ router.put('/',
 
 router.delete('/',               
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteGeneralEnquiry
 );
@@ -46,7 +46,7 @@ router.delete('/',
 
 router.put('/getFilterGeneralEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     getFilteredGeneralEnquiry,
 );
 
