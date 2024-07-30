@@ -549,7 +549,7 @@ export const getUniversityByCountry = async (req, res) => {
 export const getUniversityByName = async (req, res) => {
     try {
         const { name } = req.params;
-        const university = await University.findOne({ name: name });
+        const university = await University.findOne({universityName: name });
         if (!university) {
           return res.status(404).json({ message: 'University not found' });
         }

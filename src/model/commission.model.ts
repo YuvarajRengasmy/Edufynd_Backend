@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose'
 export interface CommissionDocument extends mongoose.Document {
     country?: string;
     universityName?: string;
+    universityId?: string;
     paymentMethod?: string;
     amount?: number;
     percentage?: number;
@@ -25,6 +26,7 @@ export interface CommissionDocument extends mongoose.Document {
 const commissionSchema = new mongoose.Schema({
     country: { type: String },
     universityName: { type: String },
+    universityId: { type: String },
     paymentMethod: { type: String },
     amount: { type: Number },
     percentage: { type: Number },
@@ -36,25 +38,25 @@ const commissionSchema = new mongoose.Schema({
     flag: { type: String },
     clientName: { type: String },
 
-    // years: [{
-    //     year: {type: String},
-    //     courseTypes: [{
-    //         courseType: {type:String},
-    //         inTake: {type: String},
-    //         value: {type: Number}
-    //     }]
-    // }],
-
     years: [{
-        year: { type: String },
+        year: {type: String},
         courseTypes: [{
-            courseType: { type: String },
-            summer:{type:String},
-            winter:{type:String},
-            fall:{type:String},
-           
+            courseType: {type:String},
+            inTake: {type: String},
+            value: {type: Number}
         }]
     }],
+
+    // years: [{
+    //     year: { type: String },
+    //     courseTypes: [{
+    //         courseType: { type: String },
+    //         summer:{type:String},
+    //         winter:{type:String},
+    //         fall:{type:String},
+           
+    //     }]
+    // }],
 
     createdOn: { type: Date },
     createdBy: { type: String },

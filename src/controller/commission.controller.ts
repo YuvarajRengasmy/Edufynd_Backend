@@ -28,6 +28,17 @@ export const getSingleCommission = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+export const getSingleUniversity = async (req, res) => {
+    try {
+        
+        const data = await Commission.findOne({universityId:req.query.universityId})
+  
+        response(req, res, activity, 'Level-1', 'GetSingle-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-Commission', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
+
 
 
 export let createCommission = async (req, res, next) => {
