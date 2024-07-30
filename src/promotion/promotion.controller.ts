@@ -4,8 +4,9 @@ import { Staff} from '../model/staff.model'
 import { Admin} from '../model/admin.model'
 import { Agent} from '../model/agent.model'
 import { validationResult } from "express-validator";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
+import * as config from '../config';
 
 
 var activity = "Promotion";
@@ -163,5 +164,83 @@ export let getFilteredPromotion   = async (req, res, next) => {
         response(req, res, activity, 'Level-1', 'Get-FilterPromotion', true, 200, { promotionList, promotionCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'Get-FilterPromotion', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+export let createaPromotion = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const data: PromotionDocument = req.body;
+            const userName = req.body.userName; // Array of selected usernames
+            // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
+
+            let users = [];
+
+            // Fetch users based on typeOfUser
+            if (data.typeOfUser === 'student') {
+                users = await Student.find({},{name:1, email:1});
+            } else if (data.typeOfUser === 'admin') {
+                users = await Admin.find({},{name:1, email:1});
+            } else if (data.typeOfUser === 'agent') {
+                users = await Agent.find({},{name:1, email:1});
+            } else if (data.typeOfUser === 'staff') {
+                users = await Staff.find({},{name:1, email:1});
+            }
+
+console.log("jj", users)
+            // Check if any users were found
+            if (users.length > 0) {
+                // Collect usernames for the notification
+                const userNames = users.map((user) => user.name || user.empName || user.agentName);
+
+                // Create a single notification document with all selected usernames
+                const notification = new Promotion({
+                    ...data,
+                    userName: userNames,
+                });
+
+                // Save the notification to the database
+                const savedNotification = await notification.save();
+
+                // Add the notification ID to each selected user's notifications array
+                const updatePromises = users.map((user) => {
+                    user.notificationId.push(savedNotification._id);
+                    return user.save();
+                });
+
+                // Wait for all user updates to be saved
+                await Promise.all(updatePromises);
+                // const mailOptions = {
+                //     from: config.SERVER.EMAIL_USER,
+                //     to: insertStudent.email,
+                //     subject: 'Welcome to EduFynd',
+                //     text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
+                // };
+    
+                // transporter.sendMail(mailOptions, (error, info) => {
+    
+                //     if (error) {
+                //         console.error('Error sending email:', error);
+                //         return res.status(500).json({ message: 'Error sending email' });
+                //     } else {
+                //         console.log('Email sent:', info.response);
+                //         res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
+                //     }
+                // });
+                // response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
+    
+
+                response(req, res, activity, 'Level-1', 'Create-Promotion', true, 200, {}, " Promotion Notifications sent successfully");
+            } else {
+                response(req, res,  activity, 'Level-2', 'Create-Promotion', false, 404, {}, "No users found for the specified type.");
+            }
+        } catch (err) {
+         
+            response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 500, {}, "Internal server error", err.message);
+        }
+    } else {
+        response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };

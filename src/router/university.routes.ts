@@ -12,14 +12,14 @@ const router: Router = Router();
 
 router.get('/',             
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getAllUniversity
 );
 
 
 router.get('/getSingleUniversity',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleUniversity,
 );
@@ -53,13 +53,13 @@ router.delete('/',
 
 router.put('/getFilterUniversity',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getFilteredUniversity,
 );
 
 router.get('/getAllUniversityForWeb',         // get all university for web //without checking session
     basicAuthUser,
-    checkSession,
+    // checkSession,
     getAllUniversityForWeb
 );
 
@@ -104,5 +104,17 @@ router.get('/getUniversityByName',
     basicAuthUser,
     getUniversityByName
 )
+
+
+
+//Public API
+
+router.get('/public',  getAllUniversity);
+
+router.get('/publicGetSingleUniversity',checkQuery('_id'), getSingleUniversity);
+
+router.put('/publicGetFilterUniversity', getFilteredUniversity);
+
+router.get('/publicGetAllUniversityForWeb',getAllUniversityForWeb);
 
 export default router
