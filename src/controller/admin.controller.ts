@@ -72,7 +72,6 @@ export let createAdmin = async (req, res, next) => {
 
               
                 const createData = new Admin(adminDetails);
-                createData.createdBy = 'Admin'
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],

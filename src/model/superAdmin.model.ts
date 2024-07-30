@@ -35,7 +35,7 @@ const superAdminSchema = new mongoose.Schema({
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
     isDeleted: { type: Boolean, default: false },
-    createdOn: { type: Date },
+    createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },

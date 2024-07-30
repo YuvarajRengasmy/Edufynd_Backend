@@ -4,7 +4,7 @@ import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, delet
       updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent } from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser, validateAgentId } from '../middleware/checkAuth';
+import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
 const router: Router = Router();
@@ -27,6 +27,7 @@ router.get('/getSingleAgent',
 router.post('/',
     basicAuthUser,
     checkRequestBodyParams('email'),
+  
     createAgent
 );
 

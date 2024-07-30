@@ -58,6 +58,9 @@ import Event from '../events/event.routes'
 //Testimonial
 import Testimonial from '../testimonial/testimonial.routes'
 
+//ELT
+import ELT from '../ELT/elt.routes'
+
 
 
 //Global Setting Routes
@@ -137,6 +140,9 @@ router.use('/event', Event)
 
 //Testimonial
 router.use('/testimonial', Testimonial)
+
+//ELT
+router.use('/elt', ELT)
 
 
 
