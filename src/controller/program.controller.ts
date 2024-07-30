@@ -396,30 +396,6 @@ export const getProgramsByUniversityName = async (req, res) => {
 
 
 
-// export let getProgramDetailsByUniversity = async (req, res, next) => {
-//     try {
-
-//         var findQuery;
-//         var andList: any = []
-//         var limit = req.body.limit ? req.body.limit : 0;
-//         var page = req.body.page ? req.body.page : 0;
-//         andList.push({ isDeleted: false })
-//         andList.push({ status: 1 })      
-//         if (req.body.universityId) {
-//             andList.push({ universityId: req.body.universityId })
-//         }
-
-//         findQuery = (andList.length > 0) ? { $and: andList } : {}
-
-//         const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('universityId',{universityLogo:1});
-
-//         const programCount = await Program.find(findQuery).count()
-//         response(req, res, activity, 'Level-1', 'Get-Program-Details By University', true, 200, { programList, programCount }, clientError.success.fetchedSuccessfully);
-//     } catch (err: any) {
-//         response(req, res, activity, 'Level-3', 'Get-Program-Details By University', false, 500, {}, errorMessage.internalServer, err.message);
-//     }
-// };
-
 
 export const getProgramDetailsByUniversity = async (req, res, next) => {
     try {

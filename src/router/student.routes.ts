@@ -5,7 +5,7 @@ import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStuden
 import { forgotPassword } from '../controller/login.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser } from '../middleware/checkAuth';
+import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded'
 const router:Router=Router();
@@ -85,6 +85,7 @@ router.put('/createStudentBySuperAdmin',             //create student by super A
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
+  
     createStudentBySuperAdmin
 );
 

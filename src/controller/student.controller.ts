@@ -457,11 +457,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                     res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
                 }
             });
-            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {
-                student: insertStudent,
-
-
-            }, 'Student created successfully by SuperAdmin.');
+            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
 
         } catch (err: any) {
             console.log(err)

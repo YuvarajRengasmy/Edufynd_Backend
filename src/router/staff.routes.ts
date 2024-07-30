@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
     createStaffBySuperAdmin, createStudentByStaff } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser } from '../middleware/checkAuth';
+import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
 

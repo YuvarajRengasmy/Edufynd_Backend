@@ -205,7 +205,6 @@ export let forgotPassword = async (req, res, next) => {
 
 
 
-
 export let resetPassword = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
