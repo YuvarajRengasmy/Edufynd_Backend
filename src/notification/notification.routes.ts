@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllNotification, getSingleNotification,getSingleNotificationforStudent, sendNotificationsToUsers, createNotification, updateNotification, deleteNotification, getFilteredNotification } from './notification.controller';
+import { getAllNotification, getSingleNotification, createNotification, updateNotification, deleteNotification, getFilteredNotification } from './notification.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 
@@ -17,11 +17,6 @@ router.get('/getSingleNotification',
     getSingleNotification,
 );
 
-router.get('/getSingleNotificationforStudent',
-    basicAuthUser,
-    checkQuery('_id'),
-    getSingleNotificationforStudent,
-);
 
 
 router.post('/',
@@ -29,10 +24,6 @@ router.post('/',
     createNotification
 );
 
-router.post('/sendNotification',
-    basicAuthUser,
-    sendNotificationsToUsers
-);
 
 
 router.put('/',                   
