@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProgram, 
-    getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, 
+    getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, getProgramUniversity,
     getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
     updateProgramApplications} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
@@ -90,4 +90,12 @@ basicAuthUser,
 updateProgramApplications
 )
 
+
+
+
+router.get('/getProgramUniversity',
+    basicAuthUser,
+    checkQuery('universityId'),
+    getProgramUniversity,
+);
 export default router
