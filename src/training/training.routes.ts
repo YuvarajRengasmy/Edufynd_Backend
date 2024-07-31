@@ -21,12 +21,14 @@ router.get('/getSingleTraining',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createTraining
 );
 
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     updateTraining
 );

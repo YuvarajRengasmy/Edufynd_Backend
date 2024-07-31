@@ -23,6 +23,7 @@ router.get('/getSingleNotification',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createNotification
 );
 
@@ -30,6 +31,7 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     // checkRequestBodyParams('_id'),
     updateNotification

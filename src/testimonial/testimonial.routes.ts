@@ -22,12 +22,14 @@ router.get('/getSingleTestimonial',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createTestimonial
 );
 
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     updateTestimonial
 );

@@ -3,7 +3,6 @@ import * as mongoose from 'mongoose'
 export interface StudentDocument extends mongoose.Document {
     _id?: any;
     studentCode?: string;
- 
     source?: string;
     name?: string;
     citizenship?: string;
@@ -72,7 +71,7 @@ export interface StudentDocument extends mongoose.Document {
 
 const studentSchema = new mongoose.Schema({
      _id: { type: mongoose.Types.ObjectId, auto: true },
-    // notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
+    notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
     studentCode: { type: String },
     source: { type: String },
     name: { type: String },

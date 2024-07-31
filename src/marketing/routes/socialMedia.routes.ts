@@ -3,6 +3,7 @@ import { getAllSocialMedia, getSingleSocialMedia, createSocialMedia, updateSocia
      deleteSocialMedia, getFilteredSocialMedia } from '../controller/socialMedia.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
+import { checkSession } from '../../utils/tokenManager';
 
 
 const router: Router = Router();
@@ -21,12 +22,14 @@ router.get('/getSingleSocialMedia',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createSocialMedia
 );
 
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     updateSocialMedia
 );
