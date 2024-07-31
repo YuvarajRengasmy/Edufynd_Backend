@@ -11,7 +11,7 @@ var activity = "StudentEnquiry";
 
 export let getAllStudentEnquiry = async (req, res, next) => {
     try {
-        const data = await StudentEnquiry.find({ isDeleted: false });
+        const data = await StudentEnquiry.find({ isDeleted: false }).sort({ studentCode: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-StudentEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
@@ -175,7 +175,7 @@ export let getFilteredStudentEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await StudentEnquiry.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const studentList = await StudentEnquiry.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page)
 
         const studentCount = await StudentEnquiry.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStudentEnquiry', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);

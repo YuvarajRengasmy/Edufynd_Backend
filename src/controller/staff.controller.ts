@@ -169,7 +169,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
             };
-
+console.log("33", mailOptions)
             transporter.sendMail(mailOptions, (error, info) => {
 
                 if (error) {

@@ -10,7 +10,7 @@ var activity = "Global-InTake";
 
 export const getAllInTake = async (req, res) => {
     try {
-        const data = await InTake.find()
+        const data = await InTake.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-InTake', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -109,7 +109,7 @@ export let getFilteredInTake   = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const intakeList = await InTake.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const intakeList = await InTake.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const intakeCount = await InTake.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterInTak', true, 200, { intakeList, intakeCount }, clientError.success.fetchedSuccessfully);

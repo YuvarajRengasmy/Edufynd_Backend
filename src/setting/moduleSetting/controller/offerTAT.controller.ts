@@ -10,7 +10,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 export const getAllOfferTAT = async (req, res) => {
     try {
-        const data = await OfferTAT.find()
+        const data = await OfferTAT.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-OfferTAT', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -100,7 +100,7 @@ export const updateOfferTAT = async (req, res) => {
             
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await OfferTAT.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await OfferTAT.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
             const dropDownCount = await OfferTAT.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter OfferTAT', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);

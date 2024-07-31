@@ -3,6 +3,7 @@ import { getAllNotification, getSingleNotification, createNotification, updateNo
     deleteNotification, getFilteredNotification, } from './notification.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
+import { checkSession } from '../utils/tokenManager';
 
 
 const router: Router = Router();
@@ -22,6 +23,7 @@ router.get('/getSingleNotification',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createNotification
 );
 
@@ -29,6 +31,7 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     // checkRequestBodyParams('_id'),
     updateNotification

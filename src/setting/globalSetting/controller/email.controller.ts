@@ -10,7 +10,7 @@ var activity = "Global-Email-Template";
 
 export const getAllEmailTemplate = async (req, res) => {
     try {
-        const data = await Email.find()
+        const data = await Email.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Email', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -106,7 +106,7 @@ export let getFilteredEmail = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const emailList = await Email.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const emailList = await Email.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const emailCount = await Email.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterEmail', true, 200, { emailList, emailCount }, clientError.success.fetchedSuccessfully);

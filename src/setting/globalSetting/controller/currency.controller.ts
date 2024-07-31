@@ -10,7 +10,7 @@ var activity = "Global-Currency";
 
 export const getAllCurrency = async (req, res) => {
     try {
-        const data = await Currency.find()
+        const data = await Currency.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Currency', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -81,7 +81,7 @@ export let getFilteredCurrency = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const currencyList = await Currency.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const currencyList = await Currency.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const currencyCount = await Currency.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterCurrency', true, 200, { currencyList, currencyCount }, clientError.success.fetchedSuccessfully);

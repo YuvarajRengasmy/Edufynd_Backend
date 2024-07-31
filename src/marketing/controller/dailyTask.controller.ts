@@ -10,7 +10,7 @@ var activity = "DailyTask";
 
 export const getAllDailyTask = async (req, res) => {
     try {
-        const data = await DailyTask.find()
+        const data = await DailyTask.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-DailyTask', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -114,7 +114,7 @@ export let getFilteredDailyTask = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const dailyTaskList = await DailyTask.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const dailyTaskList = await DailyTask.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const dailyTaskCount = await DailyTask.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter DailyTask', true, 200, { dailyTaskList, dailyTaskCount }, clientError.success.fetchedSuccessfully);

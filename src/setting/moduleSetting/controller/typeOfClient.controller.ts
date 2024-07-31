@@ -10,7 +10,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 export const getAllTypeOfClient = async (req, res) => {
     try {
-        const data = await TypeOfClient.find()
+        const data = await TypeOfClient.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-TypeOfClient', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -100,7 +100,7 @@ export const updateTypeOfClient = async (req, res) => {
             
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await TypeOfClient.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await TypeOfClient.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
             const dropDownCount = await TypeOfClient.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter TypeOfClient', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);

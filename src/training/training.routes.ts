@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining } from './training.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
+import { checkSession } from '../utils/tokenManager';
 
 
 const router: Router = Router();
@@ -20,12 +21,14 @@ router.get('/getSingleTraining',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createTraining
 );
 
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     updateTraining
 );

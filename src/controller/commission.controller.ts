@@ -10,7 +10,8 @@ var activity = "Commission";
 
 export const getAllCommission = async (req, res) => {
     try {
-        const data = await Commission.find()
+        const data = await Commission.find().sort({ _id: -1 })
+        console.log("66", data)
         response(req, res, activity, 'Level-1', 'GetAll-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -179,8 +180,8 @@ export let updateCommission = async (req, res, next) => {
             }
            
             findQuery = (andList.length > 0) ? { $and: andList } : {}
-
-            const dropDownList = await Commission.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+         
+            const dropDownList = await Commission.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
             const dropDownCount = await Commission.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter Commission', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);

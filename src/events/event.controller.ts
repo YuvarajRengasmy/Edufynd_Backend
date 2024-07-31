@@ -14,7 +14,7 @@ var activity = "Event";
 
 export const getAllEvent = async (req, res) => {
     try {
-        const data = await Event.find()
+        const data = await Event.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Event', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -175,7 +175,7 @@ export let getFilteredEvent = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const eventList = await Event.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const eventList = await Event.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const eventCount = await Event.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterEvent', true, 200, { eventList, eventCount }, clientError.success.fetchedSuccessfully);

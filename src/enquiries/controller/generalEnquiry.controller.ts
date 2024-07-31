@@ -10,7 +10,7 @@ var activity = "GeneralEnquiry";
 
 export let getAllGeneralEnquiry = async (req, res, next) => {
     try {
-        const data = await GeneralEnquiry.find({ isDeleted: false });
+        const data = await GeneralEnquiry.find({ isDeleted: false }).sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-General Enquiry', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-General Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
@@ -118,7 +118,7 @@ export let getFilteredGeneralEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const generalEnquiryList = await GeneralEnquiry.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const generalEnquiryList = await GeneralEnquiry.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const generalEnquiryCount = await GeneralEnquiry.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter General Enquiry', true, 200, { generalEnquiryList, generalEnquiryCount }, clientError.success.fetchedSuccessfully);
