@@ -308,7 +308,7 @@ export const csvToJson = async (req, res) => {
                 campus: data.Campus ? data.Campus.split(',') : [],
                 applicationFee: data.ApplicationFee,
                 country: data.Country,
-                courseType: data.CourseType ? data.CourseType.split(',') : [],
+                courseType: data.CourseType,                    // ? data.CourseType.split(',') : [],
                 programTitle: data.ProgramTitle,
                 currency: data.Currency,
                 flag: data.Flag,
