@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProgram, 
     getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, getProgramUniversity,
-    getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
+    getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,getProgramCategory,
     updateProgramApplications} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -96,7 +96,11 @@ router.get('/getProgramUniversity',
     getProgramUniversity,
 );
 
-
+router.get('/getProgramCategory',
+    basicAuthUser,
+    checkQuery('popularCategories'),
+    getProgramCategory,
+)
 
 
 /// Public API
