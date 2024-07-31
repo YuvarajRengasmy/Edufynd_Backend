@@ -1,12 +1,13 @@
 import { Promotion, PromotionDocument } from './promotion.model'
-import { Student} from '../model/student.model'
-import { Staff} from '../model/staff.model'
-import { Admin} from '../model/admin.model'
-import { Agent} from '../model/agent.model'
+import { Student } from '../model/student.model'
+import { Staff } from '../model/staff.model'
+import { Admin } from '../model/admin.model'
+import { Agent } from '../model/agent.model'
 import { validationResult } from "express-validator";
-import { response, transporter} from "../helper/commonResponseHandler";
+import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import * as config from '../config';
+import { format } from 'date-fns'; // To format the date
 
 
 var activity = "Promotion";
@@ -34,61 +35,95 @@ export const getSinglePromotion = async (req, res) => {
 }
 
 
+const stripHtmlTags = (html) => {
+    return html.replace(/<\/?[^>]+(>|$)/g, "");
+};
+
 
 export let createPromotion = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const data: PromotionDocument = req.body;
+            const data = req.body;
             const userName = req.body.userName; // Array of selected usernames
-            // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
 
             let users = [];
 
             // Fetch users based on typeOfUser
             if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: userName } });
+                users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
             } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: userName } });
+                users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
             } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: userName } });
+                users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
             } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: userName } });
+                users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
             }
 
             // Check if any users were found
             if (users.length > 0) {
-                // Collect usernames for the notification
+                // Collect usernames and emails for the notification
                 const userNames = users.map((user) => user.name || user.empName || user.agentName);
+                const userEmails = users.map((user) => user.email);
 
-                // Create a single notification document with all selected usernames
-                const notification = new Promotion({
+                // Create a single notification document with all selected usernames and emails
+                const promotion = new Promotion({
                     ...data,
                     userName: userNames,
+                    userEmail: userEmails
                 });
 
-                // Save the notification to the database
-                const savedNotification = await notification.save();
+                // Save the promotion to the database
+                const savedPromotion = await promotion.save();
+                const sanitizedContent = stripHtmlTags(savedPromotion.content);
 
-                // Add the notification ID to each selected user's notifications array
-                const updatePromises = users.map((user) => {
-                    user.notificationId.push(savedNotification._id);
-                    return user.save();
+                // Prepare email attachments
+                const attachments = [];
+                if (savedPromotion.uploadImage) {
+                    const timestamp = format(new Date(), 'yyyyMMdd_HHmmss');
+                    const dynamicFilename = `${savedPromotion.subject.replace(/\s+/g, '_')}_${timestamp}.jpg`;
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: savedPromotion.uploadImage.split("base64,")[1],
+                        encoding: 'base64'
+                    });
+                }
+                // Send emails to all users
+                const emailPromises = userEmails.map((email, index) => {
+                    const mailOptions = {
+                        from: config.SERVER.EMAIL_USER,
+                        to: email,
+                        subject:  `${savedPromotion.subject}`,
+                        text: `Hello ${userNames[index]},\n\n${sanitizedContent}\n\nBest regards,\nAfynd Private Limited\nChennai.`,
+                        attachments: attachments.length > 0 ? attachments : []
+                    };
+
+                    // return transporter.sendMail(mailOptions);
+                    transporter.sendMail(mailOptions, (error, info) => {
+
+                        if (error) {
+                            console.error('Error sending email:', error);
+                            return res.status(500).json({ message: 'Error sending email' });
+                        } else {
+                            console.log('Email sent:', info.response);
+                            res.status(201).json({ message: 'You have received a Promotion Notification', student: savedPromotion });
+                        }
+                    });
                 });
 
-                // Wait for all user updates to be saved
-                await Promise.all(updatePromises);
+                // Wait for all emails to be sent
+                await Promise.all(emailPromises);
 
-                response(req, res, activity, 'Level-1', 'Create-Promotion', true, 200, {}, " Promotion Notifications sent successfully");
+                response(req, res, activity, 'Level-1', 'Create-Promotion', true, 200, {}, "Promotion Notifications sent successfully via Email");
             } else {
-                response(req, res,  activity, 'Level-2', 'Create-Promotion', false, 404, {}, "No users found for the specified type.");
+                response(req, res, activity, 'Level-2', 'Create-Promotion', false, 404, {}, "No users found for the specified type.");
             }
         } catch (err) {
-         
-            response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 500, {}, "Internal server error", err.message);
+            response(req, res, activity, 'Level-3', 'Create-Promotion', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Create-Promotion', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };
 
@@ -98,19 +133,19 @@ export const updatePromotion = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const promotionData: PromotionDocument = req.body;
-            let statusData = await Promotion.findByIdAndUpdate({_id:promotionData._id }, {
+            let statusData = await Promotion.findByIdAndUpdate({ _id: promotionData._id }, {
                 $set: {
                     typeOfUser: promotionData.typeOfUser,
-                    userName:promotionData.userName,
+                    userName: promotionData.userName,
                     subject: promotionData.subject,
                     content: promotionData.content,
                     uploadImage: promotionData.uploadImage,
-                 
+
                     modifiedOn: new Date(),
-                    modifiedBy:  promotionData.modifiedBy,
+                    modifiedBy: promotionData.modifiedBy,
                 },
-              
-            },{ new: true });
+
+            }, { new: true });
 
             response(req, res, activity, 'Level-2', 'Update-Promotion', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
@@ -123,7 +158,7 @@ export const updatePromotion = async (req, res) => {
 }
 
 export let deletePromotion = async (req, res, next) => {
-  
+
     try {
         let id = req.query._id;
         const data = await Promotion.findByIdAndDelete({ _id: id })
@@ -136,7 +171,7 @@ export let deletePromotion = async (req, res, next) => {
 
 
 
-export let getFilteredPromotion   = async (req, res, next) => {
+export let getFilteredPromotion = async (req, res, next) => {
     try {
         var findQuery;
         var andList: any = []
@@ -168,79 +203,63 @@ export let getFilteredPromotion   = async (req, res, next) => {
 };
 
 
-export let createaPromotion = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const data: PromotionDocument = req.body;
-            const userName = req.body.userName; // Array of selected usernames
-            // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
 
-            let users = [];
 
-            // Fetch users based on typeOfUser
-            if (data.typeOfUser === 'student') {
-                users = await Student.find({},{name:1, email:1});
-            } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({},{name:1, email:1});
-            } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({},{name:1, email:1});
-            } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({},{name:1, email:1});
-            }
 
-console.log("jj", users)
-            // Check if any users were found
-            if (users.length > 0) {
-                // Collect usernames for the notification
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
 
-                // Create a single notification document with all selected usernames
-                const notification = new Promotion({
-                    ...data,
-                    userName: userNames,
-                });
+// export let createPromotion = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const data: PromotionDocument = req.body;
+//             const userName = req.body.userName; // Array of selected usernames
+//             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
 
-                // Save the notification to the database
-                const savedNotification = await notification.save();
+//             let users = [];
 
-                // Add the notification ID to each selected user's notifications array
-                const updatePromises = users.map((user) => {
-                    user.notificationId.push(savedNotification._id);
-                    return user.save();
-                });
+//             // Fetch users based on typeOfUser
+//             if (data.typeOfUser === 'student') {
+//                 users = await Student.find({ name: { $in: userName } });
+//             } else if (data.typeOfUser === 'admin') {
+//                 users = await Admin.find({ name: { $in: userName } });
+//             } else if (data.typeOfUser === 'agent') {
+//                 users = await Agent.find({ agentName: { $in: userName } });
+//             } else if (data.typeOfUser === 'staff') {
+//                 users = await Staff.find({ empName: { $in: userName } });
+//             }
 
-                // Wait for all user updates to be saved
-                await Promise.all(updatePromises);
-                // const mailOptions = {
-                //     from: config.SERVER.EMAIL_USER,
-                //     to: insertStudent.email,
-                //     subject: 'Welcome to EduFynd',
-                //     text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
-                // };
-    
-                // transporter.sendMail(mailOptions, (error, info) => {
-    
-                //     if (error) {
-                //         console.error('Error sending email:', error);
-                //         return res.status(500).json({ message: 'Error sending email' });
-                //     } else {
-                //         console.log('Email sent:', info.response);
-                //         res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
-                //     }
-                // });
-                // response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
-    
+//             // Check if any users were found
+//             if (users.length > 0) {
+//                 // Collect usernames for the notification
+//                 const userNames = users.map((user) => user.name || user.empName || user.agentName);
 
-                response(req, res, activity, 'Level-1', 'Create-Promotion', true, 200, {}, " Promotion Notifications sent successfully");
-            } else {
-                response(req, res,  activity, 'Level-2', 'Create-Promotion', false, 404, {}, "No users found for the specified type.");
-            }
-        } catch (err) {
-         
-            response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 500, {}, "Internal server error", err.message);
-        }
-    } else {
-        response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    }
-};
+//                 // Create a single notification document with all selected usernames
+//                 const notification = new Promotion({
+//                     ...data,
+//                     userName: userNames,
+//                 });
+
+//                 // Save the notification to the database
+//                 const savedNotification = await notification.save();
+
+//                 // Add the notification ID to each selected user's notifications array
+//                 const updatePromises = users.map((user) => {
+//                     user.notificationId.push(savedNotification._id);
+//                     return user.save();
+//                 });
+
+//                 // Wait for all user updates to be saved
+//                 await Promise.all(updatePromises);
+
+//                 response(req, res, activity, 'Level-1', 'Create-Promotion', true, 200, {}, " Promotion Notifications sent successfully");
+//             } else {
+//                 response(req, res,  activity, 'Level-2', 'Create-Promotion', false, 404, {}, "No users found for the specified type.");
+//             }
+//         } catch (err) {
+
+//             response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 500, {}, "Internal server error", err.message);
+//         }
+//     } else {
+//         response(req, res,  activity, 'Level-3', 'Create-Promotion', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+//     }
+// };

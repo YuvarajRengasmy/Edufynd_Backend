@@ -112,4 +112,10 @@ router.get('/publicGetAllProgramForWeb',getAllProgramForWeb);
 
 router.put('/publicGetUniversityFilterProgram',getFilteredProgram);
 
+router.get('/publicGetProgramByUniversity',checkQuery('universityId'),getProgramsByUniversityName);
+
+router.get('/publicGetProgramUniversity',checkQuery('universityId'),getProgramUniversity);
+
+
+
 export default router
