@@ -14,7 +14,7 @@ var activity = "Training";
 
 export const getAllTraining = async (req, res) => {
     try {
-        const data = await Training.find()
+        const data = await Training.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Training', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -162,7 +162,7 @@ export let getFilteredTraining   = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const trainingList = await Training.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const trainingList = await Training.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const trainingCount = await Training.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterTraining', true, 200, { trainingList, trainingCount }, clientError.success.fetchedSuccessfully);

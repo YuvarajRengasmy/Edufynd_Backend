@@ -10,7 +10,7 @@ var activity = "Global-Year";
 
 export const getAllYear = async (req, res) => {
     try {
-        const data = await Year.find()
+        const data = await Year.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Year', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -113,7 +113,7 @@ export let getFilteredYear   = async (req, res, next) => {
         
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const yearList = await Year.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const yearList = await Year.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const yearCount = await Year.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter-Year', true, 200, { yearList, yearCount }, clientError.success.fetchedSuccessfully);

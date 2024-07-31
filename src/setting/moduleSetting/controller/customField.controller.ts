@@ -10,7 +10,7 @@ var activity = "ModuleSetting-Add Label";
 
 export const getAllCustomField = async (req, res) => {
     try {
-        const data = await CustomField.find()
+        const data = await CustomField.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-CustomFields', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {

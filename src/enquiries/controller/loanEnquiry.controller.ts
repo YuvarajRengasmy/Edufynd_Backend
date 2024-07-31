@@ -10,7 +10,7 @@ var activity = "LoanEnquiry";
 
 export let getAllLoanEnquiry = async (req, res, next) => {
     try {
-        const data = await LoanEnquiry.find({ isDeleted: false });
+        const data = await LoanEnquiry.find({ isDeleted: false }).sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-LoanEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-LoanEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
@@ -160,7 +160,7 @@ export let getFilteredLoanEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const loanList = await LoanEnquiry.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const loanList = await LoanEnquiry.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const loanCount = await LoanEnquiry.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterLoanEnquiry', true, 200, { loanList, loanCount }, clientError.success.fetchedSuccessfully);

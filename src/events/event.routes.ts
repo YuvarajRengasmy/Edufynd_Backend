@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent } from './event.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
+import { checkSession } from '../utils/tokenManager';
 
 
 const router: Router = Router();
@@ -20,12 +21,14 @@ router.get('/getSingleEvent',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createEvent
 );
 
 
 router.put('/',                   
     basicAuthUser,
+    checkSession,
     // checkQuery('_id'),
     updateEvent
 );
@@ -39,6 +42,7 @@ router.delete('/',
 
 router.put('/getFilterEvent',
     basicAuthUser,
+    checkSession,
     getFilteredEvent,
 );
 

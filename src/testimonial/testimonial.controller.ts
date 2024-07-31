@@ -14,7 +14,7 @@ var activity = "Testimonial";
 
 export const getAllTestimonial = async (req, res) => {
     try {
-        const data = await Testimonial.find()
+        const data = await Testimonial.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Testimonial', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -165,7 +165,7 @@ export let getFilteredTestimonial   = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const testimonialList = await Testimonial.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const testimonialList = await Testimonial.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const testimonialCount = await Testimonial.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter-Testimonial', true, 200, { testimonialList, testimonialCount }, clientError.success.fetchedSuccessfully);

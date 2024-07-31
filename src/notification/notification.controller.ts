@@ -14,7 +14,7 @@ var activity = "Notification";
 
 export const getAllNotification = async (req, res) => {
     try {
-        const data = await Notification.find()
+        const data = await Notification.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Notification', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -160,7 +160,7 @@ export let getFilteredNotification   = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const notificationList = await Notification.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const notificationList = await Notification.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const notificationCount = await Notification.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterNotification', true, 200, { notificationList, notificationCount }, clientError.success.fetchedSuccessfully);

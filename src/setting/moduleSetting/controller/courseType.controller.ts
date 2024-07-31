@@ -10,7 +10,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 export const getAllCourseTypeList = async (req, res) => {
     try {
-        const data = await CourseTypeList.find()
+        const data = await CourseTypeList.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Course Type', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -100,7 +100,7 @@ export const updateCourseTypeList = async (req, res) => {
             
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await CourseTypeList.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await CourseTypeList.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
             const dropDownCount = await CourseTypeList.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter Course Type', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);

@@ -10,7 +10,7 @@ var activity = "ForexEnquiry";
 
 export let getAllForexEnquiry = async (req, res, next) => {
     try {
-        const data = await Forex.find({ isDeleted: false });
+        const data = await Forex.find({ isDeleted: false }).sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Forex Enquiry', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Forex Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
@@ -161,7 +161,7 @@ export let getFilteredForexEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const forexList = await Forex.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const forexList = await Forex.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const forexCount = await Forex.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Forex Enquiry', true, 200, { forexList, forexCount }, clientError.success.fetchedSuccessfully);
