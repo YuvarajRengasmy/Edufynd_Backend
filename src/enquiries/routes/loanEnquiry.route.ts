@@ -10,14 +10,14 @@ const router:Router=Router();
 
 router.get('/',                          
     basicAuthUser,
-    //  checkSession,
+      checkSession,
     getAllLoanEnquiry
 );
 
 
 router.get('/getSingleLoanEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     getSingleLoanEnquiry,
 );
@@ -29,7 +29,7 @@ router.post('/',
 
 router.put('/',          
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkRequestBodyParams('_id'),
     updateLoanEnquiry,
  
@@ -38,7 +38,7 @@ router.put('/',
 
 router.delete('/',               
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteLoanEnquiry
 );
@@ -46,7 +46,7 @@ router.delete('/',
 
 router.put('/getFilterLoanEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     getFilteredLoanEnquiry,
 );
 

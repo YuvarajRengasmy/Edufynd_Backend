@@ -83,6 +83,7 @@ export const doctorSendMessages = async (req, res, next) => {
   }
 };
 export const StudentSendMessages = async (req, res, next) => {
+  console.log("pp")
   try {
     const chatDetails = req.body;
     if (!chatDetails.studentId || !chatDetails.staffId) {
@@ -104,6 +105,7 @@ export const StudentSendMessages = async (req, res, next) => {
       sentOn: chatDetails.sentOn,
       isSeen:chatDetails.isSeen
     });
+    console.log("kk", newMessage)
     const io = req.app.get('socketio');
     if (io) {
       io.emit('userStatus', { studentId: chatDetails.studentId, status: 'online' });
@@ -148,7 +150,7 @@ export let getDoctorChats = async (req, res, next) => {
 
 export let getAllChats = async (req, res, next) => {
   try{
-    const chatDetails = await ChatMessage.find({isDeleted: false}).populate('superAdminId',{name:1,photo:1}).populate('studentId',{name:1,photo:1}).populate('staffId',{empName:1,photo:1});
+    const chatDetails = await ChatMessage.find({isDeleted: false}).populate('superAdminId',{name:1,photo:1}).populate('staffId',{empName:1,photo:1});
     response(req, res, activity, 'Level-2', 'Chat', true, 200, chatDetails, clientError.success.fetchedSuccessfully);
   }
   catch(err:any){

@@ -32,10 +32,11 @@ router.post('/doctorChat', // create chat message for user
 router.post('/StudentChat', // create chat message for user
   basicAuthUser,
   checkSession,
-  checkRequestBodyParams('studentId'),
+ 
   checkRequestBodyParams('staffId'),
   checkRequestBodyParams('message'),
-  StudentSendMessages
+  checkRequestBodyParams('studentId'),
+ StudentSendMessages
 );
 
 router.post('/userChat', // create chat message for user

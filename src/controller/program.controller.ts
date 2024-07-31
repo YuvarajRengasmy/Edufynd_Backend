@@ -476,3 +476,15 @@ export const getProgramUniversity = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Program', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+
+export const getProgramCategory = async (req, res) => {
+    try {
+        
+        const data = await Program.find({popularCategories:req.query.popularCategories})
+  
+        response(req, res, activity, 'Level-1', 'GetSingle-Program', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-Program', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}

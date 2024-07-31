@@ -10,14 +10,14 @@ const router:Router=Router();
 
 router.get('/',                          
     basicAuthUser,
-    //  checkSession,
+      checkSession,
     getAllAccommodation
 );
 
 
 router.get('/getSingleAccommodation',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     getSingleAccommodation,
 );
@@ -29,7 +29,7 @@ router.post('/',
 
 router.put('/',             
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkRequestBodyParams('_id'),
     updateAccommodation,
  
@@ -38,7 +38,7 @@ router.put('/',
 
 router.delete('/',                
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteAccommodationEnquiry
 );
@@ -46,7 +46,7 @@ router.delete('/',
 
 router.put('/getFilterAccommodation',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     getFilteredAccommodation,
 );
 

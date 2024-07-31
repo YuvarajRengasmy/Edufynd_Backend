@@ -10,14 +10,14 @@ const router:Router=Router();
 
 router.get('/',                          
     basicAuthUser,
-    //  checkSession,
+      checkSession,
     getAllForexEnquiry
 );
 
 
 router.get('/getSingleForexEnquiry',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     getSingleForexEnquiry,
 );
@@ -29,7 +29,7 @@ router.post('/',
 
 router.put('/',          
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkRequestBodyParams('_id'),
     updateForexEnquiry,
  
@@ -38,7 +38,7 @@ router.put('/',
 
 router.delete('/',               
     basicAuthUser,
-    // checkSession,
+     checkSession,
     checkQuery('_id'),
     deleteForexEnquiry
 );
@@ -46,7 +46,7 @@ router.delete('/',
 
 router.put('/getFilterForex',
     basicAuthUser,
-    // checkSession,
+     checkSession,
     getFilteredForexEnquiry,
 );
 
