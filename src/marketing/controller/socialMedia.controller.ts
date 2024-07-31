@@ -9,7 +9,7 @@ var activity = "SocialMedia";
 
 export const getAllSocialMedia = async (req, res) => {
     try {
-        const data = await SocialMedia.find()
+        const data = await SocialMedia.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-SocialMedia', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -108,7 +108,7 @@ export let getFilteredSocialMedia = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const socialMediaList = await SocialMedia.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const socialMediaList = await SocialMedia.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const socialMediaCount = await SocialMedia.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter SocialMedia', true, 200, { socialMediaList, socialMediaCount }, clientError.success.fetchedSuccessfully);

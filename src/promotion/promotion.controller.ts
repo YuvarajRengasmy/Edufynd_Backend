@@ -16,7 +16,7 @@ var activity = "Promotion";
 
 export const getAllPromotion = async (req, res) => {
     try {
-        const data = await Promotion.find()
+        const data = await Promotion.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Promotion', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -44,7 +44,7 @@ export let createPromotion = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const data = req.body;
+            const data: PromotionDocument = req.body
             const userName = req.body.userName; // Array of selected usernames
 
             let users = [];
@@ -193,7 +193,7 @@ export let getFilteredPromotion = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const promotionList = await Promotion.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const promotionList = await Promotion.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const promotionCount = await Promotion.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterPromotion', true, 200, { promotionList, promotionCount }, clientError.success.fetchedSuccessfully);

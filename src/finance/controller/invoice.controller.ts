@@ -12,7 +12,7 @@ var activity = "Invoice";
 
 export let getAllInvoice = async (req, res, next) => {
     try {
-        const data = await Invoice.find();
+        const data = await Invoice.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Invoice', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Invoice', false, 500, {}, errorMessage.internalServer, err.message);
@@ -167,7 +167,7 @@ export let getFilteredInvoice = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const invoiceList = await Invoice.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const invoiceList = await Invoice.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const invoiceCount = await Invoice.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Invoice', true, 200, { invoiceList, invoiceCount }, clientError.success.fetchedSuccessfully);

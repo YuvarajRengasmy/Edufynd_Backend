@@ -10,7 +10,7 @@ var activity = "Campaign";
 
 export const getAllCampaign = async (req, res) => {
     try {
-        const data = await Campaign.find()
+        const data = await Campaign.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Campaign', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -113,7 +113,7 @@ export let getFilteredCampaign = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const campaignList = await Campaign.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const campaignList = await Campaign.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const campaignCount = await Campaign.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Campaign', true, 200, { campaignList, campaignCount }, clientError.success.fetchedSuccessfully);

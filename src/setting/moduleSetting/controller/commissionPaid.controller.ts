@@ -10,7 +10,7 @@ var activity = "ModuleSetting-DropDown Setting In All Module";
 
 export const getAllCommissionPaid = async (req, res) => {
     try {
-        const data = await CommissionPaid.find()
+        const data = await CommissionPaid.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-CommissionPaid', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -102,7 +102,7 @@ export const updateCommissionPaid = async (req, res) => {
            
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await CommissionPaid.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await CommissionPaid.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
             const dropDownCount = await CommissionPaid.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter CommissionPaid', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);

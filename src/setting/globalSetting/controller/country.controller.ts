@@ -10,7 +10,7 @@ var activity = "Global-Country";
 
 export const getAllCountry = async (req, res) => {
     try {
-        const data = await Country.find()
+        const data = await Country.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Country', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -99,7 +99,7 @@ export let getFilteredCountry = async (req, res, next) => {
       
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const countryList = await Country.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const countryList = await Country.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
         const countryCount = await Country.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterCountry', true, 200, { countryList, countryCount }, clientError.success.fetchedSuccessfully);

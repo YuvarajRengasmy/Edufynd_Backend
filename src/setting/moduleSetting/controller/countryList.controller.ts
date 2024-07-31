@@ -11,7 +11,7 @@ var activity = "ModuleSetting-CountryList";
 
 export const getAllCountryList = async (req, res) => {
     try {
-        const data = await CountryList.find()
+        const data = await CountryList.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -107,7 +107,7 @@ export let getFilteredCountryList = async (req, res, next) => {
             }  
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dropDownList = await CountryList.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+            const dropDownList = await CountryList.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
 
             const dropDownCount = await CountryList.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter CountryList', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
