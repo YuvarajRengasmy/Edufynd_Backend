@@ -40,7 +40,8 @@ export let response = function (req, res, activity, level, method, success, stat
 
 
 export const transporter = nodemailer.createTransport({
-    service: 'Gmail', // You can use any email service
+    // service: 'Gmail', // You can use any email service
+    service: 'edufynd.in',
     host: config.SERVER.EMAIL_HOST,
     secure: true,
     port:  config.SERVER.EMAIL_PORT,
@@ -52,9 +53,10 @@ export const transporter = nodemailer.createTransport({
 });
 
 
-export const sendEmail = async (req, toMail, subject?: any, text?: any) => {
+export const sendEmail = async (req:any, toMail:any, subject?: any, text?: any) => {
     var sender = nodemailer.createTransport({
-        service: 'Gmail',
+        // service: 'Gmail',
+        service: 'edufynd.in',
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
