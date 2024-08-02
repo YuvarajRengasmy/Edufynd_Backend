@@ -225,7 +225,7 @@ export const trackApplicationStatus = async (req, res, next) => {
         const { newStatus } = req.body;
         try {
             const applicantDetails: ApplicantDocument = req.body;
-            const application = await Applicant.findOneAndUpdate({_id: applicantDetails._id});
+            const application = await Applicant.findOneAndUpdate({_id: req.query._id});
             if (!application) {
                 return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
             }
