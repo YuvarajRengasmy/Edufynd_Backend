@@ -18,6 +18,7 @@ export const getAllTraining = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetAll-Training', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
+        
         response(req, res, activity, 'Level-1', 'GetAll-Training', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
@@ -83,7 +84,7 @@ export let createTraining = async (req, res, next) => {
                 response(req, res,  activity, 'Level-2', 'Create-Training', false, 404, {}, "No users found for the specified type.");
             }
         } catch (err) {
-         
+         console.log("44", err)
             response(req, res,  activity, 'Level-3', 'Create-Training', false, 500, {}, "Internal server error", err.message);
         }
     } else {

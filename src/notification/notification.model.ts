@@ -3,11 +3,10 @@ import * as mongoose from 'mongoose'
 
 
 export interface NotificationDocument extends mongoose.Document {
-
-    userId?: any;
     studentId?: any;
     typeOfUser?: string;
     userName?: any[];
+    userEmail?: any[];
     subject?: string;
     content?: string;
     uploadImage?: string;
@@ -19,11 +18,10 @@ export interface NotificationDocument extends mongoose.Document {
 }
 
 const notificationSchema = new mongoose.Schema({
- 
-    userId: { type: mongoose.Types.ObjectId},
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     typeOfUser: {type: String},
     userName: [String],
+    userEmail: [String],
     subject: {type: String},
     content: {type: String},
     uploadImage: {type: String},

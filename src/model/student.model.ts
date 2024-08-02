@@ -3,7 +3,6 @@ import * as mongoose from 'mongoose'
 export interface StudentDocument extends mongoose.Document {
     _id?: any;
     studentCode?: string;
-    notificationId?: any;
     source?: string;
     name?: string;
     citizenship?: string;
