@@ -58,6 +58,7 @@ const applicantSchema = new mongoose.Schema({
         newStatus: {type: String},
         commentBox: {type: String},
         document:  {type: String},
+        createdBy: { type: String }
     }],
     createdOn: { type: Date },
     createdBy: { type: String },
