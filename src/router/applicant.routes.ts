@@ -25,7 +25,6 @@ router.get('/getSingleApplicant',
 router.put('/', 
          basicAuthUser,
          checkSession,
-     
          createApplicant
 );
 
