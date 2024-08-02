@@ -277,13 +277,14 @@ export const trackApplicationStatus = async (req, res, next) => {
         try {
             const applicantDetails: ApplicantDocument = req.body;
           
-            let application = await Applicant.findByIdAndUpdate({_id: applicantDetails._id}, {
+            let application = await Applicant.findByIdAndUpdate({_id: req.query._id}, {
                 $set: {
                     status: applicantDetails.status,
                     modifiedOn: new Date(),
 
                 }
             })
+            console.log("77", application)
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
                 to: application.email,

@@ -53,7 +53,7 @@ const applicantSchema = new mongoose.Schema({
 
     isDeleted: { type: Boolean, default: false },
     status: [{
-        statusName: {type: String},
+        newStatus: {type: String},
         commentBox: {type: String},
     }],
     createdOn: { type: Date },
