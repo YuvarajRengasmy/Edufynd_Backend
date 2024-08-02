@@ -259,24 +259,22 @@ export let updateApplicant = async (req, res, next) => {
                             modifiedBy: applicantDetails.modifiedBy,
                         },
                         $addToSet: {
-                            status: {
-                                $each: applicantDetails.status,
-                            }
+                            status: applicantDetails.status
                         }
                     }
                 );
 
                 // Find the updated applicant to fetch the updated status array
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
-
+console.log("ww", updatedApplication)
                 // Send an email for each status update
-                for (const status of applicantDetails.status) {
+                // for (const status of applicantDetails.status) {
                     const mailOptions = {
                         from: config.SERVER.EMAIL_USER,
                         to: updatedApplication.email,
                         subject: 'Application Status Update',
-                        text: `Hello ${updatedApplication.name},\n\nYour application status has been updated.\n\nCurrent Status: ${status.newStatus}.
-                        \nComment: ${status.commentBox}\n\nThis information is for your reference.\n\nBest regards,\nAfynd Private Limited,\nChennai.`
+                        text: `Hello ${updatedApplication.name},\n\nYour application status has been updated.\n\nCurrent Status: ${updatedApplication.status}.
+                        \nComment: ${updatedApplication.status}\n\nThis information is for your reference.\n\nBest regards,\nAfynd Private Limited,\nChennai.`
                     };
 
                     transporter.sendMail(mailOptions, (error, info) => {
@@ -287,7 +285,7 @@ export let updateApplicant = async (req, res, next) => {
                             console.log('Email sent:', info.response);
                         }
                     });
-                }
+                // }
 
                 res.status(201).json({ message: 'Application status has been updated and emails sent.', Details: updatedApplication });
 
@@ -295,6 +293,7 @@ export let updateApplicant = async (req, res, next) => {
                 res.status(404).json({ message: 'Applicant not found' });
             }
         } catch (err: any) {
+            console.log("gg", err)
             response(req, res, activity, 'Level-3', 'Update-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
