@@ -283,7 +283,7 @@ export let updateApplicantStatus = async (req, res, next) => {
                         new: true  // Return the updated document
                     }
                 );
-
+console.log("mas", masterData)
                 // Find the updated status in the array
                 const updatedStatus = masterData.status.find(status => status._id.toString() === applicantDetails.status._id);
 
