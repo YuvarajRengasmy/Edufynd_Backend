@@ -223,7 +223,6 @@ export const trackApplicationStatus = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         const { newStatus } = req.body;
-
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOneAndUpdate({_id: applicantDetails._id});
@@ -243,7 +242,7 @@ export const trackApplicationStatus = async (req, res, next) => {
                 to: application.email,
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status}.
-                \n\n This Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
+                \nThis Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
