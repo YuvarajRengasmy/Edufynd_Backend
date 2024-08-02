@@ -2,9 +2,10 @@ import { Applicant, ApplicantDocument } from '../model/application.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from "express-validator";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { Error } from 'mongoose';
+import * as config from '../config';
 
 
 var activity = "Applicant";
@@ -228,17 +229,34 @@ export const trackApplicationStatus = async (req, res, next) => {
             if (!application) {
                 return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
             }
-
             // Update the status
             application.status = newStatus;
-
             // Update the timestamp for modifiedOn
             application.modifiedOn = new Date();
 
             // Save the updated application status
             await application.save();
 
-            response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully");
+            const mailOptions = {
+                from: config.SERVER.EMAIL_USER,
+                to: application.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status}.
+                \n\n This Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Application Status has been Updated and Send Email', Details: application });
+                }
+            });
+
+            response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully and Send to Email");
         } catch (err) {
 
             response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 500, {}, "Internal server error", err.message);
@@ -246,6 +264,4 @@ export const trackApplicationStatus = async (req, res, next) => {
     } else {
         return response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
-
-
 };

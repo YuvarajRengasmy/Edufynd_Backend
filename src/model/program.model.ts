@@ -17,7 +17,7 @@ export interface ProgramDocument extends mongoose.Document {
     finalValue?: number;
     currency?: string;
     flag?: string;
-    popularCategories: string;
+    popularCategories?: string;
     campuses?: any[];
     // courseFee?: number;
     // inTake?: any[];
@@ -54,9 +54,7 @@ const programSchema = new mongoose.Schema({
     finalValue: {type: Number},
     currency: { type: String },
     flag: { type: String },
-   
     courseType: {type: String},  
-
     campuses: [{
         campus: { type: String },
         inTake: { type: String },
@@ -64,13 +62,13 @@ const programSchema = new mongoose.Schema({
         courseFees: { type: String }
     }],
     popularCategories: {type: String},
-    englishlanguageTest: { type: String },   // (ELT) requirement – Yes/No (Text Box)
+    englishlanguageTest: { type: String },   
     textBox: { type: String },
-    universityInterview: { type: String },   // – Yes/No
-    greGmatRequirement: { type: String },  //(Yes/No) If yes mention score
+    universityInterview: { type: String },   
+    greGmatRequirement: { type: String },  
     score: { type: String },
-    academicRequirement: { type: String },     //(Text Box)
-    commission: { type: String },           // (Edit only for the program)
+    academicRequirement: { type: String },     
+    commission: { type: String },          
     isDeleted: { type: Boolean, default: false },
     status: { type: Number, default: 1 },
     createdOn: { type: Date, default: new Date()},

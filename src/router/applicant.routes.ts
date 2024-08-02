@@ -25,7 +25,6 @@ router.get('/getSingleApplicant',
 router.put('/', 
          basicAuthUser,
          checkSession,
-     
          createApplicant
 );
 
@@ -42,7 +41,7 @@ router.put('/track',
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
-    // // checkRequestBodyParams('_id'),
+    // checkRequestBodyParams('_id'),
     trackApplicationStatus
 );
 
