@@ -20,9 +20,10 @@ export interface ApplicantDocument extends mongoose.Document {
     anyVisaRejections?: string,  // (Auto Fetch from Students)
     feesPaid?: string,
     assignTo?: string,
+    document?: string;
     commentBox?: string;
     isDeleted?: boolean;
-    status?: any[];
+    status?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -49,6 +50,7 @@ const applicantSchema = new mongoose.Schema({
     anyVisaRejections: { type: String, ref: 'Student' },
     feesPaid: { type: String },
     assignTo: { type: String },
+    document:  {type: String},
     commentBox: {type: String},
 
     isDeleted: { type: Boolean, default: false },
