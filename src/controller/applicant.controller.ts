@@ -166,7 +166,10 @@ export let updateApplicant = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
-            let applicantData = await Applicant.findByIdAndUpdate({ _id: applicantDetails._id }, {
+            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email }] });
+            if (!applicant ) {
+                const updateMaster = new Applicant(applicantDetails)
+                let insertMaster = await updateMaster.updateOne({
                 $set: {
                     applicationCode: applicantDetails.applicationCode,
                     name: applicantDetails.name,
@@ -192,8 +195,9 @@ export let updateApplicant = async (req, res, next) => {
                 }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, applicantData, clientError.success.updateSuccess);
-        } catch (err: any) {
+            response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, insertMaster, clientError.success.updateSuccess);
+        }
+     } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Update-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
