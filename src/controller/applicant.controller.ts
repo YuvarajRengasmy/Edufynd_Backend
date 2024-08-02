@@ -162,16 +162,16 @@ export let createApplicant = async (req, res, next) => {
 // }
 
 export let updateApplicant = async (req, res, next) => {
+    console.log("gg")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
-            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email },{ isDeleted: false }] });
+            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email }] });
             if (!applicant ) {
                 const updateMaster = new Applicant(applicantDetails)
                 let insertMaster = await updateMaster.updateOne({
                 $set: {
-                 
                     name: applicantDetails.name,
                     dob: applicantDetails.dob,
                     passportNo: applicantDetails.passportNo,
