@@ -166,12 +166,12 @@ export let updateApplicant = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
-            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email }] });
+            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email },{ isDeleted: false }] });
             if (!applicant ) {
                 const updateMaster = new Applicant(applicantDetails)
                 let insertMaster = await updateMaster.updateOne({
                 $set: {
-                    applicationCode: applicantDetails.applicationCode,
+                 
                     name: applicantDetails.name,
                     dob: applicantDetails.dob,
                     passportNo: applicantDetails.passportNo,
