@@ -55,6 +55,7 @@ const applicantSchema = new mongoose.Schema({
 
     isDeleted: { type: Boolean, default: false },
     status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
         newStatus: {type: String},
         commentBox: {type: String},
     }],
