@@ -222,10 +222,11 @@ export let getFilteredApplication = async (req, res, next) => {
 export const trackApplicationStatus = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        const { _id, newStatus } = req.body;
+        const { newStatus } = req.body;
 
         try {
-            const application = await Applicant.findById(_id);
+            const applicantDetails: ApplicantDocument = req.body;
+            const application = await Applicant.findOneAndUpdate({_id: applicantDetails._id});
             if (!application) {
                 return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
             }
