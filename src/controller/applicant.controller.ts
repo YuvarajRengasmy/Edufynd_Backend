@@ -166,8 +166,10 @@ export let updateApplicant = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
-            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email }] });
-            if (!applicant ) {
+            // const application = await Applicant.findOne({ _id: req.query._id });
+            const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email }] });
+        
+            if (!application ) {
                 const updateApplicant = new Applicant(applicantDetails)
                 let insertMaster = await updateApplicant.updateOne({
                 $set: {
@@ -181,7 +183,6 @@ export let updateApplicant = async (req, res, next) => {
                     universityName: applicantDetails.universityName,
                     campus: applicantDetails.campus,
                     course: applicantDetails.course,
-                    document: applicantDetails.document,
                     courseFees: applicantDetails.courseFees,
                     anyVisaRejections: applicantDetails.anyVisaRejections,
                     feesPaid: applicantDetails.feesPaid,
@@ -194,6 +195,25 @@ export let updateApplicant = async (req, res, next) => {
                  
                 }
             });
+
+            // const mailOptions = {
+            //     from: config.SERVER.EMAIL_USER,
+            //     to: application.email,
+            //     subject: 'Welcome to EduFynd',
+            //     text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status}.
+            //     \nThis Information is for Your Reference.\n\nBest regards,\nAfynd Private Limited,\nChennai.`
+            // };
+
+            // transporter.sendMail(mailOptions, (error, info) => {
+            //     if (error) {
+            //         console.error('Error sending email:', error);
+            //         return res.status(500).json({ message: 'Error sending email' });
+            //     } else {
+            //         console.log('Email sent:', info.response);
+            //         res.status(201).json({ message: 'Application Status has been Updated and Email Sent', Details: application });
+            //     }
+            // });
+
 
             response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, insertMaster, clientError.success.updateSuccess);
         }
@@ -287,7 +307,7 @@ export let updateApplicantStatus = async (req, res, next) => {
 console.log("mas", masterData)
                 // Find the updated status in the array
                 const updatedStatus = masterData.status.find(status => status._id.toString() === applicantDetails.status._id);
-
+console.log("jk", updatedStatus)
                 const mailOptions = {
                     from: config.SERVER.EMAIL_USER,
                     to: application.email,
