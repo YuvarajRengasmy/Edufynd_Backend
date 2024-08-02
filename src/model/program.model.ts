@@ -19,9 +19,6 @@ export interface ProgramDocument extends mongoose.Document {
     flag?: string;
     popularCategories?: string;
     campuses?: any[];
-    // courseFee?: number;
-    // inTake?: any[];
-    // duration?: string;
     englishlanguageTest?: string;
     textBox?: string;
     universityInterview?: string;

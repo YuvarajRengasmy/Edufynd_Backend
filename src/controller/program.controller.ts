@@ -120,7 +120,7 @@ export let createProgram = async (req, res, next) => {
                         return counter > max ? counter : max;
                     }
                     return max;
-                }, 100); // Starting counter if no programs exist
+                }, 100); 
 
                 // Generate the next program code based on the current max counter
                 let currentMaxCounter = maxCounter;
