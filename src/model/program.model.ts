@@ -17,11 +17,8 @@ export interface ProgramDocument extends mongoose.Document {
     finalValue?: number;
     currency?: string;
     flag?: string;
-    popularCategories: any[];
+    popularCategories?: string;
     campuses?: any[];
-    // courseFee?: number;
-    // inTake?: any[];
-    // duration?: string;
     englishlanguageTest?: string;
     textBox?: string;
     universityInterview?: string;
@@ -54,28 +51,21 @@ const programSchema = new mongoose.Schema({
     finalValue: {type: Number},
     currency: { type: String },
     flag: { type: String },
-   
-    courseType: {type: String},  // (List) Add, Delete, View, Edit
-
+    courseType: {type: String},  
     campuses: [{
         campus: { type: String },
         inTake: { type: String },
         duration: { type: String },
         courseFees: { type: String }
     }],
-    popularCategories: [ String ],
-
-    // courseFee: { type: Number },  // (To be added for each campus)
-    // inTake: [String],
-    // duration: { type: String }, // (Month & Year in numbers like 1 - 12),
-    // campus: [String ],  //(Fetch campus details from ‘UNIVERSITY’ based on the university selected) / (Multiple Add)
-    englishlanguageTest: { type: String },   // (ELT) requirement – Yes/No (Text Box)
+    popularCategories: {type: String},
+    englishlanguageTest: { type: String },   
     textBox: { type: String },
-    universityInterview: { type: String },   // – Yes/No
-    greGmatRequirement: { type: String },  //(Yes/No) If yes mention score
+    universityInterview: { type: String },   
+    greGmatRequirement: { type: String },  
     score: { type: String },
-    academicRequirement: { type: String },     //(Text Box)
-    commission: { type: String },           // (Edit only for the program)
+    academicRequirement: { type: String },     
+    commission: { type: String },          
     isDeleted: { type: Boolean, default: false },
     status: { type: Number, default: 1 },
     createdOn: { type: Date, default: new Date()},

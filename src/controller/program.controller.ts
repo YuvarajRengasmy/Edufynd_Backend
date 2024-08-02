@@ -58,41 +58,96 @@ const generateNextProgramCode = async (currentMaxCounter): Promise<string> => {
     return `PG_${formattedCounter}`;
 };
 
+// export let createProgram = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const title = await Program.findOne({ universityName: req.body.universityName, programTitle: req.body.programTitle});
+//             if(!title){
+//             const programDetails: ProgramDocument = req.body;
+//             const program = await Program.find({}, 'programCode').exec();
+
+//             const maxCounter = program.reduce((max, app) => {
+//                 const appCode = app.programCode;
+//                 const parts = appCode.split('_')
+//                 if (parts.length === 2) {
+//                     const counter = parseInt(parts[1], 10)
+//                     return counter > max ? counter : max;
+//                 }
+//                 return max;
+//             }, 100);
+
+//             let currentMaxCounter = maxCounter;
+//             programDetails.programCode = await generateNextProgramCode(currentMaxCounter)
+
+//             programDetails.finalValue = (programDetails.applicationFee) - (programDetails.discountedValue)
+//             const createData = new Program(programDetails);
+//             let insertData = await createData.save();
+
+//             response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertData, clientError.success.savedSuccessfully);
+//         } else {
+//             response(req, res, activity, 'Level-3', 'Create-Program', true, 422, {}, 'Program Title Already Registered For Same University');
+//         }
+//         } catch (err: any) {
+//             console.log(err)
+//             response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     } else {
+//         response(req, res, activity, 'Level-3', 'Create-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
 
 export let createProgram = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const programDetails: ProgramDocument = req.body;
-            const program = await Program.find({}, 'programCode').exec();
+            // Check if a program with the same title already exists for the same university
+            const existingProgram = await Program.findOne({ 
+                universityName: req.body.universityName, 
+                programTitle: req.body.programTitle
+            });
 
-            const maxCounter = program.reduce((max, app) => {
-                const appCode = app.programCode;
-                const parts = appCode.split('_')
-                if (parts.length === 2) {
-                    const counter = parseInt(parts[1], 10)
-                    return counter > max ? counter : max;
-                }
-                return max;
-            }, 100);
+            if (!existingProgram) {
+                const programDetails: ProgramDocument = req.body;
 
-            let currentMaxCounter = maxCounter;
-            programDetails.programCode = await generateNextProgramCode(currentMaxCounter)
+                // Generate the next program code
+                const programs = await Program.find({}, 'programCode').exec();
+                const maxCounter = programs.reduce((max, app) => {
+                    const appCode = app.programCode;
+                    const parts = appCode.split('_');
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10);
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100); 
 
-            programDetails.finalValue = (programDetails.applicationFee) - (programDetails.discountedValue)
-            const createData = new Program(programDetails);
-            let insertData = await createData.save();
+                // Generate the next program code based on the current max counter
+                let currentMaxCounter = maxCounter;
+                programDetails.programCode = await generateNextProgramCode(currentMaxCounter);
 
-            response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertData, clientError.success.savedSuccessfully);
+                // Calculate the final value based on application fee and discounted value
+                programDetails.finalValue = programDetails.applicationFee - programDetails.discountedValue;
 
+                // Save the new program
+                const newProgram = new Program(programDetails);
+                let insertedData = await newProgram.save();
+
+                // Respond with success
+                response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertedData, clientError.success.savedSuccessfully);
+            } else {
+                // Respond with error if program title is already registered for the same university
+                response(req, res, activity, 'Level-3', 'Create-Program', true, 422, {}, 'Program Title Already Registered For Same University');
+            }
         } catch (err: any) {
-            console.log(err)
+            console.log(err);
             response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
+        // Respond with field validation errors
         response(req, res, activity, 'Level-3', 'Create-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-}
+};
 
 
 export let updateProgram = async (req, res, next) => {
@@ -112,9 +167,6 @@ export let updateProgram = async (req, res, next) => {
                     discountedValue: programDetails.discountedValue,
                     campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
-                    // courseFee: programDetails.courseFee,
-                    // inTake: programDetails.inTake,
-                    // duration: programDetails.duration,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
                     greGmatRequirement: programDetails.greGmatRequirement,

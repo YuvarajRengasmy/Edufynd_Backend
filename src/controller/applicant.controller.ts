@@ -2,9 +2,10 @@ import { Applicant, ApplicantDocument } from '../model/application.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from "express-validator";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { Error } from 'mongoose';
+import * as config from '../config';
 
 
 var activity = "Applicant";
@@ -121,14 +122,55 @@ export let createApplicant = async (req, res, next) => {
 
 
 
+// export let updateApplicant = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const applicantDetails: ApplicantDocument = req.body;
+//             let applicantData = await Applicant.findByIdAndUpdate({ _id: applicantDetails._id }, {
+//                 $set: {
+//                     applicationCode: applicantDetails.applicationCode,
+//                     name: applicantDetails.name,
+//                     dob: applicantDetails.dob,
+//                     passportNo: applicantDetails.passportNo,
+//                     email: applicantDetails.email,
+//                     primaryNumber: applicantDetails.primaryNumber,
+//                     whatsAppNumber: applicantDetails.whatsAppNumber,
+//                     inTake: applicantDetails.inTake,
+//                     universityName: applicantDetails.universityName,
+//                     campus: applicantDetails.campus,
+//                     course: applicantDetails.course,
+//                     courseFees: applicantDetails.courseFees,
+//                     anyVisaRejections: applicantDetails.anyVisaRejections,
+//                     feesPaid: applicantDetails.feesPaid,
+//                     assignTo: applicantDetails.assignTo,
+
+//                     status: applicantDetails.status,
+//                     modifiedOn: new Date(),
+//                     modifiedBy: applicantDetails.modifiedBy,
+//                 }
+//             });
+
+//             response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, applicantData, clientError.success.updateSuccess);
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Update-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Update-Applicant', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
+
 export let updateApplicant = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
-            let applicantData = await Applicant.findByIdAndUpdate({ _id: applicantDetails._id }, {
+            const applicant = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id }, }, { email: applicantDetails.email }] });
+            if (!applicant ) {
+                const updateApplicant = new Applicant(applicantDetails)
+                let insertMaster = await updateApplicant.updateOne({
                 $set: {
-                    applicationCode: applicantDetails.applicationCode,
                     name: applicantDetails.name,
                     dob: applicantDetails.dob,
                     passportNo: applicantDetails.passportNo,
@@ -143,15 +185,18 @@ export let updateApplicant = async (req, res, next) => {
                     anyVisaRejections: applicantDetails.anyVisaRejections,
                     feesPaid: applicantDetails.feesPaid,
                     assignTo: applicantDetails.assignTo,
-
-                    status: applicantDetails.status,
                     modifiedOn: new Date(),
                     modifiedBy: applicantDetails.modifiedBy,
+                },
+                    $addToSet: {
+                    status: applicantDetails.status,
+                 
                 }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, applicantData, clientError.success.updateSuccess);
-        } catch (err: any) {
+            response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, insertMaster, clientError.success.updateSuccess);
+        }
+     } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Update-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
@@ -159,6 +204,118 @@ export let updateApplicant = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Applicant', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+// export let updateApplicantStatus = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const applicantDetails: ApplicantDocument = req.body;
+//             const application = await Applicant.findOne({ _id: req.body._id })
+//             console.log("gf", application)
+//             if (application) {
+//                 const masterData = await Applicant.findByIdAndUpdate(
+//                     { _id: applicantDetails._id }, // find Master id 
+//                     {$set:{
+//                         'status.$[ele].newStatus': applicantDetails.status.newStatus,
+//                         'status.$[ele].commentBox': applicantDetails.status.commentBox,
+                    
+//                       }},
+//                     {
+//                         arrayFilters: [{ 'ele._id': applicantDetails.status._id },],//find array index filter concept
+//                         new: true
+//                     }
+//                 );
+//                 const updatedStatus = masterData.status.find(status => status._id.toString() === applicantDetails.status._id);
+//                 const mailOptions = {
+//                     from: config.SERVER.EMAIL_USER,
+//                     to: application.email,
+//                     subject: 'Welcome to EduFynd',
+//                     text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status.newStatus}.
+//                     \nThis Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
+//                 };
+    
+//                 transporter.sendMail(mailOptions, (error, info) => {
+    
+//                     if (error) {
+//                         console.error('Error sending email:', error);
+//                         return res.status(500).json({ message: 'Error sending email' });
+//                     } else {
+//                         console.log('Email sent:', info.response);
+//                         res.status(201).json({ message: 'Application Status has been Updated and Send Email', Details: application });
+//                     }
+//                 });
+    
+//                 response(req, res, activity, 'Level-2', 'Update-Applicant Status', true, 200, masterData, 'Successfully Add Status and Mail Send Successfully');
+//             }
+//             else {
+//                 response(req, res, activity, 'Level-2', 'Update-Applicant Status', true, 200, {}, 'Applicant NOt Found');
+//             }
+//         }
+//         catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     } else {
+//         response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
+
+
+export let updateApplicantStatus = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const applicantDetails = req.body;
+            const application = await Applicant.findOne({ _id: req.body._id });
+            console.log("Application found:", application);
+
+            if (application) {
+                const masterData = await Applicant.findByIdAndUpdate(
+                    { _id: applicantDetails._id }, // Find the document by _id
+                    {
+                        $set: {
+                            'status.$[ele].newStatus': applicantDetails.status.newStatus,
+                            'status.$[ele].commentBox': applicantDetails.status.commentBox,
+                        }
+                    },
+                    {
+                        arrayFilters: [{ 'ele._id': applicantDetails.status._id }], // Find the correct array element by its _id
+                        new: true  // Return the updated document
+                    }
+                );
+
+                // Find the updated status in the array
+                const updatedStatus = masterData.status.find(status => status._id.toString() === applicantDetails.status._id);
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: application.email,
+                    subject: 'Welcome to EduFynd',
+                    text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${updatedStatus.newStatus}.
+                    \nThis Information is for Your Reference.\n\nBest regards,\nAfynd Private Limited,\nChennai.`
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'Application Status has been Updated and Email Sent', Details: masterData });
+                    }
+                });
+
+                response(req, res, activity, 'Level-2', 'Update-Applicant Status', true, 200, masterData, 'Successfully Updated Status and Sent Email');
+            } else {
+                response(req, res, activity, 'Level-2', 'Update-Applicant Status', false, 404, {}, 'Applicant Not Found');
+            }
+        } catch (err) {
+            response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
 
 
 
@@ -218,34 +375,112 @@ export let getFilteredApplication = async (req, res, next) => {
 };
 
 
+// export const trackApplicationStatus = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+
+//         try {
+//             const applicantDetails: ApplicantDocument = req.body;
+//             const application = await Applicant.findOneAndUpdate({_id: req.query._id});
+//             if (!application) {
+//                 return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
+//             }
+
+//             if (!Array.isArray(application.status)) {
+//                 application.status = []; // Initialize as an empty array if it's not already an array
+//             }
+
+
+//             // Update the timestamp for modifiedOn
+//             application.modifiedOn = new Date();
+
+//             // Save the updated application status
+//             await application.save();
+
+//             const mailOptions = {
+//                 from: config.SERVER.EMAIL_USER,
+//                 to: application.email,
+//                 subject: 'Welcome to EduFynd',
+//                 text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status}.
+//                 \nThis Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
+//             };
+
+//             transporter.sendMail(mailOptions, (error, info) => {
+
+//                 if (error) {
+//                     console.error('Error sending email:', error);
+//                     return res.status(500).json({ message: 'Error sending email' });
+//                 } else {
+//                     console.log('Email sent:', info.response);
+//                     res.status(201).json({ message: 'Application Status has been Updated and Send Email', Details: application });
+//                 }
+//             });
+
+//             response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully and Send to Email");
+//         } catch (err) {
+// console.log(err)
+//             response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 500, {}, "Internal server error", err.message);
+//         }
+//     } else {
+//         return response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+//     }
+// };
+
 export const trackApplicationStatus = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        const { _id, newStatus } = req.body;
 
         try {
-            const application = await Applicant.findById(_id);
+            const applicantDetails: ApplicantDocument = req.body;
+
+            // let application = await Applicant.findOneAndUpdate({_id: req.query._id}, {
+            //     $set: {
+            //         status: applicantDetails.status,
+            //         modifiedOn: new Date(),
+
+            //     }
+            // })
+
+            const application = await Applicant.findOneAndUpdate({ _id: req.query._id });
+            console.log("dd", application)
             if (!application) {
                 return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
             }
 
-            // Update the status
-            application.status = newStatus;
 
+
+            application.status =  application.status
             // Update the timestamp for modifiedOn
             application.modifiedOn = new Date();
 
             // Save the updated application status
             await application.save();
+            console.log("77", application)
+            const mailOptions = {
+                from: config.SERVER.EMAIL_USER,
+                to: application.email,
+                subject: 'Welcome to EduFynd',
+                text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status}.
+                \nThis Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
+            };
 
-            response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully");
+            transporter.sendMail(mailOptions, (error, info) => {
+
+                if (error) {
+                    console.error('Error sending email:', error);
+                    return res.status(500).json({ message: 'Error sending email' });
+                } else {
+                    console.log('Email sent:', info.response);
+                    res.status(201).json({ message: 'Application Status has been Updated and Send Email', Details: application });
+                }
+            });
+
+            response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully and Send to Email");
         } catch (err) {
-
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 500, {}, "Internal server error", err.message);
         }
     } else {
         return response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
-
-
 };

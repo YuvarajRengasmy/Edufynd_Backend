@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
-     getSingleApplicant, updateApplicant, trackApplicationStatus } from '../controller/applicant.controller';
+     getSingleApplicant, updateApplicant, updateApplicantStatus} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -22,10 +22,9 @@ router.get('/getSingleApplicant',
 );
 
 
-router.put('/', 
+router.post('/', 
          basicAuthUser,
          checkSession,
-     
          createApplicant
 );
 
@@ -33,17 +32,16 @@ router.put('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    checkQuery('_id'),
-    // checkRequestBodyParams('_id'),
+    // checkQuery('_id'),
+    checkRequestBodyParams('_id'),
     updateApplicant
 );
 
-router.put('/track',                    
+router.put('/updateApplicantStatus', 
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    // // checkRequestBodyParams('_id'),
-    trackApplicationStatus
+    checkRequestBodyParams('_id'),
+    updateApplicantStatus
 );
 
 
