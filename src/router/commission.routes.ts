@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getAllCommission, getSingleCommission,getSingleUniversity, createCommission, updateCommission, deleteCommission, getFilteredCommission, deleteCourseType } from '../controller/commission.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
+import { checkSession } from '../utils/tokenManager';
 
 
 const router: Router = Router();
@@ -32,7 +33,9 @@ router.post('/',
 
 router.put('/',
     basicAuthUser,
-    checkQuery('_id'),
+    checkSession,
+    // checkQuery('_id'),
+    checkRequestBodyParams('_id'),
     updateCommission
 );
 

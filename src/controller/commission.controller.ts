@@ -11,7 +11,7 @@ var activity = "Commission";
 export const getAllCommission = async (req, res) => {
     try {
         const data = await Commission.find().sort({ _id: -1 })
-        console.log("66", data)
+      
         response(req, res, activity, 'Level-1', 'GetAll-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -69,11 +69,13 @@ export let createCommission = async (req, res, next) => {
 
 
 export let updateCommission = async (req, res, next) => {
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try{
+          
             const commissionDetails : CommissionDocument = req.body;
-            const updateData = await Commission.findOneAndUpdate({ _id: req.body._id }, {
+            const updateData = await Commission.findOneAndUpdate({ _id: commissionDetails._id }, {
                 $set: {  
                     country: commissionDetails.country,
                     universityName: commissionDetails.universityName,

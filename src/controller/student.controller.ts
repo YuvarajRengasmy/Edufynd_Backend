@@ -23,16 +23,18 @@ export let getAllStudent = async (req, res, next) => {
 
 
 export let getSingleStudent = async (req, res, next) => {
+    console.log("dfdfddfddfdfdc")
     try {
 
 
         const student = await Student.findOne({ _id: req.query._id });
+        console.log("kk", student)
         const newHash = await decrypt(student["password"]);
         const newHash1 = await decrypt(student["confirmPassword"]);
 
         response(req, res, activity, 'Level-1', 'Get-Single-Student', true, 200, { ...student.toObject(), password: newHash, confirmPassword: newHash1 }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-      
+      console.log("rt5", err)
         response(req, res, activity, 'Level-3', 'Get-Single-Student', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
@@ -84,7 +86,7 @@ const generateNextStudentCode = async (currentMaxCounter): Promise<string> => {
 
 
 export let saveStudent = async (req, res, next) => {
-
+    console.log("sudent")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -410,6 +412,7 @@ export const csvToJson = async (req, res) => {
 
 
 export let createStudentBySuperAdmin = async (req, res, next) => {
+    console.log("superaadmin")
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
