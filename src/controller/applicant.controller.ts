@@ -222,7 +222,7 @@ export let getFilteredApplication = async (req, res, next) => {
 export const trackApplicationStatus = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        const { newStatus } = req.body;
+        const { newStatus,comment } = req.body;
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOneAndUpdate({_id: req.query._id});
@@ -231,6 +231,7 @@ export const trackApplicationStatus = async (req, res, next) => {
             }
             // Update the status
             application.status = newStatus;
+            application.commentBox = comment;
             // Update the timestamp for modifiedOn
             application.modifiedOn = new Date();
 
