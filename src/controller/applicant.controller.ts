@@ -2,7 +2,7 @@ import { Applicant, ApplicantDocument } from '../model/application.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from "express-validator";
-import { response, transporter} from "../helper/commonResponseHandler";
+import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { Error } from 'mongoose';
 import * as config from '../config';
@@ -122,6 +122,45 @@ export let createApplicant = async (req, res, next) => {
 
 
 
+// export let updateApplicant = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const applicantDetails: ApplicantDocument = req.body;
+//             let applicantData = await Applicant.findByIdAndUpdate({ _id: applicantDetails._id }, {
+//                 $set: {
+//                     applicationCode: applicantDetails.applicationCode,
+//                     name: applicantDetails.name,
+//                     dob: applicantDetails.dob,
+//                     passportNo: applicantDetails.passportNo,
+//                     email: applicantDetails.email,
+//                     primaryNumber: applicantDetails.primaryNumber,
+//                     whatsAppNumber: applicantDetails.whatsAppNumber,
+//                     inTake: applicantDetails.inTake,
+//                     universityName: applicantDetails.universityName,
+//                     campus: applicantDetails.campus,
+//                     course: applicantDetails.course,
+//                     courseFees: applicantDetails.courseFees,
+//                     anyVisaRejections: applicantDetails.anyVisaRejections,
+//                     feesPaid: applicantDetails.feesPaid,
+//                     assignTo: applicantDetails.assignTo,
+
+//                     status: applicantDetails.status,
+//                     modifiedOn: new Date(),
+//                     modifiedBy: applicantDetails.modifiedBy,
+//                 }
+//             });
+
+//             response(req, res, activity, 'Level-2', 'Update-Applicant', true, 200, applicantData, clientError.success.updateSuccess);
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-3', 'Update-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     }
+//     else {
+//         response(req, res, activity, 'Level-3', 'Update-Applicant', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// }
+
 export let updateApplicant = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -144,10 +183,12 @@ export let updateApplicant = async (req, res, next) => {
                     anyVisaRejections: applicantDetails.anyVisaRejections,
                     feesPaid: applicantDetails.feesPaid,
                     assignTo: applicantDetails.assignTo,
-
-                    status: applicantDetails.status,
                     modifiedOn: new Date(),
                     modifiedBy: applicantDetails.modifiedBy,
+                },
+                    $addToSet: {
+                    status: applicantDetails.status,
+                 
                 }
             });
 
@@ -160,6 +201,7 @@ export let updateApplicant = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Applicant', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
 
 
 
@@ -222,7 +264,7 @@ export let getFilteredApplication = async (req, res, next) => {
 // export const trackApplicationStatus = async (req, res, next) => {
 //     const errors = validationResult(req);
 //     if (errors.isEmpty()) {
-    
+
 //         try {
 //             const applicantDetails: ApplicantDocument = req.body;
 //             const application = await Applicant.findOneAndUpdate({_id: req.query._id});
@@ -234,7 +276,7 @@ export let getFilteredApplication = async (req, res, next) => {
 //                 application.status = []; // Initialize as an empty array if it's not already an array
 //             }
 
-       
+
 //             // Update the timestamp for modifiedOn
 //             application.modifiedOn = new Date();
 
@@ -273,17 +315,32 @@ export let getFilteredApplication = async (req, res, next) => {
 export const trackApplicationStatus = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-    
+
         try {
             const applicantDetails: ApplicantDocument = req.body;
-          
-            let application = await Applicant.findByIdAndUpdate({_id: req.query._id}, {
-                $set: {
-                    status: applicantDetails.status,
-                    modifiedOn: new Date(),
 
-                }
-            })
+            // let application = await Applicant.findOneAndUpdate({_id: req.query._id}, {
+            //     $set: {
+            //         status: applicantDetails.status,
+            //         modifiedOn: new Date(),
+
+            //     }
+            // })
+
+            const application = await Applicant.findOneAndUpdate({ _id: req.query._id });
+            console.log("dd", application)
+            if (!application) {
+                return response(req, res, activity, 'Level-2', 'Update-Status', false, 404, {}, "Application not found");
+            }
+
+
+
+            application.status =  application.status
+            // Update the timestamp for modifiedOn
+            application.modifiedOn = new Date();
+
+            // Save the updated application status
+            await application.save();
             console.log("77", application)
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
@@ -306,7 +363,7 @@ export const trackApplicationStatus = async (req, res, next) => {
 
             response(req, res, activity, 'Level-1', 'Update-Status-Changed', true, 200, application, "Status updated successfully and Send to Email");
         } catch (err) {
-console.log(err)
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Update-Status-Changed', false, 500, {}, "Internal server error", err.message);
         }
     } else {
