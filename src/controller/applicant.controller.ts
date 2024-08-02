@@ -145,7 +145,7 @@ export let updateApplicant = async (req, res, next) => {
                     feesPaid: applicantDetails.feesPaid,
                     assignTo: applicantDetails.assignTo,
 
-                    status: applicantDetails.status,
+                    statuses: applicantDetails.statuses,
                     modifiedOn: new Date(),
                     modifiedBy: applicantDetails.modifiedBy,
                 }
@@ -277,18 +277,19 @@ export const trackApplicationStatus = async (req, res, next) => {
         try {
             const applicantDetails: ApplicantDocument = req.body;
           
-            let application = await Applicant.findByIdAndUpdate({_id: applicantDetails._id}, {
+            let application = await Applicant.findByIdAndUpdate({_id: req.query._id}, {
                 $set: {
-                    status: applicantDetails.status,
+                    statuses: applicantDetails.statuses,
                     modifiedOn: new Date(),
 
                 }
             })
+            console.log(application)
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
                 to: application.email,
                 subject: 'Welcome to EduFynd',
-                text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.status}.
+                text: `Hello ${application.name},\n\nYour Application Status has been Updated\n\nCurrent Status: ${application.statuses}.
                 \nThis Information for Your Refernece.\n\nBest regards\nAfynd Private Limited\nChennai.`
             };
 
