@@ -22,7 +22,7 @@ export interface ApplicantDocument extends mongoose.Document {
     assignTo?: string,
     commentBox?: string;
     isDeleted?: boolean;
-    statuses?: any[];
+    status?: any[];
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -52,7 +52,7 @@ const applicantSchema = new mongoose.Schema({
     commentBox: {type: String},
 
     isDeleted: { type: Boolean, default: false },
-    statuses: [{
+    status: [{
         newStatus: {type: String},
         commentBox: {type: String},
     }],
