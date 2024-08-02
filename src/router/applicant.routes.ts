@@ -22,7 +22,7 @@ router.get('/getSingleApplicant',
 );
 
 
-router.put('/', 
+router.post('/', 
          basicAuthUser,
          checkSession,
          createApplicant

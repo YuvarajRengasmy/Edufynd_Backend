@@ -162,6 +162,7 @@ export let createApplicant = async (req, res, next) => {
 // }
 
 export let updateApplicant = async (req, res, next) => {
+    console.log("gg")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -171,7 +172,6 @@ export let updateApplicant = async (req, res, next) => {
                 const updateMaster = new Applicant(applicantDetails)
                 let insertMaster = await updateMaster.updateOne({
                 $set: {
-                    applicationCode: applicantDetails.applicationCode,
                     name: applicantDetails.name,
                     dob: applicantDetails.dob,
                     passportNo: applicantDetails.passportNo,
