@@ -22,6 +22,7 @@ router.get('/',
 router.get('/getSingleStudent',
     basicAuthUser,
     checkSession,
+    
     checkQuery('_id'),
     getSingleStudent,
 );
