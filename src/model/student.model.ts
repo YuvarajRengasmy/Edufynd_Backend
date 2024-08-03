@@ -28,7 +28,7 @@ export interface StudentDocument extends mongoose.Document {
     anyVisaRejections?: string; // Only VisaRejections is true
     visaReason?: string;
     travelReason?: string;
-    country?: string;
+    desiredCountry?: string;
     desiredCourse?: string;
     finance?: any[];
 
