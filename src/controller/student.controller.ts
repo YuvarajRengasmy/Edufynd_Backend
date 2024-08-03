@@ -183,7 +183,7 @@ export let updateStudent = async (req, res, next) => {
                 englishTestType: studentDetails.englishTestType,
                 testScore: studentDetails.testScore,
                 dateOfTest: studentDetails.dateOfTest,
-                country: studentDetails.country,
+                desiredCountry: studentDetails.desiredCountry,
                 desiredUniversity: studentDetails.desiredUniversity,
                 desiredCourse: studentDetails.desiredCourse,
                 workExperience: studentDetails.workExperience,
@@ -411,6 +411,8 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 
     if (errors.isEmpty()) {
         try {
+            const student = await Student.findOne({ email: req.body.email });
+            if(!student){
 
             const studentDetails: StudentDocument = req.body;
             const student = await Student.find({}, 'studentCode').exec();
@@ -455,7 +457,9 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                 }
             });
             response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
-
+        }else {
+                response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+            }
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
@@ -489,7 +493,7 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
                     englishTestType: studentDetails.englishTestType,
                     testScore: studentDetails.testScore,
                     dateOfTest: studentDetails.dateOfTest,
-                    country: studentDetails.country,
+                    desiredCountry: studentDetails.desiredCountry,
                     desiredUniversity: studentDetails.desiredUniversity,
                     desiredCourse: studentDetails.desiredCourse,
                     workExperience: studentDetails.workExperience,
