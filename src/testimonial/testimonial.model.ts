@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose'
 export interface TestimonialDocument extends mongoose.Document {
     typeOfUser?: string;
     userName?: any[];
+    userEmail?: any[];
     courseOrUniversityName?: string;
     location?: string;
     content?: string;
@@ -20,6 +21,7 @@ export interface TestimonialDocument extends mongoose.Document {
 const testimonialSchema = new mongoose.Schema({
     typeOfUser: {type: String},
     userName: [String],
+    userEmail: [String],
     courseOrUniversityName: {type: String},
     location: {type: String},
     content: {type: String},
