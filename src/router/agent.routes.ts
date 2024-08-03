@@ -26,8 +26,8 @@ router.get('/getSingleAgent',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     checkRequestBodyParams('email'),
-  
     createAgent
 );
 

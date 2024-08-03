@@ -27,6 +27,7 @@ router.get('/getSingleUniversity',
 
 router.post('/',
     basicAuthUser,
+    checkSession,
     createCommission
 );
 

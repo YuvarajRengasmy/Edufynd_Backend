@@ -286,7 +286,7 @@ export const editStudentProfileByAgent = async (req, res) => {
                     englishTestType: studentDetails.englishTestType,
                     testScore: studentDetails.testScore,
                     dateOfTest: studentDetails.dateOfTest,
-                    country: studentDetails.country,
+                    desiredCountry: studentDetails.desiredCountry,
                     desiredUniversity: studentDetails.desiredUniversity,
                     desiredCourse: studentDetails.desiredCourse,
                     workExperience: studentDetails.workExperience,

@@ -24,6 +24,7 @@ router.get('/getSingleAdmin',
 
 router.post('/', 
          checkRequestBodyParams('email'),
+         checkSession,
          createAdmin
 );
 
