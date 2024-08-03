@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose'
 export interface EventDocument extends mongoose.Document {
     typeOfUser?: string;
     userName?: any[];
+    userEmail?: any[];
     eventTopic?: string;
     universityName?: string;
     date?: Date;
@@ -21,6 +22,7 @@ const eventSchema = new mongoose.Schema({
 
     typeOfUser: {type: String},
     userName: [String],
+    userEmail: [String],
     eventTopic: {type: String},
     universityName: {type: String},
     date: {type: Date},
