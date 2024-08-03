@@ -31,8 +31,6 @@ export interface StudentDocument extends mongoose.Document {
     desiredCountry?: string;
     desiredCourse?: string;
     finance?: any[];
-
-
     desiredUniversity?: string;
     password?: string;
     confirmPassword?: string;
