@@ -21,6 +21,7 @@ export interface ApplicantDocument extends mongoose.Document {
     feesPaid?: string,
     assignTo?: string,
     commentBox?: string;
+    country?: string;
     isDeleted?: boolean;
     status?: any;
     createdOn?: Date;
@@ -51,6 +52,7 @@ const applicantSchema = new mongoose.Schema({
     assignTo: { type: String },
     document:  {type: String},
     commentBox: {type: String},
+    country: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     status: [{
