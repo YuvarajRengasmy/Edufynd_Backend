@@ -181,7 +181,6 @@ export let updateApplicant = async (req, res, next) => {
                     universityName: applicantDetails.universityName,
                     campus: applicantDetails.campus,
                     course: applicantDetails.course,
-                    document: applicantDetails.document,
                     courseFees: applicantDetails.courseFees,
                     anyVisaRejections: applicantDetails.anyVisaRejections,
                     feesPaid: applicantDetails.feesPaid,
@@ -284,7 +283,7 @@ export let updateApplicantStatus = async (req, res, next) => {
                         new: true  // Return the updated document
                     }
                 );
-console.log("mas", masterData)
+
                 // Find the updated status in the array
                 const updatedStatus = masterData.status.find(status => status._id.toString() === applicantDetails.status._id);
 
