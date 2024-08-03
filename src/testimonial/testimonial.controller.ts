@@ -38,6 +38,8 @@ export let createTestimonial = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
+          
+
             const data: TestimonialDocument = req.body;
             const userName = req.body.userName; // Array of selected usernames
             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)

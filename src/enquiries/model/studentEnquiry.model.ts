@@ -17,18 +17,6 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     cgpa?: string;
     desiredCountry?: string;
     desiredCourse?: string;
-
-    doYouNeedSupportForLoan?: string;
-    assignedTo?: string;
-
-    isDeleted?: boolean;
-    createdOn?: Date;
-    createdBy?: string;
-    modifiedOn?: Date;
-    modifiedBy?: string;
-
-
-    // New Added Field
     gender?: string;
     citizenShip?: string;
     expiryDate?: Date;
@@ -40,6 +28,17 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     refereeName?: string;
     refereeContactNo?: number;
     registerForIELTSClass?: string;
+    doYouNeedSupportForLoan?: string;
+    assignedTo?: string;
+    isDeleted?: boolean;
+    createdOn?: Date;
+    createdBy?: string;
+    modifiedOn?: Date;
+    modifiedBy?: string;
+
+
+    // New Added Field
+   
 
 
 };
@@ -63,9 +62,6 @@ const studentEnquirySchema = new mongoose.Schema({
     desiredCourse: { type: String },
     doYouNeedSupportForLoan: { type: String },
     assignedTo: { type: String },
-
-
-
     // New Added Field
     gender: { type: String },
     citizenShip: { type: String },
