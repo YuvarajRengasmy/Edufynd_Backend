@@ -47,7 +47,7 @@ router.delete('/',
     deleteProgram
 );
 
-router.get('/getAllProgramForWeb',         // get all program for web //without checking session
+router.get('/getAllProgramForWeb',       
     basicAuthUser,
      checkSession,
     getAllProgramForWeb

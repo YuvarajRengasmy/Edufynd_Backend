@@ -94,12 +94,12 @@ const studentSchema = new mongoose.Schema({
     testScore: { type: String },
     dateOfTest: { type: String },
     country: [String],
-    desiredUniversity: { type: String }, //(Optional)
-    desiredCourse: { type: String }, //(Optional)
+    desiredUniversity: { type: String }, 
+    desiredCourse: { type: String }, 
     workExperience: { type: String },
-    anyVisaRejections: { type: String }, // (Yes/No) If ‘Yes’ state reason (Text Box)
+    anyVisaRejections: { type: String }, 
     visaReason: { type: String },
-    doYouHaveTravelHistory: { type: String }, // (Yes/No) If ‘Yes’ state reason (Text Box)
+    doYouHaveTravelHistory: { type: String }, 
     travelReason: { type: String },
     finance: { type: String },
     password: { type: String },
