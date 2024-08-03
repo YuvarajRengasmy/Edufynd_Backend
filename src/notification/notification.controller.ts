@@ -140,25 +140,88 @@ export let createNotification = async (req, res, next) => {
 
                 // Prepare email attachments
                 const attachments = [];
+                let cid = ''
                 if (savedNotification.uploadImage) {
-                    const timestamp = format(new Date(), 'yyyyMMdd_HHmmss');
-                    const dynamicFilename = `${savedNotification.subject.replace(/\s+/g, '_')}_${timestamp}.jpg`;
+                    const [fileType, fileContent] = savedNotification.uploadImage.split("base64,");
+                    const extension = fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    const timestamp = format(new Date(), 'yyyyMMdd');
+                    const dynamicFilename = `${savedNotification.subject.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+                    cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
 
                     attachments.push({
                         filename: dynamicFilename,
                         content: savedNotification.uploadImage.split("base64,")[1],
-                        encoding: 'base64'
+                        encoding: 'base64',
+                        cid: cid
                     });
                 }
                 // Send emails to all users
                 const emailPromises = userEmails.map((email, index) => {
+                    // const mailOptions = {
+                    //     from: config.SERVER.EMAIL_USER,
+                    //     to: email,
+                    //     subject:  `${savedNotification.subject}`,
+                    //     text: `Hello ${userNames[index]},\n\n${sanitizedContent}\n\nBest regards,\nAfynd Private Limited\nChennai.`,
+                    //     attachments: attachments.length > 0 ? attachments : []
+                    // };
+
                     const mailOptions = {
                         from: config.SERVER.EMAIL_USER,
                         to: email,
-                        subject:  `${savedNotification.subject}`,
-                        text: `Hello ${userNames[index]},\n\n${sanitizedContent}\n\nBest regards,\nAfynd Private Limited\nChennai.`,
-                        attachments: attachments.length > 0 ? attachments : []
-                    };
+                        subject: `${savedNotification.subject}`,
+                        html: `
+                                      <body style="font-family: 'Poppins', Arial, sans-serif">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                              <tr>
+                                                  <td align="center" style="padding: 20px;">
+                                                      <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                          <!-- Header -->
+                                                          <tr>
+                                                              <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                              ${savedNotification.subject}
+                                                              </td>
+                                                          </tr>
+                              
+                                                          <!-- Body -->
+                                                          <tr>
+                                                              <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                                  <p>Hello ${userNames[index]},</p>
+                                                                  <p>You Have an New Notification</p>
+                                                                  <p style="font-weight: bold,color: #345C72">Notification:  ${sanitizedContent}</p>
+                                                           
+                                                                ${cid? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
+                                                                  <p>This information is for your reference.</p>
+                                                                  <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                              </td>
+                                                          </tr>
+                                                          <tr>
+                                      <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                          <!-- CTA Button -->
+                                          <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                              <tr>
+                                                  <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                      <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </td>
+                                  </tr>
+                              
+                                                          <!-- Footer -->
+                                                          <tr>
+                                                              <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                                  Copyright &copy; 2024 | All rights reserved
+                                                              </td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </body>
+                                  `,
+                              
+                                
+                      };
 
                     // return transporter.sendMail(mailOptions);
                     transporter.sendMail(mailOptions, (error, info) => {
