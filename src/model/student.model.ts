@@ -47,7 +47,6 @@ export interface StudentDocument extends mongoose.Document {
     additional?: any[];
     resetOtp?: string;
     resetOtpExpires?: number;   
-
 // Newly Added
     duration?: string;
     lastEmployeer?: string;
@@ -58,7 +57,6 @@ export interface StudentDocument extends mongoose.Document {
     dateVisa?: string;
     purposeVisa?: string;
     countryNameVisa?: string;
-
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -68,7 +66,7 @@ export interface StudentDocument extends mongoose.Document {
 };
 
 const studentSchema = new mongoose.Schema({
-     _id: { type: mongoose.Types.ObjectId, auto: true },
+    _id: { type: mongoose.Types.ObjectId, auto: true },
     notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
     studentCode: { type: String },
     source: { type: String },
