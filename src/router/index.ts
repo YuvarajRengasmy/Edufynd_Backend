@@ -65,6 +65,7 @@ import ELT from '../ELT/elt.routes'
 
 //Global Setting Routes
 import Status from '../setting/globalSetting/router/status.routes'
+import Source from '../setting/globalSetting/router/source.routes'
 import Country from '../setting/globalSetting/router/country.routes'
 import InTake from '../setting/globalSetting/router/intake.routes'
 import Email from '../setting/globalSetting/router/email.routes'
@@ -145,10 +146,9 @@ router.use('/testimonial', Testimonial)
 router.use('/elt', ELT)
 
 
-941964
-
 //Global Setting API
 router.use('/status', Status )
+router.use('/source', Source )
 router.use('/country', Country)
 router.use('/intake', InTake)
 router.use('/email', Email)

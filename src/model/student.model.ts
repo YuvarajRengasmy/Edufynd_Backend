@@ -28,7 +28,7 @@ export interface StudentDocument extends mongoose.Document {
     anyVisaRejections?: string; // Only VisaRejections is true
     visaReason?: string;
     travelReason?: string;
-    country?: string;
+    desiredCountry?: string;
     desiredCourse?: string;
     finance?: any[];
 
@@ -60,7 +60,7 @@ export interface StudentDocument extends mongoose.Document {
     dateVisa?: string;
     purposeVisa?: string;
     countryNameVisa?: string;
-    notificationId?: any;
+
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -93,13 +93,13 @@ const studentSchema = new mongoose.Schema({
     englishTestType: { type: String },
     testScore: { type: String },
     dateOfTest: { type: String },
-    country: [String],
-    desiredUniversity: { type: String }, //(Optional)
-    desiredCourse: { type: String }, //(Optional)
+    desiredCountry: [String],
+    desiredUniversity: { type: String }, 
+    desiredCourse: { type: String }, 
     workExperience: { type: String },
-    anyVisaRejections: { type: String }, // (Yes/No) If ‘Yes’ state reason (Text Box)
+    anyVisaRejections: { type: String }, 
     visaReason: { type: String },
-    doYouHaveTravelHistory: { type: String }, // (Yes/No) If ‘Yes’ state reason (Text Box)
+    doYouHaveTravelHistory: { type: String }, 
     travelReason: { type: String },
     finance: { type: String },
     password: { type: String },

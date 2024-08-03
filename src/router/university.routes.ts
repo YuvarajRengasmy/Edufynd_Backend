@@ -12,14 +12,14 @@ const router: Router = Router();
 
 router.get('/',             
     basicAuthUser,
-    // checkSession,
+    checkSession,
     getAllUniversity
 );
 
 
 router.get('/getSingleUniversity',
     basicAuthUser,
-    // checkSession,
+    checkSession,
     checkQuery('_id'),
     getSingleUniversity,
 );
@@ -57,7 +57,7 @@ router.put('/getFilterUniversity',
     getFilteredUniversity,
 );
 
-router.get('/getAllUniversityForWeb',         // get all university for web //without checking session
+router.get('/getAllUniversityForWeb',         
     basicAuthUser,
     // checkSession,
     getAllUniversityForWeb

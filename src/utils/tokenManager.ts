@@ -67,7 +67,7 @@ export let checkSession = async (req, res, next) => {
                 req.body.loginUserName = tokendata.userName;
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
-                req.body.modifiedBy = tokendata.userName;
+                req.body.modifiedBy = tokendata.loginType;
                 req.body.modifiedOn = new Date();
                 next();
             } catch (err) {
