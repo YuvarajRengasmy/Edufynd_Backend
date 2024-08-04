@@ -49,8 +49,6 @@ export let createStatus = async (req, res, next) => {
 
 export const updateStatus = async (req, res) => {
     const errors = validationResult(req);
-
-
     if (errors.isEmpty()) {
         try {
             const statusDetails: StatusDocument = req.body;

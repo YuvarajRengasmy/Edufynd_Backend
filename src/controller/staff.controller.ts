@@ -117,6 +117,8 @@ export const updateStaff = async (req, res) => {
                     ipAddress: staffDetails.ipAddress,
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
+                    clockIn: staffDetails.clockIn,
+                    clockOut: staffDetails.clockOut,
 
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,

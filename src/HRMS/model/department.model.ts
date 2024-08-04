@@ -1,8 +1,9 @@
 import * as mongoose from 'mongoose'
 
-export interface SourceDocument extends mongoose.Document{
+export interface DepartmentDocument extends mongoose.Document{
     _id?: any;
     name?: string;
+    departmentHead?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -10,9 +11,10 @@ export interface SourceDocument extends mongoose.Document{
     modifiedBy?: string;
 }
 
-export const sourceSchema = new mongoose.Schema({
+export const departmentHeadSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     name: {type: String},
+    departmentHead: {type: String},
 
     createdOn: { type: Date },
     createdBy: { type: String },
@@ -21,4 +23,4 @@ export const sourceSchema = new mongoose.Schema({
  
 })
 
-export const Source = mongoose.model("Source", sourceSchema)
+export const Department = mongoose.model("Department", departmentHeadSchema)

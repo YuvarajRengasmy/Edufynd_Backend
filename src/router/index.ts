@@ -61,6 +61,10 @@ import Testimonial from '../testimonial/testimonial.routes'
 //ELT
 import ELT from '../ELT/elt.routes'
 
+//HRMS
+import Department from '../HRMS/routes/department.route';
+import Policies from '../HRMS/routes/policies.route'
+
 
 
 //Global Setting Routes
@@ -144,6 +148,10 @@ router.use('/testimonial', Testimonial)
 
 //ELT
 router.use('/elt', ELT)
+
+//HRMS
+router.use('/department', Department)
+router.use('/policies', Policies)
 
 
 //Global Setting API
