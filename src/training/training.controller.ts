@@ -4,8 +4,10 @@ import { Staff} from '../model/staff.model'
 import { Admin} from '../model/admin.model'
 import { Agent} from '../model/agent.model'
 import { validationResult } from "express-validator";
-import { response, } from "../helper/commonResponseHandler";
+import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
+import * as config from '../config';
+import { format } from 'date-fns'; // To format the date
 
 
 var activity = "Training";
@@ -33,65 +35,159 @@ export const getSingleTraining = async (req, res) => {
     }
 }
 
+const stripHtmlTags = (html) => {
+    return html.replace(/<\/?[^>]+(>|$)/g, "");
+};
+
 
 export let createTraining = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const data: TrainingDocument = req.body;
-            const usersName = req.body.usersName; // Array of selected usernames
-            // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
+            const usersName = req.body.usersName;// Array of selected usernames
 
             let users = [];
 
             // Fetch users based on typeOfUser
             if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: usersName } });
+                users = await Student.find({ name: { $in: usersName } }, { name: 1, email: 1 });
             } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: usersName } });
+                users = await Admin.find({ name: { $in: usersName } }, { name: 1, email: 1 });
             } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: usersName } });
+                users = await Agent.find({ agentName: { $in: usersName } }, { agentName: 1, email: 1 });
             } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: usersName } });
+                users = await Staff.find({ empName: { $in: usersName } }, { empName: 1, email: 1 });
             }
 
             // Check if any users were found
             if (users.length > 0) {
-                // Collect usernames for the notification
-                const usersNames = users.map((user) => user.name || user.empName || user.agentName);
+                // Collect usernames and emails for the notification
+                const userNames = users.map((user) => user.name || user.empName || user.agentName);
+                const userEmails = users.map((user) => user.email);
 
-                // Create a single notification document with all selected usernames
-                const notification = new Training({
+                // Create a single notification document with all selected usernames and emails
+                const training = new Training({
                     ...data,
-                    usersName: usersNames,
+                    usersName: userNames,
+                    userEmail: userEmails
                 });
 
-                // Save the notification to the database
-                const savedNotification = await notification.save();
+                // Save the promotion to the database
+                const savedTraining = await training.save();
+                const sanitizedContent = stripHtmlTags(savedTraining.content);
 
-                // Add the notification ID to each selected user's notifications array
-                const updatePromises = users.map((user) => {
-                    user.notificationId.push(savedNotification._id);
-                    return user.save();
+                // Prepare email attachments
+                const attachments = [];
+                let cid = ''
+                    if (savedTraining.uploadDocument) {
+                        const [fileType, fileContent] = savedTraining.uploadDocument.split("base64,");
+                        const extension = fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                        const timestamp = format(new Date(), 'yyyyMMdd');
+                        const dynamicFilename = `${savedTraining.subject.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+                        cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: savedTraining.uploadDocument.split("base64,")[1],
+                        encoding: 'base64',
+                        cid: cid
+
+                    });
+                }
+                // Send emails to all users
+                const emailPromises = userEmails.map((email, index) => {
+      
+                    const mailOptions = {
+                        from: config.SERVER.EMAIL_USER,
+                        to: email,
+                        subject: `${savedTraining.subject}`,
+                        html: `
+                                      <body style="font-family: 'Poppins', Arial, sans-serif">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                              <tr>
+                                                  <td align="center" style="padding: 20px;">
+                                                      <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                          <!-- Header -->
+                                                          <tr>
+                                                              <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                              ${savedTraining.subject}
+                                                              </td>
+                                                          </tr>
+                              
+                                                          <!-- Body -->
+                                                          <tr>
+                                                              <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                                  <p>Hello ${usersName[index]},</p>
+                                                                  <p>Training Schedule.</p>
+                                                                  <p style="font-weight: bold,color: #345C72">Training Topic:  ${savedTraining.trainingTopic}</p>
+                                                                   <p style="font-weight: bold,color: #345C72">Trainer Name:  ${savedTraining.name}</p>
+                                                                   <p style="font-weight: bold,color: #345C72">Content:  ${savedTraining.content}</p>
+                                                                    <p style="font-weight: bold,color: #345C72">Material Details:  ${savedTraining.material}</p>
+                                                                     <p style="font-weight: bold,color: #345C72">Training Date:  ${savedTraining.date}</p>
+                                                                      <p style="font-weight: bold,color: #345C72">Training Time:  ${savedTraining.time}</p>
+                                                           
+                                                                ${cid ? `<img src="cid:${cid}" alt="image" width="500" height="300" />` : ''}
+                                                                  <p>This information is for your reference.</p>
+                                                                  <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                              </td>
+                                                          </tr>
+                                                          <tr>
+                                      <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                          <!-- CTA Button -->
+                                          <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                              <tr>
+                                                  <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                      <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </td>
+                                  </tr>
+                              
+                                                          <!-- Footer -->
+                                                          <tr>
+                                                              <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                                  Copyright &copy; 2024 | All rights reserved
+                                                              </td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </body>
+                                  `,
+                                  attachments: attachments
+                                
+                      };
+  
+                    // return transporter.sendMail(mailOptions);
+                    transporter.sendMail(mailOptions, (error, info) => {
+
+                        if (error) {
+                            console.error('Error sending email:', error);
+                            return res.status(500).json({ message: 'Error sending email' });
+                        } else {
+                            console.log('Email sent:', info.response);
+                            res.status(201).json({ message: 'You have received a Training Session Notification'});
+                        }
+                    });
                 });
-               
 
-                // Wait for all user updates to be saved
-                await Promise.all(updatePromises);
+                // Wait for all emails to be sent
+                await Promise.all(emailPromises);
 
-                response(req, res, activity, 'Level-1', 'Create-Training', true, 200, {}, " Training Notifications sent successfully");
+                response(req, res, activity, 'Level-1', 'Create-Training', true, 200, {}, "Training Notifications sent successfully by Email");
             } else {
-                response(req, res,  activity, 'Level-2', 'Create-Training', false, 404, {}, "No users found for the specified type.");
+                response(req, res, activity, 'Level-2', 'Create-Training', false, 404, {}, "No users found for the specified type.");
             }
         } catch (err) {
-         console.log("44", err)
-            response(req, res,  activity, 'Level-3', 'Create-Training', false, 500, {}, "Internal server error", err.message);
+            response(req, res, activity, 'Level-3', 'Create-Training', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res,  activity, 'Level-3', 'Create-Training', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Create-Training', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };
-
 export const updateTraining = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
@@ -171,3 +267,64 @@ export let getFilteredTraining   = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-FilterTraining', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+// export let createTraining = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const data: TrainingDocument = req.body;
+//             const usersName = req.body.usersName; // Array of selected usernames
+//             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
+
+//             let users = [];
+
+//             // Fetch users based on typeOfUser
+//             if (data.typeOfUser === 'student') {
+//                 users = await Student.find({ name: { $in: usersName } });
+//             } else if (data.typeOfUser === 'admin') {
+//                 users = await Admin.find({ name: { $in: usersName } });
+//             } else if (data.typeOfUser === 'agent') {
+//                 users = await Agent.find({ agentName: { $in: usersName } });
+//             } else if (data.typeOfUser === 'staff') {
+//                 users = await Staff.find({ empName: { $in: usersName } });
+//             }
+
+//             // Check if any users were found
+//             if (users.length > 0) {
+//                 // Collect usernames for the notification
+//                 const usersNames = users.map((user) => user.name || user.empName || user.agentName);
+
+//                 // Create a single notification document with all selected usernames
+//                 const notification = new Training({
+//                     ...data,
+//                     usersName: usersNames,
+//                 });
+
+//                 // Save the notification to the database
+//                 const savedNotification = await notification.save();
+
+//                 // Add the notification ID to each selected user's notifications array
+//                 const updatePromises = users.map((user) => {
+//                     user.notificationId.push(savedNotification._id);
+//                     return user.save();
+//                 });
+               
+
+//                 // Wait for all user updates to be saved
+//                 await Promise.all(updatePromises);
+
+//                 response(req, res, activity, 'Level-1', 'Create-Training', true, 200, {}, " Training Notifications sent successfully");
+//             } else {
+//                 response(req, res,  activity, 'Level-2', 'Create-Training', false, 404, {}, "No users found for the specified type.");
+//             }
+//         } catch (err) {
+//          console.log("44", err)
+//             response(req, res,  activity, 'Level-3', 'Create-Training', false, 500, {}, "Internal server error", err.message);
+//         }
+//     } else {
+//         response(req, res,  activity, 'Level-3', 'Create-Training', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+//     }
+// };

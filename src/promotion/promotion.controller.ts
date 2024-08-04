@@ -75,7 +75,8 @@ export let createPromotion = async (req, res, next) => {
 
                 // Save the promotion to the database
                 const savedPromotion = await promotion.save();
-                const sanitizedContent = stripHtmlTags(savedPromotion.content);
+                // const sanitizedContent = stripHtmlTags(savedPromotion.content);
+                const sanitizedContent = savedPromotion.content
 
                 // Prepare email attachments
                 const attachments = [];
@@ -154,7 +155,7 @@ export let createPromotion = async (req, res, next) => {
                                   `,
                                 
                       };
-
+  
                     // return transporter.sendMail(mailOptions);
                     transporter.sendMail(mailOptions, (error, info) => {
 

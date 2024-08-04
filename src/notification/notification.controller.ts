@@ -28,72 +28,11 @@ export const getAllNotification = async (req, res) => {
 export const getSingleNotification = async (req, res) => {
     try {
         const data = await Notification.findOne({ _id: req.query._id })
-        console.log("hh",data)
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
-
-
-
-// export let createNotification = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const notificationData: NotificationDocument = req.body;
-//             const userName = req.body.userName; // Array of selected usernames
-//             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
-
-//             let users = [];
-
-//             // Fetch users based on typeOfUser
-//             if (notificationData.typeOfUser === 'student') {
-//                 users = await Student.find({ name: { $in: userName } });
-//             } else if (notificationData.typeOfUser === 'admin') {
-//                 users = await Admin.find({ name: { $in: userName } });
-//             } else if (notificationData.typeOfUser === 'agent') {
-//                 users = await Agent.find({ agentName: { $in: userName } });
-//             } else if (notificationData.typeOfUser === 'staff') {
-//                 users = await Staff.find({ empName: { $in: userName } });
-//             }
-
-//             // Check if any users were found
-//             if (users.length > 0) {
-//                 // Collect usernames for the notification
-//                 const userNames = users.map((user) => user.name || user.empName || user.agentName);
-
-//                 // Create a single notification document with all selected usernames
-//                 const notification = new Notification({
-//                     ...notificationData,
-//                     userName: userNames,
-//                 });
-
-//                 // Save the notification to the database
-//                 const savedNotification = await notification.save();
-
-//                 // Add the notification ID to each selected user's notifications array
-//                 const updatePromises = users.map((user) => {
-//                     user.notificationId.push(savedNotification._id);
-//                     return user.save();
-//                 });
-
-//                 // Wait for all user updates to be saved
-//                 await Promise.all(updatePromises);
-
-//                 response(req, res,  activity, 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
-//             } else {
-//                 response(req, res,  activity, 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
-//             }
-//         } catch (err) {
-         
-//             response(req, res,  activity, 'Level-3', 'Create-Notification', false, 500, {}, "Internal server error", err.message);
-//         }
-//     } else {
-//         response(req, res,  activity, 'Level-3', 'Create-Notification', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-//     }
-// };
-
 
 
 const stripHtmlTags = (html) => {
@@ -136,7 +75,8 @@ export let createNotification = async (req, res, next) => {
 
                 // Save the promotion to the database
                 const savedNotification = await notification.save();
-                const sanitizedContent = stripHtmlTags(savedNotification.content);
+                // const sanitizedContent = stripHtmlTags(savedNotification.content);
+                const sanitizedContent = savedNotification.content
 
                 // Prepare email attachments
                 const attachments = [];
@@ -157,14 +97,6 @@ export let createNotification = async (req, res, next) => {
                 }
                 // Send emails to all users
                 const emailPromises = userEmails.map((email, index) => {
-                    // const mailOptions = {
-                    //     from: config.SERVER.EMAIL_USER,
-                    //     to: email,
-                    //     subject:  `${savedNotification.subject}`,
-                    //     text: `Hello ${userNames[index]},\n\n${sanitizedContent}\n\nBest regards,\nAfynd Private Limited\nChennai.`,
-                    //     attachments: attachments.length > 0 ? attachments : []
-                    // };
-
                     const mailOptions = {
                         from: config.SERVER.EMAIL_USER,
                         to: email,
@@ -219,6 +151,7 @@ export let createNotification = async (req, res, next) => {
                                           </table>
                                       </body>
                                   `,
+                                  attachments: attachments
                               
                                 
                       };
@@ -329,4 +262,63 @@ export let getFilteredNotification   = async (req, res, next) => {
     }
 };
 
+
+
+
+// export let createNotification = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const notificationData: NotificationDocument = req.body;
+//             const userName = req.body.userName; // Array of selected usernames
+//             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
+
+//             let users = [];
+
+//             // Fetch users based on typeOfUser
+//             if (notificationData.typeOfUser === 'student') {
+//                 users = await Student.find({ name: { $in: userName } });
+//             } else if (notificationData.typeOfUser === 'admin') {
+//                 users = await Admin.find({ name: { $in: userName } });
+//             } else if (notificationData.typeOfUser === 'agent') {
+//                 users = await Agent.find({ agentName: { $in: userName } });
+//             } else if (notificationData.typeOfUser === 'staff') {
+//                 users = await Staff.find({ empName: { $in: userName } });
+//             }
+
+//             // Check if any users were found
+//             if (users.length > 0) {
+//                 // Collect usernames for the notification
+//                 const userNames = users.map((user) => user.name || user.empName || user.agentName);
+
+//                 // Create a single notification document with all selected usernames
+//                 const notification = new Notification({
+//                     ...notificationData,
+//                     userName: userNames,
+//                 });
+
+//                 // Save the notification to the database
+//                 const savedNotification = await notification.save();
+
+//                 // Add the notification ID to each selected user's notifications array
+//                 const updatePromises = users.map((user) => {
+//                     user.notificationId.push(savedNotification._id);
+//                     return user.save();
+//                 });
+
+//                 // Wait for all user updates to be saved
+//                 await Promise.all(updatePromises);
+
+//                 response(req, res,  activity, 'Level-1', 'Create-Notification', true, 200, {}, "Notifications sent successfully");
+//             } else {
+//                 response(req, res,  activity, 'Level-2', 'Create-Notification', false, 404, {}, "No users found for the specified type.");
+//             }
+//         } catch (err) {
+         
+//             response(req, res,  activity, 'Level-3', 'Create-Notification', false, 500, {}, "Internal server error", err.message);
+//         }
+//     } else {
+//         response(req, res,  activity, 'Level-3', 'Create-Notification', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+//     }
+// };
 
