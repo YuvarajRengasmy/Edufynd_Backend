@@ -13,6 +13,7 @@ export interface ApplicantDocument extends mongoose.Document {
     primaryNumber?: number,  //a
     whatsAppNumber?: number,  //a
     inTake?: string,
+    country?: string;
     universityName?: string,
     course?: string,
     campus?: string,
@@ -21,7 +22,6 @@ export interface ApplicantDocument extends mongoose.Document {
     feesPaid?: string,
     assignTo?: string,
     commentBox?: string;
-    country?: string;
     isDeleted?: boolean;
     status?: any;
     createdOn?: Date;
@@ -43,6 +43,7 @@ const applicantSchema = new mongoose.Schema({
     primaryNumber: { type: Number, ref: 'Student' },
     whatsAppNumber: { type: Number, ref: 'Student' },
     inTake: { type: String },
+    country: {type: String},
     universityName: { type: String, ref: 'University' },
     campus: {type: String},
     course: { type: String },
@@ -52,8 +53,6 @@ const applicantSchema = new mongoose.Schema({
     assignTo: { type: String },
     document:  {type: String},
     commentBox: {type: String},
-    country: {type: String},
-
     isDeleted: { type: Boolean, default: false },
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
