@@ -8,7 +8,7 @@ export interface AttendenceDocument extends mongoose.Document{
     clockOut?: Date;
     late?: Date;
     earlyLeaving?: Date;
-    totalWork?: number;
+    totalWork?: any;
 
     createdOn?: Date;
     createdBy?: string;

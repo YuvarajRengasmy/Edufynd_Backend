@@ -91,11 +91,10 @@ export const updateStaff = async (req, res) => {
                     emergencyContactNo: staffDetails.emergencyContactNo,
                     probationDuration: staffDetails.probationDuration,
                     salary: staffDetails.salary,
-                    status: staffDetails.status,
+                  
                     privileges: staffDetails.privileges,
                     idCard: staffDetails.idCard,
                     manageApplications: staffDetails.manageApplications,
-                    activeInactive: staffDetails.activeInactive,
                     teamLead: staffDetails.teamLead,
 
                     // Newly added fields
@@ -119,9 +118,7 @@ export const updateStaff = async (req, res) => {
                     ipAddress: staffDetails.ipAddress,
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
-                    // clockIn: staffDetails.clockIn,
-                    // clockOut: staffDetails.clockOut,
-
+            
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
                 }
@@ -173,7 +170,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                 subject: 'Welcome to EduFynd',
                 text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
             };
-console.log("334", mailOptions)
+
             transporter.sendMail(mailOptions, (error, info) => {
 
                 if (error) {
