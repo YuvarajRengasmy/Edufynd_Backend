@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
     createStaffBySuperAdmin, createStudentByStaff, 
-    staffClockIn,
-    staffClockOut} from '../controller/staff.controller';
+   } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -75,8 +74,8 @@ router.post('/import',
 );
 
 
-router.post('/clockIn', staffClockIn)
+// router.post('/clockIn', staffClockIn)
 
-router.post('/clockOut', staffClockOut)
+// router.post('/clockOut', staffClockOut)
 
 export default router
