@@ -17,7 +17,7 @@ export interface StaffDocument extends mongoose.Document {
     address?: string;
     idCard?: boolean;    // – Yes / No (If ‘Yes’ card to be generated)
     privileges?: string;
-    
+    status?: string;
   // Extra Fields  
     photo?: string;
     jobDescription?: string;
@@ -88,7 +88,7 @@ const staffSchema = new mongoose.Schema({
     confirmPassword: { type: String },  
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},  //(To be assigned by Super Admin)
-    
+    status:{type: String},
     // Newly added fields
     team: {type: String},
     staffList: [String],
