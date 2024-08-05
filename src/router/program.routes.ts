@@ -2,7 +2,7 @@ import {Router} from 'express';
 import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProgram, 
     getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, getProgramUniversity,
     getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
-    updateProgramApplications,getProgramByCountry,
+    updateProgramApplications,getProgramByCountry,getProgramByUniversity,
     getProgramCategory} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -87,6 +87,10 @@ router.get('/programDetails',    /// Get program details with that university pr
 router.get('/getProgramByCountry',
     basicAuthUser,
     getProgramByCountry
+)
+router.get('/getProgramByUniversity',
+    basicAuthUser,
+    getProgramByUniversity
 )
 
 router.put('/applyStudent',
