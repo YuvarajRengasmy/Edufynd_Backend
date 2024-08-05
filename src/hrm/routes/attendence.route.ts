@@ -18,7 +18,7 @@ router.get('/getSingleAttendence',
     getSingleAttendence,
 );
 
-router.post('/clockIn', 
+router.put('/clockIn', 
     basicAuthUser,
     // checkSession,
     staffClockIn
