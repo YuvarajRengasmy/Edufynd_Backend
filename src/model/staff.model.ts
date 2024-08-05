@@ -54,6 +54,8 @@ export interface StaffDocument extends mongoose.Document {
     userName?: string;
     loginPassword?: string;   
     notificationId?: any;
+    clockIn?: Date;
+    clockOut?: Date;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -108,6 +110,8 @@ const staffSchema = new mongoose.Schema({
     ipAddress: { type: String },
     userName:  { type: String },
     loginPassword:  { type: String },
+    clockIn: {type: Date},
+    clockOut: {type: Date},
     notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
 
     createdOn: { type: Date },

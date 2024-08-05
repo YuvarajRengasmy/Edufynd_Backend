@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
-    createStaffBySuperAdmin, createStudentByStaff } from '../controller/staff.controller';
+    createStaffBySuperAdmin, createStudentByStaff, 
+    staffClockIn,
+    staffClockOut} from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -71,5 +73,10 @@ router.post('/import',
     upload.single('file'),
     csvToJson
 );
+
+
+router.post('/clockIn', staffClockIn)
+
+router.post('/clockOut', staffClockOut)
 
 export default router
