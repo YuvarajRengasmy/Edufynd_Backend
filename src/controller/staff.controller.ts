@@ -95,7 +95,7 @@ export const updateStaff = async (req, res) => {
                     privileges: staffDetails.privileges,
                     idCard: staffDetails.idCard,
                     manageApplications: staffDetails.manageApplications,
-                    activeInactive: staffDetails.activeInactive,
+                
                     teamLead: staffDetails.teamLead,
 
                     // Newly added fields
