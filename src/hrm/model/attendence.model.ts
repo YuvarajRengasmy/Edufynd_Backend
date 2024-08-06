@@ -24,7 +24,7 @@ export const attendenceSchema = new mongoose.Schema({
     // employeeId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     date: {type: Date},
-    status: {type: String},
+    status: {type: String, default: 'Absent'},
     clockIn: {type: Date},
     clockOut: {type: Date},
     late: {type: Date},

@@ -34,6 +34,54 @@ export const getSingleAttendence = async (req, res) => {
 }
 
 
+export let deleteAttendence = async (req, res, next) => {
+
+    try {
+        let id = req.query._id;
+        const country = await Attendence.findByIdAndDelete({ _id: id })
+        response(req, res, activity, 'Level-2', 'Deleted the Attendence', true, 200, country, 'Successfully Remove the Attendence Details');
+    }
+    catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Deleted the Attendence', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getFilteredAttendence = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+
+        if (req.body.status) {
+            andList.push({ status: req.body.status })
+        }
+        if (req.body.late) {
+            andList.push({ late: req.body.late })
+        }
+        if (req.body.earlyLeaving) {
+            andList.push({ earlyLeaving: req.body.earlyLeaving })
+        }
+        if (req.body.totalWork) {
+            andList.push({ totalWork: req.body.totalWork })
+        }
+
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const attendencetList = await Attendence.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
+
+        const attendenceCount = await Attendence.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-Filter Attendence', true, 200, { attendencetList, attendenceCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-Filter Attendence', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+
+
 
 export const staffClockInn = async (req, res, next) => {
     const errors = validationResult(req);
@@ -240,51 +288,7 @@ export let staffClockOutT = async (req, res, next) => {
 //     }
 // };
 
-export let getFilteredAttendence = async (req, res, next) => {
-    try {
-        var findQuery;
-        var andList: any = []
-        var limit = req.body.limit ? req.body.limit : 0;
-        var page = req.body.page ? req.body.page : 0;
-        andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
 
-        if (req.body.status) {
-            andList.push({ status: req.body.status })
-        }
-        if (req.body.late) {
-            andList.push({ late: req.body.late })
-        }
-        if (req.body.earlyLeaving) {
-            andList.push({ earlyLeaving: req.body.earlyLeaving })
-        }
-        if (req.body.totalWork) {
-            andList.push({ totalWork: req.body.totalWork })
-        }
-
-        findQuery = (andList.length > 0) ? { $and: andList } : {}
-
-        const attendencetList = await Attendence.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
-
-        const attendenceCount = await Attendence.find(findQuery).count()
-        response(req, res, activity, 'Level-1', 'Get-Filter Attendence', true, 200, { attendencetList, attendenceCount }, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Filter Attendence', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
-
-export let deleteAttendence = async (req, res, next) => {
-
-    try {
-        let id = req.query._id;
-        const country = await Attendence.findByIdAndDelete({ _id: id })
-        response(req, res, activity, 'Level-2', 'Deleted the Attendence', true, 200, country, 'Successfully Remove the Attendence Details');
-    }
-    catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Deleted the Attendence', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
 
 export const calculateAttendance = async (req, res) => {
     try {
@@ -575,6 +579,8 @@ export const staffClockOut = async (req, res) => {
         attendance.clockOut = new Date();
         const diff = moment(attendance.clockOut).diff(moment(attendance.clockIn), 'hours', true);
         attendance.totalWork = diff;
+        attendance.status = attendance.clockIn && attendance.clockOut ? 'Present' : 'Absent';
+        
         await attendance.save();
 
         res.status(200).json({ message: "Clocked out successfully", attendance });
