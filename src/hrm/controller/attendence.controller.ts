@@ -141,6 +141,8 @@ export let staffClockOut = async (req, res, next) => {
             { new: true } // Return the updated document
         );
 
+        console.log("bala", updatedAttendance)
+
         if (!updatedAttendance) {
             return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
         }

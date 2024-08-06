@@ -27,6 +27,7 @@ router.put('/clockIn',
 router.put('/clockOut', 
     basicAuthUser,
     // checkSession,
+    checkRequestBodyParams('_id'),
     staffClockOut
 )
 
