@@ -17,7 +17,7 @@ export interface StaffDocument extends mongoose.Document {
     address?: string;
     idCard?: boolean;    // – Yes / No (If ‘Yes’ card to be generated)
     privileges?: string;
-    
+   
   // Extra Fields  
     photo?: string;
     jobDescription?: string;
@@ -54,8 +54,8 @@ export interface StaffDocument extends mongoose.Document {
     userName?: string;
     loginPassword?: string;   
     notificationId?: any;
-    clockIn?: string;
-    clockOut?: string;
+    clockIn?: Date;
+    clockOut?: Date;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -88,7 +88,7 @@ const staffSchema = new mongoose.Schema({
     confirmPassword: { type: String },  
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},  //(To be assigned by Super Admin)
-    
+   
     // Newly added fields
     team: {type: String},
     staffList: [String],
@@ -110,8 +110,8 @@ const staffSchema = new mongoose.Schema({
     ipAddress: { type: String },
     userName:  { type: String },
     loginPassword:  { type: String },
-    clockIn: {type: String},
-    clockOut: {type: String},
+    clockIn: {type: Date},
+    clockOut: {type: Date},
     notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
 
     createdOn: { type: Date },

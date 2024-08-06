@@ -272,7 +272,7 @@ export let createStudentByAdmin = async (req, res, next) => {
 
             // Admin exist, proceed to create a new student
             const createStudent = new Student(studentDetails);
-            createStudent.createdBy = 'Admin'
+       
             // Save the student to the database
             const insertStudent = await createStudent.save();
 

@@ -7,6 +7,7 @@ import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import { clientError, errorMessage } from '../helper/ErrorMessage'
 import * as config from '../config';
 import csv = require('csvtojson')
+import moment = require('moment');
 
 var activity = "Staff"
 
@@ -90,10 +91,11 @@ export const updateStaff = async (req, res) => {
                     emergencyContactNo: staffDetails.emergencyContactNo,
                     probationDuration: staffDetails.probationDuration,
                     salary: staffDetails.salary,
+                   
                     privileges: staffDetails.privileges,
                     idCard: staffDetails.idCard,
                     manageApplications: staffDetails.manageApplications,
-                    activeInactive: staffDetails.activeInactive,
+                
                     teamLead: staffDetails.teamLead,
 
                     // Newly added fields
@@ -117,8 +119,8 @@ export const updateStaff = async (req, res) => {
                     ipAddress: staffDetails.ipAddress,
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
-                    clockIn: staffDetails.clockIn,
-                    clockOut: staffDetails.clockOut,
+                    // clockIn: staffDetails.clockIn,
+                    // clockOut: staffDetails.clockOut,
 
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
@@ -315,3 +317,56 @@ export let createStudentByStaff = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
+
+
+// export const staffClockIn = async (req, res) => {
+//     try {
+
+//         const staffDetails: StaffDocument = req.body;
+//         const staff = await Staff.findOne({ _id: req.query._id })
+//         if (!staff) {
+//             return res.status(404).json({ message: 'Staff member not found' });
+//         }
+
+//         // Get current date and time
+//         const currentDateTime = new Date();
+
+//         // Update staff record with clock-in time
+//         // staff.clockIn = currentDateTime;
+//         staff.clockIn = currentDateTime;
+
+//         // Save the updated staff document
+//         await staff.save();
+//         response(req, res, activity, 'Level-3', 'Staff Attendence Recorded', true, 200, { clockInTime: staff.clockIn }, 'Clock-in recorded successfully');
+//     } catch (err) {
+//         console.error('Error recording clock-in:', err);
+//         response(req, res, activity, 'Level-3', 'Error recording clock-in', false, 500, {}, 'Internal server error.', err.message);
+//     }
+// };
+
+
+// export const staffClockOut = async (req, res) => {
+//     try {
+//         const staffDetails: StaffDocument = req.body;
+//         const staff = await Staff.findOne({ _id: req.query._id })
+
+//         if (!staff) {
+//             return res.status(404).json({ message: 'Staff member not found' });
+//         }
+
+//         // Get current date and time
+//         const currentDateTime = new Date();
+
+//         // Update staff record with clock-out time
+//         staff.clockOut = currentDateTime;
+
+//         // Calculate the total hours worked
+//         const hoursWorked = moment(staff.clockOut).diff(moment(staff.clockIn), 'hours', true).toFixed(2) // Calculate hours with decimals
+//         await staff.save();
+
+//         response(req, res, activity, 'Level-3', 'Staff Attendence Recorded', true, 200, { clockOutTime: staff.clockOut, hoursWorked}, 'Clock-out recorded successfully');
+//     } catch (err) {
+//         console.error('Error recording clock-out:', err);
+//         response(req, res, activity, 'Level-3', 'Error recording clock-out', false, 500, {}, 'Internal server error.', err.message);
+//     }
+// };
