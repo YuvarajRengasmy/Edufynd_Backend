@@ -536,6 +536,8 @@ export let staffClockInC = async (req, res, next) => {
 export const staffClockIn = async (req, res) => {
     try {
         const { staffId } = req.body;
+   
+      
         const today = moment().startOf('day').toDate();
         const shiftStart = moment().set({ hour: 9, minute: 0, second: 0 }).toDate();
         const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
