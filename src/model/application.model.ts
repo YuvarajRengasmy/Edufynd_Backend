@@ -3,13 +3,13 @@ import * as mongoose from 'mongoose'
 
 export interface ApplicantDocument extends mongoose.Document {
     _id?: any;
-    applicationCode?: string //(Student Code / Number Series)
+    applicationCode?: string;
     universityId?: any;
     studentId?:any;
-    name?: string,        //(Auto Fetch from Students)
-    dob?: string,             //(Auto Fetch from Students)
-    passportNo?: string,       // (Auto Fetch from Students)
-    email?: string,         //(Auto Fetch from Students)
+    name?: string,       
+    dob?: string,           
+    passportNo?: string,      
+    email?: string,        
     primaryNumber?: number,  //a
     whatsAppNumber?: number,  //a
     inTake?: string,
@@ -18,7 +18,7 @@ export interface ApplicantDocument extends mongoose.Document {
     course?: string,
     campus?: string,
     courseFees?: number,
-    anyVisaRejections?: string,  // (Auto Fetch from Students)
+    anyVisaRejections?: string, 
     feesPaid?: string,
     assignTo?: string,
     commentBox?: string;
@@ -47,7 +47,7 @@ const applicantSchema = new mongoose.Schema({
     universityName: { type: String, ref: 'University' },
     campus: {type: String},
     course: { type: String },
-    courseFees: { type: Number },       // (Auto fetch from Program)
+    courseFees: { type: Number },       
     anyVisaRejections: { type: String, ref: 'Student' },
     feesPaid: { type: String },
     assignTo: { type: String },

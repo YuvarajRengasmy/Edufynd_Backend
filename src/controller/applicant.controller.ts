@@ -76,6 +76,34 @@ export let createApplicant = async (req, res, next) => {
 };
 
 
+
+export const createApplicantt = async (req, res) => {
+    try {
+        const applicantDetails: ApplicantDocument = req.body;
+
+        // Fetch the universities based on country and intake
+        const universities = await University.find({ country: applicantDetails.country, inTake: { $in: [applicantDetails.inTake] } });
+
+        if (universities.length === 0) {
+            return res.status(404).json({ message: 'No universities found for the selected country and intake' });
+        }
+
+        // Assuming the applicant selects a university from the filtered list
+        const selectedUniversity = universities[0]; // Modify as per your logic
+        applicantDetails.applicationCode = await generateNextApplicationCode();
+        // Create the applicant document
+        const newApplicant = new Applicant({...applicantDetails, universityName: selectedUniversity.universityName});
+
+        // Save the applicant document to the database
+        await newApplicant.save();
+
+        res.status(201).json({ message: 'Application created successfully', applicant: newApplicant });
+    } catch (error) {
+        console.error('Error creating application:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
