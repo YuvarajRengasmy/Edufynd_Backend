@@ -35,6 +35,42 @@ export const getSingleAttendence = async (req, res) => {
 
 
 
+// export const staffClockIn = async (req, res, next) => {
+//     const errors = validationResult(req);
+
+//     if (!errors.isEmpty()) {
+//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+//     }
+
+//     try {
+//         const staff = await Staff.findOne({ employeeId: req.body.employeeId });
+//         console.log("Staff details:", staff);
+
+//         if (!staff) {
+//             return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Staff member not found');
+//         }
+
+//         const currentDateTime = new Date();
+
+//         // Prepare attendance details
+//         const attendanceDetails: AttendenceDocument = {
+//             ...req.body,
+//             employeeId: staff._id,
+//             clockIn: currentDateTime
+//         };
+
+//         const newAttendance = new Attendence(attendanceDetails);
+//         const insertedData = await newAttendance.save();
+
+//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in Start Work ');
+//     } catch (err) {
+//         console.error('Error during clock-in process:', err);
+//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
+//     }
+// };
+
+
+
 export const staffClockIn = async (req, res, next) => {
     const errors = validationResult(req);
 
@@ -52,17 +88,33 @@ export const staffClockIn = async (req, res, next) => {
 
         const currentDateTime = new Date();
 
-        // Prepare attendance details
+        // Check if there's already an attendance record for the day
+        const existingAttendance = await Attendence.findOne({
+            employeeId: staff._id,
+            date: { $eq: new Date().setHours(0, 0, 0, 0) } // Check for the current day's attendance
+        });
+
+        if (existingAttendance) {
+            // If the record already exists, just add the clock-in time to an array of clock-ins
+            await Attendence.updateOne(
+                { _id: existingAttendance._id },
+                { $push: { clockInTimes: currentDateTime } } // Assuming you have an array to hold multiple clock-ins
+            );
+            return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: existingAttendance }, 'Additional clock-in time recorded successfully.');
+        }
+
+        // Prepare a new attendance record
         const attendanceDetails: AttendenceDocument = {
             ...req.body,
             employeeId: staff._id,
-            clockIn: currentDateTime
+            clockInTimes: [currentDateTime], // Use an array to hold multiple clock-ins
+            date: new Date().setHours(0, 0, 0, 0) // Set the date to the current day
         };
 
         const newAttendance = new Attendence(attendanceDetails);
         const insertedData = await newAttendance.save();
 
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in Start Work ');
+        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'First clock-in time recorded successfully.');
     } catch (err) {
         console.error('Error during clock-in process:', err);
         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
@@ -72,6 +124,7 @@ export const staffClockIn = async (req, res, next) => {
 
 
 // export let staffClockOut = async (req, res, next) => {
+// corrected code
 //     const errors = validationResult(req);
 //     if (!errors.isEmpty()) {
 //         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
@@ -92,15 +145,25 @@ export const staffClockIn = async (req, res, next) => {
 //             return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
 //         }
 
-//         // Calculate total work hours
+//         // Calculate total work duration
 //         const clockInTime = moment(updatedAttendance.clockIn);
-//         const totalWorkHours = moment.duration(moment(clockOutTime).diff(clockInTime)).asHours(); // Calculate total work hours including fractions
+//         const totalDuration = moment.duration(moment(clockOutTime).diff(clockInTime));
+        
+//         // Total duration in minutes
+//         const totalWorkMinutes = totalDuration.asMinutes();
 
-//         // Update totalWork in the attendance record
-//         updatedAttendance.totalWork = moment.duration(totalWorkHours, 'hours').asMilliseconds()
+//         // Convert minutes to hours and minutes
+//         const totalWorkHours = Math.floor(totalWorkMinutes / 60);
+//         const remainingMinutes = Math.floor(totalWorkMinutes % 60);
+
+//         // Update the attendance record with hours and minutes
+//         // updatedAttendance.totalWorkHours = totalWorkHours;
+//         // updatedAttendance.totalWorkMinutes = remainingMinutes;
+//          updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
+
 //         await updatedAttendance.save();
 
-//         return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Clock-out recorded successfully and total work hours calculated.');
+//         return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Check-Out Have A Nice Day.');
 //     } catch (err: any) {
 //         console.error('Error during clock-out process:', err);
 //         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
@@ -117,38 +180,51 @@ export let staffClockOut = async (req, res, next) => {
     try {
         const attendenceDetails: AttendenceDocument = req.body;
 
-        // Update the attendance record with clock-out time
-        const clockOutTime = new Date();
-        const updatedAttendance = await Attendence.findOneAndUpdate(
-            { _id: attendenceDetails._id },
-            { $set: { clockOut: clockOutTime } },
-            { new: true } // Return the updated document
-        );
+        // Fetch the attendance record by employeeId and the current date
+        const currentDate = new Date().setHours(0, 0, 0, 0); // Set time to the start of the day
+        const attendanceRecord = await Attendence.findOne({
+            employeeId: attendenceDetails.employeeId,
+            date: currentDate,
+        });
 
-        if (!updatedAttendance) {
+        if (!attendanceRecord) {
             return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
         }
 
-        // Calculate total work duration
-        const clockInTime = moment(updatedAttendance.clockIn);
-        const totalDuration = moment.duration(moment(clockOutTime).diff(clockInTime));
-        
-        // Total duration in minutes
-        const totalWorkMinutes = totalDuration.asMinutes();
+        const clockOutTime = new Date();
+
+        // Update the attendance record with the new clock-out time
+        await Attendence.updateOne(
+            { _id: attendanceRecord._id },
+            { $push: { clockOutTimes: clockOutTime } } // Assuming you have an array to hold multiple clock-outs
+        );
+
+        // Re-fetch the updated attendance record to calculate the total work
+        const updatedAttendance = await Attendence.findById(attendanceRecord._id);
+
+        // Calculate total work duration based on all clock-ins and clock-outs
+        const clockInTimes = updatedAttendance.clockInTimes;
+        const clockOutTimes = updatedAttendance.clockOutTimes;
+
+        let totalWorkMinutes = 0;
+
+        for (let i = 0; i < clockInTimes.length && i < clockOutTimes.length; i++) {
+            const clockInTime = moment(clockInTimes[i]);
+            const clockOutTime = moment(clockOutTimes[i]);
+            totalWorkMinutes += moment.duration(clockOutTime.diff(clockInTime)).asMinutes();
+        }
 
         // Convert minutes to hours and minutes
         const totalWorkHours = Math.floor(totalWorkMinutes / 60);
         const remainingMinutes = Math.floor(totalWorkMinutes % 60);
 
-        // Update the attendance record with hours and minutes
-        // updatedAttendance.totalWorkHours = totalWorkHours;
-        // updatedAttendance.totalWorkMinutes = remainingMinutes;
-         updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
+        // Update the attendance record with total work hours
+        updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
 
         await updatedAttendance.save();
 
         return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Check-Out Have A Nice Day.');
-    } catch (err: any) {
+    } catch (err) {
         console.error('Error during clock-out process:', err);
         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
     }
@@ -205,7 +281,8 @@ export const calculateAttendance = async (req,res) => {
         const attendenceDetails: AttendenceDocument = req.body;
 
         // Fetch the staff by ID
-        const staff = await Staff.findById(attendenceDetails.employeeId);
+        // const staff = await Staff.findById(attendenceDetails.employeeId);
+        const staff = await Staff.findOne({ _id: req.query._id })
 
         if (!staff) {
             return res.status(404).json({ message: 'Staff member not found' });

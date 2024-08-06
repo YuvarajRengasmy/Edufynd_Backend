@@ -25,7 +25,7 @@ export interface StaffDocument extends mongoose.Document {
     salary?: string    // (Break Up with deduction – Manual)
     manageApplications?: string;   // Yes/No
     //If Yes, List Country & University The user can only handle applications of these universities and country
-    activeInactive?:string;   // – User
+    active?:string;   // – User
     teamLead?: string;     // – Select Employees and permission to be viewed.
     password?: string;
     confirmPassword?: string;
@@ -82,7 +82,7 @@ const staffSchema = new mongoose.Schema({
     salary: {type: String},               // (Break Up with deduction – Manual)        
     idCard: {type: String},                     // – Yes / No (If ‘Yes’ card to be generated)
     manageApplications: {type: String},           // Yes/No    //If Yes, List Country & University The user can only handle applications of these universities and country
-    activeInactive: {type: String},                // – User
+    active: {type: String},                // – User
     teamLead: {type: String},   
     password: { type: String },
     confirmPassword: { type: String },  

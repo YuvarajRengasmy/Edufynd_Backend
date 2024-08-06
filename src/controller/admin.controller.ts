@@ -402,7 +402,7 @@ export const editStaffProfileByAdmin = async (req, res) => {
                     privileges:staffDetails.privileges,               
                     idCard: staffDetails.idCard,                  
                     manageApplications:staffDetails.manageApplications,         
-                    activeInactive: staffDetails.activeInactive,             
+                    active: staffDetails.active,             
                     teamLead: staffDetails.teamLead,
                  
                     modifiedOn: new Date(),

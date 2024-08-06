@@ -91,7 +91,7 @@ export const updateStaff = async (req, res) => {
                     emergencyContactNo: staffDetails.emergencyContactNo,
                     probationDuration: staffDetails.probationDuration,
                     salary: staffDetails.salary,
-                   
+                   active: staffDetails.active,
                     privileges: staffDetails.privileges,
                     idCard: staffDetails.idCard,
                     manageApplications: staffDetails.manageApplications,
@@ -119,8 +119,7 @@ export const updateStaff = async (req, res) => {
                     ipAddress: staffDetails.ipAddress,
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
-                    // clockIn: staffDetails.clockIn,
-                    // clockOut: staffDetails.clockOut,
+              
 
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
