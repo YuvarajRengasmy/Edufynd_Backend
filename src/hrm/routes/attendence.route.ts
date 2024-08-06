@@ -20,14 +20,15 @@ router.get('/getSingleAttendence',
 
 router.post('/clockIn', 
     basicAuthUser,
-    // checkSession,
+    checkSession,
     staffClockIn
 )
 
 router.put('/clockOut', 
     basicAuthUser,
-    // checkSession,
-    checkRequestBodyParams('_id'),
+     checkSession,
+    //   checkRequestBodyParams('_id'),
+    checkQuery('_id'),
     staffClockOut
 )
 
