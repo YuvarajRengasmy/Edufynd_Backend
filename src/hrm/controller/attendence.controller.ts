@@ -70,6 +70,59 @@ export const staffClockIn = async (req, res, next) => {
 };
 
 
+export let staffClockOut = async (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+    }
+
+    try {
+        const attendenceDetails: AttendenceDocument = req.body;
+
+        // Update the attendance record with clock-out time
+        const clockOutTime = new Date();
+        const updatedAttendance = await Attendence.findOneAndUpdate(
+            { _id: attendenceDetails._id },
+            { $set: { clockOut: clockOutTime } },
+            { new: true } // Return the updated document
+        );
+
+        console.log("bala", updatedAttendance)
+
+        if (!updatedAttendance) {
+            return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
+        }
+
+        // Calculate total work duration
+        const clockInTime = moment(updatedAttendance.clockIn);
+        const totalDuration = moment.duration(moment(clockOutTime).diff(clockInTime));
+        
+        // Total duration in minutes
+        const totalWorkMinutes = totalDuration.asMinutes();
+
+        // Convert minutes to hours and minutes
+        const totalWorkHours = Math.floor(totalWorkMinutes / 60);
+        const remainingMinutes = Math.floor(totalWorkMinutes % 60);
+
+        // Update the attendance record with hours and minutes
+        // updatedAttendance.totalWorkHours = totalWorkHours;
+        // updatedAttendance.totalWorkMinutes = remainingMinutes;
+         updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
+
+        await updatedAttendance.save();
+
+        return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Check-Out Have A Nice Day.');
+    } catch (err: any) {
+        console.error('Error during clock-out process:', err);
+        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
+    }
+};
+
+
+
+
+
 // Array code 
 // export const staffClockIn = async (req, res, next) => {
 //     const errors = validationResult(req);
@@ -120,58 +173,6 @@ export const staffClockIn = async (req, res, next) => {
 //         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
 //     }
 // };
-
-
-
-export let staffClockOut = async (req, res, next) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
-
-    try {
-        const attendenceDetails: AttendenceDocument = req.body;
-
-        // Update the attendance record with clock-out time
-        const clockOutTime = new Date();
-        const updatedAttendance = await Attendence.findOneAndUpdate(
-            { _id: attendenceDetails._id },
-            { $set: { clockOut: clockOutTime } },
-            { new: true } // Return the updated document
-        );
-
-        console.log("bala", updatedAttendance)
-
-        if (!updatedAttendance) {
-            return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
-        }
-
-        // Calculate total work duration
-        const clockInTime = moment(updatedAttendance.clockIn);
-        const totalDuration = moment.duration(moment(clockOutTime).diff(clockInTime));
-        
-        // Total duration in minutes
-        const totalWorkMinutes = totalDuration.asMinutes();
-
-        // Convert minutes to hours and minutes
-        const totalWorkHours = Math.floor(totalWorkMinutes / 60);
-        const remainingMinutes = Math.floor(totalWorkMinutes % 60);
-
-        // Update the attendance record with hours and minutes
-        // updatedAttendance.totalWorkHours = totalWorkHours;
-        // updatedAttendance.totalWorkMinutes = remainingMinutes;
-         updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
-
-        await updatedAttendance.save();
-
-        return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Check-Out Have A Nice Day.');
-    } catch (err: any) {
-        console.error('Error during clock-out process:', err);
-        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
-    }
-};
-
 
 
 // Array code
