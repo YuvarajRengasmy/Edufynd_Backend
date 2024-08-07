@@ -136,7 +136,7 @@ export let staffClockOut = async (req, res, next) => {
         // Update the attendance record with clock-out time
         const clockOutTime = new Date();
         const updatedAttendance = await Attendence.findOneAndUpdate(
-            { _id: attendenceDetails._id },
+            { employeeId: attendenceDetails.employeeId },
             { $set: { clockOut: clockOutTime } },
             { new: true } // Return the updated document
         );
@@ -172,7 +172,7 @@ export let staffClockOut = async (req, res, next) => {
 
 
 
-// Array code
+
 // export let staffClockOut = async (req, res, next) => {
 //     const errors = validationResult(req);
 //     if (!errors.isEmpty()) {
@@ -205,8 +205,8 @@ export let staffClockOut = async (req, res, next) => {
 //         const updatedAttendance = await Attendence.findById(attendanceRecord._id);
 
 //         // Calculate total work duration based on all clock-ins and clock-outs
-//         const clockInTimes = updatedAttendance.clockInTimes;
-//         const clockOutTimes = updatedAttendance.clockOutTimes;
+//         const clockInTimes = updatedAttendance.clockIn;
+//         const clockOutTimes = updatedAttendance.clockOut;
 
 //         let totalWorkMinutes = 0;
 
