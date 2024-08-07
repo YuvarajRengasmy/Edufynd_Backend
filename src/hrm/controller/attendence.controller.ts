@@ -35,14 +35,17 @@ export const getSingleAttendence = async (req, res) => {
 
 
 export let getFilteredAttendence = async (req, res, next) => {
+    console.log("Entering getFilteredAttendence middleware");
     try {
         var findQuery;
         var andList: any = []
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
-
+        //  andList.push({ status: "present" })
+        if(req.body.employeeId){
+            andList.push({employeeId:req.body.employeeId})
+        }
         if (req.body.status) {
             andList.push({ status: req.body.status })
         }
@@ -56,10 +59,10 @@ export let getFilteredAttendence = async (req, res, next) => {
             andList.push({ totalWork: req.body.totalWork })
         }
 
+       
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const attendencetList = await Attendence.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
-
+        const attendencetList = await Attendence.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate("employeeId",{empName:1})
         const attendenceCount = await Attendence.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Attendence', true, 200, { attendencetList, attendenceCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
