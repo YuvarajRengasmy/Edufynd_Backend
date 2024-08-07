@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDepartment, getSingleDepartment, createDepartment, updateDepartment, deleteDepartment, getFilteredDepartment } from '../controller/department.controller';
+import { getAllCalender, getSingleCalender, createCalender, updateCalender, deleteCalender, getFilteredCalender } from '../controller/calender.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -9,40 +9,40 @@ const router: Router = Router();
 
 router.get('/',               
     basicAuthUser,
-    getAllDepartment
+    getAllCalender
 );
 
-router.get('/getSingleDepartment',
+router.get('/getSingleCalender',
     basicAuthUser,
     checkQuery('_id'),
-    getSingleDepartment,
+    getSingleCalender,
 );
 
 
 router.post('/',
     basicAuthUser,
     checkSession,
-    createDepartment
+    createCalender
 );
 
 
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    updateDepartment
+    checkQuery('_id'),
+    updateCalender
 );
 
 
 router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deleteDepartment
+    deleteCalender
 );
 
-router.put('/getFilterDepartment',
+router.put('/getFilterCalender',
     basicAuthUser,
-    getFilteredDepartment,
+    getFilteredCalender,
 );
 
 

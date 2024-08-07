@@ -205,7 +205,6 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
             adminDetails.password = await encrypt(password)
             adminDetails.confirmPassword = await encrypt(confirmPassword)
             const createAdmin = new Admin(adminDetails);
-            createAdmin.createdBy = 'Super Admin'
             const insertAdmin = await createAdmin.save();
 
             const newHash = await decrypt(insertAdmin["password"]);
@@ -245,7 +244,7 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
             const updateData = await Admin.findOneAndUpdate({ _id: adminDetails._id }, {
                 $set: {
                     role: adminDetails.role,
-                    modifiedOn: adminDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
                 }
 
@@ -277,11 +276,11 @@ export let createStudentByAdmin = async (req, res, next) => {
             const insertStudent = await createStudent.save();
 
             // Respond with success message
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Admin', true, 200, { student: insertStudent }, 'Student created successfully by Admin.');
+            response(req, res, activity, 'Level-1', 'Create-Student-By-Admin', true, 200, { student: insertStudent }, 'Student created successfully by Admin.');
 
         } catch (err: any) {
             // Handle server error
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Admin', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'Create-Student-By-Admin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
         // Request body validation failed, respond with error message
@@ -363,7 +362,6 @@ export let createStaffByAdmin = async (req, res, next) => {
 
             // Admin exist, proceed to create a new staff
             const createstaff = new Staff(staffDetails);
-            createstaff.createdBy = 'Admin'
             // Save the staff to the database
             const insertStaff = await createstaff.save();
 

@@ -143,7 +143,6 @@ export let updateAgent = async (req, res, next) => {
                     requireVisaFilingSupport: agentDetails.requireVisaFilingSupport,
                     visaCommission: agentDetails.visaCommission,
 
-
                     modifiedOn: new Date(),
                     modifiedBy: agentDetails.modifiedBy,
                 }

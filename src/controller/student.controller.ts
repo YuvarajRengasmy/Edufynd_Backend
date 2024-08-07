@@ -288,48 +288,6 @@ export let getFilteredStudent = async (req, res, next) => {
 };
 
 
-// export let getFilteredStudent = async (req, res, next) => {
-//     try {
-//         let findQuery = {};
-//         let andList = [];
-//         let limit = req.body.limit ? parseInt(req.body.limit) : 10;
-//         let page = req.body.page ? parseInt(req.body.page) : 1;
-
-//         andList.push({ isDeleted: false });
-//         andList.push({ status: 1 });
-
-//         if (req.body.studentCode) {
-//             andList.push({ studentCode: req.body.studentCode });
-//         }
-//         if (req.body.name) {
-//             andList.push({ name: req.body.name });
-//         }
-//         if (req.body.passportNo) {
-//             andList.push({ passportNo: req.body.passportNo });
-//         }
-//         if (req.body.email) {
-//             andList.push({ email: req.body.email });
-//         }
-//         if (req.body.mobileNumber) {
-//             andList.push({ mobileNumber: req.body.mobileNumber });
-//         }
-
-//         findQuery = andList.length > 0 ? { $and: andList } : {};
-
-//         const studentList = await Student.find(findQuery)
-//             .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-//             .limit(limit)
-//             .skip((page - 1) * limit);
-
-//         const studentCount = await Student.countDocuments(findQuery);
-
-//         response(req, res,activity, 'Get-FilterStudent', 'Level-1', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
-//     } catch (err) {
-//         response(req, res,activity, 'Get-FilterStudent', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
-//     }
-// };
-
-
 export const csvToJson = async (req, res) => {
     try {
       
@@ -456,9 +414,9 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                     res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
                 }
             });
-            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
+            response(req, res, activity, 'Level-1', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
         }else {
-                response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+                response(req, res, activity, 'Level-2', 'Create-Student-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
         } catch (err: any) {
             console.log(err)

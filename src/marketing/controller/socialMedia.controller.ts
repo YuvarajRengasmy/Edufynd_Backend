@@ -13,7 +13,7 @@ export const getAllSocialMedia = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetAll-SocialMedia', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-SocialMedia', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-2', 'GetAll-SocialMedia', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
@@ -23,7 +23,7 @@ export const getSingleSocialMedia = async (req, res) => {
         const data = await SocialMedia.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-SocialMedia', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetSingle-SocialMedia', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-2', 'GetSingle-SocialMedia', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 

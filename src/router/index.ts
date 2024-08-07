@@ -59,7 +59,7 @@ import Event from '../events/event.routes'
 import Testimonial from '../testimonial/testimonial.routes'
 
 //ELT
-import ELT from '../ELT/elt.routes'
+import ELT from '../elt/elt.routes'
 
 //HRMS
 import Department from '../hrm/routes/department.route';
@@ -67,6 +67,7 @@ import Policies from '../hrm/routes/policies.route'
 import Attendence from '../hrm/routes/attendence.route'
 import PayRoll from '../hrm/routes/payroll.route'
 import DepartmentHead from '../hrm/routes/departmentHead.route'
+import Calender from '../hrm/routes/calender.route'
 
 
 
@@ -158,6 +159,7 @@ router.use('/policies', Policies)
 router.use('/attendence', Attendence)
 router.use('/payroll', PayRoll)
 router.use('/departmentHead', DepartmentHead)
+router.use('/calender', Calender)
 
 
 //Global Setting API

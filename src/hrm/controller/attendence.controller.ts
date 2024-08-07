@@ -34,8 +34,41 @@ export const getSingleAttendence = async (req, res) => {
 }
 
 
+export let updateAttendence = async (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try{
+          
+            const attendenceDetails: AttendenceDocument = req.body;
+            const updateData = await Attendence.findOneAndUpdate({ _id: attendenceDetails._id }, {
+                $set: {  
+                    date:  attendenceDetails.date,
+                    status: attendenceDetails.status,
+                    empName:attendenceDetails.empName,
+                    clockIn: attendenceDetails.clockIn,
+                    clockOut:attendenceDetails.clockOut,
+                    late: attendenceDetails.late,
+                    earlyLeaving: attendenceDetails.earlyLeaving,
+                    totalWork: attendenceDetails.totalWork,
+            
+                    modifiedOn: new Date(),
+                 
+                }
+            });
+            response(req, res, activity, 'Level-1', 'Update-Attendence', true, 200, updateData, clientError.success.updateSuccess);
+        }
+        catch (err: any) {
+            response(req, res, activity, 'Level-2', 'Update-Attendence', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Attendence', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
+
+
 export let getFilteredAttendence = async (req, res, next) => {
-    console.log("Entering getFilteredAttendence middleware");
     try {
         var findQuery;
         var andList: any = []
