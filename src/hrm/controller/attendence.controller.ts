@@ -286,14 +286,6 @@ export const staffClockIn = async (req, res) => {
             return res.status(400).json({ message: "Already clocked in today" });
         }
 
-        // Create a new attendance record
-        // attendance = new Attendence({
-        //     staff: staffId,
-        //     staffName: staffId.empName,
-        //     clockIn: new Date(),
-        //     date: today,
-        //     status: 'Present'
-        // });
         attendance = new Attendence({...attendenceDetails,clockIn: new Date(),date: today,status: 'Present'})
 
         await attendance.save();
