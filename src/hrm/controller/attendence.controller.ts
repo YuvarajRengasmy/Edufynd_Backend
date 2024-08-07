@@ -109,7 +109,7 @@ export const staffClockIn = async (req, res) => {
         }
         const formattedLateDuration = `${Math.floor(lateDuration / 60)}h ${lateDuration % 60}min`;
 
-        attendance = new Attendence({...attendenceDetails,clockIn: clockInTime, date: today,status: 'Present', late: formattedLateDuration})
+        attendance = new Attendence({...attendenceDetails,clockIn: clockInTime, date: today, status: 'Present', late: formattedLateDuration})
 
         await attendance.save();
         return response(req, res, activity, 'Level-2', 'Update-Check In', true, 200, attendance, "Clocked in successfully");
