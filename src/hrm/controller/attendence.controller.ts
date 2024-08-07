@@ -274,24 +274,27 @@ export let staffClockInC = async (req, res, next) => {
 export const staffClockIn = async (req, res) => {
     try {
         const { staffId } = req.body;
+        const attendenceDetails: AttendenceDocument = req.body;
         const today = moment().startOf('day').toDate();
         const shiftStart = moment().set({ hour: 9, minute: 0, second: 0 }).toDate();
         const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
 
         // Check if there's already an attendance record for today
-        let attendance = await Attendence.findOne({ staff: staffId, date: today });
+        let attendance = await Attendence.findOne({ staff: staffId, date: today, });
 
         if (attendance) {
             return res.status(400).json({ message: "Already clocked in today" });
         }
 
         // Create a new attendance record
-        attendance = new Attendence({
-            staff: staffId,
-            clockIn: new Date(),
-            date: today,
-            status: 'Present'
-        });
+        // attendance = new Attendence({
+        //     staff: staffId,
+        //     staffName: staffId.empName,
+        //     clockIn: new Date(),
+        //     date: today,
+        //     status: 'Present'
+        // });
+        attendance = new Attendence({...attendenceDetails,clockIn: new Date(),date: today,status: 'Present'})
 
         await attendance.save();
         res.status(200).json({ message: "Clocked in successfully", attendance });
