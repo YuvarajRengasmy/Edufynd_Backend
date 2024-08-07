@@ -8,12 +8,13 @@ export interface AttendenceDocument extends mongoose.Document{
     status?: string;
     clockIn?: Date;
     clockOut?: Date;
-    late?: Date;
-    earlyLeaving?: Date;
-    totalWork?: any;
-    // clockInTimes?: any;
-    // clockOutTimes?: any;
-
+    late?: string;
+    earlyLeaving?: string;
+    totalWork?: string;
+      email?: string;
+      photo?: string;
+    shiftTiming?: string;
+    designation?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -22,19 +23,20 @@ export interface AttendenceDocument extends mongoose.Document{
 
 export const attendenceSchema = new mongoose.Schema({
 
-    // employeeId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
-    staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+    employeeId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+    // staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     date: {type: Date},
     status: {type: String},
     empName: {type: String},
     clockIn: {type: Date},
     clockOut: {type: Date},
-    late: {type: Date},
-    earlyLeaving: {type: Date},
-    totalWork: {type: Number},
-    // clockInTimes: [String],
-    // clockOutTimes: [String],
-
+    late: {type: String},
+    earlyLeaving: {type: String},
+    totalWork: {type: String},
+     email: {type: String},
+     photo: {type: String},
+    shiftTiming:{type: String},
+    designation:{type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
