@@ -14,7 +14,8 @@ router.get('/',
 
 router.get('/getSingleDepartment',
     basicAuthUser,
-    checkQuery('_id'),
+    // checkQuery('_id'),
+    checkRequestBodyParams('_id'),
     getSingleDepartment,
 );
 
