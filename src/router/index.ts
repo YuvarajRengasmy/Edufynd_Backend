@@ -66,7 +66,7 @@ import Department from '../hrm/routes/department.route';
 import Policies from '../hrm/routes/policies.route'
 import Attendence from '../hrm/routes/attendence.route'
 import PayRoll from '../hrm/routes/payroll.route'
-import DepartmentHead from '../hrm/routes/payroll.route'
+import DepartmentHead from '../hrm/routes/departmentHead.route'
 
 
 
