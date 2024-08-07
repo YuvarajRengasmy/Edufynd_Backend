@@ -132,3 +132,73 @@ export let updatePayRoll = async (req, res, next) => {
             response(req, res, activity, 'Level-3', 'Get-Filter PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
+
+
+    ////////
+
+    export const calculateSalary = async (req, res) => {
+        try {
+            const { staffId, presentDays, grossSalary, performanceAllowanceDeduction, professionalTax } = req.body;
+    
+            // Basic Salary: 40% of Gross Salary
+            const basicSalary = grossSalary * 0.4;
+    
+            // HRA: 40% of Basic Salary
+            const hra = basicSalary * 0.4;
+    
+            // Other Allowances (fixed)
+            const conveyance = 830;
+            const transportAllowance = 1660;
+            const leaveTravelAllowance = 1000;
+            const medicalAllowance = 1250;
+            const specialAllowance = 1380;
+    
+            // Performance Allowance: 10% of Gross Salary
+            const performanceAllowance = grossSalary * 0.1;
+    
+            // Deductions
+            const pf = 900; // Example PF
+            const esi = 400; // Example ESI / Health Insurance
+            const totalDeduction = performanceAllowance + professionalTax + pf + esi;
+    
+            // Net Salary before deductions
+            const netSalaryBeforeDeductions = grossSalary - totalDeduction;
+    
+            // Salary Calculation Based on Attendance
+            const dailyGrossSalary = grossSalary / 30;
+            const salaryForPresentDays = dailyGrossSalary * presentDays;
+    
+            const finalSalaryWithoutPerformanceDeduction = salaryForPresentDays - professionalTax;
+    
+            // With Performance Allowance Deduction
+            const dailyNetSalary = netSalaryBeforeDeductions / 30;
+            const finalSalaryWithPerformanceDeduction = dailyNetSalary * presentDays - professionalTax;
+    
+            // Response Example
+            const salaryDetails = {
+                basicSalary,
+                hra,
+                conveyance,
+                transportAllowance,
+                leaveTravelAllowance,
+                medicalAllowance,
+                specialAllowance,
+                performanceAllowance,
+                pf,
+                esi,
+                totalDeduction,
+                netSalaryBeforeDeductions,
+                finalSalaryWithoutPerformanceDeduction,
+                finalSalaryWithPerformanceDeduction
+            };
+    
+            return res.status(200).json({
+                message: "Salary calculated successfully",
+                salaryDetails
+            });
+    
+        } catch (err) {
+            return res.status(500).json({ message: "Internal server error", error: err.message });
+        }
+    };
+    
