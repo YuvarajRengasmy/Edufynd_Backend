@@ -136,7 +136,7 @@ export let staffClockOut = async (req, res, next) => {
         // Update the attendance record with clock-out time
         const clockOutTime = new Date();
         const updatedAttendance = await Attendence.findOneAndUpdate(
-            { employeeId: attendenceDetails.employeeId },
+            {_id: attendenceDetails._id},
             { $set: { clockOut: clockOutTime } },
             { new: true } // Return the updated document
         );
