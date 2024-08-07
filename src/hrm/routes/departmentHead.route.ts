@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllDepartment, getSingleDepartment, createDepartment, updateDepartment, deleteDepartment, getFilteredDepartment } from '../controller/department.controller';
+import { getAllDepartmentHead, getSingleDepartmentHead, createDepartmentHead, updateDepartmentHead, deleteDepartmentHead, 
+    getFilteredDepartmentHead } from '../controller/departmentHead.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -9,21 +10,20 @@ const router: Router = Router();
 
 router.get('/',               
     basicAuthUser,
-    getAllDepartment
+    getAllDepartmentHead
 );
 
-router.get('/getSingleDepartment',
+router.get('/getSingleDepartmentHead',
     basicAuthUser,
-    // checkQuery('_id'),
-    checkRequestBodyParams('_id'),
-    getSingleDepartment,
+    checkQuery('_id'),
+    getSingleDepartmentHead,
 );
 
 
 router.post('/',
     basicAuthUser,
     checkSession,
-    createDepartment
+    createDepartmentHead
 );
 
 
@@ -31,19 +31,20 @@ router.put('/',
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
-    updateDepartment
+    checkRequestBodyParams('_id'),
+    updateDepartmentHead
 );
 
 
 router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deleteDepartment
+    deleteDepartmentHead
 );
 
-router.put('/getFilterDepartment',
+router.put('/getFilterDepartmentHead',
     basicAuthUser,
-    getFilteredDepartment,
+    getFilteredDepartmentHead,
 );
 
 

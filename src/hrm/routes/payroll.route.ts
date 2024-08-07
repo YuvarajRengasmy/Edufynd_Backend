@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDepartment, getSingleDepartment, createDepartment, updateDepartment, deleteDepartment, getFilteredDepartment } from '../controller/department.controller';
+import { getAllPayRoll, getSinglePayRoll, createPayRoll, updatePayRoll, deletePayRoll, getFilteredPayRoll } from '../controller/payroll.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -9,41 +9,40 @@ const router: Router = Router();
 
 router.get('/',               
     basicAuthUser,
-    getAllDepartment
+    getAllPayRoll
 );
 
-router.get('/getSingleDepartment',
+router.get('/getSinglePayRoll',
     basicAuthUser,
-    // checkQuery('_id'),
-    checkRequestBodyParams('_id'),
-    getSingleDepartment,
+    checkQuery('_id'),
+    getSinglePayRoll,
 );
 
 
 router.post('/',
     basicAuthUser,
     checkSession,
-    createDepartment
+    createPayRoll
 );
 
 
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    updateDepartment
+    checkQuery('_id'),
+    updatePayRoll
 );
 
 
 router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deleteDepartment
+    deletePayRoll
 );
 
-router.put('/getFilterDepartment',
+router.put('/getFilterPayRoll',
     basicAuthUser,
-    getFilteredDepartment,
+    getFilteredPayRoll,
 );
 
 

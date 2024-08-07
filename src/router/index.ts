@@ -65,6 +65,8 @@ import ELT from '../ELT/elt.routes'
 import Department from '../hrm/routes/department.route';
 import Policies from '../hrm/routes/policies.route'
 import Attendence from '../hrm/routes/attendence.route'
+import PayRoll from '../hrm/routes/payroll.route'
+import DepartmentHead from '../hrm/routes/departmentHead.route'
 
 
 
@@ -154,6 +156,8 @@ router.use('/elt', ELT)
 router.use('/department', Department)
 router.use('/policies', Policies)
 router.use('/attendence', Attendence)
+router.use('/payroll', PayRoll)
+router.use('/departmentHead', DepartmentHead)
 
 
 //Global Setting API
