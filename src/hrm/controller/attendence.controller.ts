@@ -35,40 +35,29 @@ export const getSingleAttendence = async (req, res) => {
 
 
 
-export const staffClockIn = async (req, res, next) => {
+export let staffCloc = async (req, res, next) => {
     const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
 
-    if (!errors.isEmpty()) {
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
+       
+                const attendenceDetails: AttendenceDocument = req.body;
 
-    try {
-        const staff = await Staff.findOne({ employeeId: req.body.employeeId });
-        console.log("Staff details:", staff);
+                // Save the new program
+                const clockOutTime = new Date();
+                attendenceDetails.clockIn = clockOutTime
+                const newStaff = new Attendence(attendenceDetails);
+                let insertedData = await newStaff.save();
 
-        if (!staff) {
-            return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Staff member not found');
+                response(req, res, activity, 'Level-2', 'Update-Check Out', true, 200, insertedData, clientError.success.savedSuccessfully);
+            } 
+         catch (err: any) {
+            console.log(err);
+            response(req, res, activity, 'Level-3', 'Update-Check Out', false, 500, {}, errorMessage.internalServer, err.message);
         }
-
-        const currentDateTime = new Date();
-
-        // Prepare attendance details
-        const attendanceDetails: AttendenceDocument = {
-            ...req.body,
-            employeeId: staff._id,
-            clockIn: currentDateTime
-        };
-
-        const newAttendance = new Attendence(attendanceDetails);
-        const insertedData = await newAttendance.save();
-
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in Start Work ');
-    } catch (err) {
-        console.error('Error during clock-in process:', err);
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
+    
     }
-};
-
+}
 
 // Array code 
 // export const staffClockIn = async (req, res, next) => {
@@ -123,54 +112,80 @@ export const staffClockIn = async (req, res, next) => {
 
 
 
-export let staffClockOut = async (req, res, next) => {
+// export let staffClockOut = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+//     }
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
+//     try {
+//         // Get the attendance details from the request body
+//         const attendenceDetails = req.body;
 
+//         // Get the clock-out time
+//         const clockOutTime = new Date();
+
+//         // Find and update the attendance record
+//         let updatedAttendance = await Attendence.findOneAndUpdate(
+//             { _id: req.query._id }, // Query
+//             { $set: { clockOut: clockOutTime } }, // Update
+//             { new: true } // Return the updated document
+//         );
+
+//         if (!updatedAttendance) {
+//             return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
+//         }
+
+//         // Calculate total work duration
+//         const clockInTime = moment(updatedAttendance.clockIn);
+//         const totalDuration = moment.duration(moment(clockOutTime).diff(clockInTime));
+
+//         // Total duration in minutes
+//         const totalWorkMinutes = totalDuration.asMinutes();
+
+//         // Convert minutes to hours and minutes
+//         const totalWorkHours = Math.floor(totalWorkMinutes / 60);
+//         const remainingMinutes = Math.floor(totalWorkMinutes % 60);
+
+//         // Update the attendance record with total work time
+//         updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
+
+//         await updatedAttendance.save();
+
+//         return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Checked-Out successfully.');
+//     } catch (err) {
+//         console.error('Error during clock-out process:', err);
+//         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
+//     }
+// };
+
+// Handle Check-Out
+export const staffClockOut = async (req, res) => {
     try {
-        const attendenceDetails: AttendenceDocument = req.body;
+       const {  id } = req.body;
+      let attendance: AttendenceDocument = req.body
+  
+      // Find the check-in record
+    //    attendance = await Attendence.findByIdAndUpdate({ _id: id }, { $set: { clockOut: new Date() } });
+       attendance = await Attendence.findOne({ staffId: id });
+      if (!attendance) {
+        return res.status(400).json({ message: 'No active check-in found' });
+      }
 
-        // Update the attendance record with clock-out time
-        const clockOutTime = new Date();
-        const updatedAttendance = await Attendence.findOneAndUpdate(
-            {_id: attendenceDetails._id},
-            { $set: { clockOut: clockOutTime } },
-            { new: true } // Return the updated document
-        );
-
-        console.log("bala", updatedAttendance)
-
-        if (!updatedAttendance) {
-            return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
-        }
-
-        // Calculate total work duration
-        const clockInTime = moment(updatedAttendance.clockIn);
-        const totalDuration = moment.duration(moment(clockOutTime).diff(clockInTime));
-        
-        // Total duration in minutes
-        const totalWorkMinutes = totalDuration.asMinutes();
-
-        // Convert minutes to hours and minutes
-        const totalWorkHours = Math.floor(totalWorkMinutes / 60);
-        const remainingMinutes = Math.floor(totalWorkMinutes % 60);
-
-        // Update the attendance record with hours and minutes
-        // updatedAttendance.totalWorkHours = totalWorkHours;
-        // updatedAttendance.totalWorkMinutes = remainingMinutes;
-         updatedAttendance.totalWork = totalWorkHours * 60 + remainingMinutes;
-
-        await updatedAttendance.save();
-
-        return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Check-Out Have A Nice Day.');
-    } catch (err: any) {
-        console.error('Error during clock-out process:', err);
-        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
+       await Attendence.updateOne(
+       { staffId: id },
+        { $set: { clockOut: new Date() } } // Add more fields if needed
+      );
+  
+      // Update the check-out time
+      attendance.clockOut = new Date();
+      await attendance.save();
+  
+      res.status(200).json({ message: 'Checked out successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error });
     }
-};
+  };
 
 
 
@@ -484,4 +499,29 @@ export const calculateAttendance = async (req,res) => {
 //     }
 // };
 
-
+export let staffClockIn= async (req, res, next) => {
+    //   console.log("sehat")
+        const errors = validationResult(req);
+    
+        if (errors.isEmpty()) {
+            try {
+                const clientDetails: AttendenceDocument = req.body;
+              
+            
+               
+                clientDetails.clockIn = new Date();
+             
+            
+                clientDetails.createdOn = new Date();
+             
+                const createData = new Attendence(clientDetails);
+                let insertData = await createData.save();
+    
+                response(req, res, activity, 'Save-Client', 'Level-2', true, 200, insertData, clientError.success.savedSuccessfully);
+            } catch (err: any) {
+                response(req, res, activity, 'Save-Client', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
+            }
+        } else {
+            response(req, res, activity, 'Save-Client', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        }
+}
