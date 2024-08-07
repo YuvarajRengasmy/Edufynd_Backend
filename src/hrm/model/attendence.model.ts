@@ -8,11 +8,10 @@ export interface AttendenceDocument extends mongoose.Document{
     status?: string;
     clockIn?: Date;
     clockOut?: Date;
-    late?: Date;
-    earlyLeaving?: Date;
-    totalWork?: any;
-    // clockInTimes?: any;
-    // clockOutTimes?: any;
+    late?: string;
+    earlyLeaving?: string;
+    totalWork?: string;
+
 
     createdOn?: Date;
     createdBy?: string;
@@ -29,11 +28,10 @@ export const attendenceSchema = new mongoose.Schema({
     empName: {type: String},
     clockIn: {type: Date},
     clockOut: {type: Date},
-    late: {type: Date},
-    earlyLeaving: {type: Date},
-    totalWork: {type: Number},
-    // clockInTimes: [String],
-    // clockOutTimes: [String],
+    late: {type: String},
+    earlyLeaving: {type: String},
+    totalWork: {type: String},
+
 
     createdOn: { type: Date },
     createdBy: { type: String },
