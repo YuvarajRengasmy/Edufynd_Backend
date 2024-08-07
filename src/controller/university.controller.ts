@@ -8,16 +8,11 @@ import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
 
 
-
-
 var activity = "University";
-
-
 
 export let getAllUniversity = async (req, res, next) => {
     try {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
-        console.log("88", data)
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -94,7 +89,6 @@ export let saveUniversity = async (req, res, next) => {
             let currentMaxCounter = maxCounter;
             universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
             const createData = new University(universityDetails);
-            console.log("j", createData)
             let insertData = await createData.save();
 
             response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
