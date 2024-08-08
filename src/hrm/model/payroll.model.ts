@@ -19,8 +19,8 @@ export interface PayRollDocument extends mongoose.Document {
    // additionalComponents?: any;
 
 
-    allowance?: any;
-    deduction?: any;
+    allowance?: any[];
+    deduction?: any[];
 
     createdOn?: Date;
     createdBy?: string;
