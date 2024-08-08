@@ -29,7 +29,7 @@ router.post('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    checkQuery('_id'),
+    // checkQuery('_id'),
     updatePolicies
 );
 

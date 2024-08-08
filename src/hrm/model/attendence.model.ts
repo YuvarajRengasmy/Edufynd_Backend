@@ -11,8 +11,8 @@ export interface AttendenceDocument extends mongoose.Document{
     late?: string;
     earlyLeaving?: string;
     totalWork?: string;
-      email?: string;
-      photo?: string;
+    email?: string;
+    photo?: string;
     shiftTiming?: string;
     designation?: string;
     createdOn?: Date;
