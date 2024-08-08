@@ -14,7 +14,8 @@ router.get('/',
 
 router.get('/getSingleDepartment',
     basicAuthUser,
-    checkQuery('_id'),
+    // checkQuery('_id'),
+    checkRequestBodyParams('_id'),
     getSingleDepartment,
 );
 
@@ -29,7 +30,7 @@ router.post('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    checkQuery('_id'),
+    // checkQuery('_id'),
     updateDepartment
 );
 
