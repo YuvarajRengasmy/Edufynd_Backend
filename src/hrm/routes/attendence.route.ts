@@ -3,7 +3,7 @@ import {  calculateAttendance, deleteAttendence, getAllAttendence, getFilteredAt
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
-
+import { body } from 'express-validator';
 
 const router: Router = Router();
 
@@ -18,17 +18,19 @@ router.get('/getSingleAttendence',
     getSingleAttendence,
 );
 
-router.put('/clockIn', 
+router.post('/clockIn', 
     basicAuthUser,
-    // checkSession,
+    checkSession,
     staffClockIn
 )
 
 router.put('/clockOut', 
     basicAuthUser,
-    // checkSession,
+     checkSession,
     staffClockOut
 )
+
+
 
 router.delete('/',                  
     basicAuthUser,

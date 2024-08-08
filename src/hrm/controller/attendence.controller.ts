@@ -35,6 +35,43 @@ export const getSingleAttendence = async (req, res) => {
 
 
 
+// export const staffClockIn = async (req, res, next) => {
+//     const errors = validationResult(req);
+
+//     if (!errors.isEmpty()) {
+//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
+//     }
+
+//     try {
+//         const attendenceDetails :AttendenceDocument = req.body
+//         const staff = await Staff.findOne({ $and: [{ employeeId: { $ne: attendenceDetails.employeeId } }] });
+//         console.log("Staff details:", staff);
+
+//         if (!staff) {
+//             return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Staff member not found');
+//         }
+
+//         const currentDateTime = new Date();
+
+//         // Prepare attendance details
+//         const attendanceDetails: AttendenceDocument = {
+//             ...req.body,
+//             employeeId: staff._id,
+//             clockIn: currentDateTime
+//         };
+
+//         const newAttendance = new Attendence(attendanceDetails);
+//         const insertedData = await newAttendance.save();
+
+//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in Start Work ');
+//     } catch (err) {
+//         console.error('Error during clock-in process:', err);
+//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
+//     }
+// };
+
+
+
 export const staffClockIn = async (req, res, next) => {
     const errors = validationResult(req);
 
@@ -43,14 +80,29 @@ export const staffClockIn = async (req, res, next) => {
     }
 
     try {
-        const staff = await Staff.findOne({ employeeId: req.body.employeeId });
+        const attendenceDetails: AttendenceDocument = req.body;
+
+        // Find staff by employeeId
+        const staff = await Staff.findOne({ employeeId: attendenceDetails.employeeId });
         console.log("Staff details:", staff);
 
         if (!staff) {
             return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Staff member not found');
         }
 
+        const currentDate = moment().startOf('day'); // Get the start of the current day
         const currentDateTime = new Date();
+
+        // Check if the employee has already checked in today
+        const existingAttendance = await Attendence.findOne({
+            employeeId: staff._id,
+            clockIn: { $gte: currentDate.toDate() },
+            clockOut: { $exists: false } // Ensure there's no existing check-in without a corresponding check-out
+        });
+
+        if (existingAttendance) {
+            return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Check-in already recorded for today');
+        }
 
         // Prepare attendance details
         const attendanceDetails: AttendenceDocument = {
@@ -62,13 +114,12 @@ export const staffClockIn = async (req, res, next) => {
         const newAttendance = new Attendence(attendanceDetails);
         const insertedData = await newAttendance.save();
 
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in Start Work ');
+        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in recorded successfully');
     } catch (err) {
         console.error('Error during clock-in process:', err);
         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
     }
 };
-
 
 
 // export let staffClockOut = async (req, res, next) => {
