@@ -35,136 +35,51 @@ export const getSingleAttendence = async (req, res) => {
 
 
 
-// export const staffClockIn = async (req, res, next) => {
-//     const errors = validationResult(req);
-
-//     if (!errors.isEmpty()) {
-//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-//     }
-
-//     try {
-//         const attendenceDetails :AttendenceDocument = req.body
-//         const staff = await Staff.findOne({ $and: [{ employeeId: { $ne: attendenceDetails.employeeId } }] });
-//         console.log("Staff details:", staff);
-
-//         if (!staff) {
-//             return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Staff member not found');
-//         }
-
-//         const currentDateTime = new Date();
-
-//         // Prepare attendance details
-//         const attendanceDetails: AttendenceDocument = {
-//             ...req.body,
-//             employeeId: staff._id,
-//             clockIn: currentDateTime
-//         };
-
-//         const newAttendance = new Attendence(attendanceDetails);
-//         const insertedData = await newAttendance.save();
-
-//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in Start Work ');
-//     } catch (err) {
-//         console.error('Error during clock-in process:', err);
-//         return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
-//     }
-// };
-
-
-
 export const staffClockIn = async (req, res, next) => {
     const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            // Check if a program with the same title already exists for the same university
+            const existingProgram = await Attendence.findOne({ 
+                _id: req.body._id, 
+                
+            });
 
-    if (!errors.isEmpty()) {
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
+            if (!existingProgram) {
+                const programDetails: AttendenceDocument = req.body;
 
-    try {
-        const attendenceDetails: AttendenceDocument = req.body;
+                // Generate the next program code
+               
+                // Generate the next program code based on the current max counter
+               
+                // Calculate the final value based on application fee and discounted value
+               
+                // Save the new program
+                const newProgram = new Attendence(programDetails);
+                let insertedData = await newProgram.save();
 
-        // Find staff by employeeId
-        const staff = await Staff.findOne({ employeeId: attendenceDetails.employeeId });
-        console.log("Staff details:", staff);
-
-        if (!staff) {
-            return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Staff member not found');
+                // Respond with success
+                response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertedData, clientError.success.savedSuccessfully);
+            } else {
+                // Respond with error if program title is already registered for the same university
+                response(req, res, activity, 'Level-3', 'Create-Program', true, 422, {}, 'Program Title Already Registered For Same University');
+            }
+        } catch (err: any) {
+            console.log(err);
+            response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
-
-        const currentDate = moment().startOf('day'); // Get the start of the current day
-        const currentDateTime = new Date();
-
-        // Check if the employee has already checked in today
-        const existingAttendance = await Attendence.findOne({
-            employeeId: staff._id,
-            clockIn: { $gte: currentDate.toDate() },
-            clockOut: { $exists: false } // Ensure there's no existing check-in without a corresponding check-out
-        });
-
-        if (existingAttendance) {
-            return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 422, {}, 'Check-in already recorded for today');
-        }
-
-        // Prepare attendance details
-        const attendanceDetails: AttendenceDocument = {
-            ...req.body,
-            employeeId: staff._id,
-            clockIn: currentDateTime
-        };
-
-        const newAttendance = new Attendence(attendanceDetails);
-        const insertedData = await newAttendance.save();
-
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', true, 200, { attendance: insertedData }, 'Check-in recorded successfully');
-    } catch (err) {
-        console.error('Error during clock-in process:', err);
-        return response(req, res, 'activity', 'Level-3', 'Create-Attendence', false, 500, {}, 'Internal server error.', err.message);
+    } else {
+        // Respond with field validation errors
+        response(req, res, activity, 'Level-3', 'Create-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 
-
-// export let staffClockOut = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-//     }
-
-//     try {
-//         const attendenceDetails: AttendenceDocument = req.body;
-
-//         // Update the attendance record with clock-out time
-//         const clockOutTime = new Date();
-//         const updatedAttendance = await Attendence.findOneAndUpdate(
-//             { _id: attendenceDetails._id },
-//             { $set: { clockOut: clockOutTime } },
-//             { new: true } // Return the updated document
-//         );
-
-//         if (!updatedAttendance) {
-//             return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 404, {}, 'Attendance record not found.');
-//         }
-
-//         // Calculate total work hours
-//         const clockInTime = moment(updatedAttendance.clockIn);
-//         const totalWorkHours = moment.duration(moment(clockOutTime).diff(clockInTime)).asHours(); // Calculate total work hours including fractions
-
-//         // Update totalWork in the attendance record
-//         updatedAttendance.totalWork = moment.duration(totalWorkHours, 'hours').asMilliseconds()
-//         await updatedAttendance.save();
-
-//         return response(req, res, 'activity', 'Level-2', 'Update-Department', true, 200, updatedAttendance, 'Clock-out recorded successfully and total work hours calculated.');
-//     } catch (err: any) {
-//         console.error('Error during clock-out process:', err);
-//         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
-//     }
-// };
 
 
 export let staffClockOut = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-    }
-
+       
     try {
         const attendenceDetails: AttendenceDocument = req.body;
 
@@ -203,7 +118,10 @@ export let staffClockOut = async (req, res, next) => {
         console.error('Error during clock-out process:', err);
         return response(req, res, 'activity', 'Level-3', 'Update-Department', false, 500, {}, 'Internal server error.', err.message);
     }
+}
 };
+
+
 
 export let getFilteredAttendence = async (req, res, next) => {
     try {
