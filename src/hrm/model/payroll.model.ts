@@ -16,6 +16,7 @@ export interface PayRollDocument extends mongoose.Document{
     netSalary?: number;
 
     uploadDocument?: string;
+    additionalComponents?: any;
 
     createdOn?: Date;
     createdBy?: string;
@@ -36,6 +37,7 @@ export const payRollSchema = new mongoose.Schema({
     totalDeduction: {type: Number},
     netSalary: {type: Number},
     uploadDocument: {type: String},
+   additionalComponents: { type: Map, of: Number }, // New field to store dynamic components
 
     createdOn: { type: Date },
     createdBy: { type: String },
