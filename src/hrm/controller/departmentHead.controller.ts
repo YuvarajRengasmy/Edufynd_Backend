@@ -59,7 +59,7 @@ export let updateDepartmentHead = async (req, res, next) => {
             const departmentDetails: DepartmentHeadDocument = req.body;
             const updateData = await DepartmentHead.findOneAndUpdate({ _id: departmentDetails._id }, {
                 $set: {  
-                    departmentHead: departmentDetails.departmentHead,
+                    departmentHead: departmentDetails.department,
 
                     modifiedOn: new Date(),
               

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllPolicies, getSinglePolicies, createPolicies, updatePolicies, deletePolicies, getFilteredPolicies } from '../controller/policies.controller';
+import { getAllPolicies, getSinglePolicies, createPolicies,getPoliciesStaff, updatePolicies, deletePolicies, getFilteredPolicies } from '../controller/policies.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -44,6 +44,9 @@ router.put('/getFilterPolicies',
     basicAuthUser,
     getFilteredPolicies,
 );
-
+router.get('/getPoliciesDepartment',    /// Get university details with that university program          
+    checkQuery('department'),
+    getPoliciesStaff   
+);
 
 export default router
