@@ -179,7 +179,8 @@ export const staffClockOut = async (req, res) => {
         // Update the clockOut time and calculate total work hours
         attendance.clockOut = clockOutTime
         const diff = moment(attendance.clockOut).diff(moment(attendance.clockIn), 'hours', true);
-        const hours = `${Math.floor(diff / 60)}h ${(diff % 60).toFixed(2)}min`;
+        const hours = `${(diff % 60).toFixed(2)}min`;
+        // const hours = `${Math.floor(diff / 60)}h ${(diff % 60).toFixed(2)}min`;
         attendance.totalWork = hours;
         attendance.earlyLeaving = formattedEarlyLeavingDuration;
         await attendance.save();

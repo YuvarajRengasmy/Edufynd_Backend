@@ -24,8 +24,8 @@ export interface StaffDocument extends mongoose.Document {
     areTheyEligibleForCasualLeave?: boolean; // – Yes/No (Yes – Casual to be considered | No – Casual leave restricted)
     salary?: string    // (Break Up with deduction – Manual)
     manageApplications?: string;   // Yes/No
-    //If Yes, List Country & University The user can only handle applications of these universities and country
-    active?:string;   // – User
+
+    active?:string;  
     teamLead?: string;     // – Select Employees and permission to be viewed.
     password?: string;
     confirmPassword?: string;
@@ -71,8 +71,8 @@ const staffSchema = new mongoose.Schema({
     jobDescription: {type: String},
     reportingManager: {type: String},
     description: {type: String},
-    shiftTiming: {type: String},                        // (Attendance to be calculated based on this)
-    areTheyEligibleForCasualLeave: {type: String},           // – Yes/No (Yes – Casual to be considered | No – Casual leave restricted)
+    shiftTiming: {type: String},                       
+    areTheyEligibleForCasualLeave: {type: String},          
     doj: {type: String},                   
     dob: {type: String},                  
     address: {type: String},
@@ -80,15 +80,15 @@ const staffSchema = new mongoose.Schema({
     mobileNumber: {type: Number},
     emergencyContactNo: {type: Number},
     probationDuration: {type: String},
-    salary: {type: String},               // (Break Up with deduction – Manual)        
-    idCard: {type: String},                     // – Yes / No (If ‘Yes’ card to be generated)
-    manageApplications: {type: String},           // Yes/No    //If Yes, List Country & University The user can only handle applications of these universities and country
-    active: {type: String},                // – User
+    salary: {type: String},                
+    idCard: {type: String},                   
+    manageApplications: {type: String},          
+    active: {type: String},              
     teamLead: {type: String},   
     password: { type: String },
     confirmPassword: { type: String },  
     isDeleted: { type: Boolean, default: false },
-    privileges: {type: String},  //(To be assigned by Super Admin)
+    privileges: {type: String},  
    
     // Newly added fields
     team: {type: String},

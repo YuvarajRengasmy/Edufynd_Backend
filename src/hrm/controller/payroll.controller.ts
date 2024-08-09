@@ -106,7 +106,6 @@ export let updatePayRoll = async (req, res, next) => {
                     otherAllowance: payRollDetails.otherAllowance,
                     pf: payRollDetails.pf,
                     description: payRollDetails.description,
-                    
                     taxDeduction: payRollDetails.taxDeduction,
                     grossSalary: payRollDetails.grossSalary,
                     totalDeduction: payRollDetails.totalDeduction,
@@ -114,7 +113,6 @@ export let updatePayRoll = async (req, res, next) => {
                     uploadDocument: payRollDetails.uploadDocument,
 
                     modifiedOn: new Date(),
-
                 }
             });
             response(req, res, activity, 'Level-2', 'Update-PayRoll', true, 200, updateData, clientError.success.updateSuccess);
