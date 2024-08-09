@@ -191,10 +191,62 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
             const newHash = await decrypt(insertAgent["password"]);
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
-                to: insertAgent.email,
+                to:insertAgent.email,
                 subject: 'Welcome to EduFynd',
-                text: `Hello ${insertAgent.agentName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertAgent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\n Best regards\nAfynd Private Limited\nChennai.`
-            };
+                html: `
+                              <body style="font-family: 'Poppins', Arial, sans-serif">
+                                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr>
+                                          <td align="center" style="padding: 20px;">
+                                              <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                  <!-- Header -->
+                                                  <tr>
+                                                      <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                      Login Credentials
+                                                      </td>
+                                                  </tr>
+                      
+                                                  <!-- Body -->
+                                                  <tr>
+                                                      <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Your account has been created successfully.</p>
+                                                              <p>Hello ${insertAgent.agentName},</p>
+                        
+                                                          <p style="font-weight: bold,color: #345C72">UserID: ${insertAgent.email}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                             <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
+                                                          
+                                                   
+                                                             <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                              <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                  <!-- CTA Button -->
+                                  <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                      <tr>
+                                          <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                              <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Here Click to Login</a>
+                                          </td>
+                                      </tr>
+                                  </table>
+                              </td>
+                          </tr>  
+                      
+                                                  <!-- Footer -->
+                                                  <tr>
+                                                      <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                          Copyright &copy; 2024 | All rights reserved
+                                                      </td>
+                                                  </tr>
+                                              </table>
+                                          </td>
+                                      </tr>
+                                  </table>
+                              </body>
+                          `,
+                        
+              };
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error('Error sending email:', error);
@@ -204,11 +256,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                     res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
                 }
             });
-            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {
-                agent: insertAgent,
-
-
-            }, 'Agent created successfully by SuperAdmin.');
+            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {agent: insertAgent}, 'Agent created successfully by SuperAdmin.');
 
         } catch (err: any) {
           
