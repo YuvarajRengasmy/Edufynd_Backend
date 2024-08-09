@@ -17,11 +17,22 @@ export interface PayRollDocument extends mongoose.Document {
 
     uploadDocument?: string;
    // additionalComponents?: any;
+ 
 
 
     allowance?: any[];
     deduction?: any[];
-
+  
+    //staff Details
+    empName?: string;
+    staffId?: string;
+    employeeId?: string;
+    reportingManager?: string;
+    photo?: string;
+    email?: string;
+    mobileNumber: number;
+    designation: string;
+    description: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -53,6 +64,16 @@ export const payRollSchema = new mongoose.Schema({
         amount: {type:Number}
     }],
 
+    //staff Details
+    empName: { type: String },
+    staffId: { type: String },
+    employeeId: { type: String },
+    reportingManager: { type: String },
+    photo: { type: String },
+    email: { type: String },
+    mobileNumber: { type: Number },
+    designation: { type: String },
+    description:{ type: String },
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

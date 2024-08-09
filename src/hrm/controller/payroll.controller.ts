@@ -113,6 +113,8 @@ export let updatePayRoll = async (req, res, next) => {
                     conveyance: payRollDetails.conveyance,
                     otherAllowance: payRollDetails.otherAllowance,
                     pf: payRollDetails.pf,
+                    description: payRollDetails.description,
+                    
                     taxDeduction: payRollDetails.taxDeduction,
                     grossSalary: payRollDetails.grossSalary,
                     totalDeduction: payRollDetails.totalDeduction,
