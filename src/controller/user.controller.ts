@@ -12,12 +12,10 @@ export const getAllUser = async(req, res, next)=>{
         response(req, res, activity,  "Level-1", "GetAll-User", true, 200, user, clientError.success.fetchedSuccessfully)
         
     } catch (err: any) {
-        response(req, res, activity, "Level-1", 'GetAll-User', false, 500, {},  errorMessage.internalServer, err.message)
+        response(req, res, activity, "Level-2", 'GetAll-User', false, 500, {},  errorMessage.internalServer, err.message)
         
     }
 }
-
-
 
 
 

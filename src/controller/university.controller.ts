@@ -437,11 +437,9 @@ export const csvToJson = async (req, res) => {
 
         // Insert into the database
         await University.insertMany(universityList);
-        // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         console.error(err);
-        // Send error response
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
@@ -453,7 +451,7 @@ export const getUniversityWithProgramDetails = async (req, res) => {
         const mongoose = require('mongoose')
         const universityId = new mongoose.Types.ObjectId(req.query.universityId);
 
-        console.log(typeof universityId)
+     
 
         if (!universityId) {
             return res.status(400).json({ success: false, message: 'University ID is required' });
@@ -528,7 +526,7 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 
 
 export const getUniversityByCountry = async (req, res) => {
-    const { country } = req.query; // Extract country from query params
+    const { country } = req.query; 
     try {
         // Query universities based on country
         const universities = await University.find({ country: country });

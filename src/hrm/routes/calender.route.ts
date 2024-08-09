@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllPolicies, getSinglePolicies, createPolicies, updatePolicies, deletePolicies, getFilteredPolicies } from '../controller/policies.controller';
+import { getAllCalender, getSingleCalender, createCalender, updateCalender, deleteCalender, getFilteredCalender } from '../controller/calender.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -9,40 +9,40 @@ const router: Router = Router();
 
 router.get('/',               
     basicAuthUser,
-    getAllPolicies
+    getAllCalender
 );
 
-router.get('/getSinglePolicies',
+router.get('/getSingleCalender',
     basicAuthUser,
     checkQuery('_id'),
-    getSinglePolicies,
+    getSingleCalender,
 );
 
 
 router.post('/',
     basicAuthUser,
     checkSession,
-    createPolicies
+    createCalender
 );
 
 
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    updatePolicies
+    checkQuery('_id'),
+    updateCalender
 );
 
 
 router.delete('/',                  
     basicAuthUser,
     checkQuery('_id'),
-    deletePolicies
+    deleteCalender
 );
 
-router.put('/getFilterPolicies',
+router.put('/getFilterCalender',
     basicAuthUser,
-    getFilteredPolicies,
+    getFilteredCalender,
 );
 
 

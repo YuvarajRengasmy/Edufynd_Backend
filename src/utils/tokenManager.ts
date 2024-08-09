@@ -68,7 +68,7 @@ export let checkSession = async (req, res, next) => {
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
                 req.body.modifiedBy = tokendata.loginType;
-                req.body.modifiedOn = new Date();
+                // req.body.modifiedOn = new Date();
                 next();
             } catch (err) {
                 console.error("JWT Verification Error:", err);

@@ -224,7 +224,7 @@ export let resetPassword = async (req, res, next) => {
                     $set: {
                         password: req.body.password,
                         confirmPassword: req.body.confirmPassword,
-                        modifiedOn: modifiedOn,
+                        modifiedOn: new Date(),
                         modifiedBy: modifiedBy
                     }
                 })
@@ -235,7 +235,7 @@ export let resetPassword = async (req, res, next) => {
                     $set: {
                         password: req.body.password,
                         confirmPassword: req.body.confirmPassword,
-                        modifiedOn: modifiedOn,
+                        modifiedOn: new Date(),
                         modifiedBy: modifiedBy
                     }
                 })
@@ -246,7 +246,7 @@ export let resetPassword = async (req, res, next) => {
                     $set: {
                         password: req.body.password,
                         confirmPassword: req.body.confirmPassword,
-                        modifiedOn: modifiedOn,
+                        modifiedOn: new Date(),
                         modifiedBy: modifiedBy
                     }
                 })
@@ -257,7 +257,7 @@ export let resetPassword = async (req, res, next) => {
                     $set: {
                         password: req.body.password,
                         confirmPassword: req.body.confirmPassword,
-                        modifiedOn: modifiedOn,
+                        modifiedOn: new Date(),
                         modifiedBy: modifiedBy
                     }
                 })

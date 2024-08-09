@@ -288,48 +288,6 @@ export let getFilteredStudent = async (req, res, next) => {
 };
 
 
-// export let getFilteredStudent = async (req, res, next) => {
-//     try {
-//         let findQuery = {};
-//         let andList = [];
-//         let limit = req.body.limit ? parseInt(req.body.limit) : 10;
-//         let page = req.body.page ? parseInt(req.body.page) : 1;
-
-//         andList.push({ isDeleted: false });
-//         andList.push({ status: 1 });
-
-//         if (req.body.studentCode) {
-//             andList.push({ studentCode: req.body.studentCode });
-//         }
-//         if (req.body.name) {
-//             andList.push({ name: req.body.name });
-//         }
-//         if (req.body.passportNo) {
-//             andList.push({ passportNo: req.body.passportNo });
-//         }
-//         if (req.body.email) {
-//             andList.push({ email: req.body.email });
-//         }
-//         if (req.body.mobileNumber) {
-//             andList.push({ mobileNumber: req.body.mobileNumber });
-//         }
-
-//         findQuery = andList.length > 0 ? { $and: andList } : {};
-
-//         const studentList = await Student.find(findQuery)
-//             .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-//             .limit(limit)
-//             .skip((page - 1) * limit);
-
-//         const studentCount = await Student.countDocuments(findQuery);
-
-//         response(req, res,activity, 'Get-FilterStudent', 'Level-1', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
-//     } catch (err) {
-//         response(req, res,activity, 'Get-FilterStudent', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
-//     }
-// };
-
-
 export const csvToJson = async (req, res) => {
     try {
       
@@ -441,11 +399,62 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
 
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
-                to: insertStudent.email,
+                to:insertStudent.email,
                 subject: 'Welcome to EduFynd',
-                text: `Hello ${insertStudent.name},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStudent.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
-            };
-
+                html: `
+                              <body style="font-family: 'Poppins', Arial, sans-serif">
+                                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr>
+                                          <td align="center" style="padding: 20px;">
+                                              <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                  <!-- Header -->
+                                                  <tr>
+                                                      <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                      Login Credentials
+                                                      </td>
+                                                  </tr>
+                      
+                                                  <!-- Body -->
+                                                  <tr>
+                                                      <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Your account has been created successfully.</p>
+                                                              <p>Hello ${insertStudent.name},</p>
+                        
+                                                          <p style="font-weight: bold,color: #345C72">UserID: ${insertStudent.email}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                             <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
+                                                          
+                                                   
+                                                             <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                      </td>
+                                                  </tr>
+                                                  <tr>
+                              <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                  <!-- CTA Button -->
+                                  <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                      <tr>
+                                          <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                              <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Here Click to Login</a>
+                                          </td>
+                                      </tr>
+                                  </table>
+                              </td>
+                          </tr>  
+                      
+                                                  <!-- Footer -->
+                                                  <tr>
+                                                      <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                          Copyright &copy; 2024 | All rights reserved
+                                                      </td>
+                                                  </tr>
+                                              </table>
+                                          </td>
+                                      </tr>
+                                  </table>
+                              </body>
+                          `,
+                        
+              };
             transporter.sendMail(mailOptions, (error, info) => {
 
                 if (error) {
@@ -456,9 +465,9 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                     res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
                 }
             });
-            response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
+            response(req, res, activity, 'Level-1', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
         }else {
-                response(req, res, activity, 'Level-3', 'Create-Student-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+                response(req, res, activity, 'Level-2', 'Create-Student-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
         } catch (err: any) {
             console.log(err)

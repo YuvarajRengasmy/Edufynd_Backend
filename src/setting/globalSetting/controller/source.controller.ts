@@ -106,8 +106,6 @@ export let getFilteredSource   = async (req, res, next) => {
         if (req.body.name) {
             andList.push({ name: req.body.name })
         }
-
-        
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const sourceList = await Source.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)

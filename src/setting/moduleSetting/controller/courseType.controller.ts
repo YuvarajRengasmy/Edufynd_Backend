@@ -36,9 +36,9 @@ export let createCourseType = async (req, res, next) => {
             const DropdownListDetails: CourseTypeListDocument = req.body;
             const createData = new CourseTypeList(DropdownListDetails);
             let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Course Type', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Create-Course Type', true, 200, insertData, clientError.success.savedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Course Type', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Create-Course Type', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'Create-Course Type', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
