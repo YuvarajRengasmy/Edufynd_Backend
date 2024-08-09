@@ -8,16 +8,16 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
   tax?: string;
   gst?: string;
   tds?: string;
-  // Receiver Name    // (To be generated as separate invoice where the invoice number will be ‘Invoice Number’/Agent Code)
+  // Receiver Name    
   agentName?: string;
-  applicationID?: any;  // (List only Application ID where commission received. These Application IDs should be of the Agent)
-  universityName?: string;     // (Auto fetch based on Application ID)
-  commission?: number;        // (Calculate based on Agent Payout)
+  applicationID?: any;  
+  universityName?: string;   
+  commission?: number;      
   amountInCurrency?: number;
   amountInINR?: number;
-  amountPaid?: number;       // (To be calculated on the course fee after scholarship – auto fetch from Applicant, if on course fees | If partial fees, calculate on Paid Fees – auto fetch from Applicant)
-  totalInvoiceAmount?: string;      // (Net of ‘Amount – Sender’ and ‘Amount Paid – Receiver’)
-  transactions?: string;       // (Add multiple)
+  amountPaid?: number;       
+  totalInvoiceAmount?: string;   
+  transactions?: string;      
   transactionsDate?: string;
   amount?: number;
   paymentMethod?: string;
@@ -37,7 +37,7 @@ const receiverInvoiceSchema = new mongoose.Schema({
   gst: { type: String },
   tds: { type: String },
   agentName: { type: String },
-  applicationID: { type: mongoose.Types.ObjectId, ref: "Applicant" },  // (List only Application ID where commission received. These Application IDs should be of the Agent)
+  applicationID: { type: mongoose.Types.ObjectId, ref: "Applicant" },  
   universityName: { type: String, ref: "University" },   
   commission: { type: Number, ref: "Program" },
   amountInCurrency: { type: Number },
@@ -49,7 +49,6 @@ const receiverInvoiceSchema = new mongoose.Schema({
   paymentMethod: { type: String },
   amount: { type: Number },
   netInWords: {type: String},
-
 
   createdOn: { type: Date, default: Date.now },
   createdBy: { type: String },

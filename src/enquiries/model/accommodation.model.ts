@@ -9,8 +9,6 @@ export interface AccommodationDocument extends mongoose.Document {
     country?: string;
     state?: string;
     city?: string;
-  
-
     // If Agent request for the following (Auto Fetch User Detail)
     agentID?: string;
     agentName?: string;
@@ -42,12 +40,10 @@ const accommodationSchema = new mongoose.Schema({
     country: {type: String},
     state:{type: String},
     city: {type: String},
-  
     studentName: {type: String},
     passportNumber: {type: String},
     source: {type: String},
     message: {type: String},
-   
     // If Agent request for the following (Auto Fetch User Detail)
     agentID: {type: String},
     agentName: {type: String},
@@ -55,7 +51,6 @@ const accommodationSchema = new mongoose.Schema({
     agentPrimaryNumber: {type: String},
     agentWhatsAppNumber: {type: String},
     agentEmail: {type: String},
-  
     // If Student request for the following
     primaryNumber: {type: String},
     whatsAppNumber: {type: String},

@@ -3,7 +3,7 @@ import { response } from '../helper/commonResponseHandler';
 import { clientError, errorMessage } from '../helper/ErrorMessage';
 import { ChatMessage, chatMessageDocument } from '../model/chat.model';
 import {DateTime} from 'luxon';
-import { Student } from 'src/model/student.model';
+
 
 
 var activity = "chatuser";

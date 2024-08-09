@@ -3,6 +3,7 @@ import { Staff, StaffDocument } from '../../model/staff.model'
 import { validationResult } from "express-validator";
 import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
+import { toWords } from 'number-to-words';
 
 
 var activity = "PayRoll";
@@ -76,19 +77,21 @@ export let createPayRoll = async (req, res, next) => {
 
             // Calculate net salary
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
-
+            const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
             // Calculate daily gross and net salary
             const dailyGrossSalary = payRollDetails.grossSalary / 30;
             // const salaryForPresentDays = dailyGrossSalary * (payRollDetails.presentDays || 0);
 
             const dailyNetSalary = netSalaryWithDeductions / 30;
             // const finalSalaryWithPerformanceDeduction = dailyNetSalary * (payRollDetails.presentDays || 0) - (payRollDetails.professionalTax || 0);
-
+           
+    
             // Save to database
             const payroll = new PayRoll({...payRollDetails,
                 otherAllowance: totalAllowance,
                 otherDeduction: totalDeduct,
-                netSalary: netSalaryWithDeductions
+                netSalary: netSalaryWithDeductions,
+                netInWords: wordsinRupees
             });
 
             await payroll.save();

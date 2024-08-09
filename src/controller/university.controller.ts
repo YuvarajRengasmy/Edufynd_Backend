@@ -1,7 +1,5 @@
 import { University, UniversityDocument } from '../model/university.model'
 import * as mongoose from 'mongoose'
-import { SuperAdmin } from "../model/superAdmin.model";
-import { Client } from '../model/client.model';
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -32,19 +30,13 @@ export let getSingleUniversity = async (req, res, next) => {
 
 
 const generateNextUniversityCode = async (currentMaxCounter): Promise<string> => {
-    // Increment the counter
     const newCounter = currentMaxCounter + 1;
-
-    // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-
-    // Return the new client ID
     return `UN_${formattedCounter}`;
 };
 
 
 export let saveUniversity = async (req, res, next) => {
-
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -52,9 +44,7 @@ export let saveUniversity = async (req, res, next) => {
             if(!university){
             const universityDetails: UniversityDocument = req.body;
             universityDetails.createdOn = new Date()
-
             const univesity = await University.find({}, 'universityCode').exec();
-
             const maxCounter = univesity.reduce((max, app) => {
                 const appCode = app.universityCode;
                 const parts = appCode.split('_')
@@ -103,7 +93,6 @@ export let updateUniversity = async (req, res, next) => {
                     email: universityDetails.email,
                     country: universityDetails.country,
                     flag: universityDetails.flag,
-            
                     ranking: universityDetails.ranking,
                     averageFees: universityDetails.averageFees,
                     popularCategories: universityDetails.popularCategories,
@@ -349,12 +338,8 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-
-        // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
-
         const univesity = await University.find({}, 'universityCode').exec();
-
         const maxCounter = univesity.reduce((max, app) => {
             const appCode = app.universityCode;
             const parts = appCode.split('_')
@@ -370,7 +355,7 @@ export const csvToJson = async (req, res) => {
         const universityList = [];
         for (const data of csvData) {
             const universityCode = await  generateNextUniversityCode(currentMaxCounter)
-            currentMaxCounter++; // Increment the counter for the next client ID
+            currentMaxCounter++; 
             universityList.push({
                 universityCode: universityCode,
                 universityName: data.UniversityName,
@@ -388,7 +373,6 @@ export const csvToJson = async (req, res) => {
                 ],
                 countryName: data.CountryName,
                 email: data.Email,
-                // campus: csvData[i].Campus ? csvData[i].Campus.split(',') : [],
                 ranking: data.Ranking,
                 applicationFees: data.ApplicationFees,
                 averageFees: data.AverageFees,
@@ -413,8 +397,6 @@ export const csvToJson = async (req, res) => {
 
             })
         }
-
-        // Insert into the database
         await University.insertMany(universityList);
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
@@ -429,9 +411,6 @@ export const getUniversityWithProgramDetails = async (req, res) => {
     try {
         const mongoose = require('mongoose')
         const universityId = new mongoose.Types.ObjectId(req.query.universityId);
-
-     
-
         if (!universityId) {
             return res.status(400).json({ success: false, message: 'University ID is required' });
         }
@@ -507,7 +486,6 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 export const getUniversityByCountry = async (req, res) => {
     const { country } = req.query; 
     try {
-        // Query universities based on country
         const universities = await University.find({ country: country });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
     } catch (err) {

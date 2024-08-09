@@ -28,7 +28,6 @@ export let getSingleLoanEnquiry = async (req, res, next) => {
 }
 
 const generateNextLoanID = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
     const loan = await LoanEnquiry.find({}, 'loanID').exec();
 
     const maxCounter = loan.reduce((max, app) => {
@@ -40,8 +39,6 @@ const generateNextLoanID = async (): Promise<string> => {
         }
         return max;
     }, 100);
-
-    // Increment the counter
     const newCounter = maxCounter + 1;
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');

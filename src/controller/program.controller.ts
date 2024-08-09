@@ -1,11 +1,9 @@
 import { Program, ProgramDocument } from '../model/program.model'
 import { University, UniversityDocument } from '../model/university.model'
-import { SuperAdmin } from "../model/superAdmin.model";
 import { validationResult } from 'express-validator'
 import { response } from '../helper/commonResponseHandler'
 import { clientError, errorMessage } from '../helper/ErrorMessage'
 import csv = require('csvtojson')
-import mongoose from 'mongoose'
 
 
 var activity = "Program"
@@ -19,13 +17,10 @@ export const getAllProgram = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         const program = await Program.find({ isDeleted: false })
-
         findQuery = (andList.length > 0) ? { $and: andList } : {}
         const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
         const programCount = await Program.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'GetAll-Program', true, 200, { programList, programCount }, clientError.success.fetchedSuccessfully);
-
-
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Program', false, 500, {}, errorMessage.internalServer, err.message)
 
@@ -48,54 +43,11 @@ export const getSingleProgram = async (req, res, next) => {
 
 
 const generateNextProgramCode = async (currentMaxCounter): Promise<string> => {
-    // Increment the counter
     const newCounter = currentMaxCounter + 1;
-
-    // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-
-    // Return the new client ID
     return `PG_${formattedCounter}`;
 };
 
-// export let createProgram = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const title = await Program.findOne({ universityName: req.body.universityName, programTitle: req.body.programTitle});
-//             if(!title){
-//             const programDetails: ProgramDocument = req.body;
-//             const program = await Program.find({}, 'programCode').exec();
-
-//             const maxCounter = program.reduce((max, app) => {
-//                 const appCode = app.programCode;
-//                 const parts = appCode.split('_')
-//                 if (parts.length === 2) {
-//                     const counter = parseInt(parts[1], 10)
-//                     return counter > max ? counter : max;
-//                 }
-//                 return max;
-//             }, 100);
-
-//             let currentMaxCounter = maxCounter;
-//             programDetails.programCode = await generateNextProgramCode(currentMaxCounter)
-
-//             programDetails.finalValue = (programDetails.applicationFee) - (programDetails.discountedValue)
-//             const createData = new Program(programDetails);
-//             let insertData = await createData.save();
-
-//             response(req, res, activity, 'Level-2', 'Create-Program', true, 200, insertData, clientError.success.savedSuccessfully);
-//         } else {
-//             response(req, res, activity, 'Level-3', 'Create-Program', true, 422, {}, 'Program Title Already Registered For Same University');
-//         }
-//         } catch (err: any) {
-//             console.log(err)
-//             response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Level-3', 'Create-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// }
 
 export let createProgram = async (req, res, next) => {
     const errors = validationResult(req);
@@ -129,7 +81,6 @@ export let createProgram = async (req, res, next) => {
                 // Calculate the final value based on application fee and discounted value
                 programDetails.finalValue = programDetails.applicationFee - programDetails.discountedValue;
 
-                // Save the new program
                 const newProgram = new Program(programDetails);
                 let insertedData = await newProgram.save();
 
@@ -144,7 +95,6 @@ export let createProgram = async (req, res, next) => {
             response(req, res, activity, 'Level-3', 'Create-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
-        // Respond with field validation errors
         response(req, res, activity, 'Level-3', 'Create-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
@@ -361,7 +311,7 @@ export const csvToJson = async (req, res) => {
                 campus: data.Campus ? data.Campus.split(',') : [],
                 applicationFee: data.ApplicationFee,
                 country: data.Country,
-                courseType: data.CourseType,                    // ? data.CourseType.split(',') : [],
+                courseType: data.CourseType,                   
                 programTitle: data.ProgramTitle,
                 currency: data.Currency,
                 flag: data.Flag,
@@ -378,13 +328,11 @@ export const csvToJson = async (req, res) => {
                 commission: data.Commission,
             });
         }
-        // Insert into the database
+    
         await Program.insertMany(programList);
-        // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { programList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         console.error(err);
-        // Send error response
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
@@ -408,13 +356,10 @@ export const getProgramsByUniversityName = async (req, res) => {
         if (!universityId) {
             return res.status(400).json({ success: false, message: 'University ID is required' });
         }
-
         const university = await University.findById(universityId).lean();
-
         if (!university) {
             return res.status(404).json({ success: false, message: 'University not found' });
         }
-
         const programs = await Program.find({ universityId: university._id })
             .select('programTitle courseType inTake courseFee campus')
             .lean();
@@ -429,8 +374,6 @@ export const getProgramsByUniversityName = async (req, res) => {
                     country: university.country,
                     programDetails: programs.map(program => ({
                         programTitle: program.programTitle,
-                        // courseFee: program.courseFee,
-                        // inTake: program.inTake,
                         campuses: program.campuses,
                     }))
                 }
@@ -447,16 +390,11 @@ export const getProgramsByUniversityName = async (req, res) => {
 
 
 
-
-
 export const getProgramDetailsByUniversity = async (req, res, next) => {
     try {
         const { limit, page, universityId } = req.body;
 
-        const findQuery = {
-            isDeleted: false,
-            universityId: universityId
-        };
+        const findQuery = {isDeleted: false,universityId: universityId};
 
         const programList = await Program.find(findQuery)
             .sort({ createdAt: -1 })
@@ -514,10 +452,6 @@ export const updateProgramApplications = async (req, res, next) => {
 };
 
 
-
-
-// yuvaraj Code
-
 export const getProgramUniversity = async (req, res) => {
     try {
         
@@ -543,9 +477,8 @@ export const getProgramCategory = async (req, res) => {
 
 
 export const getProgramByUniversity = async (req, res) => {
-    const { universityId } = req.query; // Extract country from query params
+    const { universityId } = req.query; 
     try {
-        // Query universities based on country
         const universities = await Program.find({ universityName: universityId });
         response(req, res, activity, 'Level-2', 'Get-Program By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
     } catch (err) {
@@ -555,9 +488,8 @@ export const getProgramByUniversity = async (req, res) => {
 }
 
 export const getProgramByCountry = async (req, res) => {
-    const { country, inTake } = req.query; // Extract country and intake from query params
+    const { country, inTake } = req.query; 
     try {
-        // Query universities based on country and intake
         const query = {country,inTake};
         if (country) query.country = country;
         if (inTake) query['campuses.inTake'] = inTake;

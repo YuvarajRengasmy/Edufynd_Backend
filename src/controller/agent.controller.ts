@@ -430,14 +430,11 @@ export const csvToJson = async (req, res) => {
 
             });
         }
-
         // Insert into the database
         await Agent.insertMany(agentList);
-        // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for agent module', true, 200, { agentList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         console.error(err);
-        // Send error response
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for agent module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };

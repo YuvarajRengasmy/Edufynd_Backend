@@ -5,7 +5,6 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     loanID?: string;
     studentId?: string,
     country?: string;
-  
     message?: string;
     studentName?: string;
     whatsAppNumber?: string;
@@ -22,7 +21,6 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     didYouApplyForLoanElsewhere?: string;
     chooseTheBankYouPreviouslyApplied?: string;
     statusOfPreviousApplication?: string;
-    // Who is your co-applicant?
     coApplicantName?: string;
     age?: string;
     employmentStatus?: string;
@@ -58,7 +56,6 @@ const loanEnquirySchema = new mongoose.Schema({
     didYouApplyForLoanElsewhere: {type: String},
     chooseTheBankYouPreviouslyApplied: {type: String},
     statusOfPreviousApplication: {type: String},
-    // Who is your co-applicant?
     coApplicantName: {type: String},
     age: {type: String},
     employmentStatus: {type: String},

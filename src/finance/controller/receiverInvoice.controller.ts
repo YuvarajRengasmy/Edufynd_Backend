@@ -57,14 +57,11 @@ export let createReceiverInvoice = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const receiverInvoiceDetails: ReceiverInvoiceDocument = req.body;
-
             // Populate the senderId field to get the senderInvoice document
             const senderInvoice = await SenderInvoice.findById(receiverInvoiceDetails.senderId);
-
             if (!senderInvoice) {
                 return response(req, res, activity, 'Level-3', 'Sender Invoice Not Found', false, 404, {}, "Not Found the Amount");
             }
-
             // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
             let percent = senderInvoice.amountReceivedInCurrency;
             //  let rate = INR/Currency
@@ -93,30 +90,6 @@ export let createReceiverInvoice = async (req, res, next) => {
 }
 
 
-
-// export let createReceiverInvoice = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-
-//             const invoiceDetails: ReceiverInvoiceDocument = req.body;
-//             invoiceDetails.createdOn = new Date();
-//             invoiceDetails.invoiceNumber = await generateReceiverInvoice()
-//             invoiceDetails.amountPaid = Number(Number(invoiceDetails.commission)/100) * invoiceDetails.amountPaid
-
-//             const createData = new ReceiverInvoice(invoiceDetails);
-//             let insertData = await createData.save();
-
-//             response(req, res, activity, 'Level-2', 'Receiver Invoice-Created', true, 200, insertData, clientError.success.registerSuccessfully);
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     }
-//     else {
-//         response(req, res, activity, 'Level-3', 'Receiver Invoice-Created', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// }
-
 export let updateReceiverInvoice = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -127,7 +100,6 @@ export let updateReceiverInvoice = async (req, res, next) => {
                     tax: invoiceDetails.tax,
                     gst: invoiceDetails.gst,
                     tds: invoiceDetails.tds,
-
                     agentName: invoiceDetails.agentName,
                     applicationID: invoiceDetails.applicationID,
                     universityName: invoiceDetails.universityName,

@@ -30,13 +30,7 @@ export let getSingleStudentEnquiry = async (req, res, next) => {
 
 
 const generateNextStudentCode = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
     const student = await StudentEnquiry.find({}, 'studentCode').exec();
-
-    //  if (student.length === 0) {
-    //     // If no student codes exist, start with ST_101
-    //     return 'ST_101';
-    //   }
     const maxCounter = student.reduce((max, app) => {
         const appCode = app.studentCode;
         const parts = appCode.split('_')

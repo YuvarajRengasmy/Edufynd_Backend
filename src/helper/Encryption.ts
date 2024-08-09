@@ -44,11 +44,6 @@ export let decrypt = (textToConvert) => {
 };
 
 
-// Function to generate a random password
-// export let generateRandomPassword = (length)=>{
-//   return crypto.randomBytes(length).toString('base64').slice(0, length);
-// }
-
 
 export let generateRandomPassword = (length) => {
 

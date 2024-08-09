@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose'
 
 
 export interface InvoiceDocument extends mongoose.Document {
-
     // Expense Report
     expenseDate?: string;
     nameOfExpense?: string;

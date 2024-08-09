@@ -18,6 +18,7 @@ export interface PayRollDocument extends mongoose.Document {
     totalDeduction?: number;
     netSalary?: number;
     uploadDocument?: string;
+    netInWords?: string;
   
  
     allowance?: any[];
@@ -44,7 +45,6 @@ export const payRollSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     basicAllowance: { type: Number },
     hra: { type: Number },
-    
     conveyance: { type: Number },
     otherAllowance: { type: Number },
     //Deduction
@@ -57,6 +57,7 @@ export const payRollSchema = new mongoose.Schema({
     totalDeduction: { type: Number },
     netSalary: { type: Number },
     uploadDocument: { type: String },
+    netInWords: {type: String},
    // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
 
     allowance: [{

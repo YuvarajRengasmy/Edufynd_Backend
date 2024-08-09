@@ -10,8 +10,6 @@ import { Agent } from "../model/agent.model";
 import { Staff } from '../model/staff.model'
 import { v4 as uuidv4 } from 'uuid'
 import * as config from '../config';
-import { createAgent } from "./agent.controller";
-
 
 
 
@@ -58,7 +56,6 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'student';
                     finalResult["studentDetails"] = details;
                     finalResult["token"] = token;
-                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Student Login Successfully");
                 }
             }
@@ -81,7 +78,6 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'agent';
                     finalResult["agentDetails"] = details;
                     finalResult["token"] = token;
-                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Agent Login Successfully");
                 }
             }
@@ -104,7 +100,6 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'superAdmin';
                     finalResult["superAdminDetails"] = details;
                     finalResult["token"] = token;
-                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Super Admin Login Successfully");
                 }
             } else if (admin) {
@@ -126,7 +121,6 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'admin';
                     finalResult["adminDetails"] = details;
                     finalResult["token"] = token;
-                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Admin Login Successfully");
                 }
             } else if (staff) {
@@ -148,7 +142,6 @@ export let loginEmail = async (req, res, next) => {
                     finalResult["loginType"] = 'staff';
                     finalResult["staffDetails"] = details;
                     finalResult["token"] = token;
-                    // response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, clientError.success.loginSuccess);
                     response(req, res, activity, 'Level-2', 'Login-Email', true, 200, finalResult, "Staff Login Successfully");
                 }
             }
@@ -165,7 +158,6 @@ export let loginEmail = async (req, res, next) => {
 
 
 export let forgotPassword = async (req, res, next) => {
-
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Forgot-Password', false, 422, {}, errors.array());
@@ -183,7 +175,6 @@ export let forgotPassword = async (req, res, next) => {
                 await Agent.findOne({ email, isDeleted: false }) ||
                 await Staff.findOne({ email, isDeleted: false });
         }
-
         if (user) {
             const _id = user._id;
             try {

@@ -4,11 +4,7 @@ import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
 
-
-
 var activity = "Client";
-
-
 
 export let getAllClient = async (req, res, next) => {
     try {
@@ -29,34 +25,12 @@ export let getSingleClient = async (req, res, next) => {
     }
 }
 
-// const generateNextClientID = async (): Promise<string> => {
-//     // Retrieve all client IDs to determine the highest existing client counter
-//     const clients = await Client.find({}, 'clientID').exec();
-//     const maxCounter = clients.reduce((max, client) => {
-//         const clientID = client.clientID;
-//         const counter = parseInt(clientID.split('_')[1], 10);
-//         return counter > max ? counter : max;
-//     }, 100);
-
-//     // Increment the counter
-//     const newCounter = maxCounter + 1;
-
-//     // Format the counter as a string with leading zeros
-//     const formattedCounter = String(newCounter).padStart(3, '0');
-
-//     // Return the new client ID
-//     return `CL_${formattedCounter}`;
-// };
 
 
 const generateNextClientID = async (currentMaxCounter): Promise<string> => {
-    // Increment the counter
     const newCounter = currentMaxCounter + 1;
-
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-
-    // Return the new client ID
     return `CL_${formattedCounter}`;
 };
 
@@ -64,8 +38,7 @@ export let saveClient = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const clientDetails: ClientDocument = req.body;
-        
+            const clientDetails: ClientDocument = req.body; 
             // Generate the next client ID
             const clients = await Client.find({}, 'clientID').exec();
             const maxCounter = clients.reduce((max, client) => {
@@ -73,9 +46,6 @@ export let saveClient = async (req, res, next) => {
                 const counter = parseInt(clientID.split('_')[1], 10);
                 return counter > max ? counter : max;
             }, 100);
-
-          
-           
             let currentMaxCounter = maxCounter;
             clientDetails.createdOn = new Date();
             clientDetails.clientID = await generateNextClientID(currentMaxCounter);
@@ -91,8 +61,6 @@ export let saveClient = async (req, res, next) => {
         response(req, res, activity, 'Save-Client', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
-
-
 
 
 export let updateClient = async (req, res, next) => {
@@ -169,8 +137,6 @@ export let getFilteredClient = async (req, res, next) => {
         if (req.body.businessName) {
             andList.push({ businessName: req.body.businessName })
         }
-
-
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const clientList = await Client.find(findQuery).sort({clientID: -1}).limit(limit).skip(page)
@@ -188,8 +154,6 @@ export const csvToJson = async (req, res) => {
     try {
         const clientDetails: ClientDocument = req.body;
         const csvData = await csv().fromFile(req.file.path);
-
-
         const clients = await Client.find({}, 'clientID').exec();
         const maxCounter = clients.reduce((max, client) => {
             const clientID = client.clientID;
@@ -225,12 +189,8 @@ export const csvToJson = async (req, res) => {
 
         // Insert into the database
         await Client.insertMany(clientList);
-
-        // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for client module', true, 200, { clientList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
-        // Send error response
-
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
     }
 }

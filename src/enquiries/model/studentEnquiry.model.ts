@@ -35,12 +35,6 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
-
-
-    // New Added Field
-   
-
-
 };
 
 const studentEnquirySchema = new mongoose.Schema({
