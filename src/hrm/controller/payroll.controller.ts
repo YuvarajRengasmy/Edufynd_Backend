@@ -64,6 +64,7 @@ export let createPayRoll = async (req, res, next) => {
 
             // Add PF deduction to the total deduction
             totalDeduct += payRollDetails.pf || 0;
+       
             // Calculate net salary
             payRollDetails.totalDeduction = totalDeduct;
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - totalDeduct)
