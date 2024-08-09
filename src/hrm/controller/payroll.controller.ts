@@ -34,9 +34,9 @@ export const getViewStaffPayRoll = async (req, res) => {
     try {
         const data = await PayRoll.findOne({ _id: req.query._id })
 
-        response(req, res, activity, 'Level-1', 'GetSingle-PayRoll', true, 200, data, clientError.success.fetchedSuccessfully)
+        response(req, res, activity, 'Level-1', 'GetSingle-Staff PayRoll', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetSingle-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-1', 'GetSingle-Staff PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
