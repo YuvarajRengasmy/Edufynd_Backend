@@ -46,11 +46,9 @@ export let createPayRoll = async (req, res, next) => {
             let totalAllowance = 0;
             allowanceComponents.forEach(component => {
                 totalAllowance += Number(component.amount);
-            });
-
-        
+            }); 
             // Calculate total deduction
-            let totalDeduct = payRollDetails.taxDeduction || 0;
+            let totalDeduct =  0;
             deductionComponents.forEach(component => {
                 totalDeduct += Number(component.amount);
             });
@@ -63,10 +61,11 @@ export let createPayRoll = async (req, res, next) => {
             const performanceAllowance = payRollDetails.grossSalary * 0.1;
 
             // Add PF deduction to the total deduction
-            totalDeduct += payRollDetails.pf || 0;
+            const deduction = Number((Number(payRollDetails.pf) + Number(payRollDetails.taxDeduction) + Number(totalDeduct)));
+            payRollDetails.totalDeduction = deduction;
+
             // Calculate net salary
-            payRollDetails.totalDeduction = totalDeduct;
-            const netSalaryWithDeductions = Number(payRollDetails.grossSalary - totalDeduct)
+            const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
 
             // Calculate daily gross and net salary
             const dailyGrossSalary = payRollDetails.grossSalary / 30;
@@ -78,6 +77,7 @@ export let createPayRoll = async (req, res, next) => {
             // Save to database
             const payroll = new PayRoll({...payRollDetails,
                 otherAllowance: totalAllowance,
+                otherDeduction: totalDeduct,
                 netSalary: netSalaryWithDeductions
             });
 

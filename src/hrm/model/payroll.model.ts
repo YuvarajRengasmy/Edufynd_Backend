@@ -9,7 +9,7 @@ export interface PayRollDocument extends mongoose.Document {
     //Deduction
     pf?: number;
     taxDeduction?: number;
-
+    otherDeduction?: number;
     //Salary Details
     grossSalary?: number;
     totalDeduction?: number;
@@ -45,6 +45,7 @@ export const payRollSchema = new mongoose.Schema({
     //Deduction
     pf: { type: Number },
     taxDeduction: { type: Number },
+    otherDeduction: { type: Number },
     //Salary Details
     grossSalary: { type: Number },
     totalDeduction: { type: Number },
