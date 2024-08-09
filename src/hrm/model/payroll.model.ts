@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 export interface PayRollDocument extends mongoose.Document {
     _id?: any;
+    // employeeId?: any;
     houseRent?: number;
     conveyance?: number;
     otherAllowance?: number;
@@ -22,6 +23,7 @@ export interface PayRollDocument extends mongoose.Document {
 
 export const payRollSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    // employeeId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     houseRent: { type: Number },
     conveyance: { type: Number },
     otherAllowance: { type: Number },
