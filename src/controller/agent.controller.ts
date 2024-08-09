@@ -1,5 +1,4 @@
 import { Agent, AgentDocument } from '../model/agent.model'
-import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
@@ -43,10 +42,8 @@ const generateNextAgentID = async (): Promise<string> => {
 
     // Increment the counter
     const newCounter = maxCounter + 1;
-
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-
     // Return the new client ID
     return `AG_${formattedCounter}`;
 };
