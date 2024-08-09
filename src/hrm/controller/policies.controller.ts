@@ -122,3 +122,16 @@ export let updatePolicies = async (req, res, next) => {
             response(req, res, activity, 'Level-3', 'Get-Filter Policies', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
+
+    export const getPoliciesStaff = async (req, res) => {
+        try {
+            
+            const data = await Policies.find({
+                designation:req.params.department
+            }).sort({ _id: -1 })
+      
+            response(req, res, activity, 'Level-1', 'GetSingle-Department', true, 200, data, clientError.success.fetchedSuccessfully)
+        } catch (err: any) {
+            response(req, res, activity, 'Level-1', 'GetSingle-Department', false, 500, {}, errorMessage.internalServer, err.message)
+        }
+    }

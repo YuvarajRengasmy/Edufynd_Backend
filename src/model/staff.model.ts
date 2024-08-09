@@ -17,7 +17,7 @@ export interface StaffDocument extends mongoose.Document {
     address?: string;
     idCard?: boolean;    // – Yes / No (If ‘Yes’ card to be generated)
     privileges?: string;
-   
+    description?: string;
   // Extra Fields  
     photo?: string;
     jobDescription?: string;
@@ -70,6 +70,7 @@ const staffSchema = new mongoose.Schema({
     designation: {type: String},
     jobDescription: {type: String},
     reportingManager: {type: String},
+    description: {type: String},
     shiftTiming: {type: String},                        // (Attendance to be calculated based on this)
     areTheyEligibleForCasualLeave: {type: String},           // – Yes/No (Yes – Casual to be considered | No – Casual leave restricted)
     doj: {type: String},                   

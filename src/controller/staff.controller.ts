@@ -88,6 +88,7 @@ export const updateStaff = async (req, res) => {
                     shiftTiming: staffDetails.shiftTiming,
                     areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,
                     address: staffDetails.address,
+                    description: staffDetails.description,
                     emergencyContactNo: staffDetails.emergencyContactNo,
                     probationDuration: staffDetails.probationDuration,
                     salary: staffDetails.salary,

@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 
 export interface DepartmentHeadDocument extends mongoose.Document{
     _id?: any;
-    departmentHead?: string;
+    department?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -12,7 +12,7 @@ export interface DepartmentHeadDocument extends mongoose.Document{
 
 export const departmentHeadSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    departmentHead: {type: String},
+    department: {type: String},
 
     createdOn: { type: Date },
     createdBy: { type: String },

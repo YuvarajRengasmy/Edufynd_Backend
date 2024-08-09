@@ -29,27 +29,6 @@ export let getSingleUniversity = async (req, res, next) => {
     }
 }
 
-// const generateNextUniversityCode = async (): Promise<string> => {
-//     // Retrieve all applicant IDs to determine the highest existing applicant counter
-//     const univesity = await University.find({}, 'universityCode').exec();
-
-//     const maxCounter = univesity.reduce((max, app) => {
-//         const appCode = app.universityCode;
-//         const parts = appCode.split('_')
-//         if (parts.length === 2) {
-//             const counter = parseInt(parts[1], 10)
-//             return counter > max ? counter : max;
-//         }
-//         return max;
-//     }, 100);
-
-//     // Increment the counter
-//     const newCounter = maxCounter + 1;
-//     // Format the counter as a string with leading zeros
-//     const formattedCounter = String(newCounter).padStart(3, '0');
-//     // Return the new Applicantion Code
-//     return `UN_${formattedCounter}`;
-// };
 
 
 const generateNextUniversityCode = async (currentMaxCounter): Promise<string> => {
