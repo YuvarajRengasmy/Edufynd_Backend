@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllPayRoll, getSinglePayRoll, createPayRoll, updatePayRoll, deletePayRoll, getFilteredPayRoll} from '../controller/payroll.controller';
+import { getAllPayRoll, getSinglePayRoll, getViewStaffPayRoll, createPayRoll, updatePayRoll, deletePayRoll, getFilteredPayRoll} from '../controller/payroll.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -29,7 +29,7 @@ router.post('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    checkQuery('_id'),
+    // checkQuery('_id'),
     updatePayRoll
 );
 
@@ -45,7 +45,10 @@ router.put('/getFilterPayRoll',
     getFilteredPayRoll,
 );
 
-
+router.get('/getViewStaffPayRoll',    /// Get university details with that university program          
+    checkQuery('staffId'),
+    getViewStaffPayRoll   
+);
 /////
 
 // router.post('/b', calculateSalary)
