@@ -31,73 +31,65 @@ export const getSinglePayRoll = async (req, res) => {
 }
 
 
+export let createPayRoll = async (req, res, next) => {
+ 
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const payRollDetails: PayRollDocument = req.body;
+      
+            // Ensure allowance and deduction are arrays, even if they're empty
+            const allowanceComponents = payRollDetails.allowance || [];
+            const deductionComponents = payRollDetails.deduction || [];
 
+            // Calculate total allowance
+            let totalAllowance = 0;
+            allowanceComponents.forEach(component => {
+                totalAllowance += Number(component.amount);
+            });
 
-// export let createPayRoll = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const payRollDetails: PayRollDocument = req.body;
+        
+            // Calculate total deduction
+            let totalDeduct = payRollDetails.taxDeduction || 0;
+            deductionComponents.forEach(component => {
+                totalDeduct += Number(component.amount);
+            });
 
-//         // Ensure additionalComponents is an object, even if it's empty
-//         const additionalComponents = payRollDetails.additionalComponents || {};
+            // Calculate gross salary
+            const ctc = Number((Number(payRollDetails.houseRent) + Number(payRollDetails.conveyance) + Number(totalAllowance)));
+            payRollDetails.grossSalary = ctc;
 
-//         const allowance = (additionalComponents["transportAllowance"] || 0) +
-//             (additionalComponents["leaveTravelAllowance"] || 0) +
-//             (additionalComponents["medicalAllowance"] || 0) +
-//             (additionalComponents["specialAllowance"] || 0)
+            // Performance Allowance: 10% of Gross Salary
+            const performanceAllowance = payRollDetails.grossSalary * 0.1;
 
-//         payRollDetails.otherAllowance = allowance
+            // Add PF deduction to the total deduction
+            totalDeduct += payRollDetails.pf || 0;
+            // Calculate net salary
+            payRollDetails.totalDeduction = totalDeduct;
+            const netSalaryWithDeductions = Number(payRollDetails.grossSalary - totalDeduct)
 
-//         const ctc = payRollDetails.houseRent + payRollDetails.conveyance + allowance
+            // Calculate daily gross and net salary
+            const dailyGrossSalary = payRollDetails.grossSalary / 30;
+            // const salaryForPresentDays = dailyGrossSalary * (payRollDetails.presentDays || 0);
 
-//         payRollDetails.grossSalary = ctc
+            const dailyNetSalary = netSalaryWithDeductions / 30;
+            // const finalSalaryWithPerformanceDeduction = dailyNetSalary * (payRollDetails.presentDays || 0) - (payRollDetails.professionalTax || 0);
 
-//         // Performance Allowance: 10% of Gross Salary
-//         const performanceAllowance = payRollDetails.grossSalary * 0.1;
+            // Save to database
+            const payroll = new PayRoll({...payRollDetails,
+                otherAllowance: totalAllowance,
+                netSalary: netSalaryWithDeductions
+            });
 
-//         // Deductions
-//         const Deduction = (payRollDetails.taxDeduction || 0) +
-//             (additionalComponents["professionalTax"] || 0) +
-//             (payRollDetails.pf || 0) +
-//             (additionalComponents["esi"] || 0);
-
-//         payRollDetails.totalDeduction = Deduction
-
-
-//         // Net Salary before deductions
-//         const netSalaryWithDeductions = payRollDetails.grossSalary - Deduction;
-
-
-//         // Salary Calculation Based on Attendance
-//         const dailyGrossSalary = payRollDetails.grossSalary / 30;
-//         const salaryForPresentDays = dailyGrossSalary * (additionalComponents["presentDays"] || 0);
-
-//         const finalSalaryWithoutPerformanceDeduction = salaryForPresentDays - (additionalComponents["professionalTax"] || 0);
-
-//         // With Performance Allowance Deduction
-//         const dailyNetSalary = netSalaryWithDeductions / 30;
-//         const finalSalaryWithPerformanceDeduction = dailyNetSalary * (additionalComponents["presentDays"] || 0) - (additionalComponents["professionalTax"] || 0);
-
-//         // Save to database
-//         const payroll = new PayRoll({
-//             ...payRollDetails,
-//             // performanceAllowance,
-//             grossSalary: ctc,
-//             otherAllowance: allowance,
-//             netSalary: netSalaryWithDeductions
-//         });
-
-//         await payroll.save();
-//         response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll,  "Payroll created successfully");
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// };
-
+            await payroll.save();
+            response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll,  "Payroll created successfully");
+        } catch (err) {
+            response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
 
 
 export let updatePayRoll = async (req, res, next) => {
@@ -268,84 +260,73 @@ export let getFilteredPayRoll = async (req, res, next) => {
 //     }
 // };
 
+// export let createPayRoll = async (req, res, next) => {
+//     const errors = validationResult(req);
+//     if (errors.isEmpty()) {
+//         try {
+//             const payRollDetails: PayRollDocument = req.body;
+
+//         // Ensure additionalComponents is an object, even if it's empty
+//         const additionalComponents = payRollDetails.additionalComponents || {};
+
+//         const allowance = (additionalComponents["transportAllowance"] || 0) +
+//             (additionalComponents["leaveTravelAllowance"] || 0) +
+//             (additionalComponents["medicalAllowance"] || 0) +
+//             (additionalComponents["specialAllowance"] || 0)
+
+//         payRollDetails.otherAllowance = allowance
+
+//         const ctc = payRollDetails.houseRent + payRollDetails.conveyance + allowance
+
+//         payRollDetails.grossSalary = ctc
+
+//         // Performance Allowance: 10% of Gross Salary
+//         const performanceAllowance = payRollDetails.grossSalary * 0.1;
+
+//         // Deductions
+//         const Deduction = (payRollDetails.taxDeduction || 0) +
+//             (additionalComponents["professionalTax"] || 0) +
+//             (payRollDetails.pf || 0) +
+//             (additionalComponents["esi"] || 0);
+
+//         payRollDetails.totalDeduction = Deduction
 
 
-export let createPayRoll = async (req, res, next) => {
-    console.log("balan")
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const payRollDetails: PayRollDocument = req.body;
-            // const payRollDetails: PayRollDocument = req.body;
+//         // Net Salary before deductions
+//         const netSalaryWithDeductions = payRollDetails.grossSalary - Deduction;
 
-            // Ensure allowance and deduction are arrays, even if they're empty
-            const allowanceComponents = payRollDetails.allowance || [];
-            const deductionComponents = payRollDetails.deduction || [];
 
-            console.log("99", payRollDetails.allowance)
+//         // Salary Calculation Based on Attendance
+//         const dailyGrossSalary = payRollDetails.grossSalary / 30;
+//         const salaryForPresentDays = dailyGrossSalary * (additionalComponents["presentDays"] || 0);
 
-            // Calculate total allowance
-         
-            let totalAllowance = 0;
-            allowanceComponents.forEach(component => {
-             console.log("hhhh", component)
-                totalAllowance += component.amount;
-            });
+//         const finalSalaryWithoutPerformanceDeduction = salaryForPresentDays - (additionalComponents["professionalTax"] || 0);
 
-        
-            // Calculate total deduction
-            let totalDeduct = payRollDetails.taxDeduction || 0;
-            deductionComponents.forEach(component => {
-                console.log("kkkk", component)
-                totalDeduct += component.amount;
-            });
+//         // With Performance Allowance Deduction
+//         const dailyNetSalary = netSalaryWithDeductions / 30;
+//         const finalSalaryWithPerformanceDeduction = dailyNetSalary * (additionalComponents["presentDays"] || 0) - (additionalComponents["professionalTax"] || 0);
 
-          
+//         // Save to database
+//         const payroll = new PayRoll({
+//             ...payRollDetails,
+//             // performanceAllowance,
+//             grossSalary: ctc,
+//             otherAllowance: allowance,
+//             netSalary: netSalaryWithDeductions
+//         });
 
-            // Calculate gross salary
-            const ctc = payRollDetails.houseRent + payRollDetails.conveyance + totalAllowance;
-            payRollDetails.grossSalary = ctc;
+//         await payroll.save();
+//         response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll,  "Payroll created successfully");
+//         } catch (err: any) {
+//             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
+//         }
+//     } else {
+//         response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+//     }
+// };
 
-            // Performance Allowance: 10% of Gross Salary
-            const performanceAllowance = payRollDetails.grossSalary * 0.1;
+  // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
 
-            // Add PF deduction to the total deduction
-            totalDeduct += payRollDetails.pf || 0;
 
-            // Calculate net salary
-            payRollDetails.totalDeduction = totalDeduct;
-            const netSalaryWithDeductions = payRollDetails.grossSalary - totalDeduct;
 
-            // Calculate daily gross and net salary
-            const dailyGrossSalary = payRollDetails.grossSalary / 30;
-            // const salaryForPresentDays = dailyGrossSalary * (payRollDetails.presentDays || 0);
-
-            const dailyNetSalary = netSalaryWithDeductions / 30;
-            // const finalSalaryWithPerformanceDeduction = dailyNetSalary * (payRollDetails.presentDays || 0) - (payRollDetails.professionalTax || 0);
-
-            // Save to database
-            const payroll = new PayRoll({
-                ...payRollDetails,
-                otherAllowance: totalAllowance,
-                netSalary: netSalaryWithDeductions
-            });
-
-            await payroll.save();
-            res.status(200).json({
-                message: "Payroll created successfully",
-                payroll
-            });
-        } catch (err) {
-            res.status(500).json({
-                message: "Internal server error",
-                error: err.message
-            });
-        }
-    } else {
-        res.status(422).json({
-            message: "Field validation error",
-            errors: errors.mapped()
-        });
-    }
-};
 

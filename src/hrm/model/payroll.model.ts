@@ -5,20 +5,12 @@ export interface PayRollDocument extends mongoose.Document {
     houseRent?: number;
     conveyance?: number;
     otherAllowance?: number;
-
-    //Deduction
     pf?: number;
     taxDeduction?: number;
-
-    //Salary Details
     grossSalary?: number;
     totalDeduction?: number;
     netSalary?: number;
-
     uploadDocument?: string;
-   // additionalComponents?: any;
-
-
     allowance?: any[];
     deduction?: any[];
 
@@ -33,21 +25,16 @@ export const payRollSchema = new mongoose.Schema({
     houseRent: { type: Number },
     conveyance: { type: Number },
     otherAllowance: { type: Number },
-    //Deduction
     pf: { type: Number },
     taxDeduction: { type: Number },
-    //Salary Details
     grossSalary: { type: Number },
     totalDeduction: { type: Number },
     netSalary: { type: Number },
     uploadDocument: { type: String },
-   // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
-
     allowance: [{
         name: {type: String},
         amount: {type:Number}
     }],
-
     deduction: [{
         title: {type: String},
         amount: {type:Number}
