@@ -2,13 +2,16 @@ import * as mongoose from 'mongoose'
 
 export interface PayRollDocument extends mongoose.Document {
     _id?: any;
-    houseRent?: number;
+    basicAllowance?: number;
+    hra?: number;
+    
     conveyance?: number;
     otherAllowance?: number;
 
     //Deduction
     pf?: number;
     taxDeduction?: number;
+    performanceDeduction?: number;
     otherDeduction?: number;
     //Salary Details
     grossSalary?: number;
@@ -39,12 +42,15 @@ export interface PayRollDocument extends mongoose.Document {
 
 export const payRollSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    houseRent: { type: Number },
+    basicAllowance: { type: Number },
+    hra: { type: Number },
+    
     conveyance: { type: Number },
     otherAllowance: { type: Number },
     //Deduction
     pf: { type: Number },
     taxDeduction: { type: Number },
+    performanceDeduction: { type: Number },
     otherDeduction: { type: Number },
     //Salary Details
     grossSalary: { type: Number },
@@ -65,7 +71,7 @@ export const payRollSchema = new mongoose.Schema({
 
     //staff Details
     empName: { type: String },
-    staffId: { type: String },
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     employeeId: { type: String },
     reportingManager: { type: String },
     photo: { type: String },

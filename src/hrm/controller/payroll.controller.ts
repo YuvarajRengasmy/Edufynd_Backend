@@ -30,6 +30,16 @@ export const getSinglePayRoll = async (req, res) => {
     }
 }
 
+export const getViewStaffPayRoll = async (req, res) => {
+    try {
+        const data = await PayRoll.findOne({ _id: req.query._id })
+
+        response(req, res, activity, 'Level-1', 'GetSingle-PayRoll', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
+
 
 export let createPayRoll = async (req, res, next) => {
  
@@ -54,14 +64,14 @@ export let createPayRoll = async (req, res, next) => {
             });
 
             // Calculate gross salary
-            const ctc = Number((Number(payRollDetails.houseRent) + Number(payRollDetails.conveyance) + Number(totalAllowance)));
+            const ctc = Number((Number(payRollDetails.basicAllowance) + Number(payRollDetails.hra) + Number(payRollDetails.conveyance) + Number(totalAllowance)));
             payRollDetails.grossSalary = ctc;
 
             // Performance Allowance: 10% of Gross Salary
             const performanceAllowance = payRollDetails.grossSalary * 0.1;
 
             // Add PF deduction to the total deduction
-            const deduction = Number((Number(payRollDetails.pf) + Number(payRollDetails.taxDeduction) + Number(totalDeduct)));
+            const deduction = Number((Number(payRollDetails.pf) + Number(payRollDetails.performanceDeduction) + Number(payRollDetails.taxDeduction) + Number(totalDeduct)));
             payRollDetails.totalDeduction = deduction;
 
             // Calculate net salary
@@ -101,11 +111,13 @@ export let updatePayRoll = async (req, res, next) => {
             const payRollDetails: PayRollDocument = req.body;
             const updateData = await PayRoll.findOneAndUpdate({ _id: payRollDetails._id }, {
                 $set: {
-                    houseRent: payRollDetails.houseRent,
+                    basicAllowance: payRollDetails.basicAllowance,
+                    hra: payRollDetails.hra,
                     conveyance: payRollDetails.conveyance,
                     otherAllowance: payRollDetails.otherAllowance,
                     pf: payRollDetails.pf,
                     description: payRollDetails.description,
+                    performanceDeduction: payRollDetails.performanceDeduction,
                     taxDeduction: payRollDetails.taxDeduction,
                     grossSalary: payRollDetails.grossSalary,
                     totalDeduction: payRollDetails.totalDeduction,
@@ -113,6 +125,7 @@ export let updatePayRoll = async (req, res, next) => {
                     uploadDocument: payRollDetails.uploadDocument,
 
                     modifiedOn: new Date(),
+
                 }
             });
             response(req, res, activity, 'Level-2', 'Update-PayRoll', true, 200, updateData, clientError.success.updateSuccess);
