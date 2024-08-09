@@ -271,6 +271,7 @@ export let getFilteredPayRoll = async (req, res, next) => {
 
 
 export let createPayRoll = async (req, res, next) => {
+    console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -281,11 +282,13 @@ export let createPayRoll = async (req, res, next) => {
             const allowanceComponents = payRollDetails.allowance || [];
             const deductionComponents = payRollDetails.deduction || [];
 
+            console.log("99", payRollDetails.allowance)
+
             // Calculate total allowance
          
             let totalAllowance = 0;
             allowanceComponents.forEach(component => {
-             
+             console.log("hhhh", component)
                 totalAllowance += component.amount;
             });
 
@@ -293,6 +296,7 @@ export let createPayRoll = async (req, res, next) => {
             // Calculate total deduction
             let totalDeduct = payRollDetails.taxDeduction || 0;
             deductionComponents.forEach(component => {
+                console.log("kkkk", component)
                 totalDeduct += component.amount;
             });
 
