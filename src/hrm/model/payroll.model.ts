@@ -14,12 +14,9 @@ export interface PayRollDocument extends mongoose.Document {
     grossSalary?: number;
     totalDeduction?: number;
     netSalary?: number;
-
     uploadDocument?: string;
-   // additionalComponents?: any;
+  
  
-
-
     allowance?: any[];
     deduction?: any[];
   
@@ -28,6 +25,7 @@ export interface PayRollDocument extends mongoose.Document {
     staffId?: string;
     employeeId?: string;
     reportingManager?: string;
+
     photo?: string;
     email?: string;
     mobileNumber: number;
