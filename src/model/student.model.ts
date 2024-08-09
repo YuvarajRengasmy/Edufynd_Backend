@@ -11,21 +11,21 @@ export interface StudentDocument extends mongoose.Document {
     expiryDate?: Date;
     gender?: string;
     email?: string;
-    primaryNumber?: number;  //a
-    whatsAppNumber?: number; // a
+    primaryNumber?: number;  
+    whatsAppNumber?: number; 
     highestQualification?: string;
     degreeName?: string;
     percentage?: string;
     institution?: string;
     academicYear?: string;
     yearPassed?: string;
-    workExperience?: string; // In years
+    workExperience?: string;
     doHaveAnyEnglishLanguageTest?: string;
-    englishTestType?: any[]; // Only EnglishLanguageTest is true
-    testScore?: number; // Only EnglishLanguageTest is true
-    dateOfTest?: Date; // Only EnglishLanguageTest is true
-    doYouHaveTravelHistory?: string; // Only TravelHistory is true
-    anyVisaRejections?: string; // Only VisaRejections is true
+    englishTestType?: any[]; 
+    testScore?: number; 
+    dateOfTest?: Date; 
+    doYouHaveTravelHistory?: string; 
+    anyVisaRejections?: string; 
     visaReason?: string;
     travelReason?: string;
     desiredCountry?: string;
@@ -114,7 +114,6 @@ const studentSchema = new mongoose.Schema({
     additional: [String],
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
-
     // Newly Added
     duration: {type: String},
     lastEmployeer: {type: String},

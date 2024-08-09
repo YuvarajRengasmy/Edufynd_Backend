@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/',                //get all InTake
+router.get('/',                
     basicAuthUser,
     getAllInTake
 );
@@ -24,14 +24,14 @@ router.post('/',
 );
 
 
-router.put('/',                    // update status
+router.put('/',                
     basicAuthUser,
     checkQuery('_id'),
     updateInTake
 );
 
 
-router.delete('/',                  //delete Status
+router.delete('/',                 
     basicAuthUser,
     checkQuery('_id'),
     deleteInTake

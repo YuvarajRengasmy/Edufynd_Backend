@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose'
 export interface ContactDocument extends mongoose.Document{
     name?: string;
     email?: string;
-    mobileNumber?: number;   //a
+    mobileNumber?: number;   
     message?: string;
     createdOn?: Date;
     createdBy?: string;

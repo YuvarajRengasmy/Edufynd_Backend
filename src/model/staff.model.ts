@@ -5,33 +5,30 @@ export interface StaffDocument extends mongoose.Document {
     _id?: any;
     employeeID?: string;
     empName?: string;
-    dob?: String;    // (Date of Birth)
+    dob?: String;    
     designation?: string;
-    doj?: String; // (Date of Joining)
+    doj?: String; 
     reportingManager?: string;
-    shiftTiming?: string; // (Attendance to be calculated based on this)
+    shiftTiming?: string;
     probationDuration?: string;
     email?: string;
-    mobileNumber?: number;  //a
-    emergencyContactNo?: number;   //a
+    mobileNumber?: number;  
+    emergencyContactNo?: number;   
     address?: string;
-    idCard?: boolean;    // – Yes / No (If ‘Yes’ card to be generated)
+    idCard?: boolean;    
     privileges?: string;
     description?: string;
   // Extra Fields  
     photo?: string;
     jobDescription?: string;
-    areTheyEligibleForCasualLeave?: boolean; // – Yes/No (Yes – Casual to be considered | No – Casual leave restricted)
-    salary?: string    // (Break Up with deduction – Manual)
-    manageApplications?: string;   // Yes/No
-
+    areTheyEligibleForCasualLeave?: boolean; 
+    salary?: string   
+    manageApplications?: string;   
     active?:string;  
-    teamLead?: string;     // – Select Employees and permission to be viewed.
+    teamLead?: string;   
     password?: string;
     confirmPassword?: string;
     isDeleted?: boolean;
-  
-
 // Newly added fields
     team?: string;
     staffList?: any[];
@@ -89,7 +86,6 @@ const staffSchema = new mongoose.Schema({
     confirmPassword: { type: String },  
     isDeleted: { type: Boolean, default: false },
     privileges: {type: String},  
-   
     // Newly added fields
     team: {type: String},
     staffList: [String],

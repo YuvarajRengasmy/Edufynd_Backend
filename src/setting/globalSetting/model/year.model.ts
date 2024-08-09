@@ -10,7 +10,6 @@ export interface YearDocument extends mongoose.Document{
 }
 
 export const yearSchema = new mongoose.Schema({
-   
     year: {type: String},
 
     createdOn: { type: Date },
