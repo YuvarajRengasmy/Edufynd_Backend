@@ -32,7 +32,7 @@ export const getSinglePayRoll = async (req, res) => {
 
 export const getViewStaffPayRoll = async (req, res) => {
     try {
-        const data = await PayRoll.findOne({ _id: req.query._id })
+        const data = await PayRoll.findOne({staffId:req.query.staffId })
 
         response(req, res, activity, 'Level-1', 'GetSingle-PayRoll', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
