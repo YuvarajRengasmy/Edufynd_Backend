@@ -69,14 +69,14 @@ export let updatePolicies = async (req, res, next) => {
                     modifiedBy:  policiesDetails.modifiedBy,
                 }
             });
-            response(req, res, activity, 'Level-2', 'Update-Policies', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Policies', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Policies', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Policies', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
-        response(req, res, activity, 'Level-3', 'Update-Policies', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-2', 'Update-Policies', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
 

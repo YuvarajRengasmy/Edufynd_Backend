@@ -33,7 +33,7 @@ export const getSinglePayRoll = async (req, res) => {
 
 export const getViewStaffPayRoll = async (req, res) => {
     try {
-        const data = await PayRoll.findOne({staffId:req.query.staffId })
+        const data = await PayRoll.findOne({ staffId: req.query.staffId })
 
         response(req, res, activity, 'Level-1', 'GetSingle-Staff PayRoll', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
@@ -43,12 +43,12 @@ export const getViewStaffPayRoll = async (req, res) => {
 
 
 export let createPayRoll = async (req, res, next) => {
- 
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const payRollDetails: PayRollDocument = req.body;
-      
+
             // Ensure allowance and deduction are arrays, even if they're empty
             const allowanceComponents = payRollDetails.allowance || [];
             const deductionComponents = payRollDetails.deduction || [];
@@ -57,9 +57,9 @@ export let createPayRoll = async (req, res, next) => {
             let totalAllowance = 0;
             allowanceComponents.forEach(component => {
                 totalAllowance += Number(component.amount);
-            }); 
+            });
             // Calculate total deduction
-            let totalDeduct =  0;
+            let totalDeduct = 0;
             deductionComponents.forEach(component => {
                 totalDeduct += Number(component.amount);
             });
@@ -78,24 +78,32 @@ export let createPayRoll = async (req, res, next) => {
             // Calculate net salary
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
             const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
+
+            let b = wordsinRupees.split(" ")
+            let c = b.map((word) => {
+                return word.charAt(0).toUpperCase() + word.slice(1)
+            })
+            let rupees = c.join(" ")
+         
             // Calculate daily gross and net salary
             const dailyGrossSalary = payRollDetails.grossSalary / 30;
             // const salaryForPresentDays = dailyGrossSalary * (payRollDetails.presentDays || 0);
 
             const dailyNetSalary = netSalaryWithDeductions / 30;
             // const finalSalaryWithPerformanceDeduction = dailyNetSalary * (payRollDetails.presentDays || 0) - (payRollDetails.professionalTax || 0);
-           
-    
+
+
             // Save to database
-            const payroll = new PayRoll({...payRollDetails,
+            const payroll = new PayRoll({
+                ...payRollDetails,
                 otherAllowance: totalAllowance,
                 otherDeduction: totalDeduct,
                 netSalary: netSalaryWithDeductions,
-                netInWords: wordsinRupees
+                netInWords: rupees
             });
 
             await payroll.save();
-            response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll,  "Payroll created successfully");
+            response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll, "Payroll created successfully");
         } catch (err) {
             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
         }
@@ -341,7 +349,7 @@ export let getFilteredPayRoll = async (req, res, next) => {
 //     }
 // };
 
-  // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
+// additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
 
 
 
