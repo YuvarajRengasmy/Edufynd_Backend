@@ -29,6 +29,12 @@ export interface StaffDocument extends mongoose.Document {
     password?: string;
     confirmPassword?: string;
     isDeleted?: boolean;
+    bankName?: string;
+    bankAccountNo?: string;
+    bankIFSC?: string;
+    bankBranch?: string;
+    pfAccountNo?: string;
+    
 // Newly added fields
     team?: string;
     staffList?: any[];
@@ -109,6 +115,11 @@ const staffSchema = new mongoose.Schema({
     loginPassword:  { type: String },
     clockIn: {type: Date},
     clockOut: {type: Date},
+    bankName:{type: String},
+    bankAccountNo:{type: String},
+    bankIFSC:{type: String},
+    bankBranch:{type: String},
+    pfAccountNo:{type: String},
     notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
 
     createdOn: { type: Date },
