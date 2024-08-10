@@ -153,21 +153,21 @@ export let createPayRoll = async (req, res, next) => {
             const startDate = new Date(req.body.startDate);
             const endDate = new Date(req.body.endDate);
 
-            // Attendance Calculation
-            const attendence = await Attendence.find({
-                employeeId: payRollDetails.employeeId,
-                date: { $gte: startDate, $lte: endDate }
-            });
+            // // Attendance Calculation
+            // const attendence = await Attendence.find({
+            //     employeeId: payRollDetails.employeeId,
+            //     date: { $gte: startDate, $lte: endDate }
+            // });
 
-            let presentDays = 0;
-            let absentDays = 0;
-            attendence.forEach(att => {
-                if (att.status === "Present") {
-                    presentDays++;
-                } else if (att.status === "Absent") {
-                    absentDays++;
-                }
-            });
+            // let presentDays = 0;
+            // let absentDays = 0;
+            // attendence.forEach(att => {
+            //     if (att.status === "Present") {
+            //         presentDays++;
+            //     } else if (att.status === "Absent") {
+            //         absentDays++;
+            //     }
+            // });
 
 
             // Save to database
@@ -177,8 +177,8 @@ export let createPayRoll = async (req, res, next) => {
                 otherDeduction: totalDeduct,
                 netSalary: netSalaryWithDeductions,
                 netInWords: wordsinRupees,
-                payableDays: presentDays,
-                lopDays: absentDays
+                // payableDays: presentDays,
+                // lopDays: absentDays
             });
 
             await payroll.save();

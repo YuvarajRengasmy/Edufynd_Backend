@@ -107,7 +107,7 @@ export let createTestimonial = async (req, res, next) => {
                                                           <!-- Header -->
                                                           <tr>
                                                               <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                             Testimonial
+                                                       Testimonial
                                                               </td>
                                                           </tr>
                               
@@ -123,7 +123,7 @@ export let createTestimonial = async (req, res, next) => {
                                                                
                                                             
                                                            
-                                                                ${cid ? `<img src="cid:${cid}" alt="image" width="500" height="300" />` : ''}
+                                                                 ${cid ? `<img src="cid:${cid}" alt="image" width="500" height="300" />` : ''}
                                                                   <p>This information is for your reference.</p>
                                                                   <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
                                                               </td>
