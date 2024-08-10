@@ -65,18 +65,23 @@ export let createPayRolll = async (req, res, next) => {
             });
 
             // Calculate gross salary
-            const ctc = Number((Number(payRollDetails.basicAllowance) + Number(payRollDetails.hra) + Number(payRollDetails.conveyance) + Number(totalAllowance)));
+            const ctc = Number((Number(payRollDetails.basicAllowance || 0) + Number(payRollDetails.hra || 0) + Number(payRollDetails.conveyance || 0) + Number(totalAllowance)));
             payRollDetails.grossSalary = ctc;
+
+    
 
             // Performance Allowance: 10% of Gross Salary
             const performanceAllowance = payRollDetails.grossSalary * 0.1;
 
             // Add PF deduction to the total deduction
-            const deduction = Number((Number(payRollDetails.pf) + Number(payRollDetails.performanceDeduction) + Number(payRollDetails.taxDeduction) + Number(totalDeduct)));
+            const deduction = Number((Number(payRollDetails.pf || 0) + Number(payRollDetails.performanceDeduction || 0) + Number(payRollDetails.taxDeduction || 0) + Number(totalDeduct)));
             payRollDetails.totalDeduction = deduction;
+
+      
 
             // Calculate net salary
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
+       
             const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
 
         
@@ -100,6 +105,7 @@ export let createPayRolll = async (req, res, next) => {
             await payroll.save();
             response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll, "Payroll created successfully");
         } catch (err) {
+       
             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
         }
     } else {
@@ -130,44 +136,49 @@ export let createPayRoll = async (req, res, next) => {
             });
 
             // Calculate gross salary
-            const ctc = Number((Number(payRollDetails.basicAllowance) + Number(payRollDetails.hra) + Number(payRollDetails.conveyance) + Number(totalAllowance)));
+            const ctc = Number((Number(payRollDetails.basicAllowance || 0) + Number(payRollDetails.hra || 0) + Number(payRollDetails.conveyance || 0) + Number(totalAllowance)));
             payRollDetails.grossSalary = ctc;
 
             // Performance Allowance: 10% of Gross Salary
             const performanceAllowance = payRollDetails.grossSalary * 0.1;
 
             // Add PF deduction to the total deduction
-            const deduction = Number((Number(payRollDetails.pf) + Number(payRollDetails.performanceDeduction) + Number(payRollDetails.taxDeduction) + Number(totalDeduct)));
+            const deduction = Number((Number(payRollDetails.pf || 0) + Number(payRollDetails.performanceDeduction || 0) + Number(payRollDetails.taxDeduction || 0) + Number(totalDeduct)));
             payRollDetails.totalDeduction = deduction;
 
             // Calculate net salary
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
+       
             const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
 
   // Attendeance Calculation
             const attendenceDetails: AttendenceDocument = req.body;
-            const active = await Attendence.findById(attendenceDetails.employeeId);
+            const active = await Attendence.findOne({employeeId: req.query.employeeId});
+          
             if (!active) {
                 return response(req, res, activity, 'Level-3', 'Employee Not Found', false, 404, {}, "Not Found the Employee");
             }
             const startDate = new Date(req.body.startDate);
             const endDate = new Date(req.body.endDate);
 
-            // // Attendance Calculation
-            // const attendence = await Attendence.find({
-            //     employeeId: payRollDetails.employeeId,
-            //     date: { $gte: startDate, $lte: endDate }
-            // });
+            // Attendance Calculation
+            const attendence = await Attendence.find({
+                employeeId: req.query.employeeId,
+                date: { $gte: startDate, $lte: endDate }
+            });
 
-            // let presentDays = 0;
-            // let absentDays = 0;
-            // attendence.forEach(att => {
-            //     if (att.status === "Present") {
-            //         presentDays++;
-            //     } else if (att.status === "Absent") {
-            //         absentDays++;
-            //     }
-            // });
+            let presentDays = 0;
+            let absentDays = 0;
+            attendence.forEach(att => {
+                if (att.status === "Present") {
+                    presentDays++;
+                } //else if (att.status === "Absent" || null) {
+                //     absentDays++;
+                // }
+                else  {
+                    absentDays++;
+                }
+            });
 
 
             // Save to database
@@ -177,13 +188,14 @@ export let createPayRoll = async (req, res, next) => {
                 otherDeduction: totalDeduct,
                 netSalary: netSalaryWithDeductions,
                 netInWords: wordsinRupees,
-                // payableDays: presentDays,
-                // lopDays: absentDays
+                payableDays: presentDays,
+                lopDays: absentDays
             });
 
             await payroll.save();
             response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll, "Payroll created successfully");
         } catch (err) {
+            console.log(err)
             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
         }
     } else {
