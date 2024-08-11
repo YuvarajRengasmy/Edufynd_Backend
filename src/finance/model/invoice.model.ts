@@ -14,9 +14,7 @@ export interface InvoiceDocument extends mongoose.Document {
     applicationID?: any;
     agentName?: string;
     commissionReceived?: number;
-
     INRValue?: number;
-
     amountPaid?: number;      
     totalInvoiceAmount?: number;
     transactions?: string;  

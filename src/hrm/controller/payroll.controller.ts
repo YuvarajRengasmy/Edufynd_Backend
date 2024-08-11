@@ -1,5 +1,5 @@
 import { PayRoll, PayRollDocument } from '../model/payroll.model'
-import { Staff, StaffDocument } from '../../model/staff.model'
+import { Attendence, AttendenceDocument } from '../model/attendence.model'
 import { validationResult } from "express-validator";
 import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
@@ -33,7 +33,7 @@ export const getSinglePayRoll = async (req, res) => {
 
 export const getViewStaffPayRoll = async (req, res) => {
     try {
-        const data = await PayRoll.findOne({staffId:req.query.staffId })
+        const data = await PayRoll.findOne({ staffId: req.query.staffId })
 
         response(req, res, activity, 'Level-1', 'GetSingle-Staff PayRoll', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
@@ -42,13 +42,13 @@ export const getViewStaffPayRoll = async (req, res) => {
 }
 
 
-export let createPayRoll = async (req, res, next) => {
- 
+export let createPayRolll = async (req, res, next) => {
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const payRollDetails: PayRollDocument = req.body;
-      
+
             // Ensure allowance and deduction are arrays, even if they're empty
             const allowanceComponents = payRollDetails.allowance || [];
             const deductionComponents = payRollDetails.deduction || [];
@@ -57,9 +57,9 @@ export let createPayRoll = async (req, res, next) => {
             let totalAllowance = 0;
             allowanceComponents.forEach(component => {
                 totalAllowance += Number(component.amount);
-            }); 
+            });
             // Calculate total deduction
-            let totalDeduct =  0;
+            let totalDeduct = 0;
             deductionComponents.forEach(component => {
                 totalDeduct += Number(component.amount);
             });
@@ -78,16 +78,19 @@ export let createPayRoll = async (req, res, next) => {
             // Calculate net salary
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
             const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
+
+        
             // Calculate daily gross and net salary
             const dailyGrossSalary = payRollDetails.grossSalary / 30;
             // const salaryForPresentDays = dailyGrossSalary * (payRollDetails.presentDays || 0);
 
             const dailyNetSalary = netSalaryWithDeductions / 30;
             // const finalSalaryWithPerformanceDeduction = dailyNetSalary * (payRollDetails.presentDays || 0) - (payRollDetails.professionalTax || 0);
-           
-    
+
+
             // Save to database
-            const payroll = new PayRoll({...payRollDetails,
+            const payroll = new PayRoll({
+                ...payRollDetails,
                 otherAllowance: totalAllowance,
                 otherDeduction: totalDeduct,
                 netSalary: netSalaryWithDeductions,
@@ -95,7 +98,91 @@ export let createPayRoll = async (req, res, next) => {
             });
 
             await payroll.save();
-            response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll,  "Payroll created successfully");
+            response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll, "Payroll created successfully");
+        } catch (err) {
+            response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
+export let createPayRoll = async (req, res, next) => {
+
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const payRollDetails: PayRollDocument = req.body;
+
+            // Ensure allowance and deduction are arrays, even if they're empty
+            const allowanceComponents = payRollDetails.allowance || [];
+            const deductionComponents = payRollDetails.deduction || [];
+
+            // Calculate total allowance
+            let totalAllowance = 0;
+            allowanceComponents.forEach(component => {
+                totalAllowance += Number(component.amount);
+            });
+            // Calculate total deduction
+            let totalDeduct = 0;
+            deductionComponents.forEach(component => {
+                totalDeduct += Number(component.amount);
+            });
+
+            // Calculate gross salary
+            const ctc = Number((Number(payRollDetails.basicAllowance) + Number(payRollDetails.hra) + Number(payRollDetails.conveyance) + Number(totalAllowance)));
+            payRollDetails.grossSalary = ctc;
+
+            // Performance Allowance: 10% of Gross Salary
+            const performanceAllowance = payRollDetails.grossSalary * 0.1;
+
+            // Add PF deduction to the total deduction
+            const deduction = Number((Number(payRollDetails.pf) + Number(payRollDetails.performanceDeduction) + Number(payRollDetails.taxDeduction) + Number(totalDeduct)));
+            payRollDetails.totalDeduction = deduction;
+
+            // Calculate net salary
+            const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
+            const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
+
+  // Attendeance Calculation
+            const attendenceDetails: AttendenceDocument = req.body;
+            const active = await Attendence.findById(attendenceDetails.employeeId);
+            if (!active) {
+                return response(req, res, activity, 'Level-3', 'Employee Not Found', false, 404, {}, "Not Found the Employee");
+            }
+            const startDate = new Date(req.body.startDate);
+            const endDate = new Date(req.body.endDate);
+
+            // // Attendance Calculation
+            // const attendence = await Attendence.find({
+            //     employeeId: payRollDetails.employeeId,
+            //     date: { $gte: startDate, $lte: endDate }
+            // });
+
+            // let presentDays = 0;
+            // let absentDays = 0;
+            // attendence.forEach(att => {
+            //     if (att.status === "Present") {
+            //         presentDays++;
+            //     } else if (att.status === "Absent") {
+            //         absentDays++;
+            //     }
+            // });
+
+
+            // Save to database
+            const payroll = new PayRoll({
+                ...payRollDetails,
+                otherAllowance: totalAllowance,
+                otherDeduction: totalDeduct,
+                netSalary: netSalaryWithDeductions,
+                netInWords: wordsinRupees,
+                // payableDays: presentDays,
+                // lopDays: absentDays
+            });
+
+            await payroll.save();
+            response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll, "Payroll created successfully");
         } catch (err) {
             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
         }
@@ -165,8 +252,8 @@ export let getFilteredPayRoll = async (req, res, next) => {
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
 
-        if (req.body.houseRent) {
-            andList.push({ houseRent: req.body.houseRent })
+        if (req.body.basicAllowance) {
+            andList.push({ basicAllowance: req.body.basicAllowance })
         }
         if (req.body.conveyance) {
             andList.push({ conveyance: req.body.conveyance })
@@ -179,6 +266,9 @@ export let getFilteredPayRoll = async (req, res, next) => {
         }
         if (req.body.netSalary) {
             andList.push({ netSalary: req.body.netSalary })
+        }
+        if (req.body.hra) {
+            andList.push({ hra: req.body.hra })
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
@@ -341,7 +431,7 @@ export let getFilteredPayRoll = async (req, res, next) => {
 //     }
 // };
 
-  // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
+// additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
 
 
 

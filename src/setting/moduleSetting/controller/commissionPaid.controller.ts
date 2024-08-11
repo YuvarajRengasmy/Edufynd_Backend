@@ -51,21 +51,13 @@ export const updateCommissionPaid = async (req, res) => {
     const DropdownListDetails: CommissionPaidDocument = req.body;
     
     try {
-      // Check if the module exists
       const existingModule = await CommissionPaid.findById({ _id: DropdownListDetails._id });
-   
       if (!existingModule) {
         return res.status(404).json({ message: 'Module not found' });
       }
-      
-      // Update the module with the new data
-     
       existingModule.commissionPaidOn =  DropdownListDetails.commissionPaidOn 
 
   let updatedModule = await existingModule.save();
-   
-      
-      // Respond with success message and updated module data
       response(req, res, activity, 'Level-2', 'Update-CommissionPaid', true, 200, updatedModule, clientError.success.updateSuccess);
     } catch (err) {
       response(req, res, activity, 'Level-3', 'Create-CommissionPaid', false, 500, {}, errorMessage.internalServer, err.message);
