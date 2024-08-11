@@ -145,13 +145,13 @@ export let createPayRoll = async (req, res, next) => {
             const wordsinRupees = toWords(netSalaryWithDeductions).replace(/,/g, '') + ' only';
 
   // Attendeance Calculation
-            const attendenceDetails: AttendenceDocument = req.body;
-            const active = await Attendence.findById(attendenceDetails.employeeId);
-            if (!active) {
-                return response(req, res, activity, 'Level-3', 'Employee Not Found', false, 404, {}, "Not Found the Employee");
-            }
-            const startDate = new Date(req.body.startDate);
-            const endDate = new Date(req.body.endDate);
+            // const attendenceDetails: AttendenceDocument = req.body;
+            // const active = await Attendence.findById(attendenceDetails.employeeId);
+            // if (!active) {
+            //     return response(req, res, activity, 'Level-3', 'Employee Not Found', false, 404, {}, "Not Found the Employee");
+            // }
+            // const startDate = new Date(req.body.startDate);
+            // const endDate = new Date(req.body.endDate);
 
             // // Attendance Calculation
             // const attendence = await Attendence.find({
