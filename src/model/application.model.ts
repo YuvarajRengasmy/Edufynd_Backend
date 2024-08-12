@@ -58,8 +58,11 @@ const applicantSchema = new mongoose.Schema({
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
         newStatus: {type: String},
         commentBox: {type: String},
+        duration: {type: String},
         document:  {type: String},
-        createdBy: { type: String }
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
     }],
     createdOn: { type: Date },
     createdBy: { type: String },
