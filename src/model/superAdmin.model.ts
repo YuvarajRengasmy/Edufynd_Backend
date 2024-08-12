@@ -6,7 +6,7 @@ export interface SuperAdminDocument extends mongoose.Document{
     name?: string;
     photo?: string;
     email?: string;
-    mobileNumber?: number;   //a
+    mobileNumber?: number;  
     password?: string;
     confirmPassword?: string;
     studentId?: any;

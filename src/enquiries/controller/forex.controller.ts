@@ -83,7 +83,6 @@ export let updateForexEnquiry = async (req, res, next) => {
                     universityName: forexEnquiryDetails.universityName,
                     passportNo: forexEnquiryDetails.passportNo,
                     whatsAppNumber: forexEnquiryDetails.whatsAppNumber,
-                    //If Agent request for the following
                     agentName: forexEnquiryDetails.agentName,
                     businessName: forexEnquiryDetails.businessName,
                     agentPrimaryNumber: forexEnquiryDetails.agentPrimaryNumber,

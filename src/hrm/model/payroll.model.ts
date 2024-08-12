@@ -4,10 +4,8 @@ export interface PayRollDocument extends mongoose.Document {
     _id?: any;
     basicAllowance?: number;
     hra?: number;
-    
     conveyance?: number;
     otherAllowance?: number;
-
     //Deduction
     pf?: number;
     taxDeduction?: number;
@@ -18,17 +16,17 @@ export interface PayRollDocument extends mongoose.Document {
     totalDeduction?: number;
     netSalary?: number;
     uploadDocument?: string;
-  
- 
+    netInWords?: string;
     allowance?: any[];
     deduction?: any[];
+    payableDays?: number;
+    lopDays?: number
   
     //staff Details
     empName?: string;
     staffId?: string;
     employeeId?: string;
     reportingManager?: string;
-
     photo?: string;
     email?: string;
     mobileNumber: number;
@@ -44,7 +42,6 @@ export const payRollSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     basicAllowance: { type: Number },
     hra: { type: Number },
-    
     conveyance: { type: Number },
     otherAllowance: { type: Number },
     //Deduction
@@ -57,18 +54,17 @@ export const payRollSchema = new mongoose.Schema({
     totalDeduction: { type: Number },
     netSalary: { type: Number },
     uploadDocument: { type: String },
-   // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
-
+    netInWords: {type: String},
     allowance: [{
         name: {type: String},
         amount: {type:Number}
     }],
-
     deduction: [{
         title: {type: String},
         amount: {type:Number}
     }],
-
+    payableDays: {type: Number},
+    lopDays: {type: Number},
     //staff Details
     empName: { type: String },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },

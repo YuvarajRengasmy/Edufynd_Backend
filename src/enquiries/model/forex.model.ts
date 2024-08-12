@@ -3,15 +3,12 @@ import * as mongoose from 'mongoose'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
     studentId?: string,
- 
     source?: string
-
     agentName?: string;
     businessName?: string;
     agentEmail?: string;
     agentPrimaryNumber?: string;
     agentWhatsAppNumber?: string;
-    
     studentName?: string;
     passportNo?: string;
     email?: string;
@@ -26,15 +23,12 @@ export interface ForexDocument extends mongoose.Document {
     studentID?: string;
     amountInCurrency?: string;
     flag?: string
-
-
 // New added Fields
     expiryDate?: Date;
     courseType?: string;
     value?: string;
     markUp?: string;
     profit?: string;
-  
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -50,7 +44,6 @@ const forexSchema = new mongoose.Schema({
     source: {type: String},
     studentId: {type: String},
     message: {type: String},
-   
     //If Student request for the following
     studentName: {type: String},
     country: {type: String},
@@ -71,9 +64,6 @@ const forexSchema = new mongoose.Schema({
     paymentType: {type: String},
     amountInCurrency: {type: String},
     assignedTo: {type: String},
-  
-
-
     // New added Fields
     expiryDate:{type: Date},
     courseType: {type: String},

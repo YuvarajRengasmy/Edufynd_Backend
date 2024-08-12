@@ -7,7 +7,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
-    mobileNumber?: number;   //a
+    mobileNumber?: number;   
     message?: string;
     typeOfUser?: string;
     createdOn?: Date;

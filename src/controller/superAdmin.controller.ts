@@ -1,6 +1,6 @@
 import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
-import { University, UniversityDocument } from '../model/university.model'
-import { Program, ProgramDocument } from '../model/program.model'
+import { University,} from '../model/university.model'
+import { Program} from '../model/program.model'
 import { Client, ClientDocument } from '../model/client.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
@@ -34,13 +34,14 @@ export let getSuperAdminForSearch = async (req, res, next) => {
     }
 };
 
+
 export const getAllSuperAdmin = async (req, res) => {
     try {
         const data = await SuperAdmin.find({ isDeleted: false }).sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-SuperAdmin', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-SuperAdmin', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-2', 'GetAll-SuperAdmin', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 

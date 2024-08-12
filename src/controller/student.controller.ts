@@ -1,5 +1,4 @@
 import { Student, StudentDocument } from '../model/student.model'
-import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
@@ -46,36 +45,9 @@ export let getNotification = async (req, res, next) => {
 
 
 
-// const generateNextStudentCode = async (): Promise<string> => {
-//     // Retrieve all applicant IDs to determine the highest existing applicant counter
-//     const student = await Student.find({}, 'studentCode').exec();
-
-//     const maxCounter = student.reduce((max, app) => {
-//         const appCode = app.studentCode;
-//         const parts = appCode.split('_')
-//         if (parts.length === 2) {
-//             const counter = parseInt(parts[1], 10)
-//             return counter > max ? counter : max;
-//         }
-//         return max;
-//     }, 100);
-
-//     // Increment the counter
-//     const newCounter = maxCounter + 1;
-//     // Format the counter as a string with leading zeros
-//     const formattedCounter = String(newCounter).padStart(3, '0');
-//     // Return the new Applicantion Code
-//     return `ST_${formattedCounter}`;
-// };
-
 const generateNextStudentCode = async (currentMaxCounter): Promise<string> => {
-    // Increment the counter
     const newCounter = currentMaxCounter + 1;
-
-    // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-
-    // Return the new client ID
     return `ST_${formattedCounter}`;
 };
 
@@ -238,19 +210,18 @@ export let updateStudent = async (req, res, next) => {
 };
 
 
-
 export let deleteStudent = async (req, res, next) => {
 
     try {
         let id = req.query._id;
         const student = await Student.findByIdAndDelete({ _id: id })
-
         response(req, res, activity, 'Level-2', 'Delete-Student', true, 200, student, 'Successfully Remove the Student');
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-Student', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
 
 export let getFilteredStudent = async (req, res, next) => {
     try {
@@ -349,14 +320,10 @@ export const csvToJson = async (req, res) => {
 
             });
         }
-
-        // Insert into the database
         await Student.insertMany(studentList);
-        // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for student module', true, 200, { studentList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         console.error(err);
-        // Send error response
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for student module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
@@ -393,8 +360,6 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             studentDetails.createdOn = new Date()
             const createStudent = new Student(studentDetails);
             const insertStudent = await createStudent.save();
-
-
             const newHash = await decrypt(insertStudent["password"]);
 
             const mailOptions = {

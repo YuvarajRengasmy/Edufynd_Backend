@@ -6,7 +6,7 @@ export interface AdminDocument extends mongoose.Document{
     name?: string;
     adminCode?: string;
     email?: string;
-    mobileNumber?: number;    //a
+    mobileNumber?: number;  
     password?: string;
     confirmPassword?: string;
     role?:string;

@@ -13,12 +13,11 @@ export interface DemoDocument extends mongoose.Document {
 }
 
 const demoSchema = new mongoose.Schema({
-
     name: { type: String },
     code: {type: String},
     state: [{
-        name: {type: String},     // State Name
-        cities: [String]          // City Name
+        name: {type: String},    
+        cities: [String]          
     }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },

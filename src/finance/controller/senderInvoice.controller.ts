@@ -28,9 +28,7 @@ export let getSingleSenderInvoice = async (req, res, next) => {
     }
 }
 const generateSenderInvoice = async () => {
-    // Retrieve all IDs to determine the highest existing applicant counter
     const forex = await SenderInvoice.find({}, 'senderInvoiceNumber').exec();
-
     const maxCounter = forex.reduce((max, app) => {
         const appCode = app.senderInvoiceNumber;
         const parts = appCode.split('_')
@@ -40,12 +38,8 @@ const generateSenderInvoice = async () => {
         }
         return max;
     }, 0);
-
-    // Increment the counter
     const newCounter = maxCounter + 1;
-    // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
-    // Return the new Applicantion Code
     return `SINV_${formattedCounter}`;
 };
 
@@ -59,8 +53,6 @@ export let createSenderInvoice = async (req, res, next) => {
             const invoiceDetails: SenderInvoiceDocument = req.body;
             invoiceDetails.createdOn = new Date();
             invoiceDetails.senderInvoiceNumber = await generateSenderInvoice()
-
- 
 
             let final: any, courseValue: any, paidValue: any, fixedValue: any
             if (invoiceDetails.paymentMethod === "CourseFees") {

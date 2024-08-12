@@ -28,9 +28,7 @@ export let getSingleAccommodation = async (req, res, next) => {
 }
 
 const generateNextAccommodationID = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
     const enquiry = await Accommodation.find({}, 'accommodationID').exec();
-
     const maxCounter = enquiry.reduce((max, app) => {
         const appCode = app.accommodationID;
         const parts = appCode.split('_')
@@ -112,8 +110,6 @@ export let updateAccommodation = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Accommodation Enquiry Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
-
-
 
 
 export let deleteAccommodationEnquiry = async (req, res, next) => {

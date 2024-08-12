@@ -100,7 +100,7 @@ router.put('/editStudentBySuperAdmin',
 router.put('/forgot',           
     basicAuthUser,
     checkSession,
-    // // checkQuery('_id'),
+// checkQuery('_id'),
     forgotPassword
 );
 

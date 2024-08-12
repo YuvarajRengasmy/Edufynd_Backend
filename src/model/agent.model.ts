@@ -8,30 +8,27 @@ export interface AgentDocument extends mongoose.Document {
   agentName?: string;
   businessName?: string;
   email?: string;
-  mobileNumber?: number;  //a
-  whatsAppNumber?: number; //a
+  mobileNumber?: number;  
+  whatsAppNumber?: number; 
   addressLine1?: string;
   addressLine2?: string;
   addressLine3?: String;
-
   //Business Details
-  gstn?: string; // Optional
+  gstn?: string; 
   panNumberIndividual?: string;
-  panNumberCompany?: string; // If applicable
+  panNumberCompany?: string; 
   staffName?: string;
-  staffContactNo?: number; //a 
-
+  staffContactNo?: number;  
   // Bank Details
   accountName?: string;
-  accountNumber?: number;  //a
+  accountNumber?: number; 
   ifsc?: string;
   bankName?: string;
   agentsCommission?: number;
   branch?: string;
-
   // Extra Fields
-  inc?: string; // If applicable
-  agentBusinessLogo?: string; // Optional
+  inc?: string; 
+  agentBusinessLogo?: string; 
   countryInterested?: string[];
   password?: string;
   confirmPassword?: string;
@@ -43,8 +40,6 @@ export interface AgentDocument extends mongoose.Document {
   createdBy?: string;
   modifiedOn?: Date;
   modifiedBy?: string;
-
-
   // Newly Added Field
   businessWebsite?: string;
   pin?: number;
@@ -83,14 +78,13 @@ const agentSchema = new mongoose.Schema({
   ifsc: { type: String },
   branch: { type: String },
   panNumberIndividual: { type: String },
-  panNumberCompany: { type: String },   //(if applicable)
+  panNumberCompany: { type: String }, 
   gstn: { type: String },
-  inc: { type: String },  // (if applicable)
+  inc: { type: String }, 
   staffName: { type: String },
   staffContactNo: { type: Number },
-  // agentPayout: [{ type: mongoose.Schema.Types.ObjectId, ref: 'AgentPayout' }],//•Agent payout (List, Add, Edit, Delete)
-  agentsCommission: { type: Number },  // (Will be calculated based on the University Commission & Agent Payout) Decimal value to the nearest – To be viewed only for agents
-  agentBusinessLogo: { type: String },  // (Optional)
+  agentsCommission: { type: Number },  
+  agentBusinessLogo: { type: String },  
   countryInterested: [String],
   password: { type: String },
   confirmPassword: { type: String },
@@ -98,7 +92,6 @@ const agentSchema = new mongoose.Schema({
   resetOtpExpires: { type: Number },
   isDeleted: { type: Boolean, default: false },
   privileges: { type: String },
-
   // Newly Added Field
   businessWebsite: { type: String },
   pin: { type: Number },

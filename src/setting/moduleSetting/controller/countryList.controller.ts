@@ -130,61 +130,6 @@ export const getCountryByState = async (req, res) => {
     }
 
 
-// export const getCountryByStateAndCity = async (req, res) => {
-//         try {
-//             const { country} = req.query;
-    
-//             console.log("Country name:", country);
-    
-//             // Find the country in the Country collection
-//             const countries = await Country.findOne({ country: country }).exec();
-//             console.log("66", country)
-    
-//             if (!countries) {
-//                 return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'Country not found');
-//             }
-    
-//             console.log("Country data:", countries);
-    
-//             // Find the matching state and city in the CountryList collection
-//             const list = await CountryList.findOne({
-//                 name: country,
-//                 // 'state.StateName': stateName,
-//                 // 'state.cities': cityName
-//             }, {
-//                 name: 1,
-//                 code: 1,
-//                 state: 1
-//             }).exec();
-//     console.log("909", list)
-//             if (!list) {
-//                 return response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 404, {}, 'State or city not found in the specified country');
-//             }
-    
-//             console.log("Country list data:", list);
-    
-//             // Format the response data
-//             const data = {
-//                 countryName: list.name,
-//                 code: list.code,
-//                 state: list.state,
-//                 length: list.state.length
-//                 // state: list.state[0].name,
-//                 // cities: list.state[0].cities
-//             };
-
-//             console.log("44", data)
-    
-//             // Send the response
-//             response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', true, 200, data, 'Data fetched successfully');
-    
-//         } catch (err) {
-//             console.error(err);
-//             response(req, res, activity, 'Level-1', 'Get-Country-By-State-And-City', false, 500, {}, 'Internal server error', err.message);
-//         }
-//     };
-
-
 
     export const getAllCities = async (req, res) => {
         const { state } = req.query;
@@ -223,58 +168,6 @@ export const getCountryByState = async (req, res) => {
             });
         }
     };
-
-
-
-
-    // export const getCountryByStateAndCity = async (req, res) => {
-    //     const { countryName, stateName, cityName } = req.query;
-    
-    //     try {
-    //         // Find the matching state and city in the CountryList collection
-    //         const countryList = await CountryList.findOne({
-    //             name: countryName,
-    //             'state.name': stateName,
-    //             'state.cities': cityName
-    //         }, {
-    //             name: 1,
-    //             code: 1,
-    //             'state.$': 1
-    //         }).exec();
-    
-    //         if (!countryList) {
-    //             return res.status(404).json({
-    //                 success: false,
-    //                 message: 'State or city not found in the specified country'
-    //             });
-    //         }
-    
-    //         console.log("Country list data:", countryList);
-    
-    //         // Format the response data
-    //         const data = {
-    //             countryName: countryList.name,
-    //             code: countryList.code,
-    //             state: countryList.state[0].name,
-    //             cities: countryList.state[0].cities
-    //         };
-    
-    //         // Send the response
-    //         res.status(200).json({
-    //             success: true,
-    //             data: data,
-    //             message: 'Data fetched successfully'
-    //         });
-    
-    //     } catch (err) {
-    //         console.error(err);
-    //         res.status(500).json({
-    //             success: false,
-    //             message: 'Internal server error',
-    //             error: err.message
-    //         });
-    //     }
-    // };
 
 
   

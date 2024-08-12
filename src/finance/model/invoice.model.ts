@@ -14,12 +14,10 @@ export interface InvoiceDocument extends mongoose.Document {
     applicationID?: any;
     agentName?: string;
     commissionReceived?: number;
-
     INRValue?: number;
-
-    amountPaid?: number;       // (To be calculated on the course fee after scholarship – auto fetch from Applicant, if on course fees | If partial fees, calculate on Paid Fees – auto fetch from Applicant)
+    amountPaid?: number;      
     totalInvoiceAmount?: number;
-    transactions?: string;       // (Add multiple)
+    transactions?: string;  
     transactionsDate?: string;
     amount?: number;
     paymentMethod?: string; // (upi, bank)
@@ -43,14 +41,12 @@ const invoiceSchema = new mongoose.Schema({
     agentName: { type: String },
     commissionReceived: { type: Number },
     INRValue: { type: Number },
-
     amountPaid: { type: Number },
     totalInvoiceAmount: { type: Number },
     transactions: { type: Number },
     transactionsDate: { type: String },
     amount: { type: Number },
     paymentMethod: { type: String },
-
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

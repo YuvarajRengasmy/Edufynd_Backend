@@ -7,7 +7,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
-    mobileNumber?: number;   //a
+    mobileNumber?: number;  
     message?: string;
     createdOn?: Date;
     createdBy?: string;

@@ -6,7 +6,7 @@ import { basicAuthUser } from '../../../middleware/checkAuth';
 
 const router: Router = Router();
 
-router.get('/',                //get all Email Template
+router.get('/',           
     basicAuthUser,
     getAllEmailTemplate
 );
@@ -24,14 +24,14 @@ router.post('/',
 );
 
 
-router.put('/',                    // update Template
+router.put('/',                   
     basicAuthUser,
     checkQuery('_id'),
     updateTemplate
 );
 
 
-router.delete('/',                  //delete Template
+router.delete('/',                
     basicAuthUser,
     checkQuery('_id'),
     deleteTemplate

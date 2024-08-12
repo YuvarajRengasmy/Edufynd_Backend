@@ -27,7 +27,6 @@ export let getSingleFlightTicketEnquiry = async (req, res, next) => {
     }
 }
 const generateNextFlightId = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
     const forex = await Flight.find({}, 'flightID').exec();
 
     const maxCounter = forex.reduce((max, app) => {

@@ -1,6 +1,5 @@
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
-import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { validationResult } from 'express-validator'
 import { response, transporter } from '../helper/commonResponseHandler'
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
@@ -32,7 +31,6 @@ export const getSingleStaff = async (req, res) => {
 }
 
 const generateNextStaffID = async (): Promise<string> => {
-    // Retrieve all applicant IDs to determine the highest existing applicant counter
     const staff = await Staff.find({}, 'employeeID').exec();
 
     const maxCounter = staff.reduce((max, app) => {
@@ -44,8 +42,6 @@ const generateNextStaffID = async (): Promise<string> => {
         }
         return max;
     }, 100);
-
-    // Increment the counter
     const newCounter = maxCounter + 1;
     // Format the counter as a string with leading zeros
     const formattedCounter = String(newCounter).padStart(3, '0');
@@ -96,7 +92,6 @@ export const updateStaff = async (req, res) => {
                     privileges: staffDetails.privileges,
                     idCard: staffDetails.idCard,
                     manageApplications: staffDetails.manageApplications,
-                
                     teamLead: staffDetails.teamLead,
 
                     // Newly added fields
@@ -121,7 +116,6 @@ export const updateStaff = async (req, res) => {
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
               
-
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
                 }
@@ -150,54 +144,6 @@ export let deleteStaff = async (req, res, next) => {
 };
 
 
-// export let createStaffBySuperAdmin = async (req, res, next) => {
-//     const errors = validationResult(req);
-
-//     if (errors.isEmpty()) {
-//         try {
-
-//             const staffDetails: StaffDocument = req.body;
-//             const password = generateRandomPassword(8);
-//             const confirmPassword = password; // Since password and confirmPassword should match
-//             staffDetails.password = await encrypt(password)
-//             staffDetails.confirmPassword = await encrypt(confirmPassword)
-//             staffDetails.createdOn = new Date();
-//             staffDetails.employeeID = await generateNextStaffID();
-//             const createStaff = new Staff(staffDetails);
-//             const insertStaff = await createStaff.save();
-//             const newHash = await decrypt(insertStaff["password"]);
-
-//             const mailOptions = {
-//                 from: config.SERVER.EMAIL_USER,
-//                 to: insertStaff.email,
-//                 subject: 'Welcome to EduFynd',
-//                 text: `Hello ${insertStaff.empName},\n\nYour account has been created successfully.\n\nYour login credentials are:\nUsername: ${insertStaff.email}\nPassword: ${newHash}\n\nPlease change your password after logging in for the first time.\n\nBest regards\nAfynd Private Limited\nChennai.`
-//             };
-
-//             transporter.sendMail(mailOptions, (error, info) => {
-
-//                 if (error) {
-//                     console.error('Error sending email:', error);
-//                     return res.status(500).json({ message: 'Error sending email' });
-//                 } else {
-//                     console.log('Email sent:', info.response);
-//                     return res.status(201).json({ message: 'Staff profile created and email sent login credentials', agent: insertStaff });
-//                 }
-//             });
-//             return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {
-//                 agent: insertStaff,
-
-
-//             }, 'Staff created successfully by SuperAdmin.');
-
-//         } catch (err: any) {
-
-//             return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
-//         }
-//     } else {
-//         return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
-//     }
-// };
 
 export let createStaffBySuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
@@ -350,9 +296,7 @@ export let getFilteredStaff = async (req, res, next) => {
 export const csvToJson = async (req, res) => {
     try {
         let staffList = [];
-        // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
-
         // Process CSV data
         for (let i = 0; i < csvData.length; i++) {
             staffList.push({
@@ -379,14 +323,11 @@ export const csvToJson = async (req, res) => {
 
             });
         }
-
-        // Insert into the database
         await Staff.insertMany(staffList);
         // Send success response
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database for staff module', true, 200, { staffList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
         console.error(err);
-        // Send error response
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for staff module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
@@ -399,75 +340,16 @@ export let createStudentByStaff = async (req, res, next) => {
         try {
             const staffDetails: StaffDocument = req.body;
             const studentDetails: StudentDocument = req.body;
-
-            // Admin exist, proceed to create a new student
             const createStudent = new Student(studentDetails);
-
-            // Save the student to the database
             const insertStudent = await createStudent.save();
-
-            // Respond with success message
             response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', true, 200, { student: insertStudent }, 'Student created successfully by Staff');
 
         } catch (err: any) {
-            // Handle server error
             response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
-        // Request body validation failed, respond with error message
         response(req, res, activity, 'Level-3', 'Create-Student-By-Staff', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
 
 
-// export const staffClockIn = async (req, res) => {
-//     try {
-
-//         const staffDetails: StaffDocument = req.body;
-//         const staff = await Staff.findOne({ _id: req.query._id })
-//         if (!staff) {
-//             return res.status(404).json({ message: 'Staff member not found' });
-//         }
-
-//         // Get current date and time
-//         const currentDateTime = new Date();
-
-//         // Update staff record with clock-in time
-//         // staff.clockIn = currentDateTime;
-//         staff.clockIn = currentDateTime;
-
-//         // Save the updated staff document
-//         await staff.save();
-//         response(req, res, activity, 'Level-3', 'Staff Attendence Recorded', true, 200, { clockInTime: staff.clockIn }, 'Clock-in recorded successfully');
-//     } catch (err) {
-//         console.error('Error recording clock-in:', err);
-//         response(req, res, activity, 'Level-3', 'Error recording clock-in', false, 500, {}, 'Internal server error.', err.message);
-//     }
-// };
-
-
-// export const staffClockOut = async (req, res) => {
-//     try {
-//         const staffDetails: StaffDocument = req.body;
-//         const staff = await Staff.findOne({ _id: req.query._id })
-
-//         if (!staff) {
-//             return res.status(404).json({ message: 'Staff member not found' });
-//         }
-
-//         // Get current date and time
-//         const currentDateTime = new Date();
-
-//         // Update staff record with clock-out time
-//         staff.clockOut = currentDateTime;
-
-//         // Calculate the total hours worked
-//         const hoursWorked = moment(staff.clockOut).diff(moment(staff.clockIn), 'hours', true).toFixed(2) // Calculate hours with decimals
-//         await staff.save();
-
-//         response(req, res, activity, 'Level-3', 'Staff Attendence Recorded', true, 200, { clockOutTime: staff.clockOut, hoursWorked}, 'Clock-out recorded successfully');
-//     } catch (err) {
-//         console.error('Error recording clock-out:', err);
-//         response(req, res, activity, 'Level-3', 'Error recording clock-out', false, 500, {}, 'Internal server error.', err.message);
-//     }
-// };

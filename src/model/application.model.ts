@@ -10,8 +10,8 @@ export interface ApplicantDocument extends mongoose.Document {
     dob?: string,           
     passportNo?: string,      
     email?: string,        
-    primaryNumber?: number,  //a
-    whatsAppNumber?: number,  //a
+    primaryNumber?: number,  
+    whatsAppNumber?: number,  
     inTake?: string,
     country?: string;
     universityName?: string,

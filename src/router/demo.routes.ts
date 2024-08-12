@@ -40,11 +40,6 @@ router.get('/getCountryByState',
 )
 
 
-// router.get('/getCountryByStateAndCity',
-//     basicAuthUser,
-//     getCountryByStateAndCity
-// )
-
 router.get('/getAllCities',
     basicAuthUser,
     getAllCities

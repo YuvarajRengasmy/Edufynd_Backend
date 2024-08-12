@@ -6,14 +6,10 @@ import { clientError, errorMessage } from "../helper/ErrorMessage";
 
 var activity = "Commission";
 
-
-
 export const getAllCommission = async (req, res) => {
     try {
         const data = await Commission.find().sort({ _id: -1 })
-      
         response(req, res, activity, 'Level-1', 'GetAll-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
-
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetAll-Commission', false, 500, {}, errorMessage.internalServer, err.message)
     }
@@ -23,17 +19,15 @@ export const getAllCommission = async (req, res) => {
 export const getSingleCommission = async (req, res) => {
     try {
         const data = await Commission.findOne({ _id: req.query._id })
-  
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
 export const getSingleUniversity = async (req, res) => {
     try {
-        
         const data = await Commission.findOne({universityId:req.query.universityId})
-  
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Commission', false, 500, {}, errorMessage.internalServer, err.message)
@@ -111,8 +105,7 @@ export let updateCommission = async (req, res, next) => {
 }
 
 
-    export let deleteCommission = async (req, res, next) => {
-
+export let deleteCommission = async (req, res, next) => {
         try {
             let id = req.query._id;
             const country = await Commission.findByIdAndDelete({ _id: id })
@@ -130,11 +123,6 @@ export let updateCommission = async (req, res, next) => {
             let commissionId = req.query.commissionId; // The main document's _id
             let yearId = req.query.yearId; // The _id of the year containing the courseType
             let courseTypeId = req.query.courseTypeId; // The _id of the courseType to be deleted
-
-            console.log("55", commissionId, yearId, courseTypeId)
-
-           // console.log("66", data.years[0].courseTypes[0].value)
-    
             const updateResult = await Commission.updateOne(
                 { _id: commissionId, 'years._id': yearId },
                 { $pull: { 'years.$.courseTypes': { _id: courseTypeId } } }
@@ -147,9 +135,6 @@ export let updateCommission = async (req, res, next) => {
             }
     
             const updatedDocument = await Commission.findById(commissionId);
-
-            console.log("99", updatedDocument)
-    
             response(req, res, 'activity', 'Level-2', 'Deleted the Course Type', true, 200, updatedDocument, 'Successfully removed the course type');
         } catch (err) {
             console.log("77", err)

@@ -1,12 +1,11 @@
 import { Admin, AdminDocument } from '../model/admin.model'
-import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-import { decrypt, encrypt,generateRandomPassword } from "../helper/Encryption";
+import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import * as config from '../config';
 
 var activity = "Admin";
@@ -15,7 +14,7 @@ var activity = "Admin";
 
 export let getAllAdmin = async (req, res, next) => {
     try {
-        const data = await Admin.find({ isDeleted: false }).sort({adminCode: -1});
+        const data = await Admin.find({ isDeleted: false }).sort({ adminCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Admin', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Admin', false, 500, {}, errorMessage.internalServer, err.message);
@@ -69,8 +68,6 @@ export let createAdmin = async (req, res, next) => {
 
                 const adminDetails: AdminDocument = req.body;
                 adminDetails.adminCode = await generateNextAdminCode();
-
-              
                 const createData = new Admin(adminDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -101,49 +98,6 @@ export let createAdmin = async (req, res, next) => {
     }
 }
 
-
-// export let updateAdmin = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const adminDetails: AdminDocument = req.body;
-//             const updateData = await Admin.findOneAndUpdate({ _id: adminDetails._id }, {
-//                 $set: {
-
-//                     businessName: agentDetails.businessName,
-//                     whatsAppNumber: agentDetails.whatsAppNumber,
-//                     bankDetail: agentDetails.bankDetail,
-//                     panNumberIndividual: agentDetails.panNumberIndividual,
-//                     panNumberCompany: agentDetails.panNumberCompany,
-//                     gstn: agentDetails.gstn,
-//                     inc: agentDetails.inc,
-//                     agentsCommission: agentDetails.agentsCommission,
-//                     agentBusinessLogo: agentDetails.agentBusinessLogo,
-//                     countryInterested: agentDetails.countryInterested,
-//                     privileges: agentDetails.privileges,
-//                     addressLine1: agentDetails.addressLine1,
-//                     addressLine2: agentDetails.addressLine2,
-//                     addressLine3: agentDetails.addressLine3,
-//                     staffName: agentDetails.staffName,
-//                     staffContactNo: agentDetails.staffContactNo,
-
-
-//                     modifiedOn: agentDetails.modifiedOn,
-//                     modifiedBy: agentDetails.modifiedBy,
-//                 }
-
-
-//             });
-//             response(req, res, activity, 'Level-2', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
-//         }
-//         catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Update-Agent', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     }
-//     else {
-//         response(req, res, activity, 'Level-3', 'Update-Agent', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// }
 
 
 export let deleteAdmin = async (req, res, next) => {
@@ -179,11 +133,9 @@ export let getFilteredAdmin = async (req, res, next) => {
         if (req.body.programId) {
             andList.push({ programId: req.body.programId })
         }
-       
-
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const adminList = await Admin.find(findQuery).sort({adminCode: -1}).limit(limit).skip(page)
+        const adminList = await Admin.find(findQuery).sort({ adminCode: -1 }).limit(limit).skip(page)
 
         const adminCount = await Admin.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterAdmin', true, 200, { adminList, adminCount }, clientError.success.fetchedSuccessfully);
@@ -198,7 +150,6 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const adminDetails: AdminDocument = req.body;
-
             adminDetails.adminCode = await generateNextAdminCode();
             const password = generateRandomPassword(8);
             const confirmPassword = password; // Since password and confirmPassword should match
@@ -211,7 +162,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
 
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
-                to:insertAdmin.email,
+                to: insertAdmin.email,
                 subject: 'Welcome to EduFynd',
                 html: `
                               <body style="font-family: 'Poppins', Arial, sans-serif">
@@ -265,8 +216,8 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                   </table>
                               </body>
                           `,
-                        
-              };
+
+            };
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.error('Error sending email:', error);
@@ -291,7 +242,6 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-
             const adminDetails: AdminDocument = req.body;
             const updateData = await Admin.findOneAndUpdate({ _id: adminDetails._id }, {
                 $set: {
@@ -299,7 +249,6 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
                 }
-
             });
             response(req, res, activity, 'Level-2', 'Update-Admin by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
         }
@@ -320,16 +269,12 @@ export let createStudentByAdmin = async (req, res, next) => {
         try {
             const adminDetails: AdminDocument = req.body;
             const studentDetails: StudentDocument = req.body;
-
             // Admin exist, proceed to create a new student
             const createStudent = new Student(studentDetails);
-       
             // Save the student to the database
             const insertStudent = await createStudent.save();
-
             // Respond with success message
             response(req, res, activity, 'Level-1', 'Create-Student-By-Admin', true, 200, { student: insertStudent }, 'Student created successfully by Admin.');
-
         } catch (err: any) {
             // Handle server error
             response(req, res, activity, 'Level-2', 'Create-Student-By-Admin', false, 500, {}, 'Internal server error.', err.message);
@@ -411,21 +356,16 @@ export let createStaffByAdmin = async (req, res, next) => {
         try {
             const adminDetails: AdminDocument = req.body;
             const staffDetails: StaffDocument = req.body;
-
             // Admin exist, proceed to create a new staff
             const createstaff = new Staff(staffDetails);
             // Save the staff to the database
             const insertStaff = await createstaff.save();
-
             // Respond with success message
             response(req, res, activity, 'Level-3', 'Create-Staff-By-Admin', true, 200, { staff: insertStaff }, 'Staff created successfully by Admin.');
-
         } catch (err: any) {
-            // Handle server error
             response(req, res, activity, 'Level-3', 'Create-Staff-By-Admin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
-        // Request body validation failed, respond with error message
         response(req, res, activity, 'Level-3', 'Create-Staff-By-Admin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
@@ -438,25 +378,25 @@ export const editStaffProfileByAdmin = async (req, res) => {
             const staffDetails: StaffDocument = req.body;
             let staffData = await Staff.findByIdAndUpdate({ _id: staffDetails._id }, {
                 $set: {
-                    photo:staffDetails.photo,
+                    photo: staffDetails.photo,
                     empName: staffDetails.empName,
-                    designation:staffDetails.designation,
+                    designation: staffDetails.designation,
                     jobDescription: staffDetails.jobDescription,
-                    reportingManager:staffDetails.reportingManager,
-                    shiftTiming:staffDetails.shiftTiming,                    
-                    areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,                
-                    address:staffDetails.address,
-                    emergencyContactNo:staffDetails.emergencyContactNo,
+                    reportingManager: staffDetails.reportingManager,
+                    shiftTiming: staffDetails.shiftTiming,
+                    areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,
+                    address: staffDetails.address,
+                    emergencyContactNo: staffDetails.emergencyContactNo,
                     probationDuration: staffDetails.probationDuration,
-                    salary: staffDetails.salary,              
-                    privileges:staffDetails.privileges,               
-                    idCard: staffDetails.idCard,                  
-                    manageApplications:staffDetails.manageApplications,         
-                    active: staffDetails.active,             
+                    salary: staffDetails.salary,
+                    privileges: staffDetails.privileges,
+                    idCard: staffDetails.idCard,
+                    manageApplications: staffDetails.manageApplications,
+                    active: staffDetails.active,
                     teamLead: staffDetails.teamLead,
-                 
+
                     modifiedOn: new Date(),
-                    modifiedBy:  staffDetails.modifiedBy,
+                    modifiedBy: staffDetails.modifiedBy,
                 }
             });
 

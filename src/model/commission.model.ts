@@ -46,18 +46,6 @@ const commissionSchema = new mongoose.Schema({
             value: {type: Number}
         }]
     }],
-
-    // years: [{
-    //     year: { type: String },
-    //     courseTypes: [{
-    //         courseType: { type: String },
-    //         summer:{type:String},
-    //         winter:{type:String},
-    //         fall:{type:String},
-           
-    //     }]
-    // }],
-
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
