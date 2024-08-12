@@ -1,4 +1,5 @@
 import { Applicant, ApplicantDocument } from '../model/application.model'
+import { Status, StatusDocument } from '../setting/globalSetting/model/status.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from "express-validator";
@@ -87,10 +88,10 @@ export const createApplicantt = async (req, res) => {
         }
 
         // Assuming the applicant selects a university from the filtered list
-        const selectedUniversity = universities[0]; 
+        const selectedUniversity = universities[0];
         applicantDetails.applicationCode = await generateNextApplicationCode();
         // Create the applicant document
-        const newApplicant = new Applicant({...applicantDetails, universityName: selectedUniversity.universityName});
+        const newApplicant = new Applicant({ ...applicantDetails, universityName: selectedUniversity.universityName });
 
         // Save the applicant document to the database
         await newApplicant.save();
@@ -112,7 +113,8 @@ export let updateApplicant = async (req, res, next) => {
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
-            if (!application) {
+            console.log("uu", application)
+                if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
                 let updatedApplicant = await updateMaster.updateOne(
                     {
@@ -143,6 +145,8 @@ export let updateApplicant = async (req, res, next) => {
 
                 // Find the updated applicant to fetch the updated status array
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
+                console.log("55", updatedApplication)
+
                 const last = updatedApplication.status[(updatedApplication.status).length - 1]
                 const laststatus = last.newStatus;
                 const lastComment = last.commentBox;
@@ -219,7 +223,7 @@ export let updateApplicant = async (req, res, next) => {
                                       </table>
                                   </body>
                               `,
-                  };
+                };
 
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
@@ -243,6 +247,7 @@ export let updateApplicant = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
 
 
 
@@ -302,3 +307,43 @@ export let getFilteredApplication = async (req, res, next) => {
 };
 
 
+///////
+
+export let trackApplicant = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const applicantDetails: ApplicantDocument = req.body;
+            const application = await Applicant.findOne({ _id:applicantDetails._id});
+
+            if (application) {
+                // const status = await Status.findById(applicantDetails.status.statusId);
+                const status = await Status.findOne({ _id: req.query._id });
+                if (!status) {
+                    return res.status(404).json({ message: 'Status not found' });
+                }
+                const initialDate = application.createdOn
+                const currentDate = new Date();
+    
+                const statusDurationInMs = Number(status.duration) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+                const expectedCompletionDate = new Date(initialDate.getTime() + statusDurationInMs);
+
+                let delayMessage = '';
+                if (currentDate > expectedCompletionDate) {
+                    const delayDays = Math.ceil(Number(Number(initialDate) - Number(expectedCompletionDate))) / (24 * 60 * 60 * 1000);
+                    delayMessage = `Delayed by ${delayDays} day(s)`;
+                }
+
+               
+                res.status(201).json({ message: 'Application status has been updated and delay calculated if any.' });
+            } else {
+                res.status(404).json({ message: 'Applicant not found' });
+            }
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Internal server error', error: err.message });
+        }
+    } else {
+        res.status(422).json({ message: 'Validation failed', errors: errors.array() });
+    }
+};

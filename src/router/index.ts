@@ -92,6 +92,7 @@ import OfferTAT from '../setting/moduleSetting/router/offerTAT.route'
 import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
 import Tax from '../setting/moduleSetting/router/tax.route'
 import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
+import ApplicationStatus from '../setting/moduleSetting/router/applicationStatus.route'
 
 
 
@@ -183,6 +184,7 @@ router.use('/offerTAT', OfferTAT)
 router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
 router.use('/typeOfClient', TypeOfClient)
+router.use('/applicationStatus', ApplicationStatus)
 
 
 

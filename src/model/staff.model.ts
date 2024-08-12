@@ -5,27 +5,27 @@ export interface StaffDocument extends mongoose.Document {
     _id?: any;
     employeeID?: string;
     empName?: string;
-    dob?: String;    
+    dob?: String;
     designation?: string;
-    doj?: String; 
+    doj?: String;
     reportingManager?: string;
     shiftTiming?: string;
     probationDuration?: string;
     email?: string;
-    mobileNumber?: number;  
-    emergencyContactNo?: number;   
+    mobileNumber?: number;
+    emergencyContactNo?: number;
     address?: string;
-    idCard?: boolean;    
+    idCard?: boolean;
     privileges?: string;
     description?: string;
-  // Extra Fields  
+    // Extra Fields  
     photo?: string;
     jobDescription?: string;
-    areTheyEligibleForCasualLeave?: boolean; 
-    salary?: string   
-    manageApplications?: string;   
-    active?:string;  
-    teamLead?: string;   
+    areTheyEligibleForCasualLeave?: boolean;
+    salary?: string
+    manageApplications?: string;
+    active?: string;
+    teamLead?: string;
     password?: string;
     confirmPassword?: string;
     isDeleted?: boolean;
@@ -34,8 +34,9 @@ export interface StaffDocument extends mongoose.Document {
     bankIFSC?: string;
     bankBranch?: string;
     pfAccountNo?: string;
-    
-// Newly added fields
+
+    // Newly added fields
+    gender?: string;
     team?: string;
     staffList?: any[];
     personalMail?: string;
@@ -55,7 +56,7 @@ export interface StaffDocument extends mongoose.Document {
     modelName?: string;
     ipAddress?: string;
     userName?: string;
-    loginPassword?: string;   
+    loginPassword?: string;
     notificationId?: any;
     clockIn?: Date;
     clockOut?: Date;
@@ -67,59 +68,60 @@ export interface StaffDocument extends mongoose.Document {
 
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    employeeID: {type: String},
-    photo: {type: String},
-    empName: {type: String},
-    designation: {type: String},
-    jobDescription: {type: String},
-    reportingManager: {type: String},
-    description: {type: String},
-    shiftTiming: {type: String},                       
-    areTheyEligibleForCasualLeave: {type: String},          
-    doj: {type: String},                   
-    dob: {type: String},                  
-    address: {type: String},
-    email: {type: String},
-    mobileNumber: {type: Number},
-    emergencyContactNo: {type: Number},
-    probationDuration: {type: String},
-    salary: {type: String},                
-    idCard: {type: String},                   
-    manageApplications: {type: String},          
-    active: {type: String},              
-    teamLead: {type: String},   
+    employeeID: { type: String },
+    photo: { type: String },
+    empName: { type: String },
+    designation: { type: String },
+    jobDescription: { type: String },
+    reportingManager: { type: String },
+    description: { type: String },
+    shiftTiming: { type: String },
+    areTheyEligibleForCasualLeave: { type: String },
+    doj: { type: String },
+    dob: { type: String },
+    address: { type: String },
+    email: { type: String },
+    mobileNumber: { type: Number },
+    emergencyContactNo: { type: Number },
+    probationDuration: { type: String },
+    salary: { type: String },
+    idCard: { type: String },
+    manageApplications: { type: String },
+    active: { type: String },
+    teamLead: { type: String },
     password: { type: String },
-    confirmPassword: { type: String },  
+    confirmPassword: { type: String },
     isDeleted: { type: Boolean, default: false },
-    privileges: {type: String},  
+    privileges: { type: String },
     // Newly added fields
-    team: {type: String},
+    gender: { type: String },
+    team: { type: String },
     staffList: [String],
-    personalMail: {type: String},
-    address2:  { type: String },
-    pin:  { type: Number },
-    country:  { type: String },
+    personalMail: { type: String },
+    address2: { type: String },
+    pin: { type: Number },
+    country: { type: String },
     state: { type: String },
-    city:  { type: String },
+    city: { type: String },
     activeStatus: { type: String },
-    companyAssests:  { type: String },
-    mobileName:  { type: String },
-    brandName:  { type: String },
+    companyAssests: { type: String },
+    mobileName: { type: String },
+    brandName: { type: String },
     imei: { type: String },
-    phoneNumber:  { type: Number },
+    phoneNumber: { type: Number },
     laptopName: { type: String },
-    brand:  { type: String },
-    modelName:  { type: String },
+    brand: { type: String },
+    modelName: { type: String },
     ipAddress: { type: String },
-    userName:  { type: String },
-    loginPassword:  { type: String },
-    clockIn: {type: Date},
-    clockOut: {type: Date},
-    bankName:{type: String},
-    bankAccountNo:{type: String},
-    bankIFSC:{type: String},
-    bankBranch:{type: String},
-    pfAccountNo:{type: String},
+    userName: { type: String },
+    loginPassword: { type: String },
+    clockIn: { type: Date },
+    clockOut: { type: Date },
+    bankName: { type: String },
+    bankAccountNo: { type: String },
+    bankIFSC: { type: String },
+    bankBranch: { type: String },
+    pfAccountNo: { type: String },
     notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
 
     createdOn: { type: Date },
