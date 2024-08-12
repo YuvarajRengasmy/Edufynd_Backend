@@ -107,7 +107,7 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let updateApplicant = async (req, res, next) => {
+export let updateApplicanto = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -247,6 +247,352 @@ export let updateApplicant = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+export let updateApplicantd = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const applicantDetails: ApplicantDocument = req.body;
+            const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
+            console.log("uu", application)
+                if (!application) {
+                const updateMaster = new Applicant(applicantDetails)
+                let updatedApplicant = await updateMaster.updateOne(
+                    {
+                        $set: {
+                            name: applicantDetails.name,
+                            dob: applicantDetails.dob,
+                            passportNo: applicantDetails.passportNo,
+                            email: applicantDetails.email,
+                            primaryNumber: applicantDetails.primaryNumber,
+                            whatsAppNumber: applicantDetails.whatsAppNumber,
+                            inTake: applicantDetails.inTake,
+                            universityName: applicantDetails.universityName,
+                            campus: applicantDetails.campus,
+                            course: applicantDetails.course,
+                            courseFees: applicantDetails.courseFees,
+                            anyVisaRejections: applicantDetails.anyVisaRejections,
+                            feesPaid: applicantDetails.feesPaid,
+                            assignTo: applicantDetails.assignTo,
+                            country: applicantDetails.country,
+                            modifiedOn: new Date(),
+                            modifiedBy: applicantDetails.modifiedBy,
+                        },
+                        $addToSet: {
+                            status: applicantDetails.status
+                        }
+                    }
+                );
+
+                // Find the updated applicant to fetch the updated status array
+                const updatedApplication = await Applicant.findById(applicantDetails._id);
+                const statusLength = updatedApplication.status.length
+                const applicationCreatedDate = updatedApplication.createdOn
+          
+                console.log("88", applicationCreatedDate)
+                const last = updatedApplication.status[(updatedApplication.status).length - 1]
+            
+                console.log("ggg", last)
+                const duration = last.duration
+                const currentDate = new Date();
+                const statusCreatedOn = new Date(last.createdOn);
+                const statusDurationInMs = Number(duration) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+                const expectedCompletionDate = new Date(applicationCreatedDate.getTime() + statusDurationInMs);
+                console.log("777", expectedCompletionDate)
+
+                let delayMessage = '';
+                if (currentDate > expectedCompletionDate) {
+                    const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                    console.log("3434", delayDays)
+                    delayMessage = `Delayed by ${delayDays} day(s)`;
+                }
+                console.log("hgh", delayMessage)
+                const laststatus = last.newStatus;
+                const lastComment = last.commentBox;
+                const sanitizedContent = stripHtmlTags(lastComment);
+                const docs = last.document
+
+                // Prepare email attachments
+                const attachments = [];
+                if (docs) {
+                    const [fileType, fileContent] = docs.split("base64,");
+                    const extension = fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    const timestamp = format(new Date(), 'yyyyMMdd');
+                    const dynamicFilename = `${sanitizedContent.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: docs.split("base64,")[1],
+                        encoding: 'base64'
+                    });
+                }
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: updatedApplication.email,
+                    subject: "Application Status Updated",
+                    html: `
+                                  <body style="font-family: 'Poppins', Arial, sans-serif">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                          <tr>
+                                              <td align="center" style="padding: 20px;">
+                                                  <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                      <!-- Header -->
+                                                      <tr>
+                                                          <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                              Application Status Updated
+                                                          </td>
+                                                      </tr>
+                          
+                                                      <!-- Body -->
+                                                      <tr>
+                                                          <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Hello ${updatedApplication.name},</p>
+                                                              <p>Your application status has been updated.</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${laststatus}</p>
+                                                              <p>Comment: ${sanitizedContent}</p>
+                                                                 <p>Delayed: ${delayMessage}</p>
+                                                            <img src=${docs} alt="Image" width="500" height="300" />
+          
+                                                              <p>This information is for your reference.</p>
+                                                              <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                  <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                      <!-- CTA Button -->
+                                      <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                          <tr>
+                                              <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                  <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </td>
+                              </tr>
+                          
+                                                      <!-- Footer -->
+                                                      <tr>
+                                                          <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                              Copyright &copy; 2024 | All rights reserved
+                                                          </td>
+                                                      </tr>
+                                                  </table>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </body>
+                              `,
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'You have received a Application Status Notification' });
+                    }
+                });
+                res.status(201).json({ message: 'Application status has been updated and emails sent.', Details: updatedApplication });
+
+            } else {
+                res.status(404).json({ message: 'Applicant not found' });
+            }
+        } catch (err: any) {
+            console.log(err)
+            response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
+export let updateApplicant = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const applicantDetails: ApplicantDocument = req.body;
+            const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
+            console.log("uu", application)
+                if (!application) {
+                const updateMaster = new Applicant(applicantDetails)
+                let updatedApplicant = await updateMaster.updateOne(
+                    {
+                        $set: {
+                            name: applicantDetails.name,
+                            dob: applicantDetails.dob,
+                            passportNo: applicantDetails.passportNo,
+                            email: applicantDetails.email,
+                            primaryNumber: applicantDetails.primaryNumber,
+                            whatsAppNumber: applicantDetails.whatsAppNumber,
+                            inTake: applicantDetails.inTake,
+                            universityName: applicantDetails.universityName,
+                            campus: applicantDetails.campus,
+                            course: applicantDetails.course,
+                            courseFees: applicantDetails.courseFees,
+                            anyVisaRejections: applicantDetails.anyVisaRejections,
+                            feesPaid: applicantDetails.feesPaid,
+                            assignTo: applicantDetails.assignTo,
+                            country: applicantDetails.country,
+                            modifiedOn: new Date(),
+                            modifiedBy: applicantDetails.modifiedBy,
+                        },
+                        $addToSet: {
+                            status: applicantDetails.status
+                        }
+                    }
+                );
+
+               // Find the updated applicant to fetch the updated status array
+               const updatedApplication = await Applicant.findById(applicantDetails._id);
+               console.log("123", updatedApplication)
+               const statusLength = updatedApplication.status.length;
+               const applicationCreatedDate = new Date(updatedApplication.createdOn);
+               const currentDate = new Date();
+
+               let delayMessage = '';
+               if (statusLength > 1) {
+                console.log("length > 1",statusLength)
+                const last = updatedApplication.status[(updatedApplication.status).length]
+                console.log("vvv", last)
+                const statusCreatedOn = new Date(last.createdOn);
+                console.log("000", last.newStatus)
+                console.log("898", statusCreatedOn)
+                //    let expectedCompletionDate = applicationCreatedDate;
+                   for (let i = 0; i < statusLength - 1; i++) {
+                       const statusDurationInMs = Number(updatedApplication.status[i + 1].duration) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+                       const expectedCompletionDate = new Date(statusCreatedOn.getTime() + statusDurationInMs);
+                       console.log("111", expectedCompletionDate)
+                       const nextStatusCreatedOn = new Date(updatedApplication.status[i + 1].createdOn);
+                       
+                       if (currentDate > expectedCompletionDate) {
+                           const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                           delayMessage = `Delayed by ${delayDays} day(s)`;
+                           console.log("lenggg", delayMessage)
+                       }
+                   }
+               } else {
+                console.log("length <0")
+                const last = updatedApplication.status[(updatedApplication.status).length - 1]
+
+                const duration = last.duration
+                // const currentDate = new Date();
+                const statusCreatedOn = new Date(last.createdOn);
+                const statusDurationInMs = Number(duration) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+                const expectedCompletionDate = new Date(applicationCreatedDate.getTime() + statusDurationInMs);
+      
+
+                let delayMessage = '';
+                if (currentDate > expectedCompletionDate) {
+                    const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+            
+                    delayMessage = `Delayed by ${delayDays} day(s)`;
+                    console.log("44", delayMessage)
+                }
+               }
+
+               const lastStatus = updatedApplication.status[statusLength - 1];
+               const lastComment = lastStatus.commentBox;
+               const sanitizedContent = stripHtmlTags(lastComment);
+               const docs = lastStatus.document;
+
+                // Prepare email attachments
+                const attachments = [];
+                if (docs) {
+                    const [fileType, fileContent] = docs.split("base64,");
+                    const extension = fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    const timestamp = format(new Date(), 'yyyyMMdd');
+                    const dynamicFilename = `${sanitizedContent.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: docs.split("base64,")[1],
+                        encoding: 'base64'
+                    });
+                }
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: updatedApplication.email,
+                    subject: "Application Status Updated",
+                    html: `
+                                  <body style="font-family: 'Poppins', Arial, sans-serif">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                          <tr>
+                                              <td align="center" style="padding: 20px;">
+                                                  <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                      <!-- Header -->
+                                                      <tr>
+                                                          <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                              Application Status Updated
+                                                          </td>
+                                                      </tr>
+                          
+                                                      <!-- Body -->
+                                                      <tr>
+                                                          <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Hello ${updatedApplication.name},</p>
+                                                              <p>Your application status has been updated.</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus}</p>
+                                                              <p>Comment: ${sanitizedContent}</p>
+                                                                 <p>Delayed: ${delayMessage}</p>
+                                                            <img src=${docs} alt="Image" width="500" height="300" />
+          
+                                                              <p>This information is for your reference.</p>
+                                                              <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                  <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                      <!-- CTA Button -->
+                                      <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                          <tr>
+                                              <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                  <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </td>
+                              </tr>
+                          
+                                                      <!-- Footer -->
+                                                      <tr>
+                                                          <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                              Copyright &copy; 2024 | All rights reserved
+                                                          </td>
+                                                      </tr>
+                                                  </table>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </body>
+                              `,
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'You have received a Application Status Notification' });
+                    }
+                });
+                res.status(201).json({ message: 'Application status has been updated and emails sent.', Details: updatedApplication });
+
+            } else {
+                res.status(404).json({ message: 'Applicant not found' });
+            }
+        } catch (err: any) {
+            console.log(err)
+            response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
 
 
 
