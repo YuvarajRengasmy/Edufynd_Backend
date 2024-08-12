@@ -1,3 +1,4 @@
+import { duration } from 'moment';
 import * as mongoose from 'mongoose'
 
 
@@ -59,6 +60,7 @@ const applicantSchema = new mongoose.Schema({
         newStatus: {type: String},
         commentBox: {type: String},
         document:  {type: String},
+        duration: {type: String},
         createdBy: { type: String }
     }],
     createdOn: { type: Date },
