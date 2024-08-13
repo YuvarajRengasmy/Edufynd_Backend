@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
-     getSingleApplicant, updateApplicant, trackApplicant} from '../controller/applicant.controller';
+     getSingleApplicant, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -55,13 +55,6 @@ router.put('/getFilterApplicant',
 );
 
 
-/////
 
-router.put('/track',                    
-  
-    // checkQuery('_id'),
-    checkRequestBodyParams('_id'),
-    trackApplicant
-);
 
 export default router
