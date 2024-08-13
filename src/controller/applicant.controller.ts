@@ -110,12 +110,13 @@ const stripHtmlTags = (html) => {
 
 
 export let updateApplicant = async (req, res, next) => {
+    console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
-
+console.log("kk", application)
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
                 let updatedApplicant = await updateMaster.updateOne(
@@ -148,6 +149,7 @@ export let updateApplicant = async (req, res, next) => {
 
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
+                console.log("hjh", updatedApplication)
                 const statusLength = updatedApplication.status.length;
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
