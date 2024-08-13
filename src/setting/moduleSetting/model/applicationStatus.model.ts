@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 
-export interface StatusDocument extends mongoose.Document{
+export interface ApplicationStatusDocument extends mongoose.Document{
     _id?: any;
     statusName?: string;
     duration?: string;
@@ -11,16 +11,16 @@ export interface StatusDocument extends mongoose.Document{
     modifiedBy?: string;
 }
 
-export const statusSchema = new mongoose.Schema({
+export const applicationStatusSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     statusName: {type: String},
     duration:{ type: String},
 
-    createdOn: { type: Date, default: Date.now },
+    createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
  
 })
 
-export const Status = mongoose.model("Status", statusSchema)
+export const ApplicationStatus = mongoose.model("ApplicationStatus", applicationStatusSchema)

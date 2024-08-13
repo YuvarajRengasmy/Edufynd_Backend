@@ -32,8 +32,8 @@ router.post('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    checkRequestBodyParams('_id'),
+    //   checkQuery('_id'),
+     checkRequestBodyParams('_id'),
     updateApplicant
 );
 
@@ -53,5 +53,8 @@ router.put('/getFilterApplicant',
     checkSession,
     getFilteredApplication,
 );
+
+
+
 
 export default router
