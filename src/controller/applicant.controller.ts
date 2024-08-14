@@ -87,16 +87,15 @@ export const courseApply = async (req, res) => {
         if (programTitle.length === 0) {
             return res.status(404).json({ message: 'No program found for the selected country and universityName' });
         }
-
         // Assuming the applicant selects a university from the filtered list
         const selectedProgram = programTitle[0];
         applicantDetails.applicationCode = await generateNextApplicationCode();
         // Create the applicant document
-        const newApplicant = new Applicant({ ...applicantDetails, programTitle: selectedProgram.programTitle });
-
+        const newApplicant = new Applicant({ ...applicantDetails, programTitle: selectedProgram.programTitle,
+           course: selectedProgram.courseType,
+         });
         // Save the applicant document to the database
         await newApplicant.save();
-
         res.status(201).json({ message: 'Application created successfully', applicant: newApplicant });
     } catch (error) {
         console.error('Error creating application:', error);
