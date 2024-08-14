@@ -1,5 +1,5 @@
 import { Applicant, ApplicantDocument } from '../model/application.model'
-import { Status, StatusDocument } from '../setting/globalSetting/model/status.model'
+import { Program, ProgramDocument } from '../model/program.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from "express-validator";
@@ -75,10 +75,41 @@ export let createApplicant = async (req, res, next) => {
 };
 
 
+export const courseApply = async (req, res) => {
+    try {
+       
+        const programDetails: ProgramDocument = req.body;
+        const applicantDetails: ApplicantDocument = req.body;
 
-export const createApplicantt = async (req, res) => {
+        // Fetch the programTitle based on country and universities
+        const programTitle = await Program.find({ country: applicantDetails.country, universityName: { $in: [applicantDetails.universityName] } });
+
+        if (programTitle.length === 0) {
+            return res.status(404).json({ message: 'No program found for the selected country and universityName' });
+        }
+
+        // Assuming the applicant selects a university from the filtered list
+        const selectedProgram = programTitle[0];
+        applicantDetails.applicationCode = await generateNextApplicationCode();
+        // Create the applicant document
+        const newApplicant = new Applicant({ ...applicantDetails, programTitle: selectedProgram.programTitle });
+
+        // Save the applicant document to the database
+        await newApplicant.save();
+
+        res.status(201).json({ message: 'Application created successfully', applicant: newApplicant });
+    } catch (error) {
+        console.error('Error creating application:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+
+
+export const createApplicanttt = async (req, res) => {
     try {
         const applicantDetails: ApplicantDocument = req.body;
+
 
         // Fetch the universities based on country and intake
         const universities = await University.find({ country: applicantDetails.country, inTake: { $in: [applicantDetails.inTake] } });
@@ -103,6 +134,8 @@ export const createApplicantt = async (req, res) => {
     }
 };
 
+
+
 const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
@@ -110,13 +143,12 @@ const stripHtmlTags = (html) => {
 
 
 export let updateApplicant = async (req, res, next) => {
-    console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
-console.log("kk", application)
+
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
                 let updatedApplicant = await updateMaster.updateOne(
@@ -149,7 +181,6 @@ console.log("kk", application)
 
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
-                console.log("hjh", updatedApplication)
                 const statusLength = updatedApplication.status.length;
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
@@ -850,3 +881,7 @@ export let updateApplicantfirstoriginal = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+
+
+
