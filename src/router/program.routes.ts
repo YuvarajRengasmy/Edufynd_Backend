@@ -100,7 +100,7 @@ updateProgramApplications
 
 router.get('/getProgramUniversity',
     basicAuthUser,
-    checkQuery('universityId'),
+    // checkQuery('universityId'),
     getProgramUniversity,
 );
 
