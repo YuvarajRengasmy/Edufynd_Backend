@@ -23,6 +23,7 @@ export interface ApplicantDocument extends mongoose.Document {
     feesPaid?: string,
     assignTo?: string,
     commentBox?: string;
+    programTitle?: string;
     isDeleted?: boolean;
     status?: any;
     createdOn?: Date;
@@ -66,6 +67,7 @@ const applicantSchema = new mongoose.Schema({
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }
     }],
+    programTitle: {type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

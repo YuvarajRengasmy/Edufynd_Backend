@@ -57,8 +57,9 @@ export const sendEmail = async (req:any, toMail:any, subject?: any, text?: any) 
     var sender = nodemailer.createTransport({
         // service: 'Gmail',
         service: 'edufynd.in',
-        port: 587,
-        secure: false, // true for 465, false for other ports
+        port: config.SERVER.EMAIL_PORT,
+        host: config.SERVER.EMAIL_HOST,
+        secure: true, // true for 465, false for other ports
         auth: {
             user: config.SERVER.EMAIL_USER,
             pass: config.SERVER.EMAIL_PASS
