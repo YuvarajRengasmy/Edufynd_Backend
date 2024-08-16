@@ -255,7 +255,6 @@ console.log("ddd", today)
         if (attendance) {
             return response(req, res, activity, 'Level-3', 'Update-Check In', false, 422, {}, "Already clocked in today");
         }
-
         const clockInTime = new Date();
         let lateDuration = 0;
 
