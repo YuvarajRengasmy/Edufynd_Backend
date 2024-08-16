@@ -9,7 +9,7 @@ var activity = "ModuleSetting-CountryList";
 
 
 
-export const getAllCountryList = async (req, res) => {
+export const getAllCountryList = async (req: any, res:any, next:any) => {
     try {
         const data = await CountryList.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -20,7 +20,7 @@ export const getAllCountryList = async (req, res) => {
 }
 
 
-export const getSingleCountryList = async (req, res) => {
+export const getSingleCountryList = async (req: any, res:any, next:any) => {
     try {
         const data = await CountryList.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-CountryList', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -30,7 +30,7 @@ export const getSingleCountryList = async (req, res) => {
 }
 
 
-export let createCountryList = async (req, res, next) => {
+export let createCountryList = async (req: any, res:any, next:any) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -49,7 +49,7 @@ export let createCountryList = async (req, res, next) => {
 
 
 
-export const updateCountryList = async (req, res) => {
+export const updateCountryList = async (req: any, res:any, next:any) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -77,7 +77,7 @@ export const updateCountryList = async (req, res) => {
 }
 
 
-export let deleteCountryList = async (req, res, next) => {
+export let deleteCountryList = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -91,7 +91,7 @@ export let deleteCountryList = async (req, res, next) => {
 
 
 
-export let getFilteredCountryList = async (req, res, next) => {
+export let getFilteredCountryList = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []
@@ -117,7 +117,7 @@ export let getFilteredCountryList = async (req, res, next) => {
     };
 
 
-export const getCountryByState = async (req, res) => {
+export const getCountryByState = async (req: any, res:any, next:any) => {
         const { name } = req.query; // Extract country from query params
         try {
             // Query universities based on country
@@ -131,7 +131,7 @@ export const getCountryByState = async (req, res) => {
 
 
 
-    export const getAllCities = async (req, res) => {
+    export const getAllCities = async (req: any, res:any, next:any) => {
         const { state } = req.query;
     
         try {

@@ -8,7 +8,7 @@ var activity = "Calender";
 
 
 
-export const getAllCalender = async (req, res) => {
+export const getAllCalender = async (req: any, res:any, next:any) => {
     try {
         const data = await Calender.find().sort({ _id: -1 })
       
@@ -20,7 +20,7 @@ export const getAllCalender = async (req, res) => {
 }
 
 
-export const getSingleCalender = async (req, res) => {
+export const getSingleCalender = async (req: any, res:any, next:any) => {
     try {
         const data = await Calender.findOne({ _id: req.query._id })
   
@@ -33,7 +33,7 @@ export const getSingleCalender = async (req, res) => {
 
 
 
-export let createCalender = async (req, res, next) => {
+export let createCalender = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -51,7 +51,7 @@ export let createCalender = async (req, res, next) => {
 
 
 
-export let updateCalender = async (req, res, next) => {
+export let updateCalender = async (req: any, res:any, next:any) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -68,10 +68,10 @@ export let updateCalender = async (req, res, next) => {
                  
                 }
             });
-            response(req, res, activity, 'Level-2', 'Update-Calender', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Calender', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Calender', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Calender', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -80,7 +80,7 @@ export let updateCalender = async (req, res, next) => {
 }
 
 
-    export let deleteCalender = async (req, res, next) => {
+    export let deleteCalender = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -93,7 +93,7 @@ export let updateCalender = async (req, res, next) => {
     };
 
 
-    export let getFilteredCalender = async (req, res, next) => {
+    export let getFilteredCalender = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

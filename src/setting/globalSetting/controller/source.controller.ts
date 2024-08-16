@@ -8,7 +8,7 @@ var activity = "Global setting - Source";
 
 
 
-export const getAllSource = async (req, res) => {
+export const getAllSource = async (req: any, res:any, next:any) => {
     try {
         const data = await Source.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Source', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllSource = async (req, res) => {
 }
 
 
-export const getSingleSource = async (req, res) => {
+export const getSingleSource = async (req: any, res:any, next:any) => {
     try {
         const data = await Source.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Source', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleSource = async (req, res) => {
 }
 
 
-export let createSource = async (req, res, next) => {
+export let createSource = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createSource = async (req, res, next) => {
 
 
 
-export const updateSource = async (req, res) => {
+export const updateSource = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -80,7 +80,7 @@ export const updateSource = async (req, res) => {
 };
 
 
-export let deleteSource = async (req, res, next) => {
+export let deleteSource = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -95,7 +95,7 @@ export let deleteSource = async (req, res, next) => {
 
 
 
-export let getFilteredSource   = async (req, res, next) => {
+export let getFilteredSource   = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []

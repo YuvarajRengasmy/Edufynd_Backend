@@ -34,7 +34,7 @@ export let CreateJWTToken = (data: any = {}) => {
 
 
 /**
- * @author Ponjothi S
+ * @author Balan K K
  * @date 07-09-2023
  * @param {Object} req 
  * @param {Object} res 

@@ -8,18 +8,18 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 
 
-export const getAllOfferTAT = async (req, res) => {
+export const getAllOfferTAT = async (req: any, res:any, next:any) => {
     try {
         const data = await OfferTAT.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-OfferTAT', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-OfferTAT', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-2', 'GetAll-OfferTAT', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
 
-export const getSingleOfferTAT = async (req, res) => {
+export const getSingleOfferTAT = async (req: any, res:any, next:any) => {
     try {
         const data = await OfferTAT.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-OfferTAT', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleOfferTAT = async (req, res) => {
 }
 
 
-export let createOfferTAT = async (req, res, next) => {
+export let createOfferTAT = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createOfferTAT = async (req, res, next) => {
 
 
 
-export const updateOfferTAT = async (req, res) => {
+export const updateOfferTAT = async (req: any, res:any, next:any) => {
     const DropdownListDetails: OfferTATDocument = req.body;
     
     try {
@@ -72,7 +72,7 @@ export const updateOfferTAT = async (req, res) => {
   };
 
 
-    export let deleteOfferTAT = async (req, res, next) => {
+    export let deleteOfferTAT = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -86,7 +86,7 @@ export const updateOfferTAT = async (req, res) => {
 
 
 
-    export let getFilteredOfferTAT = async (req, res, next) => {
+    export let getFilteredOfferTAT = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []
