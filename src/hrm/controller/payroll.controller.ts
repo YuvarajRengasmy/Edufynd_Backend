@@ -42,7 +42,7 @@ export const getViewStaffPayRoll = async (req, res) => {
 }
 
 
-export let createPayRoll = async (req, res, next) => {
+export let createPayRolll = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -113,8 +113,7 @@ export let createPayRoll = async (req, res, next) => {
     }
 };
 
-export let createPayRolll = async (req, res, next) => {
-
+export let createPayRoll = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -158,55 +157,41 @@ export let createPayRolll = async (req, res, next) => {
             if (!active) {
                 return response(req, res, activity, 'Level-3', 'Employee Not Found', false, 404, {}, "Not Found the Employee");
             }
-            const startDate = new Date(req.body.startDate);
-            const endDate = new Date(req.body.endDate);
 
-            // // Attendance Calculation
-            // const attendence = await Attendence.find({
-            //     employeeId: req.query.employeeId,
-            //     date: { $gte: startDate, $lte: endDate }
-            // });
-
-            // let presentDays = 0;
-            // let absentDays = 0;
-            // attendence.forEach(att => {
-            //     if (att.status === "Present") {
-            //         presentDays++;
-            //     }  else {
-            //         absentDays++; // Consider as Absent if no record found for the date
-            //     }
-
-            // });
-
-
-            // Generate an array of dates between startDate and endDate
-            let dates = [];
-            for (let dt = startDate; dt <= endDate; dt.setDate(dt.getDate() + 1)) {
-                dates.push(new Date(dt));
-            }
-console.log("444", dates)
+            let startDate = new Date(req.body.startDate);
+            let endDate = new Date(req.body.endDate);
+            // Attendance Calculation
+            const attendence = await Attendence.find({employeeId: req.query.employeeId, date: { $gte: startDate, $lte: endDate }});
+            // Calculate the number of days between startDate and endDate (inclusive)
             let presentDays = 0;
             let absentDays = 0;
+            let sundayCount = 0;
+            let sundays = [];
 
-            for (let date of dates) {
-                let attendanceRecord = await Attendence.findOne({
-                    employeeId: req.query.employeeId,
-                    date: date
-                });
-
-                console.log("565", attendanceRecord)
-
-                if (attendanceRecord) {
-                    if (attendanceRecord.status === "Present") {
-                        presentDays++;
-                    } else {
-                        absentDays++;
-                    }
+            const numberOfDays = Math.ceil((Number(endDate) - Number(startDate)) / (24 * 60 * 60 * 1000)) + 1;
+            attendence.forEach(att => {
+                if (att.status === "Present") {
+                    presentDays++;
                 } else {
                     absentDays++; // Consider as Absent if no record found for the date
                 }
+            });
+
+            let currentDate = new Date(startDate);
+            endDate = new Date(endDate); // Convert endDate to a Date object
+            // Iterate through each date in the range
+            while (currentDate <= endDate) {
+                // Check if the current date is a Sunday (getDay() returns 0 for Sunday)
+                if (currentDate.getDay() === 0) {
+                    sundayCount++;
+                    sundays.push(new Date(currentDate)); // Optional: store the Sunday date
+                }
+                // Move to the next day
+                currentDate.setDate(currentDate.getDate() + 1);
             }
 
+            const absent = numberOfDays - presentDays - sundayCount
+            presentDays = presentDays + sundayCount
 
             // Save to database
             const payroll = new PayRoll({
@@ -216,7 +201,7 @@ console.log("444", dates)
                 netSalary: netSalaryWithDeductions,
                 netInWords: wordsinRupees,
                 payableDays: presentDays,
-                lopDays: absentDays
+                lopDays: absent
             });
 
             await payroll.save();
@@ -236,7 +221,6 @@ export let updatePayRoll = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-
             const payRollDetails: PayRollDocument = req.body;
             const updateData = await PayRoll.findOneAndUpdate({ _id: payRollDetails._id }, {
                 $set: {
@@ -257,10 +241,10 @@ export let updatePayRoll = async (req, res, next) => {
 
                 }
             });
-            response(req, res, activity, 'Level-2', 'Update-PayRoll', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-PayRoll', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -320,155 +304,6 @@ export let getFilteredPayRoll = async (req, res, next) => {
     }
 };
 
-
-////////
-
-
-// export const calculateSalary = async (req, res) => {
-//     try {
-//         const payRollDetails: PayRollDocument = req.body;
-
-//         // Ensure additionalComponents is an object, even if it's empty
-//         const additionalComponents = payRollDetails.additionalComponents || {};
-
-//         const allowance = (additionalComponents["transportAllowance"] || 0) +
-//             (additionalComponents["leaveTravelAllowance"] || 0) +
-//             (additionalComponents["medicalAllowance"] || 0) +
-//             (additionalComponents["specialAllowance"] || 0)
-
-//         payRollDetails.otherAllowance = allowance
-
-//         const ctc = payRollDetails.houseRent + payRollDetails.conveyance + allowance
-
-//         payRollDetails.grossSalary = ctc
-
-//         // Performance Allowance: 10% of Gross Salary
-//         const performanceAllowance = payRollDetails.grossSalary * 0.1;
-
-//         // Deductions
-//         const Deduction = (payRollDetails.taxDeduction || 0) +
-//             (additionalComponents["professionalTax"] || 0) +
-//             (payRollDetails.pf || 0) +
-//             (additionalComponents["esi"] || 0);
-
-//         payRollDetails.totalDeduction = Deduction
-
-
-//         // Net Salary before deductions
-//         const netSalaryBeforeDeductions = payRollDetails.grossSalary - Deduction;
-
-
-//         // Salary Calculation Based on Attendance
-//         const dailyGrossSalary = payRollDetails.grossSalary / 30;
-//         const salaryForPresentDays = dailyGrossSalary * (additionalComponents["presentDays"] || 0);
-
-//         const finalSalaryWithoutPerformanceDeduction = salaryForPresentDays - (additionalComponents["professionalTax"] || 0);
-
-//         // With Performance Allowance Deduction
-//         const dailyNetSalary = netSalaryBeforeDeductions / 30;
-//         const finalSalaryWithPerformanceDeduction = dailyNetSalary * (additionalComponents["presentDays"] || 0) - (additionalComponents["professionalTax"] || 0);
-
-//         // Save to database
-//         const payroll = new PayRoll({
-//             ...payRollDetails,
-//             // performanceAllowance,
-//             grossSalary: ctc,
-//             otherAllowance: allowance,
-//             netSalary: netSalaryBeforeDeductions
-//         });
-
-//         await payroll.save();
-
-//         return res.status(201).json({ message: "Payroll created successfully", payroll });
-
-//     } catch (err) {
-
-//         return res.status(500).json({ message: "Internal server error", error: err.message });
-//     }
-// };
-
-
-
-// export let createPayRoll = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const payRollDetails: PayRollDocument = req.body;
-//             const createData = new PayRoll(payRollDetails);
-//             let insertData = await createData.save();
-//             response(req, res, activity, 'Level-2', 'Create-PayRoll', true, 200, insertData, clientError.success.savedSuccessfully);
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// };
-
-// export let createPayRoll = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const payRollDetails: PayRollDocument = req.body;
-
-//         // Ensure additionalComponents is an object, even if it's empty
-//         const additionalComponents = payRollDetails.additionalComponents || {};
-
-//         const allowance = (additionalComponents["transportAllowance"] || 0) +
-//             (additionalComponents["leaveTravelAllowance"] || 0) +
-//             (additionalComponents["medicalAllowance"] || 0) +
-//             (additionalComponents["specialAllowance"] || 0)
-
-//         payRollDetails.otherAllowance = allowance
-
-//         const ctc = payRollDetails.houseRent + payRollDetails.conveyance + allowance
-
-//         payRollDetails.grossSalary = ctc
-
-//         // Performance Allowance: 10% of Gross Salary
-//         const performanceAllowance = payRollDetails.grossSalary * 0.1;
-
-//         // Deductions
-//         const Deduction = (payRollDetails.taxDeduction || 0) +
-//             (additionalComponents["professionalTax"] || 0) +
-//             (payRollDetails.pf || 0) +
-//             (additionalComponents["esi"] || 0);
-
-//         payRollDetails.totalDeduction = Deduction
-
-
-//         // Net Salary before deductions
-//         const netSalaryWithDeductions = payRollDetails.grossSalary - Deduction;
-
-
-//         // Salary Calculation Based on Attendance
-//         const dailyGrossSalary = payRollDetails.grossSalary / 30;
-//         const salaryForPresentDays = dailyGrossSalary * (additionalComponents["presentDays"] || 0);
-
-//         const finalSalaryWithoutPerformanceDeduction = salaryForPresentDays - (additionalComponents["professionalTax"] || 0);
-
-//         // With Performance Allowance Deduction
-//         const dailyNetSalary = netSalaryWithDeductions / 30;
-//         const finalSalaryWithPerformanceDeduction = dailyNetSalary * (additionalComponents["presentDays"] || 0) - (additionalComponents["professionalTax"] || 0);
-
-//         // Save to database
-//         const payroll = new PayRoll({
-//             ...payRollDetails,
-//             // performanceAllowance,
-//             grossSalary: ctc,
-//             otherAllowance: allowance,
-//             netSalary: netSalaryWithDeductions
-//         });
-
-//         await payroll.save();
-//         response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll,  "Payroll created successfully");
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     } else {
-//         response(req, res, activity, 'Level-3', 'Create-PayRoll', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// };
 
 // additionalComponents: { type: Map, of: mongoose.Schema.Types.Mixed }, // New field to store dynamic components and // Allows for both Number and String types
 
