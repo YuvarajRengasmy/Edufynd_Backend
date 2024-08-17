@@ -8,7 +8,7 @@ var activity = "Global-InTake";
 
 
 
-export const getAllInTake = async (req, res) => {
+export const getAllInTake = async (req: any, res:any, next:any) => {
     try {
         const data = await InTake.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-InTake', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllInTake = async (req, res) => {
 }
 
 
-export const getSingleInTake = async (req, res) => {
+export const getSingleInTake = async (req: any, res:any, next:any) => {
     try {
         const data = await InTake.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-InTake', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleInTake = async (req, res) => {
 }
 
 
-export let createInTake = async (req, res, next) => {
+export let createInTake = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -46,7 +46,7 @@ export let createInTake = async (req, res, next) => {
 };
 
 
-export const updateInTake = async (req, res) => {
+export const updateInTake = async (req: any, res:any, next:any) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -73,7 +73,7 @@ export const updateInTake = async (req, res) => {
     }
 }
 
-export let deleteInTake = async (req, res, next) => {
+export let deleteInTake = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -87,7 +87,7 @@ export let deleteInTake = async (req, res, next) => {
 
 
 
-export let getFilteredInTake   = async (req, res, next) => {
+export let getFilteredInTake   = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []

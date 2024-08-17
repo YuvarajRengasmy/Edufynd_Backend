@@ -8,7 +8,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 
 
-export const getAllInstitutionType = async (req, res) => {
+export const getAllInstitutionType = async (req: any, res:any, next:any) => {
     try {
         const data = await InstitutionType.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-InstitutionType', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllInstitutionType = async (req, res) => {
 }
 
 
-export const getSingleInstitutionType = async (req, res) => {
+export const getSingleInstitutionType = async (req: any, res:any, next:any) => {
     try {
         const data = await InstitutionType.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-InstitutionType', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleInstitutionType = async (req, res) => {
 }
 
 
-export let createInstitutionType = async (req, res, next) => {
+export let createInstitutionType = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createInstitutionType = async (req, res, next) => {
 
 
 
-export const updateInstitutionType = async (req, res) => {
+export const updateInstitutionType = async (req: any, res:any, next:any) => {
     const DropdownListDetails: InstitutionTypeDocument = req.body;
     
     try {
@@ -72,7 +72,7 @@ export const updateInstitutionType = async (req, res) => {
   };
 
 
-    export let deleteInstitutionType = async (req, res, next) => {
+    export let deleteInstitutionType = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -86,7 +86,7 @@ export const updateInstitutionType = async (req, res) => {
 
 
 
-    export let getFilteredInstitutionType = async (req, res, next) => {
+    export let getFilteredInstitutionType = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

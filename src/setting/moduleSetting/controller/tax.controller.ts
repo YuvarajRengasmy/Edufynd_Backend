@@ -8,7 +8,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 
 
-export const getAllTax = async (req, res) => {
+export const getAllTax = async (req: any, res:any, next:any) => {
     try {
         const data = await Tax.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Tax', true, 200, data, clientError.success.fetchedSuccessfully)

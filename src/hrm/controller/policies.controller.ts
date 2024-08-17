@@ -8,7 +8,7 @@ var activity = "Policies";
 
 
 
-export const getAllPolicies = async (req, res) => {
+export const getAllPolicies = async (req: any, res:any, next:any) => {
     try {
         const data = await Policies.find().sort({ _id: -1 })
       
@@ -20,7 +20,7 @@ export const getAllPolicies = async (req, res) => {
 }
 
 
-export const getSinglePolicies = async (req, res) => {
+export const getSinglePolicies = async (req: any, res:any, next:any) => {
     try {
         const data = await Policies.findOne({ _id: req.query._id })
   
@@ -33,7 +33,7 @@ export const getSinglePolicies = async (req, res) => {
 
 
 
-export let createPolicies = async (req, res, next) => {
+export let createPolicies = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -51,7 +51,7 @@ export let createPolicies = async (req, res, next) => {
 
 
 
-export let updatePolicies = async (req, res, next) => {
+export let updatePolicies = async (req: any, res:any, next:any) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -81,7 +81,7 @@ export let updatePolicies = async (req, res, next) => {
 }
 
 
-    export let deletePolicies = async (req, res, next) => {
+    export let deletePolicies = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -94,7 +94,7 @@ export let updatePolicies = async (req, res, next) => {
     };
 
 
-    export let getFilteredPolicies = async (req, res, next) => {
+    export let getFilteredPolicies = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []
@@ -123,7 +123,7 @@ export let updatePolicies = async (req, res, next) => {
         }
     };
 
-    export const getPoliciesStaff = async (req, res) => {
+    export const getPoliciesStaff = async (req: any, res:any, next:any) => {
         try {
             
             const data = await Policies.find({

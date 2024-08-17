@@ -8,7 +8,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 
 
-export const getAllPaymentMethod = async (req, res) => {
+export const getAllPaymentMethod = async (req: any, res:any, next:any) => {
     try {
         const data = await PaymentMethod.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-PaymentMethod', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllPaymentMethod = async (req, res) => {
 }
 
 
-export const getSinglePaymentMethod = async (req, res) => {
+export const getSinglePaymentMethod = async (req: any, res:any, next:any) => {
     try {
         const data = await PaymentMethod.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-PaymentMethod', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSinglePaymentMethod = async (req, res) => {
 }
 
 
-export let createPaymentMethod= async (req, res, next) => {
+export let createPaymentMethod= async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createPaymentMethod= async (req, res, next) => {
 
 
 
-export const updatePaymentMethod = async (req, res) => {
+export const updatePaymentMethod = async (req: any, res:any, next:any) => {
     const DropdownListDetails: PaymentMethodDocument = req.body;
     
     try {
@@ -72,7 +72,7 @@ export const updatePaymentMethod = async (req, res) => {
   };
 
 
-    export let deletePaymentMethod = async (req, res, next) => {
+    export let deletePaymentMethod = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -86,7 +86,7 @@ export const updatePaymentMethod = async (req, res) => {
 
 
 
-    export let getFilteredPaymentMethod = async (req, res, next) => {
+    export let getFilteredPaymentMethod = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

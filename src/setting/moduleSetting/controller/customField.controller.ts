@@ -8,7 +8,7 @@ var activity = "ModuleSetting-Add Label";
 
 
 
-export const getAllCustomField = async (req, res) => {
+export const getAllCustomField = async (req: any, res:any, next:any) => {
     try {
         const data = await CustomField.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-CustomFields', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllCustomField = async (req, res) => {
 }
 
 
-export const getSingleCustomFields = async (req, res) => {
+export const getSingleCustomFields = async (req: any, res:any, next:any) => {
     try {
         const data = await CustomField.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-CustomFields', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleCustomFields = async (req, res) => {
 }
 
 
-export let createCustomFields = async (req, res, next) => {
+export let createCustomFields = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -46,7 +46,7 @@ export let createCustomFields = async (req, res, next) => {
 };
 
 
-export const updateCustomField = async (req, res) => {
+export const updateCustomField = async (req: any, res:any, next:any) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -79,7 +79,7 @@ export const updateCustomField = async (req, res) => {
     }
 }
 
-export let deleteCustomField = async (req, res, next) => {
+export let deleteCustomField = async (req: any, res:any, next:any) => {
 
     try {
         let id = req.query._id;

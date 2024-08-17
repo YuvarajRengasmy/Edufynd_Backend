@@ -8,7 +8,7 @@ var activity = "Global-Year";
 
 
 
-export const getAllYear = async (req, res) => {
+export const getAllYear = async (req: any, res:any, next:any) => {
     try {
         const data = await Year.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Year', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllYear = async (req, res) => {
 }
 
 
-export const getSingleYear = async (req, res) => {
+export const getSingleYear = async (req: any, res:any, next:any) => {
     try {
         const data = await Year.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Year', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleYear = async (req, res) => {
 }
 
 
-export let createYear = async (req, res, next) => {
+export let createYear = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createYear = async (req, res, next) => {
 
 
 
-export const updateYear = async (req, res) => {
+export const updateYear = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
 
 
@@ -83,7 +83,7 @@ export const updateYear = async (req, res) => {
 };
 
 
-export let deleteYear = async (req, res, next) => {
+export let deleteYear = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -98,7 +98,7 @@ export let deleteYear = async (req, res, next) => {
 
 
 
-export let getFilteredYear   = async (req, res, next) => {
+export let getFilteredYear   = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []
