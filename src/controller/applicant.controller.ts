@@ -313,6 +313,11 @@ export let updateApplicant = async (req, res, next) => {
 
 
 
+
+
+
+
+
 export let deleteApplicant = async (req, res, next) => {
 
     try {

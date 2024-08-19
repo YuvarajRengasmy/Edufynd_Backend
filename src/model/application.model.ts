@@ -62,6 +62,7 @@ const applicantSchema = new mongoose.Schema({
         newStatus: {type: String},
         commentBox: {type: String},
         duration: {type: String},
+        progress: {type: String},
         document:  {type: String},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
