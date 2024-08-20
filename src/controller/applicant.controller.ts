@@ -180,6 +180,7 @@ export let updateApplicant = async (req, res, next) => {
 
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
+                const user = updatedApplication.name
                 const statusLength = updatedApplication.status.length;
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
@@ -216,7 +217,8 @@ export let updateApplicant = async (req, res, next) => {
                  // Update last status with delay message in the database
                  await updatedApplication.updateOne({
                     $set: {
-                        "status.$[elem].delay": delayMessage
+                        "status.$[elem].delay": delayMessage,
+                        "status.$[elem].createdBy": user
                     }
                 }, {
                     arrayFilters: [{ "elem._id": lastStatus._id }]
