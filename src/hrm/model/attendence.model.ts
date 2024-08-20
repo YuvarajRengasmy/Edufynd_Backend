@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 
 export interface AttendenceDocument extends mongoose.Document {
     employeeId?: any;
-    staff?: any;
+    // staff?: any;
     date?: Date;
     empName?: string;
     status?: string;
@@ -24,8 +24,8 @@ export interface AttendenceDocument extends mongoose.Document {
 export const attendenceSchema = new mongoose.Schema({
 
     employeeId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
-    staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
-    date: { type: Date},
+    // staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+    date: { type: Date, default: null},
     status: { type: String },
     empName: { type: String },
     clockIn: { type: Date, default: null },
