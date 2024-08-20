@@ -375,7 +375,7 @@ export let getFilteredApplication = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const applicantList = await Applicant.find(findQuery).sort({ applicationCode: -1 }).limit(limit).skip(page)
+        const applicantList = await Applicant.find(findQuery).limit(limit).skip(page)
 
         const applicantCount = await Applicant.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterApplicant', true, 200, { applicantList, applicantCount }, clientError.success.fetchedSuccessfully);
@@ -893,5 +893,14 @@ export let updateApplicantfirstoriginal = async (req, res, next) => {
 };
 
 
-
+export const getStudentApplication = async (req, res) => {
+    try {
+        
+        const data = await Applicant.find({studentId:req.query.studentId})
+  
+        response(req, res, activity, 'Level-1', 'GetSingle-Application', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-Application', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
 
