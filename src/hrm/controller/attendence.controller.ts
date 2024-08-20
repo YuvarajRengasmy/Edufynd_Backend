@@ -117,7 +117,7 @@ export let deleteAttendence = async (req, res, next) => {
 };
 
 
-export const staffClockIn = async (req, res) => {
+export const staffClockInn = async (req, res) => {
     try {
         const { staffId } = req.body;
         const attendenceDetails: AttendenceDocument = req.body;
@@ -153,14 +153,14 @@ export const staffClockIn = async (req, res) => {
 
 
 export const staffClockOut = async (req, res) => {
- 
+
     try {
         const { staffId } = req.body;
         console.log("77", staffId)
         const today = moment().startOf('day').toDate();
         console.log("gg", today)
 
-       
+
         const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
 
         // Find today's attendance record
@@ -249,13 +249,13 @@ export const staffClockOutt = async (req, res) => {
 
 
 
-export const staffClockInn = async (req, res) => {
+export const staffClockIn = async (req, res) => {
     try {
         const { staffId } = req.body;
         console.log("jjj", staffId)
         const attendanceDetails: AttendenceDocument = req.body;
-        // const today = moment().startOf('day').toDate();
-        const today = new Date()
+        const today = moment().startOf('day').toDate();
+
 
         //   // Set today to start of day in UTC to avoid timezone offset issues
         //   const today = moment.utc().startOf('day').toDate();
@@ -289,23 +289,29 @@ export const staffClockInn = async (req, res) => {
         })
 
         await attendance.save();
-        Attendence.find().sort({ date: -1 })
+
 
         // Automatically mark previous days as "Absent" if no clockIn/clockOut record exists
 
         console.log("qq", lastAttendance)
 
         if (lastAttendance) {
-            const lastDate = moment(lastAttendance.clockIn,'DD.MM.YYYY').startOf('day');
+            const lastDate = moment(lastAttendance.clockIn, 'DD.MM.YYYY').startOf('day');
             const currentDate = moment(today, 'DD.MM.YYYY').startOf('day');
 
             console.log("55", lastDate)
             console.log("44", currentDate)
 
             // Generate all dates between lastDate and today, excluding today
+            // const missingDates = [];
+            // for (let date = lastDate.clone().add(1, 'day'); date.isBefore(currentDate); date.add(1, 'day')) {
+            //     missingDates.push(date.clone().toISOString(true)); // Use toISOString(true) to keep the timezone
+            // }
+
+
             const missingDates = [];
             for (let date = lastDate.clone().add(1, 'day'); date.isBefore(currentDate); date.add(1, 'day')) {
-                missingDates.push(date.clone().toISOString(true)); // Use toISOString(true) to keep the timezone
+                missingDates.push(date.clone().startOf('day').format('YYYY-MM-DD')); // Capture only the date in 'YYYY-MM-DD' format
             }
 
             console.log("88", missingDates)
@@ -314,10 +320,13 @@ export const staffClockInn = async (req, res) => {
                 console.log("lll", datee)
                 const existingRecord = await Attendence.findOne({ staff: staffId, date: datee });
                 if (!existingRecord) {
-                    await Attendence.create({ ...attendanceDetails,
+                    await Attendence.create({
+                        ...attendanceDetails,
                         staff: staffId,
                         date: new Date(datee),
-                        status: 'Absent'
+                        status: 'Absent',
+                        clockIn: null, // Set clockIn to 0 for "Absent" status
+                        clockOut: null // Set clockOut to 0 for "Absent" status
                     });
                 }
             }
