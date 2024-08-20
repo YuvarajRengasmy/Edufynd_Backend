@@ -373,8 +373,8 @@ export const getProgramsByUniversityName = async (req, res) => {
                     universityLogo: university.universityLogo,
                     country: university.country,
                     programDetails: programs.map(program => ({
-                        programTitle: program.programTitle,
-                        campuses: program.campuses,
+                    programTitle: program.programTitle,
+                    campuses: program.campuses,
                     }))
                 }
             }
