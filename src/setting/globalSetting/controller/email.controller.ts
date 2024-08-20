@@ -8,7 +8,7 @@ var activity = "Global-Email-Template";
 
 
 
-export const getAllEmailTemplate = async (req, res) => {
+export const getAllEmailTemplate = async (req: any, res:any, next:any) => {
     try {
         const data = await Email.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Email', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllEmailTemplate = async (req, res) => {
 }
 
 
-export const getSingleTemplate = async (req, res) => {
+export const getSingleTemplate = async (req: any, res:any, next:any) => {
     try {
         const data = await Email.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Template', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleTemplate = async (req, res) => {
 }
 
 
-export let createEmailTemplate = async (req, res, next) => {
+export let createEmailTemplate = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -46,7 +46,7 @@ export let createEmailTemplate = async (req, res, next) => {
 };
 
 
-export const updateTemplate = async (req, res) => {
+export const updateTemplate = async (req: any, res:any, next:any) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -70,7 +70,7 @@ export const updateTemplate = async (req, res) => {
     }
 }
 
-export let deleteTemplate = async (req, res, next) => {
+export let deleteTemplate = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -84,7 +84,7 @@ export let deleteTemplate = async (req, res, next) => {
 
 
 
-export let getFilteredEmail = async (req, res, next) => {
+export let getFilteredEmail = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []

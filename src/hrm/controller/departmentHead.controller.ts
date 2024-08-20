@@ -8,7 +8,7 @@ var activity = "DepartmentHead";
 
 
 
-export const getAllDepartmentHead= async (req, res) => {
+export const getAllDepartmentHead= async (req: any, res:any, next:any) => {
     try {
         const data = await DepartmentHead.find().sort({ _id: -1 })
       
@@ -20,7 +20,7 @@ export const getAllDepartmentHead= async (req, res) => {
 }
 
 
-export const getSingleDepartmentHead = async (req, res) => {
+export const getSingleDepartmentHead = async (req: any, res:any, next:any) => {
     try {
         const data = await DepartmentHead.findOne({ _id: req.query._id })
   
@@ -33,7 +33,7 @@ export const getSingleDepartmentHead = async (req, res) => {
 
 
 
-export let createDepartmentHead = async (req, res, next) => {
+export let createDepartmentHead = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -51,7 +51,7 @@ export let createDepartmentHead = async (req, res, next) => {
 
 
 
-export let updateDepartmentHead = async (req, res, next) => {
+export let updateDepartmentHead = async (req: any, res:any, next:any) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -77,7 +77,7 @@ export let updateDepartmentHead = async (req, res, next) => {
 }
 
 
-    export let deleteDepartmentHead = async (req, res, next) => {
+    export let deleteDepartmentHead = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -90,7 +90,7 @@ export let updateDepartmentHead = async (req, res, next) => {
     };
 
 
-    export let getFilteredDepartmentHead = async (req, res, next) => {
+    export let getFilteredDepartmentHead = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

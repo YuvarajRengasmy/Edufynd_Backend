@@ -24,12 +24,12 @@ export interface AttendenceDocument extends mongoose.Document {
 export const attendenceSchema = new mongoose.Schema({
 
     employeeId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
-    // staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
-    date: { type: Date },
+    staff: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+    date: { type: Date},
     status: { type: String },
     empName: { type: String },
-    clockIn: { type: Date, default: 0 },
-    clockOut: { type: Date, default: 0 },
+    clockIn: { type: Date, default: null },
+    clockOut: { type: Date, default: null },
     late: { type: String },
     earlyLeaving: { type: String },
     totalWork: { type: String },

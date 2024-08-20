@@ -8,7 +8,7 @@ var activity = "ModuleSetting-DropDown Setting In All Module";
 
 
 
-export const getAllPopularCategory = async (req, res) => {
+export const getAllPopularCategory = async (req: any, res:any, next:any) => {
     try {
         const data = await PopularCategory.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-PopularCategory', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllPopularCategory = async (req, res) => {
 }
 
 
-export const getSinglePopularCategory = async (req, res) => {
+export const getSinglePopularCategory = async (req: any, res:any, next:any) => {
     try {
         const data = await PopularCategory.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-PopularCategory', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSinglePopularCategory = async (req, res) => {
 }
 
 
-export let createPopularCategory = async (req, res, next) => {
+export let createPopularCategory = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -48,7 +48,7 @@ export let createPopularCategory = async (req, res, next) => {
 
 
 
-export const updatePopularCategory = async (req, res) => {
+export const updatePopularCategory = async (req: any, res:any, next:any) => {
     const DropdownListDetails: PopularCategoryDocument = req.body;
     
     try {
@@ -74,7 +74,7 @@ export const updatePopularCategory = async (req, res) => {
   };
 
 
-    export let deletePopularCategory = async (req, res, next) => {
+    export let deletePopularCategory = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -88,7 +88,7 @@ export const updatePopularCategory = async (req, res) => {
 
 
 
-    export let getFilteredPopularCategory = async (req, res, next) => {
+    export let getFilteredPopularCategory = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

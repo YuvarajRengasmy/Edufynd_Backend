@@ -8,7 +8,7 @@ var activity = "Global-Currency";
 
 
 
-export const getAllCurrency = async (req, res) => {
+export const getAllCurrency = async (req: any, res:any, next:any) => {
     try {
         const data = await Currency.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Currency', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllCurrency = async (req, res) => {
 }
 
 
-export const getSingleCurrency = async (req, res) => {
+export const getSingleCurrency = async (req: any, res:any, next:any) => {
     try {
         const data = await Currency.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Currency', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleCurrency = async (req, res) => {
 }
 
 
-export let createCurrency = async (req, res, next) => {
+export let createCurrency = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createCurrency = async (req, res, next) => {
 
 
 
-export let deleteCurrency = async (req, res, next) => {
+export let deleteCurrency = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -62,7 +62,7 @@ export let deleteCurrency = async (req, res, next) => {
 
 
 
-export let getFilteredCurrency = async (req, res, next) => {
+export let getFilteredCurrency = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []

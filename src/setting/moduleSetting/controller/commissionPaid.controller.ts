@@ -8,7 +8,7 @@ var activity = "ModuleSetting-DropDown Setting In All Module";
 
 
 
-export const getAllCommissionPaid = async (req, res) => {
+export const getAllCommissionPaid = async (req: any, res:any, next:any) => {
     try {
         const data = await CommissionPaid.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-CommissionPaid', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllCommissionPaid = async (req, res) => {
 }
 
 
-export const getSingleCommissionPaid = async (req, res) => {
+export const getSingleCommissionPaid = async (req: any, res:any, next:any) => {
     try {
         const data = await CommissionPaid.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-CommissionPaid', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleCommissionPaid = async (req, res) => {
 }
 
 
-export let createCommissionPaid = async (req, res, next) => {
+export let createCommissionPaid = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createCommissionPaid = async (req, res, next) => {
 
 
 
-export const updateCommissionPaid = async (req, res) => {
+export const updateCommissionPaid = async (req: any, res:any, next:any) => {
     const DropdownListDetails: CommissionPaidDocument = req.body;
     
     try {
@@ -65,7 +65,7 @@ export const updateCommissionPaid = async (req, res) => {
   };
 
 
-    export let deleteCommissionPaid = async (req, res, next) => {
+    export let deleteCommissionPaid = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -79,7 +79,7 @@ export const updateCommissionPaid = async (req, res) => {
 
 
 
-    export let getFilteredCommissionPaid = async (req, res, next) => {
+    export let getFilteredCommissionPaid = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

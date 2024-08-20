@@ -64,6 +64,7 @@ const applicantSchema = new mongoose.Schema({
         duration: {type: String},
         progress: {type: String},
         document:  {type: String},
+        delay: {type: String},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }

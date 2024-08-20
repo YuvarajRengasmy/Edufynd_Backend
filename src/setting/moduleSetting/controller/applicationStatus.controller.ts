@@ -8,7 +8,7 @@ var activity = "ModuleSetting ApplicationStatus";
 
 
 
-export const getAllApplicationStatus = async (req, res) => {
+export const getAllApplicationStatus = async (req: any, res:any, next:any) => {
     try {
         const data = await ApplicationStatus.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-ApplicationStatus', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllApplicationStatus = async (req, res) => {
 }
 
 
-export const getSingleApplicationStatus = async (req, res) => {
+export const getSingleApplicationStatus = async (req: any, res:any, next:any) => {
     try {
         const data = await ApplicationStatus.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-ApplicationStatus', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleApplicationStatus = async (req, res) => {
 }
 
 
-export let createApplicationStatus = async (req, res, next) => {
+export let createApplicationStatus = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createApplicationStatus = async (req, res, next) => {
 
 
 
-export const updateApplicationStatus = async (req, res) => {
+export const updateApplicationStatus = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -81,7 +81,7 @@ export const updateApplicationStatus = async (req, res) => {
 };
 
 
-export let deleteApplicationStatus = async (req, res, next) => {
+export let deleteApplicationStatus = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -96,7 +96,7 @@ export let deleteApplicationStatus = async (req, res, next) => {
 
 
 
-export let getFilteredApplicationStatus   = async (req, res, next) => {
+export let getFilteredApplicationStatus   = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []

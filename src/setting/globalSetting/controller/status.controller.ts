@@ -8,7 +8,7 @@ var activity = "Global Status";
 
 
 
-export const getAllStatus = async (req, res) => {
+export const getAllStatus = async (req: any, res:any, next:any) => {
     try {
         const data = await Status.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Status', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllStatus = async (req, res) => {
 }
 
 
-export const getSingleStatus = async (req, res) => {
+export const getSingleStatus = async (req: any, res:any, next:any) => {
     try {
         const data = await Status.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Status', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleStatus = async (req, res) => {
 }
 
 
-export let createStatus = async (req, res, next) => {
+export let createStatus = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createStatus = async (req, res, next) => {
 
 
 
-export const updateStatus = async (req, res) => {
+export const updateStatus = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -81,7 +81,7 @@ export const updateStatus = async (req, res) => {
 };
 
 
-export let deleteStatus = async (req, res, next) => {
+export let deleteStatus = async (req: any, res:any, next:any) => {
   
     try {
         let id = req.query._id;
@@ -96,7 +96,7 @@ export let deleteStatus = async (req, res, next) => {
 
 
 
-export let getFilteredStatus   = async (req, res, next) => {
+export let getFilteredStatus   = async (req: any, res:any, next:any) => {
     try {
         var findQuery;
         var andList: any = []

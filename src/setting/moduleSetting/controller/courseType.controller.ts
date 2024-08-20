@@ -8,7 +8,7 @@ var activity = "ModuleSetting-All Module-Program-CourseType";
 
 
 
-export const getAllCourseTypeList = async (req, res) => {
+export const getAllCourseTypeList = async (req: any, res:any, next:any) => {
     try {
         const data = await CourseTypeList.find().sort({ _id: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Course Type', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -19,7 +19,7 @@ export const getAllCourseTypeList = async (req, res) => {
 }
 
 
-export const getSingleCourseTypeList = async (req, res) => {
+export const getSingleCourseTypeList = async (req: any, res:any, next:any) => {
     try {
         const data = await CourseTypeList.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-Course Type', true, 200, data, clientError.success.fetchedSuccessfully)
@@ -29,7 +29,7 @@ export const getSingleCourseTypeList = async (req, res) => {
 }
 
 
-export let createCourseType = async (req, res, next) => {
+export let createCourseType = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -47,7 +47,7 @@ export let createCourseType = async (req, res, next) => {
 
 
 
-export const updateCourseTypeList = async (req, res) => {
+export const updateCourseTypeList = async (req: any, res:any, next:any) => {
     const DropdownListDetails: CourseTypeListDocument = req.body;
     
     try {
@@ -72,7 +72,7 @@ export const updateCourseTypeList = async (req, res) => {
   };
 
 
-    export let deleteCourseType = async (req, res, next) => {
+    export let deleteCourseType = async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -86,7 +86,7 @@ export const updateCourseTypeList = async (req, res) => {
 
 
 
-    export let getFilteredCourseType = async (req, res, next) => {
+    export let getFilteredCourseType = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []

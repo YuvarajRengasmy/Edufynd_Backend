@@ -8,7 +8,7 @@ var activity = "Upload";
 
 
 
-export const getAllDocument = async (req, res) => {
+export const getAllDocument = async (req: any, res:any, next:any) => {
     try {
         const data = await Upload.find().sort({ _id: -1 })
       
@@ -20,7 +20,7 @@ export const getAllDocument = async (req, res) => {
 }
 
 
-export const getSingleDocument = async (req, res) => {
+export const getSingleDocument = async (req: any, res:any, next:any) => {
     try {
         const data = await Upload.findOne({ _id: req.query._id })
   
@@ -33,7 +33,7 @@ export const getSingleDocument = async (req, res) => {
 
 
 
-export let createDocument = async (req, res, next) => {
+export let createDocument = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -51,7 +51,7 @@ export let createDocument = async (req, res, next) => {
 
 
 
-export let updateDocument = async (req, res, next) => {
+export let updateDocument = async (req: any, res:any, next:any) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -77,7 +77,7 @@ export let updateDocument = async (req, res, next) => {
 }
 
 
-    export let deleteDocument= async (req, res, next) => {
+    export let deleteDocument= async (req: any, res:any, next:any) => {
 
         try {
             let id = req.query._id;
@@ -90,7 +90,7 @@ export let updateDocument = async (req, res, next) => {
     };
 
 
-    export let getFilteredDocument = async (req, res, next) => {
+    export let getFilteredDocument = async (req: any, res:any, next:any) => {
         try {
             var findQuery;
             var andList: any = []
