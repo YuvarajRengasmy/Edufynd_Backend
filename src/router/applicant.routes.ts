@@ -63,7 +63,7 @@ router.put('/getFilterApplicant',
 
 router.get('/getStudentApplication',
     basicAuthUser,
-    // checkQuery('universityId'),
+     checkQuery('studentId'),
     getStudentApplication,
 );
 
