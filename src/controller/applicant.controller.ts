@@ -885,7 +885,7 @@ export let updateApplicantfirstoriginal = async (req, res, next) => {
 export const getStudentApplication = async (req, res) => {
     try {
         
-        const data = await Program.find({studentId:req.query.studentId})
+        const data = await Applicant.find({studentId:req.query.studentId})
   
         response(req, res, activity, 'Level-1', 'GetSingle-Application', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
