@@ -64,10 +64,16 @@ const applicantSchema = new mongoose.Schema({
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }
     }],
+
     programTitle: {type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
