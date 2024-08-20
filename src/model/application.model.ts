@@ -64,6 +64,9 @@ const applicantSchema = new mongoose.Schema({
         duration: {type: String},
         progress: {type: String},
         document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }
@@ -73,6 +76,7 @@ const applicantSchema = new mongoose.Schema({
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
+
 })
 
 export const Applicant = mongoose.model("Applicant", applicantSchema)

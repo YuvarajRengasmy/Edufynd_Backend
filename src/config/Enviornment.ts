@@ -85,4 +85,5 @@ export const SERVER = {
     CRYPTO_ALGO: 'aes-128-ctr',
     CRYPTO_KEY: 'test',
     FCM_KEY: '',
+    PAGE_ACCESS_TOKEN: process.env['PAGE_ACCESS_TOKEN']
 };

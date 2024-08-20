@@ -180,6 +180,7 @@ export let updateApplicant = async (req, res, next) => {
 
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
+                const user = updatedApplication.name
                 const statusLength = updatedApplication.status.length;
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
@@ -212,6 +213,16 @@ export let updateApplicant = async (req, res, next) => {
                 const docs = lastStatus.document;
                 const Message = delayMessages[delayMessages.length - 1]
                 const delayMessage = Message ? Message : "No Delay"
+            
+                 // Update last status with delay message in the database
+                 await updatedApplication.updateOne({
+                    $set: {
+                        "status.$[elem].delay": delayMessage,
+                        "status.$[elem].createdBy": user
+                    }
+                }, {
+                    arrayFilters: [{ "elem._id": lastStatus._id }]
+                });
 
                 // Prepare email attachments
                 const attachments = [];
@@ -252,7 +263,7 @@ export let updateApplicant = async (req, res, next) => {
                                                               <p>Your application status has been updated.</p>
                                                               <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
-                                                                 <p>Delayed: ${delayMessage}</p>
+                                                                 <p>Delayed: ${lastStatus.delay}</p>
                                                             <img src=${docs} alt="Image" width="500" height="300" />
           
                                                               <p>This information is for your reference.</p>
@@ -295,7 +306,7 @@ export let updateApplicant = async (req, res, next) => {
                         res.status(201).json({ message: 'You have received a Application Status Notification' });
                     }
                 });
-                res.status(201).json({ message: 'Application status has been updated and emails sent.', Details: updatedApplication });
+                res.status(201).json({ message: 'Application status has been updated and emails sent.', Details:updatedApplication });
 
             } else {
                 res.status(404).json({ message: 'Applicant not found' });

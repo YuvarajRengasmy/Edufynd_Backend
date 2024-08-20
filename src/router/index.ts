@@ -39,6 +39,7 @@ import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
 import SocialMedia from '../marketing/routes/socialMedia.routes'
 import Campaign from '../marketing/routes/campaign.routes'
 import DailyTask from '../marketing/routes/dailyTask.routes'
+import Facebook from '../marketing/routes/facebook.route'
 
 // Notification
 import Notification from '../notification/notification.routes'
@@ -133,6 +134,7 @@ router.use('/receiverInvoice', ReceiverInvoice)
 router.use('/socialMedia', SocialMedia)
 router.use('/campaign', Campaign)
 router.use('/dailyTask', DailyTask)
+router.use('/facebook', Facebook)
 
 // Notification
 router.use('/notification', Notification)

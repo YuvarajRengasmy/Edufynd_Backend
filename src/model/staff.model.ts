@@ -6,6 +6,7 @@ export interface StaffDocument extends mongoose.Document {
     employeeID?: string;
     empName?: string;
     dob?: String;
+    role?: string;
     designation?: string;
     doj?: String;
     reportingManager?: string;
@@ -71,6 +72,7 @@ const staffSchema = new mongoose.Schema({
     employeeID: { type: String },
     photo: { type: String },
     empName: { type: String },
+    role: {type: String},
     designation: { type: String },
     jobDescription: { type: String },
     reportingManager: { type: String },
