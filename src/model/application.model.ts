@@ -61,6 +61,7 @@ const applicantSchema = new mongoose.Schema({
         commentBox: {type: String},
         duration: {type: String},
         document:  {type: String},
+        delay: {type: String},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }

@@ -117,7 +117,7 @@ export let deleteAttendence = async (req, res, next) => {
 };
 
 
-export const staffClockInn = async (req, res) => {
+export const staffClockIn = async (req, res) => {
     try {
         const { staffId } = req.body;
         const attendenceDetails: AttendenceDocument = req.body;
@@ -153,13 +153,20 @@ export const staffClockInn = async (req, res) => {
 
 
 export const staffClockOut = async (req, res) => {
+ 
     try {
         const { staffId } = req.body;
+        console.log("77", staffId)
         const today = moment().startOf('day').toDate();
+        console.log("gg", today)
+
+       
         const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
 
         // Find today's attendance record
         let attendance = await Attendence.findOne({ staff: staffId, date: today });
+
+        console.log("kkk", attendance)
 
         if (!attendance) {
             return response(req, res, activity, 'Level-3', 'Update-Check Out', false, 422, {}, "No clock in record found for today");
@@ -203,6 +210,7 @@ export const staffClockOut = async (req, res) => {
 export const staffClockOutt = async (req, res) => {
     try {
         const { staffId } = req.body;
+        console.log("77", staffId)
         const today = moment().startOf('day').toDate();
         const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
 
@@ -241,7 +249,7 @@ export const staffClockOutt = async (req, res) => {
 
 
 
-export const staffClockIn = async (req, res) => {
+export const staffClockInn = async (req, res) => {
     try {
         const { staffId } = req.body;
         console.log("jjj", staffId)
@@ -278,9 +286,10 @@ export const staffClockIn = async (req, res) => {
             date: today,
             status: 'Present',
             late: formattedLateDuration
-        });
+        })
 
         await attendance.save();
+        Attendence.find().sort({ date: -1 })
 
         // Automatically mark previous days as "Absent" if no clockIn/clockOut record exists
 
@@ -307,7 +316,7 @@ export const staffClockIn = async (req, res) => {
                 if (!existingRecord) {
                     await Attendence.create({ ...attendanceDetails,
                         staff: staffId,
-                        date: datee,
+                        date: new Date(datee),
                         status: 'Absent'
                     });
                 }
