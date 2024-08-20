@@ -60,7 +60,7 @@ import Event from '../events/event.routes'
 import Testimonial from '../testimonial/testimonial.routes'
 
 //ELT
-import ELT from '../elt/elt.routes'
+import ELT from '../ELT/elt.routes'
 
 //HRMS
 import Department from '../hrm/routes/department.route';

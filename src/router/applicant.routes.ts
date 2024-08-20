@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
-     getSingleApplicant, updateApplicant} from '../controller/applicant.controller';
+     getSingleApplicant,getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -39,8 +39,8 @@ router.post('/courseApply',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
-    checkRequestBodyParams('_id'),
+    //   checkQuery('_id'),
+     checkRequestBodyParams('_id'),
     updateApplicant
 );
 
@@ -61,7 +61,11 @@ router.put('/getFilterApplicant',
     getFilteredApplication,
 );
 
-
+router.get('/getStudentApplication',
+    basicAuthUser,
+     checkQuery('studentId'),
+    getStudentApplication,
+);
 
 
 export default router

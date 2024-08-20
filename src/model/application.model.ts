@@ -4,7 +4,8 @@ import * as mongoose from 'mongoose'
 export interface ApplicantDocument extends mongoose.Document {
     _id?: any;
     applicationCode?: string;
-    universityId?: any;
+    programId?: any;
+    studentCode?: string;
     studentId?:any;
     name?: string,       
     dob?: string,           
@@ -35,8 +36,9 @@ export interface ApplicantDocument extends mongoose.Document {
 const applicantSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
     applicationCode: { type: String },
-    universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
+    programId: { type: mongoose.Types.ObjectId, ref: 'Program' },
     studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
+    studentCode: { type: String },
     name: {type: String, ref: 'Student'},
     dob: { type: String, ref: 'Student' },
     passportNo: { type: String, ref: 'Student' },
@@ -60,6 +62,7 @@ const applicantSchema = new mongoose.Schema({
         newStatus: {type: String},
         commentBox: {type: String},
         duration: {type: String},
+        progress: {type: String},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},

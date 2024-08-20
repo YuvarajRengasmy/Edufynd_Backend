@@ -32,6 +32,11 @@ export interface PayRollDocument extends mongoose.Document {
     mobileNumber: number;
     designation: string;
     description: string;
+    bankName?: string;
+    bankAccountNo?: string;
+    bankIFSC?: string;
+    bankBranch?: string;
+    pfAccountNo?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -75,6 +80,11 @@ export const payRollSchema = new mongoose.Schema({
     mobileNumber: { type: Number },
     designation: { type: String },
     description:{ type: String },
+    bankName:{type: String},
+    bankAccountNo:{type: String},
+    bankIFSC:{type: String},
+    bankBranch:{type: String},
+    pfAccountNo:{type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

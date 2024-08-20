@@ -373,8 +373,8 @@ export const getProgramsByUniversityName = async (req, res) => {
                     universityLogo: university.universityLogo,
                     country: university.country,
                     programDetails: programs.map(program => ({
-                        programTitle: program.programTitle,
-                        campuses: program.campuses,
+                    programTitle: program.programTitle,
+                    campuses: program.campuses,
                     }))
                 }
             }
@@ -476,16 +476,16 @@ export const getProgramCategory = async (req, res) => {
 }
 
 
-export const getProgramByUniversity = async (req, res) => {
-    const { universityId } = req.query; 
-    try {
-        const universities = await Program.find({ universityName: universityId });
-        response(req, res, activity, 'Level-2', 'Get-Program By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
-    } catch (err) {
-        console.error('Error fetching universities:', err);
-        response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-}
+// export const getProgramByUniversity = async (req, res) => {
+//     const { universityId } = req.query; 
+//     try {
+//         const universities = await Program.find({ universityName: universityId });
+//         response(req, res, activity, 'Level-2', 'Get-Program By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
+//     } catch (err) {
+//         console.error('Error fetching universities:', err);
+//         response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
+//     }
+// }
 
 export const getProgramByCountry = async (req, res) => {
     const { country, inTake } = req.query; 
@@ -501,6 +501,19 @@ export const getProgramByCountry = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Get-University By Country and Intake', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+export const  getProgramByUniversity = async (req, res) => {
+    const {
+        universityId} = req.query; 
+    try {
+        const universities = await University.find({  _id:  universityId });
+        response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
+    } catch (err) {
+        console.error('Error fetching universities:', err);
+        response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+}
+
 
 
 
