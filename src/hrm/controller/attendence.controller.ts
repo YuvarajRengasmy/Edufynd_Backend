@@ -257,9 +257,6 @@ export const staffClockIn = async (req, res) => {
         const today = moment().startOf('day').toDate();
 
 
-        //   // Set today to start of day in UTC to avoid timezone offset issues
-        //   const today = moment.utc().startOf('day').toDate();
-
         const shiftStart = moment().set({ hour: 10, minute: 0, second: 0 }).toDate();
         const lastAttendance = await Attendence.findOne({ staff: staffId }).sort({ clockIn: -1 });
 
