@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
-     getSingleApplicant,getStudentApplication, updateApplicant} from '../controller/applicant.controller';
+     getSingleApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
