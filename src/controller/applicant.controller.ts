@@ -1122,3 +1122,13 @@ export let updateApplicantt = async (req, res, next) => {
 // };
 
 
+export const getStudentApplication = async (req, res) => {
+    try {
+        
+        const data = await Applicant.find({studentId:req.query.studentId})
+  
+        response(req, res, activity, 'Level-1', 'GetSingle-Application', true, 200, data, clientError.success.fetchedSuccessfully)
+    } catch (err: any) {
+        response(req, res, activity, 'Level-1', 'GetSingle-Application', false, 500, {}, errorMessage.internalServer, err.message)
+    }
+}
