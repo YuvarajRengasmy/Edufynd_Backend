@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 
 export interface SourceDocument extends mongoose.Document{
     _id?: any;
-    name?: string;
+    sourceName?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -12,9 +12,9 @@ export interface SourceDocument extends mongoose.Document{
 
 export const sourceSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    name: {type: String},
+    sourceName: {type: String},
 
-    createdOn: { type: Date },
+    createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },

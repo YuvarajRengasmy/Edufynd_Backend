@@ -66,7 +66,7 @@ export let createPaymentIntent = async (req, res) => {
 
         await payment.save();
 
-        res.status(200).json({clientSecret: paymentIntent.client_secret});
+        res.status(200).json({clientSecret: paymentIntent.client_secret, details:payment });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

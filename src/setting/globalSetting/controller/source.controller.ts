@@ -57,7 +57,7 @@ export const updateSource = async (req: any, res:any, next:any) => {
                 { _id: req.query._id },
                 {
                     $set: {
-                        name: sourceDetails.name,
+                        sourceName: sourceDetails.sourceName,
                         modifiedOn: new Date(),
           
                     },
@@ -103,8 +103,8 @@ export let getFilteredSource   = async (req: any, res:any, next:any) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-        if (req.body.name) {
-            andList.push({ name: req.body.name })
+        if (req.body.sourceName) {
+            andList.push({ sourceName: req.body.sourceName })
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
