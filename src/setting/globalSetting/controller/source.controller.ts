@@ -30,12 +30,14 @@ export const getSingleSource = async (req: any, res:any, next:any) => {
 
 
 export let createSource = async (req: any, res:any, next:any) => {
+    console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const sourceDetails: SourceDocument = req.body;
             const createData = new Source(sourceDetails);
             let insertData = await createData.save();
+            console.log("ppp", insertData)
             response(req, res, activity, 'Level-2', 'Create-Source', true, 200, insertData, clientError.success.savedSuccessfully);
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Source', false, 500, {}, errorMessage.internalServer, err.message);

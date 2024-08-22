@@ -89,9 +89,9 @@ export const updatePayment = async (req, res) => {
                }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Payment Details', true, 200, statusData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Payment Details', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Payment Details', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Payment Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
