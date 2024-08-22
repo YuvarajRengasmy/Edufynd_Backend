@@ -8,6 +8,12 @@ var activity = "Campaign";
 
 
 
+
+
+
+
+
+
 export const getAllCampaign = async (req, res) => {
     try {
         const data = await Campaign.find().sort({ _id: -1 })

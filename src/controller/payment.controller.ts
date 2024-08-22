@@ -2,10 +2,7 @@ import { Payment, PaymentDocument } from '../model/payment.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-
-const Stripe = require('stripe');
-const stripekey = Stripe('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');
-
+const Stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 var activity = "Payment";
 
 
@@ -50,7 +47,7 @@ export let createPayment = async (req, res, next) => {
 
 
 export let createPaymentIntent = async (req, res) => {
-    const { amount, currency } = req.body;
+    const { amount, currency, studentId } = req.body;
 
     try {
         const paymentIntent = await Stripe.paymentIntents.create({
@@ -60,7 +57,7 @@ export let createPaymentIntent = async (req, res) => {
 
         // Save the payment details in your database
         const payment = new Payment({
-            userId: req.user._id,
+            studentId: studentId,
             amount,
             currency: currency || 'usd',
             stripePaymentId: paymentIntent.id,
@@ -69,7 +66,7 @@ export let createPaymentIntent = async (req, res) => {
 
         await payment.save();
 
-        res.status(200).json({clientSecret: paymentIntent.client_secret});
+        res.status(200).json({clientSecret: paymentIntent.client_secret, details:payment });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

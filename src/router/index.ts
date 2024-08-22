@@ -17,6 +17,7 @@ import Staff from './staff.routes'
 import Blog from '../blogs/blogs.routes'
 import Commission from './commission.routes'
 import Demo from './demo.routes'
+import Payment from './payment.routes'
 
 
 
@@ -60,7 +61,7 @@ import Event from '../events/event.routes'
 import Testimonial from '../testimonial/testimonial.routes'
 
 //ELT
-import ELT from '../ELT/elt.routes'
+import ELT from '../elt/elt.routes'
 
 //HRMS
 import Department from '../hrm/routes/department.route';
@@ -115,6 +116,7 @@ router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
 router.use('/chat', Chat)
+router.use('/payment', Payment)
 
 
 //All Enquiry API
