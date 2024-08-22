@@ -2,10 +2,7 @@ import { Payment, PaymentDocument } from '../model/payment.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-
-const Stripe = require('stripe');
-const stripekey = Stripe('sk_test_tR3PYbcVNZZ796tH88S4VQ2u');
-
+const Stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 var activity = "Payment";
 
 
@@ -50,7 +47,7 @@ export let createPayment = async (req, res, next) => {
 
 
 export let createPaymentIntent = async (req, res) => {
-    const { amount, currency } = req.body;
+    const { amount, currency, studentId } = req.body;
 
     try {
         const paymentIntent = await Stripe.paymentIntents.create({
@@ -60,7 +57,7 @@ export let createPaymentIntent = async (req, res) => {
 
         // Save the payment details in your database
         const payment = new Payment({
-            userId: req.user._id,
+            studentId: studentId,
             amount,
             currency: currency || 'usd',
             stripePaymentId: paymentIntent.id,
