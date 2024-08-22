@@ -52,7 +52,7 @@ export let createCommission = async (req, res, next) => {
                 response(req, res, activity, 'Level-3', 'Create-Commission', true, 422, {}, 'University Name already registered for Commission');
             }
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Commission', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Create-Commission', false, 500, {}, errorMessage.fieldValidation, err.message);
         }
     
     } else {
