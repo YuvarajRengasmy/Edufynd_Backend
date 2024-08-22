@@ -4,7 +4,7 @@ import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 
 const Stripe = require('stripe');
-const stripekey = Stripe('sk_test_tR3PYbcVNZZ796tH88S4VQ2u');
+const stripekey = Stripe('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');
 
 var activity = "Payment";
 
