@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": " ",
   "main": "app.ts",
-  "scripts": {
+   "scripts": {
     "build": "tsc",
     "start": "set NODE_ENV=production && ts-node-dev ./src/bin/server.ts",
     "dev": "set NODE_ENV=local&&  ts-node-dev --max-old-space-size=2048 ./src/bin/server.ts --fast",
