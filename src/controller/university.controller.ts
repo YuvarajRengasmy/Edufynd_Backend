@@ -360,7 +360,7 @@ export const csvToJson = async (req, res) => {
                 universityCode: universityCode,
                 universityName: data.UniversityName,
                 universityLogo: data.UniversityLogo,
-                courseType: data.CourseType,
+                courseType: data.CourseType ? data.CourseType.split(',') : [],
                 businessName: data.BusinessName,
                 banner: data.Banner,
                 country: data.Country,

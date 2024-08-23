@@ -1,0 +1,77 @@
+Country,University Name,Founded,Institution Type,Campus,Email,Website,Ranking,Course Type,Application Fees,Application Fees Waiver,Cost of Living,Average Fees,Popular Categories,Admission Requirement,Offer TAT,About,Academic Requirement
+United Kingdom,Staffordshire University,1992,Public,"Stoke-on-Trent, Staffordshire",enquiries@staffs.ac.uk,(link unavailable),78th (The Guardian University Guide 2022),"Undergraduate, Postgraduate, Research","£13 (UG), £20 (PG)",Available for some programs,"£8,000 - £10,000 per year","£14,500 (UG), £12,500 (PG)","Business, Education, Health, Computing","50% (UG), 45% (PG)",2-4 weeks,"Modern UK university, strong industry links, diverse community","Standard XII (UG), Bachelor's degree (PG)"
+UK,Northumbria University,1969,public,"London,New castle,Northumbria",@northumbria.ac.uk,www.northumbria.ac.uk,35,"UG,PG",NIL,NIL,"£13,790","£11,400","Design,Engineering,Computing,Business,Accounting","IELTS: 6.0 (with no band less than 5.5),TOEFL: 80 (with no section less than 16), PTE: 54 (with no component les",2-4 weeks,"Northumbria University is a public research university located in Newcastle upon Tyne, England, with a rich history dating back to 1969. Initially founded as the Newcastle Polytechnic, it gained university status in 1992 and was renamed the University of Northumbria. In 2002, it was rebranded as Northumbria University, reflecting its growing reputation and academic excellence.","70-80% (HSC) for UG,50-60% (UG)"
+UK,University of East london,1963,UK,"Norwich, England, UK",international@uel.ac.uk.,www.uel.ac.uk,88,"UG,PG",NIL,,"£12,000","£13,750","Business and Management,Computing and Information Technology,Engineering,Health and Social Care,Law,Psychology",IELTS score of 5.5-6.0 for UG and 6.0-6.5 PG,2-4 weeks,"University of East London (UEL): Diverse, vibrant, and inclusive institution offering quality education and research opportunities in London's East End.","60-70% or above HSC,50-60% UG"
+UK,University of Stirling,1967,public,"Scotland, UK",ask@stir.ac.uk,www.stir.ac.uk,40,"UG,PG",NIL,NIL,"£17,400","£13,650","Arts and science,Engineering,Businees,Education,Social science",IELTS: 6.0 overall (5.5 in each band),2-4 weeks,"Scottish university offering academic excellence, research opportunities, and a vibrant campus life since 1967.","Minimum 65% UG,Miimum 55% PG"
+UK,University of Leicester,1921,public,"Leicester, England, UK",study@le.ac.uk,www.le.ac.uk,24,"UG,PG",NIL,NIL,"£23,620","£18,445","Aeronautical & Aerospace Engineering,Archaeology,Biological Sciences,Biomedical Sciences,Chemistry,Classics","IELTS UG 6.0 overall (5.5 in each band, PG 6.5 overall (6.0 in each band)",2-4 weeks,"A leading UK university, founded in 1921, offering academic excellence, research opportunities, and a diverse community.","65% in HSC, 55% in UG"
+UK,University of west london,1860,public,"Ealing, London, UK",student.services@uwl.ac.uk.,www.uwl.ac.uk,34,"UG,PG",NIL,NIL,"£18,300","£18,300","Business and Management,Computing and Information Technology,Engineering,Health and Social Care,Law,Psychology","IELTS UG 6.0 overall (5.5 in each band)
+ ,PG 6.5 overall (6.0 in each band)",2-4 weeks,"A modern UK university, offering industry-led courses, research opportunities, and a diverse community in London.","60% in HSC ,50% in UG"
+UK,University of Sunderland,1901,public,"Sunderland, Tyne and Wear, UK",student.helpline@sunderland.ac.uk,www.sunderland.ac.uk,77,"UG,PG",NIL,NIL,"£21,500","£17,500","Arts and science,Engineering,Businees,Education,Social science","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-4 weeks,"A modern UK university, offering industry-led courses, research opportunities, and a supportive community in North East England.","55% in HSC ,50% in UG"
+UK,Nottingham Trent University,1843,public,"Nottingham, England, UK",student.support@ntu.ac.uk,www.ntu.ac.uk,16,"UG,PG",NIL,NIL,"£21,250","£18,250","Accounting, finance and economics,Agriculture and food science,Animal, equine and wildlife,Architecture and civil engineering,Art and design","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-4 weeks,"A modern UK university, offering industry-led courses, research opportunities, and a vibrant student experience in Nottingham.","60% in HSC ,55% in UG"
+UK,Birmingham City University,1843,public,"Birmingham, England, UK",welcome@contacts.bham.ac.uk.,www.bcu.ac.uk,26,"UG,PG",NIL,NIL,"£21,000","£18,000","Arts, Design, and Media,Business, Law, and Social Sciences,Computing, Engineering and Built Environment,Education, Health, and Wellbeing,Life Scie","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-4 weeks,"Birmingham University, a leading UK institution, offers diverse programs, strong research, and vibrant campus life in a dynamic city.","55% in HSC ,50% in UG"
+UK,Leeds Beckett University,1824,public,"Leeds, West Yorkshire, England, UK",studentadvice@leedsbeckett.ac.uk,www.leedsbeckett.ac.uk,108,"UG,PG",NIL,NIL,"£20,500","£16,500","Arts and Humanities,Business and Management,Computing, Creative Technologies and Engineering,Education,Health and Social Sciences,Law,Sport","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-4 weeks,"Offering industry-led courses, research opportunities, and a vibrant student experience in the heart of Leeds.","50% in HSC ,40% in UG"
+UK,University of Chester,1839,public,"Chester, Cheshire, England, UK",@chester.ac.uk,www.chester.ac.uk,76,"UG,PG",NIL,NIL,"£19,000","£15,000","Business and Management,Education,Health and Social Care,Law,Sciences,Social Sciences","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-4 weeks,"A historic UK university, famous for its academic excellence, research opportunities, and stunning campus locations in Chester and Warrington.","50% in HSC ,45% in UG"
+UK,University of Cumbria,2007,public,"Carlisle, Cumbria, England, UK",@cumbria.ac.uk,www.cumbria.ac.uk,,"UG,PG",NIL,NIL,"£17,500","£14,500","Accounting, finance and economics,Agriculture and food science,Animal, equine and wildlife,Architecture and civil engineering,Art and design","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-4 weeks,"Famous for its stunning lake district location, academic excellence, and strong industry partnerships in Cumbria.","50% in HSC ,45% in UG"
+UK,Manchester Metropolitan University,1970,Public,Manchester,enquiries@mmu.ac.uk,www.mmu.ac.uk,56,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Business, Art & Design","IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"Manchester Metropolitan University offers innovative programs, strong industry links, and a vibrant student community in the heart of Manchester.","60% in HSC ,50% in UG"
+UK,Heriot-Watt University,1821,Public,Edinburgh,enquiries@hw.ac.uk,www.hw.ac.uk,301-350,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Business, Engineering","Undergraduate programs: IELTS 6.0 overall with no band less than 5.5
+Postgraduate programs: IELTS 6.5 overall with no band less than 6.0",2-3 weeks,"Heriot-Watt University: Established in 1821, a public university in Edinburgh, Scotland, offering undergraduate and postgraduate programs in business, engineering, textiles, and more, with a strong global reputation.","70% in HSC ,60% in UG"
+UK,University of Manchester,1824,Public,Manchester,enquiries@manchester.ac.uk,www.manchester.ac.uk,27,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Business","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"
+University of Manchester: A prestigious Russell Group university since 1824, offering undergraduate and postgraduate programs in humanities, science, engineering, and medicine, with a strong research focus and global reputation.","80% in HSC ,60% in UG"
+UK,University College London,1826,Public,London,admissions@ucl.ac.uk,www.ucl.ac.uk,8,"UG, PG",£20-£50,Yes,"£1,200-£1,800","£10,000-£24,000","Law, Medicine","IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"University College London (UCL): A world-leading research university, founded in 1826, offering undergraduate and postgraduate programs in humanities, sciences, engineering, and medicine, with a strong focus on innovation, diversity, and global impact.","80% in HSC ,65% in UG"
+UK,University of Edinburgh,1583,Public,Edinburgh,enquiries@ed.ac.uk,www.ed.ac.uk,20,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Medicine","IELTS 
+ UG 6.5 overall (5.0 in each band)
+ PG 7.0 overall (6.0 in each band)",2-3 weeks,"Scotland's oldest university (founded in 1583), offering undergraduate and postgraduate programs in arts, humanities, sciences, engineering, and medicine, with a strong research focus and global reputation.","80% in HSC ,65% in UG"
+UK,Loughborough College,1909,Public,Loughborough,enquiries@loucoll.ac.uk,www.loucoll.ac.uk,-,"UG, PG",£20-£50,Yes,"£800-£1,200","£6,000-£12,000","Art & Design, Business","IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"A leading further education provider in Leicestershire, UK, offering vocational and academic courses, apprenticeships, and higher education programs in various fields, with a focus on employability and skills development.","70% in HSC ,55% in UG"
+UK,University of Glasgow,1451,Public,Glasgow,enquiries@glasgow.ac.uk,www.gla.ac.uk,77,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Medicine","IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"University of Glasgow: A world-leading research university, founded in 1451, offering undergraduate and postgraduate programs in arts, humanities, social sciences, sciences, engineering, and medicine, with a strong focus on innovation and global impact.","80% in HSC ,65% in UG"
+UK,University of Birmingham,1900,Public,Birmingham,admissions@bham.ac.uk,www.birmingham.ac.uk,81,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Engineering","IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,A prestigious Russell Group university known for its strong research output and diverse range of undergraduate and postgraduate programs across various disciplines.,"70% in HSC ,55% in UG"
+UK,University of Leeds,1874,Public,Leeds,admissions@leeds.ac.uk,www.leeds.ac.uk,93,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-",,"IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",,"Renowned for its research excellence and vibrant student community, offering a wide array of courses and strong connections with industry and professional organizations.","70% in HSC ,55% in UG"
+UK,Lancaster University,1964,Public,Lancaster,admissions@lancaster.ac.uk,www.lancaster.ac.uk,135,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Business, Engineering","IELTS 
+ UG 6.0 overall (5.0 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"Known for its high-quality teaching and research, Lancaster offers a supportive learning environment and a beautiful campus setting in North West England.","70% in HSC ,55% in UG"
+UK,University of Exeter,1955,Public,Exeter,admissions@exeter.ac.uk,www.exeter.ac.uk,164,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Medicine","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"A top-ranked university with a focus on research-led teaching and a strong commitment to student experience, located in the picturesque South West of England.","70% in HSC ,60% in UG"
+UK,University of York,1963,Public,York,admissions@york.ac.uk,www.york.ac.uk,148,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, History","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"An internationally recognized institution offering a broad range of high-quality courses, known for its research excellence and supportive student environment.","70% in HSC ,55% in UG"
+UK,Cardiff University,1883,Public,Cardiff,admissions@cardiff.ac.uk,www.cardiff.ac.uk,166,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Medicine","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,A leading research university in Wales with a diverse range of programs and a strong emphasis on student support and community engagement.,"60% in HSC ,50% in UG"
+UK,Loughborough University,1909,Public,Loughborough,admissions@lboro.ac.uk,www.lboro.ac.uk,251,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Engineering, Business","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"Celebrated for its excellent teaching, research facilities, and strong industry links, Loughborough provides a dynamic and supportive learning environment.","60% in HSC ,50% in UG"
+UK,Newcastle University,1834,Public,Newcastle,admissions@ncl.ac.uk,www.ncl.ac.uk,146,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Law, Medicine","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"A prestigious member of the Russell Group, known for its world-class research, innovative teaching, and vibrant student life in the heart of Newcastle upon Tyne.","60% in HSC ,50% in UG"
+UK,University of Lincoln,1861,Public,Lincoln,admissions@lincoln.ac.uk,www.lincoln.ac.uk,301-350,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Business, Art & Design","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"Recognized for its industry-focused programs and modern campus, Lincoln offers a supportive and engaging learning environment with strong connections to local businesses.","70% in HSC ,55% in UG"
+UK,University of Huddersfield,1992,Public,Huddersfield,admissions@hud.ac.uk,www.hud.ac.uk,601-650,"UG, PG",£20-£50,Yes,"£800-£1,200","£10,000-£18,000","Business, Engineering","IELTS 
+ UG 6.0 overall (5.5 in each band)
+ PG 6.5 overall (6.0 in each band)",2-3 weeks,"Known for its high-quality teaching, strong research output, and vibrant student community, Huddersfield offers a supportive and innovative academic environment.","70% in HSC ,55% in UG"

@@ -18,7 +18,7 @@ export const getAllAttendence = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetAll-Attendence', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-Attendence', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-2', 'GetAll-Attendence', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 
@@ -120,19 +120,17 @@ export let deleteAttendence = async (req, res, next) => {
 export const staffClockIn = async (req, res) => {
     try {
         const { staffId } = req.body;
-        const attendenceDetails: AttendenceDocument = req.body;
+        console.log("jjj", staffId)
+        const attendanceDetails: AttendenceDocument = req.body;
         const today = moment().startOf('day').toDate();
         const shiftStart = moment().set({ hour: 10, minute: 0, second: 0 }).toDate();
-        const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
-
+        const lastAttendance = await Attendence.findOne({ employeeId: staffId }).sort({ clockIn: -1 }).limit(1);
+    
         // Check if there's already an attendance record for today
-        let attendance = await Attendence.findOne({ staff: staffId, date: today, });
-
-
+        let attendance = await Attendence.findOne({ employeeId: staffId, date: today });
         if (attendance) {
             return response(req, res, activity, 'Level-3', 'Update-Check In', false, 422, {}, "Already clocked in today");
         }
-
         const clockInTime = new Date();
         let lateDuration = 0;
 
@@ -142,14 +140,54 @@ export const staffClockIn = async (req, res) => {
         }
         const formattedLateDuration = `${Math.floor(lateDuration / 60)}h ${lateDuration % 60}min`;
 
-        attendance = new Attendence({ ...attendenceDetails, clockIn: clockInTime, date: today, status: 'Present', late: formattedLateDuration })
+        // Create a new attendance record with status "Present"
+        attendance = new Attendence({
+            ...attendanceDetails,
+            clockIn: clockInTime,
+            date: today,
+            status: 'Present',
+            late: formattedLateDuration
+        })
 
         await attendance.save();
+        // Automatically mark previous days as "Absent" if no clockIn/clockOut record exists
+        if (lastAttendance) {
+            const lastDate = moment(lastAttendance.clockIn, 'DD.MM.YYYY').startOf('day');
+            const currentDate = moment(today, 'DD.MM.YYYY').startOf('day');
+
+            console.log("55", lastDate)
+            console.log("44", currentDate)
+
+            const missingDates = [];
+            for (let date = lastDate.clone().add(1, 'day'); date.isBefore(currentDate); date.add(1, 'day')) {
+                missingDates.push(date.clone().startOf('day').format('YYYY-MM-DD')); // Capture only the date in 'YYYY-MM-DD' format
+            }
+
+            console.log("88", missingDates)
+            // Insert "Absent" records for missing dates, checking if there was no clockIn
+            for (const datee of missingDates) {
+                console.log("lll", datee)
+                const existingRecord = await Attendence.findOne({ employeeId: staffId, date: datee });
+                if (!existingRecord) {
+                    await Attendence.create({
+                        ...attendanceDetails,
+                        staff: staffId,
+                        date: new Date(datee),
+                        status: 'Absent',
+                        clockIn: null, // Set clockIn to 0 for "Absent" status
+                        clockOut: null // Set clockOut to 0 for "Absent" status
+                    });
+                }
+            }
+        }
+
         return response(req, res, activity, 'Level-2', 'Update-Check In', true, 200, attendance, "Clocked in successfully");
     } catch (err) {
+        console.log(err)
         return response(req, res, activity, 'Level-3', 'Update-Check In', false, 500, {}, 'Internal server error.', err.message);
     }
 };
+
 
 
 export const staffClockOut = async (req, res) => {
@@ -159,15 +197,10 @@ export const staffClockOut = async (req, res) => {
         console.log("77", staffId)
         const today = moment().startOf('day').toDate();
         console.log("gg", today)
-
-
         const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
 
         // Find today's attendance record
         let attendance = await Attendence.findOne({ staff: staffId, date: today });
-
-        console.log("kkk", attendance)
-
         if (!attendance) {
             return response(req, res, activity, 'Level-3', 'Update-Check Out', false, 422, {}, "No clock in record found for today");
         }
@@ -206,67 +239,23 @@ export const staffClockOut = async (req, res) => {
 
 
 ///////
-//totalwork correction
-export const staffClockOutt = async (req, res) => {
-    try {
-        const { staffId } = req.body;
-        console.log("77", staffId)
-        const today = moment().startOf('day').toDate();
-        const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
-
-        // Find today's attendance record
-        let attendance = await Attendence.findOne({ staff: staffId, date: today });
-
-        if (!attendance) {
-            return response(req, res, activity, 'Level-3', 'Update-Check Out', false, 422, {}, "No clock in record found for today");
-        }
-
-        const clockOutTime = new Date();
-        let earlyLeavingDuration = 0;
-
-        // Calculate early leaving duration if clocking out before shift end time
-        if (clockOutTime < shiftEnd) {
-            earlyLeavingDuration = moment(shiftEnd).diff(moment(clockOutTime), 'minutes');
-        }
-
-        const formattedEarlyLeavingDuration = `${Math.floor(earlyLeavingDuration / 60)}h ${earlyLeavingDuration % 60}min`;
-
-        // Update the clockOut time and calculate total work hours
-        attendance.clockOut = clockOutTime
-        const diff = moment(attendance.clockOut).diff(moment(attendance.clockIn), 'hours', true);
-        const hours = `${(diff % 60).toFixed(2)}min`;
-        // const hours = `${Math.floor(diff / 60)}h ${(diff % 60).toFixed(2)}min`;
-        attendance.totalWork = hours;
-        attendance.earlyLeaving = formattedEarlyLeavingDuration;
-        await attendance.save();
-
-        return response(req, res, activity, 'Level-2', 'Update-Check Out', true, 200, attendance, "Clocked out successfully");
-    } catch (err) {
-        return response(req, res, activity, 'Level-3', 'Update-Check Out', false, 500, {}, 'Internal server error.', err.message);
-    }
-};
-
-
-
 
 export const staffClockInn = async (req, res) => {
     try {
         const { staffId } = req.body;
-        console.log("jjj", staffId)
-        const attendanceDetails: AttendenceDocument = req.body;
+        const attendenceDetails: AttendenceDocument = req.body;
         const today = moment().startOf('day').toDate();
-
-
         const shiftStart = moment().set({ hour: 10, minute: 0, second: 0 }).toDate();
-        const lastAttendance = await Attendence.findOne({ staff: staffId }).sort({ clockIn: -1 });
+        const shiftEnd = moment().set({ hour: 19, minute: 0, second: 0 }).toDate();
 
-        console.log("ddd", today)
         // Check if there's already an attendance record for today
-        let attendance = await Attendence.findOne({ staff: staffId, date: today });
+        let attendance = await Attendence.findOne({ staff: staffId, date: today, });
+
 
         if (attendance) {
             return response(req, res, activity, 'Level-3', 'Update-Check In', false, 422, {}, "Already clocked in today");
         }
+
         const clockInTime = new Date();
         let lateDuration = 0;
 
@@ -276,64 +265,11 @@ export const staffClockInn = async (req, res) => {
         }
         const formattedLateDuration = `${Math.floor(lateDuration / 60)}h ${lateDuration % 60}min`;
 
-        // Create a new attendance record with status "Present"
-        attendance = new Attendence({
-            ...attendanceDetails,
-            clockIn: clockInTime,
-            date: today,
-            status: 'Present',
-            late: formattedLateDuration
-        })
+        attendance = new Attendence({ ...attendenceDetails, clockIn: clockInTime, date: today, status: 'Present', late: formattedLateDuration })
 
         await attendance.save();
-
-
-        // Automatically mark previous days as "Absent" if no clockIn/clockOut record exists
-
-        console.log("qq", lastAttendance)
-
-        if (lastAttendance) {
-            const lastDate = moment(lastAttendance.clockIn, 'DD.MM.YYYY').startOf('day');
-            const currentDate = moment(today, 'DD.MM.YYYY').startOf('day');
-
-            console.log("55", lastDate)
-            console.log("44", currentDate)
-
-            // Generate all dates between lastDate and today, excluding today
-            // const missingDates = [];
-            // for (let date = lastDate.clone().add(1, 'day'); date.isBefore(currentDate); date.add(1, 'day')) {
-            //     missingDates.push(date.clone().toISOString(true)); // Use toISOString(true) to keep the timezone
-            // }
-
-
-            const missingDates = [];
-            for (let date = lastDate.clone().add(1, 'day'); date.isBefore(currentDate); date.add(1, 'day')) {
-                missingDates.push(date.clone().startOf('day').format('YYYY-MM-DD')); // Capture only the date in 'YYYY-MM-DD' format
-            }
-
-            console.log("88", missingDates)
-            // Insert "Absent" records for missing dates, checking if there was no clockIn
-            for (const datee of missingDates) {
-                console.log("lll", datee)
-                const existingRecord = await Attendence.findOne({ staff: staffId, date: datee });
-                if (!existingRecord) {
-                    await Attendence.create({
-                        ...attendanceDetails,
-                        staff: staffId,
-                        date: new Date(datee),
-                        status: 'Absent',
-                        clockIn: null, // Set clockIn to 0 for "Absent" status
-                        clockOut: null // Set clockOut to 0 for "Absent" status
-                    });
-                }
-            }
-        }
-
         return response(req, res, activity, 'Level-2', 'Update-Check In', true, 200, attendance, "Clocked in successfully");
     } catch (err) {
-        console.log(err)
         return response(req, res, activity, 'Level-3', 'Update-Check In', false, 500, {}, 'Internal server error.', err.message);
     }
 };
-
-

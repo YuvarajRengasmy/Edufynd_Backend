@@ -42,7 +42,7 @@ export const getViewStaffPayRoll = async (req, res) => {
 }
 
 
-export let createPayRolll = async (req, res, next) => {
+export let createPayRoll = async (req, res, next) => {
 
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -68,16 +68,12 @@ export let createPayRolll = async (req, res, next) => {
             const ctc = Number((Number(payRollDetails.basicAllowance || 0) + Number(payRollDetails.hra || 0) + Number(payRollDetails.conveyance || 0) + Number(totalAllowance)));
             payRollDetails.grossSalary = ctc;
 
-
-
             // Performance Allowance: 10% of Gross Salary
             const performanceAllowance = payRollDetails.grossSalary * 0.1;
 
             // Add PF deduction to the total deduction
             const deduction = Number((Number(payRollDetails.pf || 0) + Number(payRollDetails.performanceDeduction || 0) + Number(payRollDetails.taxDeduction || 0) + Number(totalDeduct)));
             payRollDetails.totalDeduction = deduction;
-
-
 
             // Calculate net salary
             const netSalaryWithDeductions = Number(payRollDetails.grossSalary - payRollDetails.totalDeduction);
@@ -105,7 +101,6 @@ export let createPayRolll = async (req, res, next) => {
             await payroll.save();
             response(req, res, activity, 'Level-1', 'Create-PayRoll', true, 200, payroll, "Payroll created successfully");
         } catch (err) {
-
             response(req, res, activity, 'Level-2', 'Create-PayRoll', false, 500, {}, errorMessage.internalServer, err.message)
         }
     } else {
@@ -113,7 +108,9 @@ export let createPayRolll = async (req, res, next) => {
     }
 };
 
-export let createPayRoll = async (req, res, next) => {
+
+
+export let createPayRolli = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -152,7 +149,12 @@ export let createPayRoll = async (req, res, next) => {
 
             // Attendeance Calculation
             const attendenceDetails: AttendenceDocument = req.body;
-            const active = await Attendence.findOne({ employeeId: req.query.employeeId });
+            // const active = await Attendence.findOne({ employeeId: req.query.employeeId });
+
+            const { staffId } = req.body;
+            console.log("jjj", staffId)
+
+            const active = await Attendence.findOne({ employeeId: staffId});
 
             if (!active) {
                 return response(req, res, activity, 'Level-3', 'Employee Not Found', false, 404, {}, "Not Found the Employee");
@@ -161,7 +163,10 @@ export let createPayRoll = async (req, res, next) => {
             let startDate = new Date(req.body.startDate);
             let endDate = new Date(req.body.endDate);
             // Attendance Calculation
-            const attendence = await Attendence.find({employeeId: req.query.employeeId, date: { $gte: startDate, $lte: endDate }});
+
+            // const attendence = await Attendence.find({employeeId: req.query.employeeId, date: { $gte: startDate, $lte: endDate }});
+
+            const attendence = await Attendence.find({employeeId: staffId, date: { $gte: startDate, $lte: endDate }})
             // Calculate the number of days between startDate and endDate (inclusive)
             let presentDays = 0;
             let absentDays = 0;

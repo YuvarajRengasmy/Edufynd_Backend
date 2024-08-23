@@ -18,6 +18,7 @@ import Blog from '../blogs/blogs.routes'
 import Commission from './commission.routes'
 import Demo from './demo.routes'
 import Payment from './payment.routes'
+import DialCode from './dialCode.routes'
 
 
 
@@ -117,6 +118,7 @@ router.use('/commission', Commission)
 router.use('/demo', Demo)
 router.use('/chat', Chat)
 router.use('/payment', Payment)
+router.use('/dialCode', DialCode)
 
 
 //All Enquiry API
