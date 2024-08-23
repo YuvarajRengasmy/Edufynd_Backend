@@ -13,7 +13,7 @@ var activity = "Attendence";
 
 export const getAllAttendence = async (req, res) => {
     try {
-        const data = await Attendence.find().sort({ _id: -1 })
+        const data = await Attendence.find().sort({ date: -1 })
 
         response(req, res, activity, 'Level-1', 'GetAll-Attendence', true, 200, data, clientError.success.fetchedSuccessfully)
 
@@ -175,7 +175,8 @@ export const staffClockIn = async (req, res) => {
                         date: new Date(datee),
                         status: 'Absent',
                         clockIn: null, // Set clockIn to 0 for "Absent" status
-                        clockOut: null // Set clockOut to 0 for "Absent" status
+                        clockOut: null, // Set clockOut to 0 for "Absent" status
+                        earlyLeaving: null
                     });
                 }
             }
