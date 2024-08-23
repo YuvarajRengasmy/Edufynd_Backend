@@ -95,7 +95,7 @@ export let getFilteredAttendence = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const attendencetList = await Attendence.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate("employeeId", { empName: 1 })
+        const attendencetList = await Attendence.find(findQuery).sort({ date: -1 }).limit(limit).skip(page).populate("employeeId", { empName: 1 })
         const attendenceCount = await Attendence.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Attendence', true, 200, { attendencetList, attendenceCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
