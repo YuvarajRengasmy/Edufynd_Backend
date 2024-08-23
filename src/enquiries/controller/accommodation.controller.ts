@@ -4,7 +4,7 @@ import { response} from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
 
 
-var activity = "AccommodationEnquiry";
+var activity = "Accommodation_Enquiry";
 
 
 
@@ -13,7 +13,7 @@ export let getAllAccommodation = async (req, res, next) => {
         const data = await Accommodation.find({ isDeleted: false }).sort({ accommodationID: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-AccommodationEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-AccommodationEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-AccommodationEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -23,7 +23,7 @@ export let getSingleAccommodation = async (req, res, next) => {
         const accommodation = await Accommodation.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-AccommodationEnquiry', true, 200, accommodation, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Single-AccommodationEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Single-AccommodationEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
@@ -60,9 +60,9 @@ export let createAccommodation = async (req, res, next) => {
             const createData = new Accommodation(accommodationDetails);
             let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-2', 'Accommodation Enquiry-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+            response(req, res, activity, 'Level-1', 'Accommodation Enquiry-Created', true, 200, insertData, clientError.success.registerSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Accommodation Enquiry-Created', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Accommodation Enquiry-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -100,10 +100,10 @@ export let updateAccommodation = async (req, res, next) => {
                 }
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Accommodation Enquiry Details', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Accommodation Enquiry Details', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Accommodation Enquiry Details', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Accommodation Enquiry Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -118,10 +118,10 @@ export let deleteAccommodationEnquiry = async (req, res, next) => {
         let id = req.query._id;
         const loan = await Accommodation.findByIdAndDelete({ _id: id })
 
-        response(req, res, activity, 'Level-2', 'Delete-Accommodation Enquiry Details', true, 200, loan, 'Successfully Remove Accommodation Enquiry Details');
+        response(req, res, activity, 'Level-1', 'Delete-Accommodation Enquiry Details', true, 200, loan, 'Successfully Remove Accommodation Enquiry Details');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-Accommodation Enquiry Details', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Delete-Accommodation Enquiry Details', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -156,7 +156,7 @@ export let getFilteredAccommodation = async (req, res, next) => {
         const accommodationCount = await Accommodation.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Accommodation Enquiry', true, 200, { accommodationList, accommodationCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Filter Accommodation Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Filter Accommodation Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 

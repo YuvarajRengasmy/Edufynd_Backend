@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface PaymentDocument extends mongoose.Document {
-    userId?: any;
+    studentId?: any;
     amount?: number;
     currency?: string;
     stripePaymentId?: string;
@@ -16,8 +16,8 @@ export interface PaymentDocument extends mongoose.Document {
 }
 
 const paymentSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    amount: { type: Number, required: true },
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student'},
+    amount: { type: Number},
     currency: { type: String, required: true, default: 'usd' },
     stripePaymentId: { type: String },
     status: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' },
