@@ -10,7 +10,9 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     dob?: string;
     passportNo?: string;
     email?: string;
+    dial1?: string;
     primaryNumber?: string;
+    dial2?: string;
     whatsAppNumber?: string;
     qualification?: string;
     yearPassed?: string;
@@ -47,7 +49,9 @@ const studentEnquirySchema = new mongoose.Schema({
     dob: { type: Date },
     passportNo: { type: String },
     qualification: { type: String },
+    dial1: {type: String},
     whatsAppNumber: { type: String },
+    dial2:{type: String},
     primaryNumber: { type: String },
     email: { type: String },
     cgpa: { type: String },

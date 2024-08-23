@@ -7,6 +7,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
+    dial?: string;
     mobileNumber?: number;  
     message?: string;
     createdOn?: Date;
@@ -22,6 +23,7 @@ const businessEnquirySchema = new mongoose.Schema({
     universityName: {type: String},
     name: {type: String},
     email: {type: String},
+    dial: {type: String},
     mobileNumber: {type: Number},
     message: {type: String},
     createdOn: { type: Date, default: Date.now() },

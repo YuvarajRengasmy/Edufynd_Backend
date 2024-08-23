@@ -6,6 +6,7 @@ export interface AdminDocument extends mongoose.Document{
     name?: string;
     adminCode?: string;
     email?: string;
+    dial?: string;
     mobileNumber?: number;  
     password?: string;
     confirmPassword?: string;
@@ -32,6 +33,7 @@ const adminSchema = new mongoose.Schema({
     name: {type: String},
     adminCode: {type: String},
     email: { type: String},
+    dial:{type: String},
     mobileNumber: {type: Number},   
     password: {type: String},
     confirmPassword: {type: String},

@@ -7,6 +7,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
+    dial?: string;
     mobileNumber?: number;   
     message?: string;
     typeOfUser?: string;
@@ -23,6 +24,7 @@ const generalEnquirySchema = new mongoose.Schema({
     universityName: {type: String},
     name: {type: String},
     email: {type: String},
+    dial:{type: String},
     mobileNumber: {type: Number},
     message: {type: String},
     typeOfUser: {type: String},

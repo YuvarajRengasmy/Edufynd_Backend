@@ -8,7 +8,9 @@ export interface AgentDocument extends mongoose.Document {
   agentName?: string;
   businessName?: string;
   email?: string;
-  mobileNumber?: number;  
+  dial1?: string;
+  mobileNumber?: number;
+  dial2?: string;  
   whatsAppNumber?: number; 
   addressLine1?: string;
   addressLine2?: string;
@@ -18,6 +20,7 @@ export interface AgentDocument extends mongoose.Document {
   panNumberIndividual?: string;
   panNumberCompany?: string; 
   staffName?: string;
+  dial3?: string;
   staffContactNo?: number;  
   // Bank Details
   accountName?: string;
@@ -47,6 +50,7 @@ export interface AgentDocument extends mongoose.Document {
   state?: string;
   country?: string;
   registrationNo?: string;
+  dial4?: string;
   whatsApp?: number;
   accountType?: string;
   swift?: string;
@@ -69,7 +73,10 @@ const agentSchema = new mongoose.Schema({
   addressLine2: { type: String },
   addressLine3: { type: String },
   email: { type: String },
+
+  dial1: {type: String},
   mobileNumber: { type: Number },
+  dial2: {type: String},
   whatsAppNumber: { type: Number },
   // Bank Details
   accountName: { type: String },
@@ -82,6 +89,7 @@ const agentSchema = new mongoose.Schema({
   gstn: { type: String },
   inc: { type: String }, 
   staffName: { type: String },
+  dial3: {type: String},
   staffContactNo: { type: Number },
   agentsCommission: { type: Number },  
   agentBusinessLogo: { type: String },  
@@ -99,6 +107,7 @@ const agentSchema = new mongoose.Schema({
   state: { type: String },
   country: { type: String },
   registrationNo: { type: String },
+  dial4: {type: String},
   whatsApp: { type: Number },
   accountType: { type: String },
   swift: { type: String },
