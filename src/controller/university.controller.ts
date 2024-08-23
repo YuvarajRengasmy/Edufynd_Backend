@@ -434,7 +434,6 @@ export const getUniversityWithProgramDetails = async (req, res) => {
             {
                 $match: { _id: universityId }
             },
-
             {
                 $lookup: {
                     from: 'programs',
