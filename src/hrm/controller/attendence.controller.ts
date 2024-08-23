@@ -117,7 +117,7 @@ export let deleteAttendence = async (req, res, next) => {
 };
 
 
-export const staffClockInn = async (req, res) => {
+export const staffClockIn = async (req, res) => {
     try {
         const { staffId } = req.body;
         const attendenceDetails: AttendenceDocument = req.body;
@@ -249,7 +249,7 @@ export const staffClockOutt = async (req, res) => {
 
 
 
-export const staffClockIn = async (req, res) => {
+export const staffClockInn = async (req, res) => {
     try {
         const { staffId } = req.body;
         console.log("jjj", staffId)
