@@ -10,8 +10,10 @@ export interface ApplicantDocument extends mongoose.Document {
     name?: string,       
     dob?: string,           
     passportNo?: string,      
-    email?: string,        
-    primaryNumber?: number,  
+    email?: string, 
+    dial1?: string;       
+    primaryNumber?: number, 
+    dial2?: string; 
     whatsAppNumber?: number,  
     inTake?: string,
     country?: string;
@@ -43,7 +45,9 @@ const applicantSchema = new mongoose.Schema({
     dob: { type: String, ref: 'Student' },
     passportNo: { type: String, ref: 'Student' },
     email: { type: String, ref: 'Student' },
+    dial1: {type: String},
     primaryNumber: { type: Number, ref: 'Student' },
+    dial2: {type: String},
     whatsAppNumber: { type: Number, ref: 'Student' },
     inTake: { type: String },
     country: {type: String},

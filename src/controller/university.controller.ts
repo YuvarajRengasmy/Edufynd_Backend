@@ -336,7 +336,7 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
  * @description This Function is used CSV file to JSON and Store to Database
  */
 
-export const csvToJson = async (req, res) => {
+export const csvToJsonn = async (req, res) => {
     try {
         const csvData = await csv().fromFile(req.file.path);
         const univesity = await University.find({}, 'universityCode').exec();
@@ -509,4 +509,79 @@ export const getUniversityByName = async (req, res) => {
   };
 
 
+////
 
+
+export const csvToJson = async (req, res) => {
+    try {
+        const csvData = await csv().fromFile(req.file.path);
+        const univesity = await University.find({}, 'universityCode').exec();
+        const maxCounter = univesity.reduce((max, app) => {
+            const appCode = app.universityCode;
+            const parts = appCode.split('_')
+            if (parts.length === 2) {
+                const counter = parseInt(parts[1], 10)
+                return counter > max ? counter : max;
+            }
+            return max;
+        }, 100);
+
+        let currentMaxCounter = maxCounter;
+
+        const universityList = [];
+        for (const data of csvData) {
+            const universityCode = await generateNextUniversityCode(currentMaxCounter);
+            currentMaxCounter++;
+
+            // Split the city field by commas to create separate entries
+            const cities = data.City ? data.City.split(',') : [];
+            const campuses = cities.map(city => ({
+                state: data.State,
+                lga: city.trim(),  // Trim whitespace from each city name
+                _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
+            }));
+        for (const data of csvData) {
+            const universityCode = await  generateNextUniversityCode(currentMaxCounter)
+            currentMaxCounter++; 
+            universityList.push({
+                universityCode: universityCode,
+                universityName: data.UniversityName,
+                universityLogo: data.UniversityLogo,
+                courseType: data.CourseType ? data.CourseType.split(',') : [],
+                businessName: data.BusinessName,
+                banner: data.Banner,
+                country: data.Country,
+                campuses: campuses,
+                countryName: data.CountryName,
+                email: data.Email,
+                ranking: data.Ranking,
+                applicationFees: data.ApplicationFees,
+                averageFees: data.AverageFees,
+                popularCategories: data.PopularCategories ? data.PopularCategories.split(',') : [],
+                offerTAT: data.OfferTAT,
+                founded: data.Founded,
+                institutionType: data.InstitutionType,
+                costOfLiving: data.CostOfLiving,
+                admissionRequirement: data.AdmissionRequirement,
+                grossTuition: data.GrossTuition,
+                flag: data.Flag,
+                paymentMethod: data.PaymentMethod,
+                amount: data.Amount,
+                percentage: data.Percentage,
+                eligibilityForCommission: data.EligibilityForCommission,
+                currency: data.Currency,
+                paymentTAT: data.PaymentTAT,
+                tax: data.Tax,
+                inTake:  data.InTake ? data.InTake.split(',') : [],
+                website: data.Website,
+                about: data.About
+
+            })
+        }
+        await University.insertMany(universityList);
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Store Into Database');
+    } }catch (err) {
+        console.error(err);
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

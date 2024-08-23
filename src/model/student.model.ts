@@ -11,7 +11,9 @@ export interface StudentDocument extends mongoose.Document {
     expiryDate?: Date;
     gender?: string;
     email?: string;
-    primaryNumber?: number;  
+    dial1?: string;
+    primaryNumber?: number;
+    dial2?: string;  
     whatsAppNumber?: number; 
     highestQualification?: string;
     degreeName?: string;
@@ -77,7 +79,9 @@ const studentSchema = new mongoose.Schema({
     citizenship: { type: String },
     gender: { type: String, },
     email: { type: String },
+    dial1: {type: String},
     primaryNumber: { type: Number },
+    dial2: {type: String},
     whatsAppNumber: { type: Number },
     highestQualification: { type: String },
     degreeName: { type: String, },

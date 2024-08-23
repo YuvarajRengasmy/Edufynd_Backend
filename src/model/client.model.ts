@@ -7,8 +7,10 @@ export interface ClientDocument extends mongoose.Document {
     businessName?: string;
     website?: string;
     businessMailID?: string;
+    dial1?: string;
     businessContactNo?: number;  
     name?: string;
+    dial2?: string;
     contactNo?: number;
     country?: string;
     lga?: string;
@@ -19,7 +21,8 @@ export interface ClientDocument extends mongoose.Document {
     clientStatus?: string;
     addressLine1?: string;
     addressLine2?: string;
-    addressLine3?: string;      
+    addressLine3?: string;
+    dial3?: string;      
     whatsAppNumber?: string;
     staffStatus?: string;     
     isDeleted?: boolean;
@@ -38,6 +41,7 @@ const clientSchema = new mongoose.Schema({
     businessName: { type: String },
     clientStatus: { type: String },
     businessMailID: { type: String },
+    dial1: {type: String},
     businessContactNo: { type: Number },
     website: { type: String },
     addressLine1: { type: String }, 
@@ -47,8 +51,10 @@ const clientSchema = new mongoose.Schema({
     country: { type: String },
     state: { type: String },
     lga:{ type: String },
+    dial2: {type: String},
     contactNo: { type: Number },
     emailID: { type: String },
+    dial3: {type: String},
     whatsAppNumber: { type: String },
     staffStatus: { type: String },   
     isDeleted: { type: Boolean, default: false },

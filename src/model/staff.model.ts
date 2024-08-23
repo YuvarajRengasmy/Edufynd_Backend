@@ -14,7 +14,9 @@ export interface StaffDocument extends mongoose.Document {
     shiftTiming?: string;
     probationDuration?: string;
     email?: string;
+    dial1?: string;
     mobileNumber?: number;
+    dial2?: string;
     emergencyContactNo?: number;
     address?: string;
     idCard?: boolean;
@@ -52,6 +54,7 @@ export interface StaffDocument extends mongoose.Document {
     mobileName?: string;
     brandName?: string;
     imei?: string;
+    dial3?: string;
     phoneNumber?: number;
     laptopName?: string;
     brand?: string;
@@ -85,7 +88,9 @@ const staffSchema = new mongoose.Schema({
     dob: { type: String },
     address: { type: String },
     email: { type: String },
+    dial1: {type: String},
     mobileNumber: { type: Number },
+    dial2: {type: String},
     emergencyContactNo: { type: Number },
     probationDuration: { type: String },
     salary: { type: String },
@@ -112,6 +117,7 @@ const staffSchema = new mongoose.Schema({
     mobileName: { type: String },
     brandName: { type: String },
     imei: { type: String },
+    dial3: {type: String},
     phoneNumber: { type: Number },
     laptopName: { type: String },
     brand: { type: String },
