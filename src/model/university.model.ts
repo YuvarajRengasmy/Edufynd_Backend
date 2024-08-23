@@ -62,14 +62,6 @@ const universitySchema = new mongoose.Schema({
     campuses: [{
         state: { type: String },
         lga: { type: String },
-        isPrimary: { 
-            type: Boolean,
-            default: false,
-            get: function(value) {
-                return value ? "Primary Campus" : "Secondary Campus";
-            }
-        }
-   
     }],
 
     ranking: { type: String },
@@ -103,8 +95,5 @@ const universitySchema = new mongoose.Schema({
 
 })
 
-// Ensure the getter is applied
-universitySchema.set('toJSON', { getters: true });
-universitySchema.set('toObject', { getters: true });
 
 export const University = mongoose.model("University", universitySchema)
