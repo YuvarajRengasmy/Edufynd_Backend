@@ -112,15 +112,15 @@ export let updateUniversity = async (req, res, next) => {
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
                     website: universityDetails.website,
                     inTake: universityDetails.inTake,
-
+                   
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
 
                 },
-                //  $addToSet: {
-                //     campuses: universityDetails.campuses,
+                 $addToSet: {
+                    campuses: universityDetails.campuses,
                  
-                // }
+                }
             });
 
             response(req, res, activity, 'Level-2', 'Update-University', true, 200, universityData, clientError.success.updateSuccess);
