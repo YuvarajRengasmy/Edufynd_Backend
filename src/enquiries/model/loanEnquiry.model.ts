@@ -7,7 +7,9 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     country?: string;
     message?: string;
     studentName?: string;
+    dial1?: string;
     whatsAppNumber?: string;
+    dial2?: string;
     primaryNumber?: string;
     email?: string;
     doYouHaveAValidOfferFromAnyUniversity?: string;
@@ -42,7 +44,9 @@ const loanEnquirySchema = new mongoose.Schema({
     country: {type: String},
     message: {type: String},
     studentName: {type: String},
+    dial1:{type: String},
     whatsAppNumber: {type: String},
+    dial2:{type: String},
     primaryNumber: {type: String},
     email: {type: String},
     doYouHaveAValidOfferFromAnyUniversity: {type: String},
