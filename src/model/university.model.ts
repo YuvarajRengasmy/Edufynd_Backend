@@ -36,6 +36,7 @@ export interface UniversityDocument extends mongoose.Document {
     institutionType?: string;
     website?: string;
     inTake?: any[];
+    typeOfClient?: string;
 
     isDeleted?: boolean;
     createdOn?: Date;
@@ -87,6 +88,7 @@ const universitySchema = new mongoose.Schema({
     universityLogo: { type: String },
     website: { type: String },
     inTake: [String],
+    typeOfClient: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

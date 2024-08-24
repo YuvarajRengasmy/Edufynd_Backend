@@ -406,7 +406,8 @@ export const csvToJson = async (req, res) => {
                 inTake:  data.InTake ? data.InTake.split(',') : [],
                 website: data.Website,
                 commissionPaidOn: data.CommissionPaidOn,
-                about: data.About
+                about: data.About,
+                typeOfClient: data.TypeOfClient
 
             })
         }
@@ -433,7 +434,6 @@ export const getUniversityWithProgramDetails = async (req, res) => {
             {
                 $match: { _id: universityId }
             },
-
             {
                 $lookup: {
                     from: 'programs',
