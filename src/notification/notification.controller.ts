@@ -8,6 +8,8 @@ import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { format } from 'date-fns'; 
 import * as config from '../config';
+import cron = require('node-cron');
+import moment = require('moment');
 
 
 var activity = "Notification";
@@ -176,7 +178,25 @@ export let createNotification = async (req, res, next) => {
 };
 
 
-
+cron.schedule('* * * * *', async () => {
+    try {
+      const now = moment();
+      const notifications = await Notification.find({
+        scheduledTime: { $lte: now.toDate() },
+        sent: false,
+      });
+  
+      notifications.forEach(async (notification) => {
+        console.log(`Sending notification: ${notification.subject}`);
+  
+        notification.sent = true;
+        await notification.save();
+      });
+    } catch (error) {
+      console.error('Error sending notifications:', error);
+    }
+  });
+  
 
 
 export const updateNotification = async (req, res) => {
