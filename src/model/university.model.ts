@@ -62,9 +62,6 @@ const universitySchema = new mongoose.Schema({
     campuses: [{
         state: { type: String },
         lga: { type: String },
-        primary:{ type: String},
-        
-   
     }],
 
     ranking: { type: String },
@@ -97,7 +94,6 @@ const universitySchema = new mongoose.Schema({
     modifiedBy: { type: String },
 
 })
-
 
 
 export const University = mongoose.model("University", universitySchema)
