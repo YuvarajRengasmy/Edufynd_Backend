@@ -62,7 +62,7 @@ import Event from '../events/event.routes'
 import Testimonial from '../testimonial/testimonial.routes'
 
 //ELT
-import ELT from '../elt/elt.routes'
+
 
 //HRMS
 import Department from '../hrm/routes/department.route';
@@ -83,6 +83,7 @@ import InTake from '../setting/globalSetting/router/intake.routes'
 import Email from '../setting/globalSetting/router/email.routes'
 import Currency from '../setting/globalSetting/router/currency.routes'
 import Year from '../setting/globalSetting/router/year.routes'
+import Category from '../setting/globalSetting/router/category.routes'
 
 
 
@@ -159,7 +160,7 @@ router.use('/event', Event)
 router.use('/testimonial', Testimonial)
 
 //ELT
-router.use('/elt', ELT)
+
 
 //HRMS
 router.use('/department', Department)
@@ -179,6 +180,7 @@ router.use('/intake', InTake)
 router.use('/email', Email)
 router.use('/currency', Currency)
 router.use('/year', Year)
+router.use('/category', Category)
 
 
 //Drop Down - Setting API
