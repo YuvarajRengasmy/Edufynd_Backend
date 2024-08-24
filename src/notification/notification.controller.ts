@@ -178,24 +178,24 @@ export let createNotification = async (req, res, next) => {
 };
 
 
-cron.schedule('* * * * *', async () => {
-    try {
-      const now = moment();
-      const notifications = await Notification.find({
-        scheduledTime: { $lte: now.toDate() },
-        sent: false,
-      });
+// cron.schedule('* * * * *', async () => {
+//     try {
+//       const now = moment();
+//       const notifications = await Notification.find({
+//         scheduledTime: { $lte: now.toDate() },
+//         sent: false,
+//       });
   
-      notifications.forEach(async (notification) => {
-        console.log(`Sending notification: ${notification.subject}`);
+//       notifications.forEach(async (notification) => {
+//         console.log(`Sending notification: ${notification.subject}`);
   
-        notification.sent = true;
-        await notification.save();
-      });
-    } catch (error) {
-      console.error('Error sending notifications:', error);
-    }
-  });
+//         notification.sent = true;
+//         await notification.save();
+//       });
+//     } catch (error) {
+//       console.error('Error sending notifications:', error);
+//     }
+//   });
   
 
 
