@@ -20,8 +20,8 @@ router.get('/getSingleMeeting',
 
 
 router.post('/',
-    basicAuthUser,
-    checkSession,
+    // basicAuthUser,
+    // checkSession,
     createMeeting
 );
 

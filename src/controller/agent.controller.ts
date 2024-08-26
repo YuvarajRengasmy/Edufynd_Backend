@@ -142,6 +142,10 @@ export let updateAgent = async (req, res, next) => {
                     desiredCountry: agentDetails.desiredCountry,
                     requireVisaFilingSupport: agentDetails.requireVisaFilingSupport,
                     visaCommission: agentDetails.visaCommission,
+                    dial1: agentDetails.dial1,
+                    dial2: agentDetails.dial2,
+                    dial3: agentDetails.dial3,
+                    dial4: agentDetails.dial4,
 
                     modifiedOn: new Date(),
                     modifiedBy: agentDetails.modifiedBy,

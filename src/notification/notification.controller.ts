@@ -258,13 +258,18 @@ export let getFilteredNotification = async (req, res, next) => {
 
 /////
 
-//corrected but mail sent on time
-export let createNotificationfg = async (req, res, next) => {
+
+//without Remainder
+export let createNotificationcorrectcode = async (req, res, next) => {
     const errors = validationResult(req);
-    if (errors.isEmpty()) {
+    if (!errors.isEmpty()) {
         try {
             const data = req.body;
             const userName = req.body.userName; // Array of selected usernames
+
+            if (!data.scheduledTime) {
+                return response(req, res, activity, 'Level-2', 'Create-Notifications', false, 400, {}, "Scheduled time is required.");
+            }
 
             let users = [];
 
@@ -277,185 +282,37 @@ export let createNotificationfg = async (req, res, next) => {
                 users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
             } else if (data.typeOfUser === 'staff') {
                 users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
+            } else {
+                return response(req, res, activity, 'Level-2', 'Create-Notifications', false, 400, {}, "Invalid user type.");
             }
 
             // Check if any users were found
-            if (users.length > 0) {
-                // Collect usernames and emails for the notification
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
-                const userEmails = users.map((user) => user.email);
-
-                // Create a single notification document with all selected usernames and emails
-                const notification = new Notification({
-                    ...data,
-                    userName: userNames,
-                    userEmail: userEmails
-                });
-
-                // Schedule the task for sending the notification
-                const task = cron.schedule('* * * * *', async () => {
-                    try {
-                        const now = moment().seconds(0).milliseconds(0);
-                        const scheduledTime = moment(notification.scheduledTime).seconds(0).milliseconds(0);
-
-                        if (now.isSame(scheduledTime)) {
-                            console.log(`Sending notification: ${notification.subject}`);
-
-                            notification.sent = true;
-                            await notification.save();
-
-                            // Stop the cron job after sending the notification
-                            task.stop();
-
-                            // Prepare email attachments
-                            const attachments = [];
-                            let cid = '';
-                            if (notification.uploadImage) {
-                                const [fileType, fileContent] = notification.uploadImage.split("base64,");
-                                const extension = fileType.match(/\/(.*?);/)[1];
-                                const timestamp = format(new Date(), 'yyyyMMdd');
-                                const dynamicFilename = `${notification.subject.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
-                                cid = `image_${Date.now()}.${extension}`;
-
-                                attachments.push({
-                                    filename: dynamicFilename,
-                                    content: fileContent,
-                                    encoding: 'base64',
-                                    cid: cid
-                                });
-                            }
-
-                            // Send emails to all users
-                            const emailPromises = userEmails.map((email, index) => {
-                                const mailOptions = {
-                                    from: config.SERVER.EMAIL_USER,
-                                    to: email,
-                                    subject: notification.subject,
-                                    html: `
-                                <body style="font-family: 'Poppins', Arial, sans-serif">
-                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                            <td align="center" style="padding: 20px;">
-                                                <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                                    <tr>
-                                                        <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                            ${notification.subject}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                                            <p>Hello ${userNames[index]},</p>
-                                                            <p>You have a new notification:</p>
-                                                            <p style="font-weight: bold;color: #345C72;">${notification.content}</p>
-                                                            ${cid ? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
-                                                            <p>This information is for your reference.</p>
-                                                            <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="padding: 30px 40px 30px 40px; text-align: center;">
-                                                            <table cellspacing="0" cellpadding="0" style="margin: auto;">
-                                                                <tr>
-                                                                    <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
-                                                                        <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consultation</a>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                            Copyright &copy; 2024 | All rights reserved
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </body>
-                            `,
-                                    attachments: attachments
-                                };
-
-                                return transporter.sendMail(mailOptions);
-                            });
-
-                            await Promise.all(emailPromises);
-                            console.log('Emails sent successfully');
-                        }
-                    } catch (error) {
-                        console.error('Error sending notifications:', error);
-                    }
-                });
-
-                await notification.save();
-                response(req, res, activity, 'Level-1', 'Create-Notifications', true, 200, {}, "Notifications scheduled successfully.");
+            if (users.length === 0) {
+                return response(req, res, activity, 'Level-2', 'Create-Notifications', false, 404, {}, "No users found for the specified type.");
             }
-        } catch (err) {
-            response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Internal server error", err.message);
-        }
-    }
-}
 
+            // Collect usernames and emails for the notification
+            const userNames = users.map((user) => user.name || user.empName || user.agentName);
+            const userEmails = users.map((user) => user.email);
 
+            // Respond to the client immediately, letting them know the notification is scheduled
+            response(req, res, activity, 'Level-1', 'Create-Notifications', true, 201, {}, "Notification created successfully. It will be sent at the scheduled time.");
 
-//all correct but mail send error throw and success throw
-export let createNotificationws = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    }
-
-    try {
-        const data = req.body;
-        const userName = req.body.userName; // Array of selected usernames
-
-        if (!data.scheduledTime) {
-            return response(req, res, activity, 'Level-2', 'Create-Notifications', false, 400, {}, "Scheduled time is required.");
-        }
-
-        let users = [];
-
-        // Fetch users based on typeOfUser
-        if (data.typeOfUser === 'student') {
-            users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
-        } else if (data.typeOfUser === 'admin') {
-            users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
-        } else if (data.typeOfUser === 'agent') {
-            users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
-        } else if (data.typeOfUser === 'staff') {
-            users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
-        } else {
-            return response(req, res, activity, 'Level-2', 'Create-Notifications', false, 400, {}, "Invalid user type.");
-        }
-
-        // Check if any users were found
-        if (users.length === 0) {
-            return response(req, res, activity, 'Level-2', 'Create-Notifications', false, 404, {}, "No users found for the specified type.");
-        }
-
-        // Collect usernames and emails for the notification
-        const userNames = users.map((user) => user.name || user.empName || user.agentName);
-        const userEmails = users.map((user) => user.email);
-
-        // Create the notification object but do not save it yet
-        const notification = new Notification({
-            ...data,
-            userName: userNames,
-            userEmail: userEmails,
-            sent: false // Mark as not sent initially
-        });
-
-        // Schedule the task for storing the notification and sending emails
-        const task = cron.schedule('* * * * *', async () => {
-            try {
+            // Schedule the task for storing the notification and sending emails
+            const task = cron.schedule('* * * * *', async () => {
                 const now = moment().seconds(0).milliseconds(0);
                 const scheduledTime = moment(data.scheduledTime).seconds(0).milliseconds(0);
 
                 if (now.isSame(scheduledTime)) {
                     console.log(`Storing notification and sending emails for: ${data.subject}`);
 
-                    // Save the notification to the database at the scheduled time
+                    // Create and save the notification to the database at the scheduled time
+                    const notification = new Notification({
+                        ...data,
+                        userName: userNames,
+                        userEmail: userEmails,
+                        sent: false // Mark as not sent initially
+                    });
                     const savedNotification = await notification.save();
 
                     // Prepare email attachments
@@ -483,90 +340,76 @@ export let createNotificationws = async (req, res, next) => {
                             to: email,
                             subject: savedNotification.subject,
                             html: `
-                                <body style="font-family: 'Poppins', Arial, sans-serif">
-                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                            <td align="center" style="padding: 20px;">
-                                                <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                                    <tr>
-                                                        <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                            ${savedNotification.subject}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                                            <p>Hello ${userNames[index]},</p>
-                                                            <p>You have a new notification:</p>
-                                                            <p style="font-weight: bold;color: #345C72;">${savedNotification.content}</p>
-                                                            ${cid ? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
-                                                            <p>This information is for your reference.</p>
-                                                            <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="padding: 30px 40px 30px 40px; text-align: center;">
-                                                            <table cellspacing="0" cellpadding="0" style="margin: auto;">
-                                                                <tr>
-                                                                    <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
-                                                                        <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consultation</a>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                            Copyright &copy; 2024 | All rights reserved
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </body>
-                            `,
+                            <body style="font-family: 'Poppins', Arial, sans-serif">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td align="center" style="padding: 20px;">
+                                            <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                <tr>
+                                                    <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                        ${savedNotification.subject}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                        <p>Hello ${userNames[index]},</p>
+                                                        <p>You have a new notification:</p>
+                                                        <p style="font-weight: bold;color: #345C72;">${savedNotification.content}</p>
+                                                        ${cid ? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
+                                                        <p>This information is for your reference.</p>
+                                                        <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                                        <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                                            <tr>
+                                                                <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                                <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consultation</a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                        Copyright &copy; 2024 | All rights reserved
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </body>
+                        `,
                             attachments: attachments
                         };
 
                         return transporter.sendMail(mailOptions);
                     });
 
-                    // Await all email sending promises
-                    try {
-                        await Promise.all(emailPromises);
-                        console.log('Emails sent successfully');
+                    await Promise.all(emailPromises);
 
-                        // Mark the notification as sent after emails are successfully sent
-                        savedNotification.sent = true;
-                        await savedNotification.save();
-
-                        response(req, res, activity, 'Level-1', 'Create-Notifications', true, 200, {}, "Notifications sent and saved successfully.");
-                    } catch (emailError) {
-                        console.error('Error sending some or all emails:', emailError);
-
-                        // Return error response while keeping the notification unsent
-                        response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Error sending some or all notifications.", emailError.message);
-                    }
-
-                    // Stop the cron job after the attempt to send emails
-                    task.stop();
+                    // Mark the notification as sent and update the database
+                    savedNotification.sent = true;
+                    await savedNotification.save();
+                    console.log('Emails sent and notification status updated.');
                 }
-            } catch (error) {
-                console.error('Error processing notifications:', error);
-                response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Error processing notifications.", error.message);
 
-                // Ensure the cron job stops in case of any errors
+                // Stop the cron job after the attempt to send emails
                 task.stop();
-            }
-        });
+            });
 
-        return res.status(200).json({ message: 'Notification scheduled successfully.' });
-    } catch (err) {
-        response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Internal server error", err.message);
+        } catch (err) {
+            response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Internal server error", err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {},  errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-};
+}
 
 
+//with Remainder
 export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -605,12 +448,43 @@ export let createNotification = async (req, res, next) => {
         const userNames = users.map((user) => user.name || user.empName || user.agentName);
         const userEmails = users.map((user) => user.email);
 
-        // Create the notification object but do not save it yet
-        const notification = new Notification({
-            ...data,
-            userName: userNames,
-            userEmail: userEmails,
-            sent: false // Mark as not sent initially
+        // Respond to the client immediately, letting them know the notification is scheduled
+        response(req, res, activity, 'Level-1', 'Create-Notifications', true, 201, {}, "Notification created successfully. It will be sent at the scheduled time.");
+
+        // Schedule the reminder email 2 hours before the scheduled time
+        const reminderTask = cron.schedule('* * * * *', async () => {
+            const now = moment().seconds(0).milliseconds(0);
+            const scheduledTime = moment(data.scheduledTime).seconds(0).milliseconds(0);
+            const reminderTime = scheduledTime.clone().subtract(2, 'hours');
+
+            if (now.isSame(reminderTime)) {
+                console.log(`Sending reminder email for: ${data.subject}`);
+
+                // Send reminder emails to all users
+                const reminderPromises = userEmails.map((email, index) => {
+                    const mailOptions = {
+                        from: config.SERVER.EMAIL_USER,
+                        to: email,
+                        subject: `Reminder: ${data.subject}`,
+                        html: `
+                            <body style="font-family: 'Poppins', Arial, sans-serif">
+                                <p>Hello ${userNames[index]},</p>
+                                <p>This is a reminder that you have a notification scheduled for ${scheduledTime.format('LLLL')}.</p>
+                                <p>Subject: ${data.subject}</p>
+                                <p>Content: ${data.content}</p>
+                                <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                            </body>
+                        `
+                    };
+                    return transporter.sendMail(mailOptions);
+                });
+
+                await Promise.all(reminderPromises);
+                console.log('Reminder emails sent.');
+
+                // Stop the reminder cron job after sending the reminder
+                reminderTask.stop();
+            }
         });
 
         // Schedule the task for storing the notification and sending emails
@@ -621,7 +495,13 @@ export let createNotification = async (req, res, next) => {
             if (now.isSame(scheduledTime)) {
                 console.log(`Storing notification and sending emails for: ${data.subject}`);
 
-                // Save the notification to the database at the scheduled time
+                // Create and save the notification to the database at the scheduled time
+                const notification = new Notification({
+                    ...data,
+                    userName: userNames,
+                    userEmail: userEmails,
+                    sent: false // Mark as not sent initially
+                });
                 const savedNotification = await notification.save();
 
                 // Prepare email attachments
@@ -694,43 +574,24 @@ export let createNotification = async (req, res, next) => {
                         attachments: attachments
                     };
 
-                 
-                    transporter.sendMail(mailOptions, (error, info) => {
-
-                        if (error) {
-                            console.error('Error sending email:', error);
-                            return res.status(500).json({ message: 'Error sending email' });
-                        } else {
-                            console.log('Email sent:', info.response);
-                            res.status(201).json({ message: 'You have received a Promotion Notification', student: savedPromotion });
-                        }
-                    });
+                    return transporter.sendMail(mailOptions);
                 });
 
-                // Await all email sending promises
-                try {
-                    await Promise.all(emailPromises);
-                    console.log('Emails sent successfully');
+                await Promise.all(emailPromises);
 
-                    // Mark the notification as sent after emails are successfully sent
-                    savedNotification.sent = true;
-                    await savedNotification.save();
-
-                    response(req, res, activity, 'Level-1', 'Create-Notifications', true, 200, {}, "Notifications sent and saved successfully.");
-                } catch (emailError) {
-                    console.error('Error sending some or all emails:', emailError);
-
-                    // Return error response while keeping the notification unsent
-                    response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Error sending some or all notifications.", emailError.message);
-                }
+                // Mark the notification as sent and update the database
+                savedNotification.sent = true;
+                await savedNotification.save();
+                console.log('Emails sent and notification status updated.');
 
                 // Stop the cron job after the attempt to send emails
                 task.stop();
             }
         });
 
-        return res.status(200).json({ message: 'Notification scheduled successfully.' });
     } catch (err) {
         response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Internal server error", err.message);
     }
 };
+
+
