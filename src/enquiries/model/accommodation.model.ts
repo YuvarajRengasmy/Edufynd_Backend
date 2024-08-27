@@ -3,12 +3,14 @@ import * as mongoose from 'mongoose'
 export interface AccommodationDocument extends mongoose.Document {
     accommodationID?: any;
     studentName?: string;
+    name?: string;
     passportNumber?: string;
+    expiryDate?: string;
     source?: string;
     studentId?: string,
     country?: string;
     state?: string;
-    city?: string;
+    lga?: string;
     // If Agent request for the following (Auto Fetch User Detail)
     agentID?: string;
     agentName?: string;
@@ -26,8 +28,9 @@ export interface AccommodationDocument extends mongoose.Document {
     whatsAppNumber?: string;
     email?: string;
     universityName?: string;
-    holdingOfferFromTheUniversity?: string;
-    locationWhereAccommodationIsRequired?: string;
+    courseType?:string;
+    final?: string;
+    accommodationType?: string;
     assignedTo?: string;
 
     isDeleted?: boolean;
@@ -40,12 +43,14 @@ export interface AccommodationDocument extends mongoose.Document {
 
 const accommodationSchema = new mongoose.Schema({
     accommodationID: {type: String},
+    name:{type:String},
     studentId: {type: String},
     country: {type: String},
     state:{type: String},
-    city: {type: String},
+    lga: {type: String},
     studentName: {type: String},
     passportNumber: {type: String},
+    expiryDate: {type: String},
     source: {type: String},
     message: {type: String},
     // If Agent request for the following (Auto Fetch User Detail)
@@ -64,8 +69,9 @@ const accommodationSchema = new mongoose.Schema({
     whatsAppNumber: {type: String},
     email: {type: String},
     universityName: {type: String},
-    holdingOfferFromTheUniversity: {type: String},
-    locationWhereAccommodationIsRequired: {type: String},
+    courseType:{type: String},
+    final: {type: String},
+    accommodationType: {type: String},
     assignedTo: {type: String},
 
     isDeleted: { type: Boolean, default: false },
