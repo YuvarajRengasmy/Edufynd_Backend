@@ -197,3 +197,48 @@ export const csvToJson = async (req, res) => {
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for client module', false, 500, {}, 'Internal Server Error', err.message);
     }
 }
+
+
+export const editClientProfileBySuperAdmin = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const clientDetails: ClientDocument = req.body;
+            let clientData = await Client.findByIdAndUpdate({ _id: clientDetails._id }, {
+                $set: {
+                    typeOfClient: clientDetails.typeOfClient,
+                    businessName: clientDetails.businessName,
+                    businessMailID: clientDetails.businessMailID,
+                    clientStatus: clientDetails.clientStatus,
+                    businessContactNo: clientDetails.businessContactNo,
+                    whatsAppNumber: clientDetails.whatsAppNumber,
+                    website: clientDetails.website,
+                    country: clientDetails.country,
+                    lga: clientDetails.lga,
+                    state: clientDetails.state,
+                    addressLine1: clientDetails.addressLine1,
+                    addressLine2: clientDetails.addressLine2,
+                    addressLine3: clientDetails.addressLine3,
+                    name: clientDetails.name,
+                    dial1: clientDetails.dial1,
+                    dial2: clientDetails.dial2,
+                    dial3: clientDetails.dial3,
+               
+                    contactNo: clientDetails.contactNo,
+                    emailID: clientDetails.emailID,
+                    staffStatus: clientDetails.staffStatus,
+                    privileges: clientDetails.privileges,
+                    modifiedOn: new Date(),
+                    modifiedBy: clientDetails.modifiedBy,
+                }
+            });
+
+            response(req, res, activity, 'Level-2', 'Update-Client-By-SuperAdmin', true, 200, clientData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Client-By-SuperAdmin', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Client-By-SuperAdmin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}

@@ -19,6 +19,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     desiredCountry?: string;
     whatIsYourMonthlyIncome?: string;
     passportNumber?: string;
+    expiryDate?: string;
     uploadPassport?: string;
     didYouApplyForLoanElsewhere?: string;
     chooseTheBankYouPreviouslyApplied?: string;
@@ -28,6 +29,25 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     employmentStatus?: string;
     incomeDetails?: string;
     willyouSubmitYourCollateral?: string;
+
+    //Newly Added
+    studentCode?: string;
+    dial3?: string;
+    agentPrimaryNo?: string;
+    dial4?: string;
+    agentWhatsAppNo?: string;
+    agentMail?: string;
+    plannedUniversity?: string;
+    courseFee?: string;
+    preferedLoanType?: string;
+    previousLoanApplied?: string;
+    whatIsYourLoanHistory?: string;
+    coApplicantMail?: string;
+    dial5?: string;
+    coApplicantPrimaryNo?: string;
+    dial6?: string;
+    coApplicantWhatsAppNo?: string;
+    relationship?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -39,32 +59,53 @@ export interface LoanEnquiryDocument extends mongoose.Document {
 
 
 const loanEnquirySchema = new mongoose.Schema({
-    loanID: {type: String},
-    studentId: {type: String},
-    country: {type: String},
-    message: {type: String},
-    studentName: {type: String},
-    dial1:{type: String},
-    whatsAppNumber: {type: String},
-    dial2:{type: String},
-    primaryNumber: {type: String},
-    email: {type: String},
-    doYouHaveAValidOfferFromAnyUniversity: {type: String},
-    uploadOfferletter: {type: String},
-    universityName: {type: String},
-    loanAmountRequired: {type: String},
-    desiredCountry: {type: String},
-    whatIsYourMonthlyIncome: {type: String},
-    passportNumber: {type:String},
-    uploadPassport: {type:  String},
-    didYouApplyForLoanElsewhere: {type: String},
-    chooseTheBankYouPreviouslyApplied: {type: String},
-    statusOfPreviousApplication: {type: String},
-    coApplicantName: {type: String},
-    age: {type: String},
-    employmentStatus: {type: String},
-    incomeDetails: {type: String},
-    willyouSubmitYourCollateral: {type: String},
+    loanID: { type: String },
+    studentId: { type: String },
+    country: { type: String },
+    message: { type: String },
+    studentName: { type: String },
+    dial1: { type: String },
+    whatsAppNumber: { type: String },
+    dial2: { type: String },
+    primaryNumber: { type: String },
+    email: { type: String },
+    doYouHaveAValidOfferFromAnyUniversity: { type: String },
+    uploadOfferletter: { type: String },
+    universityName: { type: String },
+    loanAmountRequired: { type: String },
+    desiredCountry: { type: String },
+    whatIsYourMonthlyIncome: { type: String },
+    passportNumber: { type: String },
+    expiryDate: { type: String },
+    uploadPassport: { type: String },
+    didYouApplyForLoanElsewhere: { type: String },
+    chooseTheBankYouPreviouslyApplied: { type: String },
+    statusOfPreviousApplication: { type: String },
+    coApplicantName: { type: String },
+    age: { type: String },
+    employmentStatus: { type: String },
+    incomeDetails: { type: String },
+    willyouSubmitYourCollateral: { type: String },
+
+    //Newly Added
+    studentCode: { type: String },
+    dial3: { type: String },
+    agentPrimaryNo: { type: String },
+    dial4: { type: String },
+    agentWhatsAppNo: { type: String },
+    agentMail: { type: String },
+    plannedUniversity: { type: String },
+    courseFee: { type: String },
+    preferedLoanType: { type: String },
+    previousLoanApplied: { type: String },
+    whatIsYourLoanHistory: { type: String },
+    coApplicantMail: { type: String },
+    dial5: { type: String },
+    coApplicantPrimaryNo: { type: String },
+    dial6: { type: String },
+    coApplicantWhatsAppNo: { type: String },
+    relationship: { type: String },
+
 
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },

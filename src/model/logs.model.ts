@@ -5,6 +5,7 @@ export interface LogsDocument extends mongoose.Document {
     time?: number;
     date?: Date;
     activity?: string;
+   
     ipAddess?: string;
     description?: string;
     url?: string;
@@ -14,7 +15,7 @@ export interface LogsDocument extends mongoose.Document {
     isDeleted?: boolean;
     status?: number;
     level?: string;
-    mandapam?: any;
+
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -29,6 +30,7 @@ const logsSchema = new mongoose.Schema({
     ipAddess: { type: String },
     statusCode: { type: Number },
     activity: { type: String },
+
     url: { type: String },
     description: { type: String },
     processStatus: { type: Boolean },

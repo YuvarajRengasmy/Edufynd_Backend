@@ -1,7 +1,8 @@
 import {Router} from 'express';
 import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin, deleteAdmin, 
     createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin,editStudentProfileByAdmin,
-    editStaffProfileByAdmin} from '../controller/admin.controller';
+    editStaffProfileByAdmin,
+    updateAdmin} from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -26,6 +27,14 @@ router.post('/',
          checkRequestBodyParams('email'),
          checkSession,
          createAdmin
+);
+
+
+router.put('/',                          
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateAdmin
 );
 
 

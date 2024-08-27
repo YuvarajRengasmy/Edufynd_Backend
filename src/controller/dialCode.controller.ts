@@ -10,7 +10,7 @@ var activity = "DialCode";
 
 export const getAllDialCode = async (req, res) => {
     try {
-        const data = await DialCode.find().sort({ _id: -1 })
+        const data = await DialCode.find().sort({ _id: 1 })
         response(req, res, activity, 'Level-1', 'GetAll-DialCode', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -52,7 +52,7 @@ export let getFilteredDialCode = async (req, res, next) => {
             }  
             findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-            const dialCodeList = await DialCode.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
+            const dialCodeList = await DialCode.find(findQuery).sort({ _id: 1 }).limit(limit).skip(page)
 
             const dialCodeCount = await DialCode.find(findQuery).count()
             response(req, res, activity, 'Level-1', 'Get-Filter DialCode', true, 200, { dialCodeList, dialCodeCount }, clientError.success.fetchedSuccessfully);
