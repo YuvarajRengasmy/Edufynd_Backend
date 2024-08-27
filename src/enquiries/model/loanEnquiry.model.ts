@@ -19,6 +19,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     desiredCountry?: string;
     whatIsYourMonthlyIncome?: string;
     passportNumber?: string;
+    expiryDate?: string;
     uploadPassport?: string;
     didYouApplyForLoanElsewhere?: string;
     chooseTheBankYouPreviouslyApplied?: string;
@@ -56,6 +57,7 @@ const loanEnquirySchema = new mongoose.Schema({
     desiredCountry: {type: String},
     whatIsYourMonthlyIncome: {type: String},
     passportNumber: {type:String},
+    expiryDate:{  type: String },
     uploadPassport: {type:  String},
     didYouApplyForLoanElsewhere: {type: String},
     chooseTheBankYouPreviouslyApplied: {type: String},

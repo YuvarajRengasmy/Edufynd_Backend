@@ -1,10 +1,10 @@
 import { Meeting, MeetingDocument } from './meeting.model'
-import { Student} from '../model/student.model'
-import { Staff} from '../model/staff.model'
-import { Admin} from '../model/admin.model'
-import { Agent} from '../model/agent.model'
+import { Student } from '../model/student.model'
+import { Staff } from '../model/staff.model'
+import { Admin } from '../model/admin.model'
+import { Agent } from '../model/agent.model'
 import { validationResult } from "express-validator";
-import { response, transporter} from "../helper/commonResponseHandler";
+import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import * as config from '../config';
 import { format } from 'date-fns';
@@ -41,11 +41,11 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let createMeetingG = async (req, res, next) => {
+export let createMeeting = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const data:  MeetingDocument = req.body;
+            const data: MeetingDocument = req.body;
             const userName = req.body.attendees;// Array of selected usernames
 
             let users = [];
@@ -68,7 +68,8 @@ export let createMeetingG = async (req, res, next) => {
                 const userEmails = users.map((user) => user.email);
 
                 // Create a single notification document with all selected usernames and emails
-                const meeting = new Meeting({...data,
+                const meeting = new Meeting({
+                    ...data,
                     userName: userNames,
                     userEmail: userEmails
                 });
@@ -79,7 +80,7 @@ export let createMeetingG = async (req, res, next) => {
 
                 // Send emails to all users
                 const emailPromises = userEmails.map((email, index) => {
-      
+
                     const mailOptions = {
                         from: config.SERVER.EMAIL_USER,
                         to: email,
@@ -136,8 +137,8 @@ export let createMeetingG = async (req, res, next) => {
                                           </table>
                                       </body>
                                   `,
-                                
-                      };
+
+                    };
 
                     // return transporter.sendMail(mailOptions);
                     transporter.sendMail(mailOptions, (error, info) => {
@@ -147,7 +148,7 @@ export let createMeetingG = async (req, res, next) => {
                             return res.status(500).json({ message: 'Error sending email' });
                         } else {
                             console.log('Email sent:', info.response);
-                            res.status(201).json({ message: 'You have received a Meeting Notification'});
+                            res.status(201).json({ message: 'You have received a Meeting Notification' });
                         }
                     });
                 });
@@ -163,7 +164,7 @@ export let createMeetingG = async (req, res, next) => {
             response(req, res, activity, 'Level-3', 'Create-Meeting', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res,  activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 };
 
@@ -172,7 +173,7 @@ export const updateMeeting = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const meetingData: MeetingDocument = req.body;
-            let statusData = await Meeting.findByIdAndUpdate({ _id:meetingData._id }, {
+            let statusData = await Meeting.findByIdAndUpdate({ _id: meetingData._id }, {
                 $set: {
                     hostName: meetingData.hostName,
                     attendees: meetingData.attendees,
@@ -245,7 +246,7 @@ export let getFilteredMeeting = async (req, res, next) => {
 
 
 ////
-
+// without remainder mail also ok
 export let createMeetingg = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -393,10 +394,12 @@ export let createMeetingg = async (req, res, next) => {
 
 
 
-export let createMeeting = async (req, res, next) => {
+
+// with remainder mail ok
+export let createMeetinggg = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        return response(req, res, activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
     }
 
     try {
@@ -405,65 +408,41 @@ export let createMeeting = async (req, res, next) => {
 
         // Fetch the host details
         const staff = await Staff.findOne({ empName: req.body.hostName });
-        const hostEmail = staff.email;
         if (!staff) {
             return res.status(400).json({ success: false, message: 'Please select a valid host name.' });
         }
-    
+
+        const hostEmail = staff.email;
 
         if (!data.time && !data.date) {
             return response(req, res, activity, 'Level-2', 'Create-Meeting', false, 400, {}, "Scheduled date and time is required.");
         }
 
-
-        
-            // Send email to the host
-            const hostMailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to: hostEmail,
-                subject: 'You are assigned as the host for the meeting',
-                html: `
+        // Send email to the host
+        const hostMailOptions = {
+            from: config.SERVER.EMAIL_USER,
+            to: hostEmail,
+            subject: 'You are assigned as the host for the meeting',
+            html: `
                 <body style="font-family: 'Poppins', Arial, sans-serif">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td align="center" style="padding: 20px;">
-                                <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                    <tr>
-                                        <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                            Meeting Schedule
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                            <p>Hello ${staff.empName},</p>
-                                            <p>You have been assigned as the host for the following meeting:</p>
-                                            <p style="font-weight: bold;color: #345C72">Meeting Topic: ${data.subject}</p>
-                                            <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
-                                            <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
-                                            <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                            Copyright &copy; ${new Date().getFullYear()} | All rights reserved
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
+                    <p>Hello ${staff.empName},</p>
+                    <p>You have been assigned as the host for the following meeting:</p>
+                    <p style="font-weight: bold;color: #345C72">Meeting Topic: ${data.subject}</p>
+                    <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
+                    <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
+                    <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
                 </body>
             `,
-            };
+        };
 
-            transporter.sendMail(hostMailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email to the host:', error);
-                    return res.status(500).json({ message: 'Error sending email to the host.' });
-                } else {
-                    console.log('Email sent to the host:', info.response);
-                }
-            });
+        transporter.sendMail(hostMailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email to the host:', error);
+                return res.status(500).json({ message: 'Error sending email to the host.' });
+            } else {
+                console.log('Email sent to the host:', info.response);
+            }
+        });
 
         let users = [];
 
@@ -492,17 +471,48 @@ export let createMeeting = async (req, res, next) => {
         // Respond to the client immediately, letting them know the notification is scheduled
         response(req, res, activity, 'Level-1', 'Create-Meeting', true, 201, {}, "Meeting created successfully. It will be sent at the scheduled time.");
 
-        // Schedule the reminder email 2 hours before the scheduled time
-        const reminderTask = cron.schedule('* * * * *', async () => {
+        // Schedule the reminder email for the host 2 hours before the scheduled time
+        const hostReminderTask = cron.schedule('* * * * *', async () => {
             const now = moment().seconds(0).milliseconds(0);
-            const scheduledTime = moment(data.time).seconds(0).milliseconds(0);
+            const scheduledTime = moment(`${moment(data.date).format('YYYY-MM-DD')} ${data.time}`, 'YYYY-MM-DD hh:mm A').seconds(0).milliseconds(0);
             const reminderTime = scheduledTime.clone().subtract(2, 'hours');
 
             if (now.isSame(reminderTime)) {
-                console.log(`Sending reminder email for: ${data.subject}`);
+                console.log(`Sending reminder email to the host for: ${data.subject}`);
 
-                // Send reminder emails to all users
-                const reminderPromises = userEmails.map((email, index) => {
+                const hostReminderOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: hostEmail,
+                    subject: `Reminder: You are hosting ${data.subject}`,
+                    html: `
+                        <body style="font-family: 'Poppins', Arial, sans-serif">
+                            <p>Hello ${staff.empName},</p>
+                            <p>This is a reminder that you are the host for the following meeting:</p>
+                            <p>Subject: ${data.subject}</p>
+                            <p>Schedule Date and Time: ${data.date} at ${data.time}</p>
+                            <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                        </body>
+                    `
+                };
+
+                await transporter.sendMail(hostReminderOptions);
+                console.log('Reminder email sent to the host.');
+
+                // Stop the reminder cron job after sending the reminder
+                hostReminderTask.stop();
+            }
+        });
+
+        // Schedule the reminder email for participants 2 hours before the scheduled time
+        const participantReminderTask = cron.schedule('* * * * *', async () => {
+            const now = moment().seconds(0).milliseconds(0);
+            const scheduledTime = moment(`${moment(data.date).format('YYYY-MM-DD')} ${data.time}`, 'YYYY-MM-DD hh:mm A').seconds(0).milliseconds(0);
+            const reminderTime = scheduledTime.clone().subtract(2, 'hours');
+
+            if (now.isSame(reminderTime)) {
+                console.log(`Sending reminder emails to participants for: ${data.subject}`);
+
+                const participantReminderPromises = userEmails.map((email, index) => {
                     const mailOptions = {
                         from: config.SERVER.EMAIL_USER,
                         to: email,
@@ -510,7 +520,7 @@ export let createMeeting = async (req, res, next) => {
                         html: `
                             <body style="font-family: 'Poppins', Arial, sans-serif">
                                 <p>Hello ${userNames[index]},</p>
-                                <p>This is a reminder that you have a meeting scheduled for ${scheduledTime.format('LLLL')}.</p>
+                                <p>This is a reminder that you have a meeting scheduled:</p>
                                 <p>Subject: ${data.subject}</p>
                                 <p>Content: ${data.content}</p>
                                 <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
@@ -520,19 +530,18 @@ export let createMeeting = async (req, res, next) => {
                     return transporter.sendMail(mailOptions);
                 });
 
-                await Promise.all(reminderPromises);
-                console.log('Reminder emails sent.');
+                await Promise.all(participantReminderPromises);
+                console.log('Reminder emails sent to participants.');
 
                 // Stop the reminder cron job after sending the reminder
-                reminderTask.stop();
+                participantReminderTask.stop();
             }
         });
 
         // Schedule the task for storing the notification and sending emails
         const task = cron.schedule('* * * * *', async () => {
-          
             const now = moment().seconds(0).milliseconds(0);
-            const scheduledTime = moment(data.time).seconds(0).milliseconds(0);
+            const scheduledTime = moment(`${moment(data.date).format('YYYY-MM-DD')} ${data.time}`, 'YYYY-MM-DD hh:mm A').seconds(0).milliseconds(0);
 
             if (now.isSame(scheduledTime)) {
                 console.log(`Storing notification and sending emails for: ${data.subject}`);
@@ -568,14 +577,10 @@ export let createMeeting = async (req, res, next) => {
                                                     <p>Hello ${userNames[index]},</p>
                                                     <p>You have been invited to the following meeting:</p>
                                                     <p style="font-weight: bold;color: #345C72">Meeting Subject: ${data.subject}</p>
-                                                   <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
-                                                    <p style="font-weight: bold;color: #345C72">Hosted by: ${staff.empName}</p>
+                                                    <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
+                                                    <p style="font-weight: bold;color: #345C72">Host: ${staff.empName}</p>
+                                                    <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
                                                     <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                    Copyright &copy; ${new Date().getFullYear()}  | All rights reserved
                                                 </td>
                                             </tr>
                                         </table>
@@ -585,23 +590,23 @@ export let createMeeting = async (req, res, next) => {
                         </body>
                     `,
                     };
-
                     return transporter.sendMail(userMailOptions);
                 });
 
                 await Promise.all(emailPromises);
 
-                // Mark the notification as sent and update the database
-                savedNotification.sent = true;
-                await savedNotification.save();
-                console.log('Emails sent and meeting status updated.');
-
-                // Stop the cron job after the attempt to send emails
+                console.log('Emails sent successfully.');
+                // Stop the cron job after execution
                 task.stop();
             }
         });
 
-    } catch (err) {
-        response(req, res, activity, 'Level-3', 'Create-Meeting', false, 500, {}, "Internal server error", err.message);
+        // Start the cron jobs
+        hostReminderTask.start();
+        participantReminderTask.start();
+        task.start();
+    } catch (error) {
+        console.error('Error:', error);
+        return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 500, {}, "Internal server error");
     }
 };
