@@ -14,7 +14,7 @@ export interface LogsDocument extends mongoose.Document {
     isDeleted?: boolean;
     status?: number;
     level?: string;
-    mandapam?: any;
+
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
