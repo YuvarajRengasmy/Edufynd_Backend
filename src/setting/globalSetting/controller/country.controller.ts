@@ -34,10 +34,15 @@ export let createCountry = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
+            const country = await Country.findOne({ country: req.body.country })
+            if(!country ){
             const countryDetails: CountryDocument = req.body;
             const createData = new Country(countryDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-Country', true, 200, insertData, clientError.success.savedSuccessfully);
+        }else {
+            response(req, res, activity, 'Level-2', 'Create-Country', true, 422, {}, 'The Country name already registered');
+        }
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Country', false, 500, {}, errorMessage.internalServer, err.message);
         }

@@ -21,7 +21,7 @@ export let saveLogs = async (req, res, next) => {
         try {
             const LogsData: LogsDocument = req.body;
             const createLogs = new Logs(LogsData);
-            console.log("balan")
+          
             let insertLogs = await createLogs.save();
             response(req, res, activity, 'Save-Logs', 'Level-2', true, 200, insertLogs, clientError.success.savedSuccessfully);
         } catch (err: any) {
@@ -33,6 +33,7 @@ export let saveLogs = async (req, res, next) => {
 };
 
 export let saveLog = async (params: LogsDocument) => {
+    console.log("pppp", params)
     const LogsData: LogsDocument = params;
     const createLogs = new Logs(LogsData);
     return await createLogs.save();
