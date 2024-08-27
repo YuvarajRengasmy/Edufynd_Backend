@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
     studentId?: string,
+    name?: string
     source?: string
     agentName?: string;
     businessName?: string;
@@ -47,6 +48,7 @@ const forexSchema = new mongoose.Schema({
     forexID: {type: String},
     source: {type: String},
     studentId: {type: String},
+    name: {type: String},
     message: {type: String},
     //If Student request for the following
     studentName: {type: String},
