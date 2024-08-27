@@ -246,7 +246,7 @@ export let getFilteredMeeting = async (req, res, next) => {
 
 ////
 
-export let createMeetingg = async (req, res, next) => {
+export let createMeeting = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -393,7 +393,7 @@ export let createMeetingg = async (req, res, next) => {
 
 
 
-export let createMeeting = async (req, res, next) => {
+export let createMeetingg = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
@@ -405,6 +405,7 @@ export let createMeeting = async (req, res, next) => {
 
         // Fetch the host details
         const staff = await Staff.findOne({ empName: req.body.hostName });
+        console.log("kkl", staff)
         const hostEmail = staff.email;
         if (!staff) {
             return res.status(400).json({ success: false, message: 'Please select a valid host name.' });
@@ -494,9 +495,13 @@ export let createMeeting = async (req, res, next) => {
 
         // Schedule the reminder email 2 hours before the scheduled time
         const reminderTask = cron.schedule('* * * * *', async () => {
+            console.log("ppp")
             const now = moment().seconds(0).milliseconds(0);
             const scheduledTime = moment(data.time).seconds(0).milliseconds(0);
+            console.log("hjh", scheduledTime)
             const reminderTime = scheduledTime.clone().subtract(2, 'hours');
+
+            console.log("xxx", reminderTime)
 
             if (now.isSame(reminderTime)) {
                 console.log(`Sending reminder email for: ${data.subject}`);
@@ -510,7 +515,7 @@ export let createMeeting = async (req, res, next) => {
                         html: `
                             <body style="font-family: 'Poppins', Arial, sans-serif">
                                 <p>Hello ${userNames[index]},</p>
-                                <p>This is a reminder that you have a meeting scheduled for ${scheduledTime.format('LLLL')}.</p>
+                                <p>This is a reminder that you have a meeting scheduled for.</p>
                                 <p>Subject: ${data.subject}</p>
                                 <p>Content: ${data.content}</p>
                                 <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
