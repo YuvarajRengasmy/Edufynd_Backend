@@ -28,10 +28,19 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     universityName?: string;
     programName?: string;
     refereeName?: string;
-    dial3?:string,
     refereeContactNo?: number;
     registerForIELTSClass?: string;
     doYouNeedSupportForLoan?: string;
+    studentName?: string;
+    agentName?: string;
+    businessName?: string;
+    agentEmail?: string;
+    agentPrimaryNumber?: string;
+    agentWhatsAppNumber?: string;
+    dial3?: string;
+    dial4?: string;
+    dial?: string;
+   
     assignedTo?: string;
     isDeleted?: boolean;
     createdOn?: Date;
@@ -64,17 +73,24 @@ const studentEnquirySchema = new mongoose.Schema({
     // New Added Field
     gender: { type: String },
     citizenShip: { type: String },
-    expiryDate:{ type: String },
+    expiryDate:{  type: String },
     desiredUniversity: { type: String },
     doYouHoldAnyOtherOffer: { type: String },
     country: { type: String },
     universityName: { type: String },
     programName: { type: String },
     refereeName: { type: String },
-    dial3:{type: String},
     refereeContactNo: { type: Number },
     registerForIELTSClass: { type: String },
-
+    studentName: { type: String },
+    agentName: { type: String },
+    businessName: { type: String },
+    agentEmail: { type: String },
+    agentPrimaryNumber: { type: String },
+    agentWhatsAppNumber: { type: String },
+    dial3: {type: String},
+    dial4: {type: String},
+    dial: {type: String},
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
