@@ -119,6 +119,9 @@ export const updateStaff = async (req, res) => {
                     ipAddress: staffDetails.ipAddress,
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
+                    dial1: staffDetails.dial1,
+                    dial2: staffDetails.dial2,
+                    dial3: staffDetails.dial3,
               
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,

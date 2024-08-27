@@ -342,8 +342,10 @@ export const editStudentProfileByAdmin = async (req, res) => {
                     hsc: studentDetails.hsc,
                     degree: studentDetails.degree,
                     additional: studentDetails.additional,
+                    dial1: studentDetails.dial1,
+                    dial2: studentDetails.dial2,
 
-                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,
                 }
 
