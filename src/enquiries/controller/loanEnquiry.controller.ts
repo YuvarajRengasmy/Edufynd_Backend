@@ -85,6 +85,7 @@ export let updateLoanEnquiry = async (req, res, next) => {
                     desiredCountry: loanEnquiryDetails.desiredCountry,
                     whatIsYourMonthlyIncome: loanEnquiryDetails.whatIsYourMonthlyIncome,
                     passportNumber: loanEnquiryDetails.passportNumber,
+                    expiryDate: loanEnquiryDetails.expiryDate,
                     uploadPassport: loanEnquiryDetails.uploadPassport,
                     didYouApplyForLoanElsewhere: loanEnquiryDetails.didYouApplyForLoanElsewhere,
                     chooseTheBankYouPreviouslyApplied: loanEnquiryDetails.chooseTheBankYouPreviouslyApplied,
