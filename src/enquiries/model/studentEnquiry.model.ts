@@ -21,7 +21,7 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     desiredCourse?: string;
     gender?: string;
     citizenShip?: string;
-    expiryDate?: Date;
+    expiryDate?: string;
     desiredUniversity?: string;
     doYouHoldAnyOtherOffer?: string;
     country?: string;
@@ -31,6 +31,16 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     refereeContactNo?: number;
     registerForIELTSClass?: string;
     doYouNeedSupportForLoan?: string;
+    studentName?: string;
+    agentName?: string;
+    businessName?: string;
+    agentEmail?: string;
+    agentPrimaryNumber?: string;
+    agentWhatsAppNumber?: string;
+    dial3?: string;
+    dial4?: string;
+    dial?: string;
+   
     assignedTo?: string;
     isDeleted?: boolean;
     createdOn?: Date;
@@ -46,7 +56,7 @@ const studentEnquirySchema = new mongoose.Schema({
     message: {type: String},
     source: { type: String },
     name: { type: String },
-    dob: { type: Date },
+    dob: { type: String },
     passportNo: { type: String },
     qualification: { type: String },
     dial1: {type: String},
@@ -63,7 +73,7 @@ const studentEnquirySchema = new mongoose.Schema({
     // New Added Field
     gender: { type: String },
     citizenShip: { type: String },
-    expiryDate:{ type: Date },
+    expiryDate:{  type: String },
     desiredUniversity: { type: String },
     doYouHoldAnyOtherOffer: { type: String },
     country: { type: String },
@@ -72,7 +82,15 @@ const studentEnquirySchema = new mongoose.Schema({
     refereeName: { type: String },
     refereeContactNo: { type: Number },
     registerForIELTSClass: { type: String },
-
+    studentName: { type: String },
+    agentName: { type: String },
+    businessName: { type: String },
+    agentEmail: { type: String },
+    agentPrimaryNumber: { type: String },
+    agentWhatsAppNumber: { type: String },
+    dial3: {type: String},
+    dial4: {type: String},
+    dial: {type: String},
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
