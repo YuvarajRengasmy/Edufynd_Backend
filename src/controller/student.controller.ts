@@ -192,6 +192,8 @@ export let updateStudent = async (req, res, next) => {
                 countryNameVisa: studentDetails.countryNameVisa,
                 dial1: studentDetails.dial1,
                 dial2: studentDetails.dial2,
+                dial3: studentDetails.dial3,
+                dial4: studentDetails.dial4,
             
                 modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
@@ -505,7 +507,11 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
                     lastDesignation: studentDetails.lastDesignation,
                     date: studentDetails.date,
                     purpose: studentDetails.purpose,
-                    countryName: studentDetails.countryName,
+                    countryName: studentDetails.countryName, 
+                    dial1: studentDetails.dial1,
+                    dial2: studentDetails.dial2,
+                    dial3: studentDetails.dial3,
+                    dial4: studentDetails.dial4,
 
                     modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,

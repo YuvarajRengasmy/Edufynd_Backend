@@ -286,7 +286,7 @@ export let createMeeting = async (req, res, next) => {
                                     </tr>
                                     <tr>
                                         <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                            Copyright &copy; 2024 | All rights reserved
+                                            Copyright &copy; ${new Date().getFullYear()} | All rights reserved
                                         </td>
                                     </tr>
                                 </table>
@@ -360,7 +360,7 @@ export let createMeeting = async (req, res, next) => {
                                             </tr>
                                             <tr>
                                                 <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                    Copyright &copy; 2024 | All rights reserved
+                                                    Copyright &copy; ${new Date().getFullYear()}  | All rights reserved
                                                 </td>
                                             </tr>
                                         </table>
