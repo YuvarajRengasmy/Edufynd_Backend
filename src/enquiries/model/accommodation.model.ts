@@ -13,12 +13,16 @@ export interface AccommodationDocument extends mongoose.Document {
     agentID?: string;
     agentName?: string;
     businessName?: string;
+    dial1?: string;
     agentPrimaryNumber?: string;
+    dial2?: string;
     agentWhatsAppNumber?: string;
     agentEmail?: string;
     message?: string;
     // If Student request for the following
+    dial3?: string;
     primaryNumber?: string;
+    dial4?: string;
     whatsAppNumber?: string;
     email?: string;
     universityName?: string;
@@ -48,11 +52,15 @@ const accommodationSchema = new mongoose.Schema({
     agentID: {type: String},
     agentName: {type: String},
     businessName: {type: String},
+    dial1: {type: String},
     agentPrimaryNumber: {type: String},
+    dial2:{type: String},
     agentWhatsAppNumber: {type: String},
     agentEmail: {type: String},
     // If Student request for the following
+    dial3: {type: String},
     primaryNumber: {type: String},
+    dial4: {type: String},
     whatsAppNumber: {type: String},
     email: {type: String},
     universityName: {type: String},

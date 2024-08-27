@@ -1,6 +1,8 @@
 import { Admin, AdminDocument } from '../model/admin.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
+import { SuperAdmin} from '../model/superAdmin.model'
+import { Agent} from '../model/agent.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
@@ -149,6 +151,14 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
+
+            const student = await Student.findOne({ email: req.body.email });
+            const superAdmin = await SuperAdmin.findOne({ email: req.body.email })
+            const staff = await Staff.findOne({ email: req.body.email })
+            const agent = await Agent.findOne({ email: req.body.email })
+            const admin = await Admin.findOne({ email: req.body.email })
+
+            if(!student && !superAdmin && !staff && !agent && !admin ){
             const adminDetails: AdminDocument = req.body;
             adminDetails.adminCode = await generateNextAdminCode();
             const password = generateRandomPassword(8);
@@ -228,8 +238,10 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                 }
             });
             response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
-
-        } catch (err: any) {
+        }else {
+            response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+        }} 
+        catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
@@ -330,8 +342,10 @@ export const editStudentProfileByAdmin = async (req, res) => {
                     hsc: studentDetails.hsc,
                     degree: studentDetails.degree,
                     additional: studentDetails.additional,
+                    dial1: studentDetails.dial1,
+                    dial2: studentDetails.dial2,
 
-                    modifiedOn: studentDetails.modifiedOn,
+                    modifiedOn: new Date(),
                     modifiedBy: studentDetails.modifiedBy,
                 }
 

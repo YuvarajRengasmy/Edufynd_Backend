@@ -46,13 +46,13 @@ export let createCommission = async (req, res, next) => {
             commissionDetails.createdOn = new Date()
             const createData = new Commission(commissionDetails);
             let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Commission', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Create-Commission', true, 200, insertData, clientError.success.savedSuccessfully);
             }
             else {
-                response(req, res, activity, 'Level-3', 'Create-Commission', true, 422, {}, 'University Name already registered for Commission');
+                response(req, res, activity, 'Level-2', 'Create-Commission', true, 422, {}, 'University Name already registered for Commission');
             }
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Commission', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Create-Commission', false, 500, {}, errorMessage.fieldValidation, err.message);
         }
     
     } else {

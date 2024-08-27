@@ -171,7 +171,7 @@ export let createPromotion = async (req, res, next) => {
             response(req, res, activity, 'Level-3', 'Create-Promotion', false, 500, {}, "Internal server error", err.message);
         }
     } else {
-        response(req, res, activity, 'Level-3', 'Create-Promotion', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Create-Promotion', false, 422, {},  errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 

@@ -11,7 +11,9 @@ export interface StudentDocument extends mongoose.Document {
     expiryDate?: Date;
     gender?: string;
     email?: string;
-    primaryNumber?: number;  
+    dial1?: string;
+    primaryNumber?: number;
+    dial2?: string;  
     whatsAppNumber?: number; 
     highestQualification?: string;
     degreeName?: string;
@@ -57,6 +59,7 @@ export interface StudentDocument extends mongoose.Document {
     dateVisa?: string;
     purposeVisa?: string;
     countryNameVisa?: string;
+    activeStatus?: string;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -77,7 +80,9 @@ const studentSchema = new mongoose.Schema({
     citizenship: { type: String },
     gender: { type: String, },
     email: { type: String },
+    dial1: {type: String},
     primaryNumber: { type: Number },
+    dial2: {type: String},
     whatsAppNumber: { type: Number },
     highestQualification: { type: String },
     degreeName: { type: String, },
@@ -124,6 +129,7 @@ const studentSchema = new mongoose.Schema({
     dateVisa: {type: String},
     purposeVisa: {type: String},
     countryNameVisa: {type: String},
+    activeStatus: {type: String},
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },

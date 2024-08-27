@@ -46,21 +46,18 @@ export let CreateJWTToken = (data: any = {}) => {
 
 
 export let checkSession = async (req, res, next) => {
-    console.log("Entering checkSession middleware");
+    // console.log("Entering checkSession middleware");
   
-    let authHeader = req.headers['token'];
-    console.log("Authorization Header:", authHeader);
-  
+    let authHeader = req.headers['token'];  
     if (authHeader) {
         const parts = authHeader.split(' ');
         const headerType = parts[0];
         const tokenValue = parts[1]?.trim();
 
         if (headerType === "Bearer" && tokenValue) {
-            console.log("Token Value:", tokenValue);
             try {
                 const tokendata = await jwt.verify(tokenValue, 'edufynd');
-                console.log('Token data:', tokendata);
+                // console.log('Token data:', tokendata);
 
                 // req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;

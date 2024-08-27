@@ -1,4 +1,8 @@
 import { Student, StudentDocument } from '../model/student.model'
+import { SuperAdmin} from '../model/superAdmin.model'
+import { Staff} from '../model/staff.model'
+import { Admin } from '../model/admin.model'
+import { Agent} from '../model/agent.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
@@ -6,6 +10,7 @@ import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
 import csv = require("csvtojson")
 import * as config from '../config';
+
 
 var activity = "Student";
 
@@ -185,6 +190,9 @@ export let updateStudent = async (req, res, next) => {
                 dateVisa: studentDetails.dateVisa,
                 purposeVisa: studentDetails.purposeVisa,
                 countryNameVisa: studentDetails.countryNameVisa,
+                dial1: studentDetails.dial1,
+                dial2: studentDetails.dial2,
+            
                 modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
             };
@@ -337,7 +345,11 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const student = await Student.findOne({ email: req.body.email });
-            if(!student){
+            const superAdmin = await SuperAdmin.findOne({ email: req.body.email })
+            const staff = await Staff.findOne({ email: req.body.email })
+            const agent = await Agent.findOne({ email: req.body.email })
+            const admin = await Admin.findOne({ email: req.body.email })
+            if(!student && !superAdmin && !staff && !agent && !admin ){
 
             const studentDetails: StudentDocument = req.body;
             const student = await Student.find({}, 'studentCode').exec();

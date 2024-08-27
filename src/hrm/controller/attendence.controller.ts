@@ -13,7 +13,7 @@ var activity = "Attendence";
 
 export const getAllAttendence = async (req, res) => {
     try {
-        const data = await Attendence.find().sort({ _id: -1 })
+        const data = await Attendence.find().sort({ date: -1 })
 
         response(req, res, activity, 'Level-1', 'GetAll-Attendence', true, 200, data, clientError.success.fetchedSuccessfully)
 
@@ -95,7 +95,7 @@ export let getFilteredAttendence = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const attendencetList = await Attendence.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate("employeeId", { empName: 1 })
+        const attendencetList = await Attendence.find(findQuery).sort({ date: -1 }).limit(limit).skip(page).populate("employeeId", { empName: 1 })
         const attendenceCount = await Attendence.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Attendence', true, 200, { attendencetList, attendenceCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
@@ -175,7 +175,8 @@ export const staffClockIn = async (req, res) => {
                         date: new Date(datee),
                         status: 'Absent',
                         clockIn: null, // Set clockIn to 0 for "Absent" status
-                        clockOut: null // Set clockOut to 0 for "Absent" status
+                        clockOut: null, // Set clockOut to 0 for "Absent" status
+                        earlyLeaving: null
                     });
                 }
             }

@@ -24,7 +24,7 @@ export const getSingleDialCode = async (req, res) => {
         const data = await DialCode.findOne({ _id: req.query._id })
         response(req, res, activity, 'Level-1', 'GetSingle-DialCode', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetSingle-DialCode', false, 500, {}, errorMessage.internalServer, err.message)
+        response(req, res, activity, 'Level-2', 'GetSingle-DialCode', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
 

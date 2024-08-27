@@ -1,5 +1,8 @@
 import { Agent, AgentDocument } from '../model/agent.model'
 import { Student, StudentDocument } from '../model/student.model'
+import { Admin} from '../model/admin.model'
+import { Staff} from '../model/staff.model'
+import { SuperAdmin} from '../model/superAdmin.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
@@ -14,7 +17,7 @@ var activity = "Agent";
 
 export let getAllAgent = async (req, res, next) => {
     try {
-        const data = await Agent.find({ isDeleted: false }).sort({agentCode: -1});
+        const data = await Agent.find({ isDeleted: false }).sort({ agentCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Agent', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
@@ -55,14 +58,14 @@ export let createAgent = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const agent = await Agent.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
-           
+
             if (!agent) {
                 const agentDetails: AgentDocument = req.body;
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 agentDetails.createdOn = new Date()
                 agentDetails.agentCode = await generateNextAgentID();
-               
+
                 const createData = new Agent(agentDetails);
                 let insertData = await createData.save();
                 const token = await TokenManager.CreateJWTToken({
@@ -139,6 +142,10 @@ export let updateAgent = async (req, res, next) => {
                     desiredCountry: agentDetails.desiredCountry,
                     requireVisaFilingSupport: agentDetails.requireVisaFilingSupport,
                     visaCommission: agentDetails.visaCommission,
+                    dial1: agentDetails.dial1,
+                    dial2: agentDetails.dial2,
+                    dial3: agentDetails.dial3,
+                    dial4: agentDetails.dial4,
 
                     modifiedOn: new Date(),
                     modifiedBy: agentDetails.modifiedBy,
@@ -176,21 +183,30 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
 
     if (errors.isEmpty()) {
         try {
-            const agentDetails: AgentDocument = req.body;
-            agentDetails.agentCode = await generateNextAgentID();
-            const password = generateRandomPassword(8);
-            const confirmPassword = password; // Since password and confirmPassword should match
-            agentDetails.password = await encrypt(password)
-            agentDetails.confirmPassword = await encrypt(confirmPassword)
-            agentDetails.createdOn = new Date();
-            const createAgent = new Agent(agentDetails);
-            const insertAgent = await createAgent.save();
-            const newHash = await decrypt(insertAgent["password"]);
-            const mailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to:insertAgent.email,
-                subject: 'Welcome to EduFynd',
-                html: `
+        
+            const student = await Student.findOne({ email: req.body.email });
+            const superAdmin = await SuperAdmin.findOne({ email: req.body.email })
+            const staff = await Staff.findOne({ email: req.body.email })
+            const agent = await Agent.findOne({ email: req.body.email })
+            const admin = await Admin.findOne({ email: req.body.email })
+
+            if(!student && !superAdmin && !staff && !agent && !admin ){
+
+                const agentDetails: AgentDocument = req.body;
+                agentDetails.agentCode = await generateNextAgentID();
+                const password = generateRandomPassword(8);
+                const confirmPassword = password; // Since password and confirmPassword should match
+                agentDetails.password = await encrypt(password)
+                agentDetails.confirmPassword = await encrypt(confirmPassword)
+                agentDetails.createdOn = new Date();
+                const createAgent = new Agent(agentDetails);
+                const insertAgent = await createAgent.save();
+                const newHash = await decrypt(insertAgent["password"]);
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: insertAgent.email,
+                    subject: 'Welcome to EduFynd',
+                    html: `
                               <body style="font-family: 'Poppins', Arial, sans-serif">
                                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                       <tr>
@@ -242,21 +258,23 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                   </table>
                               </body>
                           `,
-                        
-              };
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email:', error);
-                    return res.status(500).json({ message: 'Error sending email' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
-                }
-            });
-            response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, {agent: insertAgent}, 'Agent created successfully by SuperAdmin.');
 
+                };
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
+                    }
+                });
+                response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, { agent: insertAgent }, 'Agent created successfully by SuperAdmin.');
+            } else {
+                response(req, res, activity, 'Level-2', 'Create-Agent-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+            }
         } catch (err: any) {
-          
+
             response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', false, 500, {}, 'Field validation error', err.message);
         }
     } else {
@@ -390,7 +408,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const agentList = await Agent.find(findQuery).sort({agentCode: -1}).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
+        const agentList = await Agent.find(findQuery).sort({ agentCode: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 })
 
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);

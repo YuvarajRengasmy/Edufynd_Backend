@@ -1,5 +1,8 @@
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
+import { SuperAdmin} from '../model/superAdmin.model'
+import { Admin } from '../model/admin.model'
+import { Agent} from '../model/agent.model'
 import { validationResult } from 'express-validator'
 import { response, transporter } from '../helper/commonResponseHandler'
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
@@ -116,6 +119,9 @@ export const updateStaff = async (req, res) => {
                     ipAddress: staffDetails.ipAddress,
                     userName: staffDetails.userName,
                     loginPassword: staffDetails.loginPassword,
+                    dial1: staffDetails.dial1,
+                    dial2: staffDetails.dial2,
+                    dial3: staffDetails.dial3,
               
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
@@ -148,9 +154,16 @@ export let deleteStaff = async (req, res, next) => {
 
 export let createStaffBySuperAdmin = async (req, res, next) => {
     const errors = validationResult(req);
-
     if (errors.isEmpty()) {
         try {
+
+            const student = await Student.findOne({ email: req.body.email });
+            const superAdmin = await SuperAdmin.findOne({ email: req.body.email })
+            const staff = await Staff.findOne({ email: req.body.email })
+            const agent = await Agent.findOne({ email: req.body.email })
+            const admin = await Admin.findOne({ email: req.body.email })
+
+            if(!student && !superAdmin && !staff && !agent && !admin ){
 
             const staffDetails: StaffDocument = req.body;
             const password = generateRandomPassword(8);
@@ -232,11 +245,10 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                     return res.status(201).json({ message: 'Staff profile created and email sent login credentials', agent: insertStaff });
                 }
             });
-            return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {
-                agent: insertStaff,
-
-
-            }, 'Staff created successfully by SuperAdmin.');
+            return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {agent: insertStaff}, 'Staff created successfully by SuperAdmin.');
+        }else {
+            response(req, res, activity, 'Level-2', 'Create-Staff-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+        }
 
         } catch (err: any) {
 
