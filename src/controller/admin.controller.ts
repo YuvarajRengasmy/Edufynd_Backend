@@ -1,8 +1,8 @@
 import { Admin, AdminDocument } from '../model/admin.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
-import { SuperAdmin} from '../model/superAdmin.model'
-import { Agent} from '../model/agent.model'
+import { SuperAdmin } from '../model/superAdmin.model'
+import { Agent } from '../model/agent.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
@@ -100,6 +100,33 @@ export let createAdmin = async (req, res, next) => {
     }
 }
 
+export const updateAdmin = async (req, res) => {
+    const errors = validationResult(req)
+    if (errors.isEmpty()) {
+        try {
+            const adminDetails: AdminDocument = req.body;
+            let statusData = await Admin.findByIdAndUpdate({ _id: req.query._id }, {
+                $set: {
+                    name: adminDetails.name,
+                    email: adminDetails.email,
+                    dial: adminDetails.dial,
+                    mobileNumber: adminDetails.mobileNumber,
+                    role: adminDetails.role,
+
+                    modifiedOn: new Date(),
+                    modifiedBy: adminDetails.modifiedBy,
+                }
+            });
+
+            response(req, res, activity, 'Level-2', 'Update-Admin Details', true, 200, statusData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Admin Details', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Demo Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
 
 
 export let deleteAdmin = async (req, res, next) => {
@@ -158,23 +185,23 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
             const agent = await Agent.findOne({ email: req.body.email })
             const admin = await Admin.findOne({ email: req.body.email })
 
-            if(!student && !superAdmin && !staff && !agent && !admin ){
-            const adminDetails: AdminDocument = req.body;
-            adminDetails.adminCode = await generateNextAdminCode();
-            const password = generateRandomPassword(8);
-            const confirmPassword = password; // Since password and confirmPassword should match
-            adminDetails.password = await encrypt(password)
-            adminDetails.confirmPassword = await encrypt(confirmPassword)
-            const createAdmin = new Admin(adminDetails);
-            const insertAdmin = await createAdmin.save();
+            if (!student && !superAdmin && !staff && !agent && !admin) {
+                const adminDetails: AdminDocument = req.body;
+                adminDetails.adminCode = await generateNextAdminCode();
+                const password = generateRandomPassword(8);
+                const confirmPassword = password; // Since password and confirmPassword should match
+                adminDetails.password = await encrypt(password)
+                adminDetails.confirmPassword = await encrypt(confirmPassword)
+                const createAdmin = new Admin(adminDetails);
+                const insertAdmin = await createAdmin.save();
 
-            const newHash = await decrypt(insertAdmin["password"]);
+                const newHash = await decrypt(insertAdmin["password"]);
 
-            const mailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to: insertAdmin.email,
-                subject: 'Welcome to EduFynd',
-                html: `
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: insertAdmin.email,
+                    subject: 'Welcome to EduFynd',
+                    html: `
                               <body style="font-family: 'Poppins', Arial, sans-serif">
                                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                       <tr>
@@ -227,20 +254,21 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                               </body>
                           `,
 
-            };
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email:', error);
-                    return res.status(500).json({ message: 'Error sending email' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    res.status(201).json({ message: 'Admin profile created and email sent login credentials', admin: insertAdmin });
-                }
-            });
-            response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
-        }else {
-            response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', true, 422, {}, 'This Email already registered');
-        }} 
+                };
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'Admin profile created and email sent login credentials', admin: insertAdmin });
+                    }
+                });
+                response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
+            } else {
+                response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+            }
+        }
         catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }

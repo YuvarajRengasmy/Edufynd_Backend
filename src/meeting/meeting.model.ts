@@ -12,6 +12,7 @@ export interface MeetingDocument extends mongoose.Document {
     content?: string;
     date?: Date;
     time?: string;
+    sent?: Boolean;
 
     createdOn?: Date;
     createdBy?: string;
@@ -32,6 +33,7 @@ const meetingSchema = new mongoose.Schema({
     content: {type: String},
     date: {type: Date},
     time: {type: String},
+    sent: { type: Boolean, default: false },
 
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
