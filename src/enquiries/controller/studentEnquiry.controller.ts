@@ -108,6 +108,10 @@ export let updateStudentEnquiry = async (req, res, next) => {
                     refereeContactNo: studentEnquiryDetails.refereeContactNo,
                     registerForIELTSClass: studentEnquiryDetails.registerForIELTSClass,
                     studentId: studentEnquiryDetails.studentId,
+                    dial1: studentEnquiryDetails.dial1,
+                    dial2: studentEnquiryDetails.dial2,
+                    dial3: studentEnquiryDetails.dial3,
+                  
                  
 
 

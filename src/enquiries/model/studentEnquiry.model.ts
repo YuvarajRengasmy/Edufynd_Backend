@@ -21,13 +21,14 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     desiredCourse?: string;
     gender?: string;
     citizenShip?: string;
-    expiryDate?: Date;
+    expiryDate?: string;
     desiredUniversity?: string;
     doYouHoldAnyOtherOffer?: string;
     country?: string;
     universityName?: string;
     programName?: string;
     refereeName?: string;
+    dial3?:string,
     refereeContactNo?: number;
     registerForIELTSClass?: string;
     doYouNeedSupportForLoan?: string;
@@ -46,7 +47,7 @@ const studentEnquirySchema = new mongoose.Schema({
     message: {type: String},
     source: { type: String },
     name: { type: String },
-    dob: { type: Date },
+    dob: { type: String },
     passportNo: { type: String },
     qualification: { type: String },
     dial1: {type: String},
@@ -63,13 +64,14 @@ const studentEnquirySchema = new mongoose.Schema({
     // New Added Field
     gender: { type: String },
     citizenShip: { type: String },
-    expiryDate:{ type: Date },
+    expiryDate:{ type: String },
     desiredUniversity: { type: String },
     doYouHoldAnyOtherOffer: { type: String },
     country: { type: String },
     universityName: { type: String },
     programName: { type: String },
     refereeName: { type: String },
+    dial3:{type: String},
     refereeContactNo: { type: Number },
     registerForIELTSClass: { type: String },
 

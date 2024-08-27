@@ -101,6 +101,10 @@ export let updateForexEnquiry = async (req, res, next) => {
                     value: forexEnquiryDetails.value,
                     markUp:forexEnquiryDetails.markUp,
                     profit: forexEnquiryDetails.profit,
+                    dial1: forexEnquiryDetails.dial1,
+                    dial2: forexEnquiryDetails.dial2,
+                    dial3: forexEnquiryDetails.dial3,
+                    dial4: forexEnquiryDetails.dial4,
 
                     modifiedOn: new Date(),
                     modifiedBy: forexEnquiryDetails.modifiedBy,

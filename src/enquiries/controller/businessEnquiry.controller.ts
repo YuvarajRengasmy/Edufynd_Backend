@@ -61,6 +61,7 @@ export let updateBusinessEnquiry = async (req, res, next) => {
                     studentId: EnquiryDetails.studentId,
                     country: EnquiryDetails.country,
                     universityName: EnquiryDetails.universityName,
+                    dial: EnquiryDetails.dial,
                   
                     modifiedOn: new Date(),
                     modifiedBy: EnquiryDetails.modifiedBy,
