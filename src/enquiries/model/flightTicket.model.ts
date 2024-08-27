@@ -19,6 +19,7 @@ export interface FlightDocument extends mongoose.Document {
     email?: string;
     //If Agent request for the following
     agentName?: string;
+    studentNameList?: string;
     businessName?: string;
     dial3?: string;
     agentPrimaryNumber?: string;
@@ -57,6 +58,7 @@ const flightTicketSchema = new mongoose.Schema({
     email: {type: String},
     //If Agent request for the following
     agentName: {type: String},
+    studentNameList: {type: String},
     businessName: {type: String},
     dial3: {type: String},
     agentPrimaryNumber: {type: String},

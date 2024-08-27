@@ -85,6 +85,7 @@ export let updateFlightTicketEnquiry = async (req, res, next) => {
                     dob: flightEnquiryDetails.dob,
                     whatsAppNumber: flightEnquiryDetails.whatsAppNumber,
                     agentName: flightEnquiryDetails.agentName,
+                    studentNameList: flightEnquiryDetails.studentNameList,
                     businessName: flightEnquiryDetails.businessName,
                     agentWhatsAppNumber: flightEnquiryDetails.agentWhatsAppNumber,
                     from: flightEnquiryDetails.from,
