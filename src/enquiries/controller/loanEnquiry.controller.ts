@@ -60,7 +60,7 @@ export let createLoanEnquiry = async (req, res, next) => {
 
             response(req, res, activity, 'Level-2', 'LoanEnquiry-Created', true, 200, insertData, clientError.success.registerSuccessfully);
         } catch (err: any) {
-          
+
             response(req, res, activity, 'Level-3', 'LoanEnquiry-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
@@ -99,9 +99,28 @@ export let updateLoanEnquiry = async (req, res, next) => {
                     studentId: loanEnquiryDetails.studentId,
                     country: loanEnquiryDetails.country,
                     universityName: loanEnquiryDetails.universityName,
+
+                    //Newly Added
+                    studentCode: loanEnquiryDetails.studentCode,
+                    agentPrimaryNo: loanEnquiryDetails.agentPrimaryNo,
+                    agentWhatsAppNo:loanEnquiryDetails.agentWhatsAppNo,
+                    agentMail:loanEnquiryDetails.agentMail,
+                    plannedUniversity: loanEnquiryDetails.plannedUniversity,
+                    courseFee: loanEnquiryDetails.courseFee,
+                    preferedLoanType: loanEnquiryDetails.preferedLoanType,
+                    previousLoanApplied: loanEnquiryDetails.previousLoanApplied,
+                    whatIsYourLoanHistory: loanEnquiryDetails.whatIsYourLoanHistory,
+                    coApplicantMail: loanEnquiryDetails.coApplicantMail,
+                    coApplicantPrimaryNo: loanEnquiryDetails.coApplicantPrimaryNo,
+                    coApplicantWhatsAppNo: loanEnquiryDetails.coApplicantWhatsAppNo,
+                    relationship: loanEnquiryDetails.relationship,
                     dial1: loanEnquiryDetails.dial1,
                     dial2: loanEnquiryDetails.dial2,
-              
+                    dial3:loanEnquiryDetails.dial3,
+                    dial4: loanEnquiryDetails.dial4,
+                    dial5: loanEnquiryDetails.dial5,
+                    dial6: loanEnquiryDetails.dial6,
+
 
                     modifiedOn: new Date(),
                     modifiedBy: loanEnquiryDetails.modifiedBy,
