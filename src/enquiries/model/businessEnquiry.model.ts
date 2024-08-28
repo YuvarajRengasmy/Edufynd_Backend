@@ -10,8 +10,6 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
     dial1?: string;
     mobileNumber?: number;  
     message?: string;
-
-    
      //Newly added 
      source?: string;
      studentName?: string;
