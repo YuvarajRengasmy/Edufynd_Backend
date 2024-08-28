@@ -46,6 +46,12 @@ const commissionSchema = new mongoose.Schema({
             value: {type: Number}
         }]
     }],
+
+    intakes: [{
+        intake: {type: String},
+        value: {type:Number}
+    }],
+
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
