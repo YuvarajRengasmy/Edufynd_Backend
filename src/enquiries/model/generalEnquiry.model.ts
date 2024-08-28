@@ -28,6 +28,13 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
      whatsAppNumber?: string;
      qualification?: string;
      assignedTo?: string;
+     agentName?: string;
+     businessName?: string;
+     agentEmail?: string;
+     dial3?: string;
+     agentPrimaryNumber?: string;
+     dial4?: string;
+     agentWhatsAppNumber?: string;
  
     createdOn?: Date;
     createdBy?: string;
@@ -63,6 +70,13 @@ const generalEnquirySchema = new mongoose.Schema({
     whatsAppNumber: { type: String },
     qualification: { type: String },
     assignedTo: { type: String },
+    agentName: { type: String },
+    businessName: { type: String },
+    agentEmail: { type: String },
+    dial3:{type: String},
+    agentPrimaryNumber: { type: String },
+    dial4:{type: String},
+    agentWhatsAppNumber: { type: String },
 
 
     createdOn: { type: Date, default: Date.now() },

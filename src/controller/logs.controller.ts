@@ -8,8 +8,8 @@ import { LogsDocument, Logs } from "../model/logs.model";
 var activity = 'LOGS';
 
 /**
- * @author Ponjothi S 
- * @date 07-09-2022
+ * @author Balan K K
+ * @date 01-05-2024
  * @param {Object} req 
  * @param {Object} res 
  * @param {Function} next  
@@ -21,6 +21,7 @@ export let saveLogs = async (req, res, next) => {
         try {
             const LogsData: LogsDocument = req.body;
             const createLogs = new Logs(LogsData);
+            console.log("balan")
             let insertLogs = await createLogs.save();
             response(req, res, activity, 'Save-Logs', 'Level-2', true, 200, insertLogs, clientError.success.savedSuccessfully);
         } catch (err: any) {

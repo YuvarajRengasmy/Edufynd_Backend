@@ -62,7 +62,7 @@ export let updateGeneralEnquiry = async (req, res, next) => {
                     studentId: EnquiryDetails.studentId,
                     country: EnquiryDetails.country,
                     universityName: EnquiryDetails.universityName,
-
+//Newly added
                     source: EnquiryDetails.source,
                     studentName: EnquiryDetails.studentName,
                     gender: EnquiryDetails.gender,
@@ -77,8 +77,15 @@ export let updateGeneralEnquiry = async (req, res, next) => {
                     whatsAppNumber: EnquiryDetails.whatsAppNumber,
                     qualification: EnquiryDetails.qualification,
                     assignedTo: EnquiryDetails.assignedTo,
+                    agentName: EnquiryDetails.agentName,
+                    businessName: EnquiryDetails.businessName,
+                    agentPrimaryNumber: EnquiryDetails.agentPrimaryNumber,
+                    agentWhatsAppNumber: EnquiryDetails.agentWhatsAppNumber,
+                    agentEmail: EnquiryDetails.agentEmail,
                     dial1: EnquiryDetails.dial1,
-                    dial2:EnquiryDetails.dial2,
+                    dial2: EnquiryDetails.dial2,
+                    dial3: EnquiryDetails.dial3,
+                    dial4: EnquiryDetails.dial4,
 
                     modifiedOn: new Date(),
                     modifiedBy: EnquiryDetails.modifiedBy,
