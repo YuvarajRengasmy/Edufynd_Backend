@@ -41,7 +41,7 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let createMeeting = async (req, res, next) => {
+export let createMeetingg = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -247,7 +247,7 @@ export let getFilteredMeeting = async (req, res, next) => {
 
 ////
 // without remainder mail also ok
-export let createMeetingg = async (req, res, next) => {
+export let createMeetinggg = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -396,7 +396,7 @@ export let createMeetingg = async (req, res, next) => {
 
 
 // with remainder mail ok
-export let createMeetinggg = async (req, res, next) => {
+export let createMeeting = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
