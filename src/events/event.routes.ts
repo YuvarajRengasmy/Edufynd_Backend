@@ -20,8 +20,8 @@ router.get('/getSingleEvent',
 
 
 router.post('/',
-    basicAuthUser,
-    checkSession,
+    // basicAuthUser,
+    // checkSession,
     createEvent
 );
 

@@ -33,7 +33,7 @@ export let saveLogs = async (req, res, next) => {
 };
 
 export let saveLog = async (params: LogsDocument) => {
-    console.log("pppp", params)
+  
     const LogsData: LogsDocument = params;
     const createLogs = new Logs(LogsData);
     return await createLogs.save();

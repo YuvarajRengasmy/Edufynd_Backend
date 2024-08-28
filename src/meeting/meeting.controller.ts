@@ -41,7 +41,7 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let createMeeting = async (req, res, next) => {
+export let createMeetingf = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -246,157 +246,11 @@ export let getFilteredMeeting = async (req, res, next) => {
 
 
 ////
-// without remainder mail also ok
-export let createMeetingg = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const data = req.body;
-            const userName = req.body.attendees; // Array of selected usernames
-
-            // Fetch the host details
-            const staff = await Staff.findOne({ empName: req.body.hostName });
-            if (!staff) {
-                return res.status(400).json({ success: false, message: 'Please select a valid host name.' });
-            }
-            const hostEmail = staff.email;
-
-            // Send email to the host
-            const hostMailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to: hostEmail,
-                subject: 'You are assigned as the host for the meeting',
-                html: `
-                <body style="font-family: 'Poppins', Arial, sans-serif">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td align="center" style="padding: 20px;">
-                                <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                    <tr>
-                                        <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                            Meeting Schedule
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                            <p>Hello ${staff.empName},</p>
-                                            <p>You have been assigned as the host for the following meeting:</p>
-                                            <p style="font-weight: bold;color: #345C72">Meeting Topic: ${data.subject}</p>
-                                            <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
-                                            <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
-                                            <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                            Copyright &copy; ${new Date().getFullYear()} | All rights reserved
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-            `,
-            };
-
-            transporter.sendMail(hostMailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email to the host:', error);
-                    return res.status(500).json({ message: 'Error sending email to the host.' });
-                } else {
-                    console.log('Email sent to the host:', info.response);
-                }
-            });
-
-            // Fetch the users based on their type
-            let users = [];
-            if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
-            } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
-            }
-
-            if (users.length > 0) {
-                const userEmails = users.map((user) => user.email);
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
-
-                // Create a new meeting instance with the user data
-                const meeting = new Meeting({
-                    ...data,
-                    userName: userNames,
-                    userEmail: userEmails,
-                });
-                // Save the meeting to the database
-                const savedMeeting = await meeting.save();
-
-                // Send email to the attendees
-                const emailPromises = userEmails.map((email, index) => {
-                    const userMailOptions = {
-                        from: config.SERVER.EMAIL_USER,
-                        to: email,
-                        subject: `Meeting Notification: ${savedMeeting.subject}`,
-                        html: `
-                        <body style="font-family: 'Poppins', Arial, sans-serif">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td align="center" style="padding: 20px;">
-                                        <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                            <tr>
-                                                <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                    ${data.subject}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                                    <p>Hello ${userNames[index]},</p>
-                                                    <p>You have been invited to the following meeting:</p>
-                                                    <p style="font-weight: bold;color: #345C72">Meeting Subject: ${data.subject}</p>
-                                                   <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
-                                                    <p style="font-weight: bold;color: #345C72">Hosted by: ${staff.empName}</p>
-                                                    <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                    Copyright &copy; ${new Date().getFullYear()}  | All rights reserved
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </body>
-                    `,
-                    };
-
-                    return transporter.sendMail(userMailOptions);
-                });
-
-                await Promise.all(emailPromises);
-
-                response(req, res, activity, 'Level-1', 'Create-Meeting', true, 200, {}, "Meeting notifications sent successfully.");
-            } else {
-                response(req, res, activity, 'Level-2', 'Create-Meeting', false, 404, {}, "No users found for the specified type.");
-            }
-        } catch (err) {
-            console.error("Error in createMeeting:", err);
-            response(req, res, activity, 'Level-3', 'Create-Meeting', false, 500, {}, "Internal server error", err.message);
-        }
-    } else {
-        response(req, res, activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    }
-};
-
 
 
 
 // with remainder mail ok
-export let createMeetinggg = async (req, res, next) => {
+export let createMeeting = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Create-Meeting', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
