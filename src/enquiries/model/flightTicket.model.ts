@@ -5,10 +5,10 @@ export interface FlightDocument extends mongoose.Document {
     flightID?: any;
     source?: string;
     studentId?: string,
+    name?: string,
     country?: string;
     universityName?: string;
     //If Student request for the following
-    studentName?: string;
     passportNo?: string;
     expiryDate?: string;
     dob?: string;
@@ -19,7 +19,7 @@ export interface FlightDocument extends mongoose.Document {
     email?: string;
     //If Agent request for the following
     agentName?: string;
-    studentNameList?: string;
+    studentName?: string;
     businessName?: string;
     dial3?: string;
     agentPrimaryNumber?: string;
@@ -43,11 +43,12 @@ const flightTicketSchema = new mongoose.Schema({
     flightID: {type: String},
     source: {type: String},
     studentId: {type: String},
+    name:{type:String},
+
     country: {type: String},
     universityName: {type: String},
     message: {type: String},
     //If Student request for the following
-    studentName: {type: String},
     passportNo: {type: String},
     expiryDate:{  type: String },
     dob: {type: String},
@@ -58,7 +59,7 @@ const flightTicketSchema = new mongoose.Schema({
     email: {type: String},
     //If Agent request for the following
     agentName: {type: String},
-    studentNameList: {type: String},
+    studentName: {type: String},
     businessName: {type: String},
     dial3: {type: String},
     agentPrimaryNumber: {type: String},
