@@ -6,7 +6,7 @@ export interface ApplicantDocument extends mongoose.Document {
     applicationCode?: string;
     programId?: any;
     studentCode?: string;
-    studentId?:any;
+    studentId?:string;
     name?: string,       
     dob?: string,           
     passportNo?: string,      
