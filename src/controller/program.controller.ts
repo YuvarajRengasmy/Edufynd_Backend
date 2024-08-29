@@ -79,7 +79,6 @@ export let createProgram = async (req, res, next) => {
                 programDetails.programCode = await generateNextProgramCode(currentMaxCounter);
 
                 // Calculate the final value based on application fee and discounted value
-                programDetails.finalValue = programDetails.applicationFee - programDetails.discountedValue;
 
                 const newProgram = new Program(programDetails);
                 let insertedData = await newProgram.save();
@@ -114,7 +113,7 @@ export let updateProgram = async (req, res, next) => {
                     applicationFee: programDetails.applicationFee,
                     currency: programDetails.currency,
                     flag: programDetails.flag,
-                    discountedValue: programDetails.discountedValue,
+                 
                     campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
