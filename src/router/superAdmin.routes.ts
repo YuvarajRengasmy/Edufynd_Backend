@@ -40,4 +40,6 @@ router.get('/getSuperAdminForSearch',
     getSuperAdminForSearch);
 
 
+    router.get('/publicGetSuperAdminForSearch',getSuperAdminForSearch);
+  
 export default router
