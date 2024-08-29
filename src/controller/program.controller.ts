@@ -128,10 +128,10 @@ export let updateProgram = async (req, res, next) => {
                 },
 
             })
-            response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
 
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Program', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
