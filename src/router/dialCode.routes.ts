@@ -20,5 +20,7 @@ router.put('/getFilterDialCode',
     getFilteredDialCode ,
 );
 
+router.get('/publicGetFilterDialCode',getFilteredDialCode);
+router.get('/publicGetAllDialCode',getAllDialCode);
 
 export default router
