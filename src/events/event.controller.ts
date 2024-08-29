@@ -38,130 +38,6 @@ const stripHtmlTags = (html) => {
 
 
 
-export let createEventtt = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const data: EventDocument = req.body;
-            const userName = req.body.userName; // Array of selected usernames
-
-            let users = [];
-
-            // Fetch users based on typeOfUser
-            if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
-            } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
-            }
-
-            // Check if any users were found
-            if (users.length > 0) {
-                // Collect usernames and emails for the notification
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
-                const userEmails = users.map((user) => user.email);
-
-                // Create a single notification document with all selected usernames and emails
-                const event = new Event({
-                    ...data,
-                    userName: userNames,
-                    userEmail: userEmails
-                });
-
-                // Save the promotion to the database
-                const savedEvent = await event.save();
-                const sanitizedContent = stripHtmlTags(savedEvent.eventTopic);
-
-                // Send emails to all users
-                const emailPromises = userEmails.map((email, index) => {
-      
-                    const mailOptions = {
-                        from: config.SERVER.EMAIL_USER,
-                        to: email,
-                        subject: `${savedEvent.eventTopic}`,
-                        html: `
-                                      <body style="font-family: 'Poppins', Arial, sans-serif">
-                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                              <tr>
-                                                  <td align="center" style="padding: 20px;">
-                                                      <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                                          <!-- Header -->
-                                                          <tr>
-                                                              <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                              ${savedEvent.eventTopic}
-                                                              </td>
-                                                          </tr>
-                              
-                                                          <!-- Body -->
-                                                          <tr>
-                                                              <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                                                  <p>Hello ${userNames[index]},</p>
-                                                                  <p>Event Schedule Notification.</p>
-                                                                  <p style="font-weight: bold,color: #345C72">University Name:  ${savedEvent.universityName}</p>
-                                                                    <p style="font-weight: bold,color: #345C72">Event Venue:  ${savedEvent.venue}</p>
-                                                                    <p style="font-weight: bold,color: #345C72">Event Date:  ${savedEvent.date}</p>
-                                                                      <p style="font-weight: bold,color: #345C72">Event Time:  ${savedEvent.time}</p>
-                                                           
-                                                
-                                                                  <p>This information is for your reference.</p>
-                                                                  <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                                              </td>
-                                                          </tr>
-                                                          <tr>
-                                      <td style="padding: 30px 40px 30px 40px; text-align: center;">
-                                          <!-- CTA Button -->
-                                          <table cellspacing="0" cellpadding="0" style="margin: auto;">
-                                              <tr>
-                                                  <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
-                                                      <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
-                                                  </td>
-                                              </tr>
-                                          </table>
-                                      </td>
-                                  </tr>  
-                              
-                                                          <!-- Footer -->
-                                                          <tr>
-                                                              <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                                  Copyright &copy;${new Date().getFullYear()} | All rights reserved
-                                                              </td>
-                                                          </tr>
-                                                      </table>
-                                                  </td>
-                                              </tr>
-                                          </table>
-                                      </body>
-                                  `,
-                                
-                      };
-                    transporter.sendMail(mailOptions, (error, info) => {
-
-                        if (error) {
-                            console.error('Error sending email:', error);
-                            return res.status(500).json({ message: 'Error sending email' });
-                        } else {
-                            console.log('Email sent:', info.response);
-                            res.status(201).json({ message: 'You have received a Meeting Notification'});
-                        }
-                    });
-                });
-                await Promise.all(emailPromises);
-
-                response(req, res, activity, 'Level-1', 'Create-Event', true, 200, {}, " Event Notifications sent successfully by Email");
-            } else {
-                response(req, res, activity, 'Level-2', 'Create-Event', false, 404, {}, "No users found for the specified type.");
-            }
-        } catch (err) {
-            response(req, res, activity, 'Level-3', 'Create-Event', false, 500, {}, "Internal server error", err.message);
-        }
-    } else {
-        response(req, res,  activity, 'Level-3', 'Create-Event', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    }
-};
-
 
 export const updateEvent = async (req, res) => {
     const errors = validationResult(req)
@@ -414,8 +290,6 @@ export let createEventt = async (req, res, next) => {
 export let createEvent = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return response(req, res, activity, 'Level-3', 'Create-Event', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    }
 
     try {
         const data: EventDocument = req.body;
@@ -735,8 +609,10 @@ export let createEvent = async (req, res, next) => {
             }
         });
 
-    } catch (error) {
-        console.error('Error:', error);
-        return response(req, res, activity, 'Level-3', 'Create-Event', false, 500, {}, "Internal server error");
+    } catch (err) {
+        response(req, res, activity, 'Level-2', 'Create-Event', false, 500, {}, "Internal server error", err.message);
     }
+} else {
+    response(req, res,  activity, 'Level-3', 'Create-Event', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+}
 };
