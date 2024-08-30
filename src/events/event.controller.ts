@@ -53,7 +53,6 @@ export const updateEvent = async (req, res) => {
                     date: eventData.date,
                     time: eventData.time,
                     venue: eventData.venue,
-                    attendees: eventData.attendees,
                     content: eventData.content,
                     modifiedOn: new Date(),
                     modifiedBy: eventData.modifiedBy,
