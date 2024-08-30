@@ -2,7 +2,7 @@ import { Payment, PaymentDocument } from '../model/payment.model'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
-const Stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 import * as config from '../config';
 var activity = "Payment";
 
@@ -121,7 +121,7 @@ export let getFilteredPayment = async (req, res, next) => {
     
         try {
            
-            const paymentIntent = await Stripe.paymentIntents.create({
+            const paymentIntent = await stripe.paymentIntents.create({
              
                 amount: amount, // Convert amount to smallest currency unit
                 currency: currency || 'usd',
@@ -148,37 +148,63 @@ export let getFilteredPayment = async (req, res, next) => {
 
 
 
-export let handleWebhook = async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    const webhookSecret =  config.SERVER.WEB_HOOK
 
-    let event;
+
+
+export const checkOutt = async(req,res)=>{
+
+    const {amount} = req.body
+console.log("balannnn", amount)
+
+    const lineItems = {
+        price_data: {
+            currency: 'usd',
+            name: "applicationFess",
+            unit_amount: amount * 100
+        }
+    }
+
+    const session = await stripe.checkout.sessions.create({
+
+        payment_method_types: ["card"],
+        line_items: lineItems,
+        mode: 'payment',
+        success_url: "http://localhost:3000/list_client",
+        cancel_url: "http://localhost:3000/list_university"
+
+    })
+
+    res.json({id:session.id})
+}
+
+export const checkOut = async (req, res) => {
+    const { amount } = req.body;
 
     try {
-        event = Stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } catch (err) {
-        console.log('⚠️ Webhook signature verification failed.', err);
-        return res.status(400).send(`Webhook Error: ${err.message}`);
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: 'Application Fees',
+                        },
+                        unit_amount: amount, // Amount should be in cents
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: 'payment',
+            success_url: 'https://crm.edufynd.in/Dashboard',
+            cancel_url: 'https://crm.edufynd.in/list_application',
+        });
+
+        res.json({ id: session.id });
+    } catch (error) {
+        console.error('Error creating checkout session:', error.message);
+        res.status(500).json({ error: error.message });
     }
-
-    // Handle the event
-    switch (event.type) {
-        case 'payment_intent.succeeded':
-            const paymentIntent = event.data.object;
-
-            // Update the payment status to 'Succeeded'
-            await Payment.findOneAndUpdate(
-                { stripePaymentId: paymentIntent.id },
-                { status: 'Succeeded' }
-            );
-            break;
-        // Add other event types if needed
-        default:
-            console.log(`Unhandled event type ${event.type}`);
-    }
-
-    res.status(200).json({ received: true });
 };
-
 
     
