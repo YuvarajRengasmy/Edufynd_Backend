@@ -50,8 +50,10 @@ export let createPaymentIntent = async (req, res) => {
     const { amount, currency, studentId } = req.body;
 
     try {
+        Stripe.cus
         const paymentIntent = await Stripe.paymentIntents.create({
-            amount: amount * 100, // Convert amount to smallest currency unit
+         
+            amount: amount , // Convert amount to smallest currency unit
             currency: currency || 'usd',
         });
 

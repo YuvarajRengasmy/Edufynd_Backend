@@ -60,10 +60,10 @@ export let saveUniversity = async (req, res, next) => {
             const createData = new University(universityDetails);
             let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
         }
         else {
-            response(req, res, activity, 'Level-3', 'Save-University', true, 422, {}, 'University Name already registered');
+            response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
         }
         } catch (err: any) {
             console.log(err)
@@ -606,7 +606,7 @@ const generateCouponCode = (universityName, country) => {
     return `${formattedUniversityName}-${formattedCountry}-${randomString}`;
   };
   
-export const createCoupon = async (req, res) => {
+export const saveUniversityy = async (req, res) => {
     try {
       const { universityName, country } = req.body;
   
