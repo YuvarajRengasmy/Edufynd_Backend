@@ -10,7 +10,7 @@ router.get('/',
     basicAuthUser,
     getAllPayment
 );
-router.get('/getSingleDemo',
+router.get('/getSinglePayment',
     basicAuthUser,
     checkQuery('_id'),
     getSinglePayment ,
@@ -29,7 +29,7 @@ router.delete('/',
     checkQuery('_id'),
     deletePayment 
 );
-router.put('/getFilterDemo',
+router.put('/getFilterPayment',
     basicAuthUser,
     getFilteredPayment ,
 );

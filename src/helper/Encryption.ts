@@ -66,3 +66,27 @@ export let generateRandomPassword = (length) => {
   password = password.split('').sort(() => 0.5 - Math.random()).join('');
   return password;
 }
+
+
+
+export let generateCouponCode = (length) => {
+
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const digits = '0123456789';
+ 
+
+  const allCharacters = letters + digits;
+
+  let coupon = '';
+ 
+  coupon += digits[Math.floor(Math.random() * digits.length)];
+  coupon += letters[Math.floor(Math.random() * letters.length)];
+
+  for (let i = 3; i < length; i++) {
+    coupon += allCharacters[Math.floor(Math.random() * allCharacters.length)];
+  }
+
+  // Shuffle the password to ensure randomness
+  coupon = coupon.split('').sort(() => 0.5 - Math.random()).join('');
+  return coupon;
+}

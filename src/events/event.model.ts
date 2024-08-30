@@ -12,9 +12,11 @@ export interface EventDocument extends mongoose.Document {
     userEmail?: any[];
     eventTopic?: string;
     universityName?: string;
+    fileUpload?: string;
     date?: Date;
     time?: string;
     venue?: string;
+    sent?: Boolean;
 
     createdOn?: Date;
     createdBy?: string;
@@ -32,9 +34,11 @@ const eventSchema = new mongoose.Schema({
     userEmail: [String],
     eventTopic: {type: String},
     universityName: {type: String},
+    fileUpload: {type: String},
     date: {type: Date},
     time: {type: String},
     venue: {type: String},
+    sent: { type: Boolean, default: false },
 
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },

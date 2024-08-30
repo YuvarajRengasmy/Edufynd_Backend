@@ -40,7 +40,7 @@ export let createCurrency = async (req: any, res:any, next:any) => {
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-Currency', true, 200, insertData, clientError.success.savedSuccessfully);
         }else {
-            response(req, res, activity, 'Level-2', 'Create-Student-By-SuperAdmin', true, 422, {}, 'The Country name already registered');
+            response(req, res, activity, 'Level-2', 'Create-Currency', true, 422, {}, 'The Country name already registered');
         }
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Currency', false, 500, {}, errorMessage.internalServer, err.message);
