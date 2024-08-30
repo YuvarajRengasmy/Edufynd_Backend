@@ -9,7 +9,7 @@ export interface PromotionDocument extends mongoose.Document {
     subject?: string;
     content?: string;
     uploadImage?: string;
-
+    fileUpload?: any[];
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -24,7 +24,11 @@ const promotionSchema = new mongoose.Schema({
     subject: {type: String},
     content: {type: String},
     uploadImage: {type: String},
-
+    fileUpload: [{
+        _id: { type: mongoose.Types.ObjectId, auto: true },
+        fileName: { type: String},
+        fileImage:  { type: String },
+    }],
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

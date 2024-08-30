@@ -117,7 +117,7 @@ export let deleteCommission = async (req, res, next) => {
     };
 
 
-    export let deleteCourseType = async (req, res, next) => {
+export let deleteCourseType = async (req, res, next) => {
 
         try {
             let commissionId = req.query.commissionId; // The main document's _id
@@ -131,14 +131,14 @@ export let deleteCommission = async (req, res, next) => {
             console.log("33", updateResult)
     
             if (updateResult.modifiedCount === 0) {
-                return response(req, res, 'activity', 'Level-3', 'Delete Course Type', false, 404, {}, 'Course Type not found');
+                return response(req, res, activity, 'Level-3', 'Delete Course Type', false, 404, {}, 'Course Type not found');
             }
     
             const updatedDocument = await Commission.findById(commissionId);
-            response(req, res, 'activity', 'Level-2', 'Deleted the Course Type', true, 200, updatedDocument, 'Successfully removed the course type');
+            response(req, res, activity, 'Level-2', 'Deleted the Course Type', true, 200, updatedDocument, 'Successfully removed the course type');
         } catch (err) {
             console.log("77", err)
-            response(req, res, 'activity', 'Level-3', 'Delete Course Type', false, 500, {}, 'Internal Server Error', err.message);
+            response(req, res, activity, 'Level-3', 'Delete Course Type', false, 500, {}, 'Internal Server Error', err.message);
         }
     };
 

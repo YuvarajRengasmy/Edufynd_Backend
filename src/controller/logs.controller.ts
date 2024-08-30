@@ -15,6 +15,7 @@ var activity = 'LOGS';
  * @param {Function} next  
  * @description This Function is used to create Logs
  */
+
 export let saveLogs = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

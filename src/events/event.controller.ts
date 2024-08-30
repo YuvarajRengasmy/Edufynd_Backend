@@ -7,6 +7,8 @@ import { validationResult } from "express-validator";
 import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import * as config from '../config';
+import cron = require('node-cron');
+import moment = require('moment');
 
 
 var activity = "Event";
@@ -36,130 +38,6 @@ const stripHtmlTags = (html) => {
 
 
 
-export let createEventtt = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const data: EventDocument = req.body;
-            const userName = req.body.userName; // Array of selected usernames
-
-            let users = [];
-
-            // Fetch users based on typeOfUser
-            if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
-            } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
-            }
-
-            // Check if any users were found
-            if (users.length > 0) {
-                // Collect usernames and emails for the notification
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
-                const userEmails = users.map((user) => user.email);
-
-                // Create a single notification document with all selected usernames and emails
-                const event = new Event({
-                    ...data,
-                    userName: userNames,
-                    userEmail: userEmails
-                });
-
-                // Save the promotion to the database
-                const savedEvent = await event.save();
-                const sanitizedContent = stripHtmlTags(savedEvent.eventTopic);
-
-                // Send emails to all users
-                const emailPromises = userEmails.map((email, index) => {
-      
-                    const mailOptions = {
-                        from: config.SERVER.EMAIL_USER,
-                        to: email,
-                        subject: `${savedEvent.eventTopic}`,
-                        html: `
-                                      <body style="font-family: 'Poppins', Arial, sans-serif">
-                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                              <tr>
-                                                  <td align="center" style="padding: 20px;">
-                                                      <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                                          <!-- Header -->
-                                                          <tr>
-                                                              <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                              ${savedEvent.eventTopic}
-                                                              </td>
-                                                          </tr>
-                              
-                                                          <!-- Body -->
-                                                          <tr>
-                                                              <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                                                  <p>Hello ${userNames[index]},</p>
-                                                                  <p>Event Schedule Notification.</p>
-                                                                  <p style="font-weight: bold,color: #345C72">University Name:  ${savedEvent.universityName}</p>
-                                                                    <p style="font-weight: bold,color: #345C72">Event Venue:  ${savedEvent.venue}</p>
-                                                                    <p style="font-weight: bold,color: #345C72">Event Date:  ${savedEvent.date}</p>
-                                                                      <p style="font-weight: bold,color: #345C72">Event Time:  ${savedEvent.time}</p>
-                                                           
-                                                
-                                                                  <p>This information is for your reference.</p>
-                                                                  <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                                              </td>
-                                                          </tr>
-                                                          <tr>
-                                      <td style="padding: 30px 40px 30px 40px; text-align: center;">
-                                          <!-- CTA Button -->
-                                          <table cellspacing="0" cellpadding="0" style="margin: auto;">
-                                              <tr>
-                                                  <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
-                                                      <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
-                                                  </td>
-                                              </tr>
-                                          </table>
-                                      </td>
-                                  </tr>  
-                              
-                                                          <!-- Footer -->
-                                                          <tr>
-                                                              <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                                  Copyright &copy;${new Date().getFullYear()} | All rights reserved
-                                                              </td>
-                                                          </tr>
-                                                      </table>
-                                                  </td>
-                                              </tr>
-                                          </table>
-                                      </body>
-                                  `,
-                                
-                      };
-                    transporter.sendMail(mailOptions, (error, info) => {
-
-                        if (error) {
-                            console.error('Error sending email:', error);
-                            return res.status(500).json({ message: 'Error sending email' });
-                        } else {
-                            console.log('Email sent:', info.response);
-                            res.status(201).json({ message: 'You have received a Meeting Notification'});
-                        }
-                    });
-                });
-                await Promise.all(emailPromises);
-
-                response(req, res, activity, 'Level-1', 'Create-Event', true, 200, {}, " Event Notifications sent successfully by Email");
-            } else {
-                response(req, res, activity, 'Level-2', 'Create-Event', false, 404, {}, "No users found for the specified type.");
-            }
-        } catch (err) {
-            response(req, res, activity, 'Level-3', 'Create-Event', false, 500, {}, "Internal server error", err.message);
-        }
-    } else {
-        response(req, res,  activity, 'Level-3', 'Create-Event', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    }
-};
-
 
 export const updateEvent = async (req, res) => {
     const errors = validationResult(req)
@@ -173,12 +51,17 @@ export const updateEvent = async (req, res) => {
                     universityName: eventData.universityName,
                     eventTopic: eventData.eventTopic,
                     date: eventData.date,
+                    hostName: eventData.hostName,
+                   
                     time: eventData.time,
                     venue: eventData.venue,
-
+                    content: eventData.content,
                     modifiedOn: new Date(),
                     modifiedBy: eventData.modifiedBy,
                 },
+                $addToSet: {
+                    fileUpload: eventData.fileUpload
+                }
 
             }, { new: true });
 
@@ -238,99 +121,265 @@ export let getFilteredEvent = async (req, res, next) => {
 
 ///
 
+
 export let createEvent = async (req, res, next) => {
     const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const data = req.body;
-            const userName = req.body.userName; // Array of selected usernames
+    try {
+        const data: EventDocument = req.body;
+        const userName = req.body.userName; // Array of selected usernames
+        console.log("staff", userName)
+        // Fetch the host details
+        const staff = await Staff.findOne({ empName: req.body.hostName });
+        console.log("kkk", staff)
+        const hostEmail = staff.email;
 
-            // Fetch the host details
-            const staff = await Staff.findOne({ empName: req.body.hostName });
-            if (!staff) {
-                return res.status(400).json({ success: false, message: 'Please select a host name.' });
-            }
-            const hostEmail = staff.email;
+        if (!staff) {
+            return res.status(400).json({ success: false, message: 'Please select a valid host name.' });
+        }
+        if (!data.time || !data.date) {
+            return response(req, res, activity, 'Level-2', 'Create-Event', false, 400, {}, "Scheduled date and time are required.");
+        }
 
-            // Send email to the host
-            const hostMailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to: hostEmail,
-                subject: 'You are assigned as the host for the Event Schedule',
-                html: `
+        let users = [];
+
+        // Fetch users based on typeOfUser
+        if (data.typeOfUser === 'student') {
+            users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
+        } else if (data.typeOfUser === 'admin') {
+            users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
+        } else if (data.typeOfUser === 'agent') {
+            users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
+        } else if (data.typeOfUser === 'staff') {
+            users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
+        } else {
+            return response(req, res, activity, 'Level-1', 'Create-Event', false, 400, {}, "Invalid user type.");
+        }
+
+        // Check if any users were found
+        if (users.length === 0) {
+            return response(req, res, activity, 'Level-2', 'Create-Event', false, 404, {}, "No users found for the specified type.");
+        }
+
+        // Collect usernames and emails for the notification
+        const userNames = users.map((user) => user.name || user.empName || user.agentName);
+        const userEmails = users.map((user) => user.email);
+
+        // Send email to the host
+        const hostMailOptions = {
+            from: config.SERVER.EMAIL_USER,
+            to: hostEmail,
+            subject: 'You are assigned as the host for the event',
+            html: `
                 <body style="font-family: 'Poppins', Arial, sans-serif">
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td align="center" style="padding: 20px;">
-                                <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
-                                    <tr>
-                                        <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                            Event Schedule
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                            <p>Hello ${staff.empName},</p>
-                                            <p>You have been assigned as the host for the following meeting:</p>
-                                            <p style="font-weight: bold;color: #345C72">Meeting Topic: ${data.subject}</p>
-                                            <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
-                                            <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
-                                            <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                            Copyright &copy; 2024 | All rights reserved
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </body>
-            `,
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                 <td align="center" style="padding: 20px;">
+                <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+        <!-- Header -->
+            <tr>
+                <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                You are assigned as the host for the event
+                 </td>
+                </tr>
+                <!-- Body -->
+                <tr>
+                 <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                <p>Hello ${staff.empName},</p>
+                <p>Meeting Schedule Notification.</p>
+                <p style="font-weight: bold;color: #345C72">Event Topic: ${data.eventTopic}</p>
+                <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
+                   <p style="font-weight: bold;color: #345C72">University Name: ${data.universityName}</p>
+                      <p style="font-weight: bold;color: #345C72">Venue: ${data.venue}</p>
+                <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
+                <p>This information is for your reference.</p>
+                <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                </td>
+                </tr>
+                <tr>
+                <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                <!-- CTA Button -->
+                <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                 <tr>
+                <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                </td>
+                </tr>
+                </table>
+                </td>
+                </tr>  
+            <!-- Footer -->
+                <tr>
+                <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                Copyright &copy; ${new Date().getFullYear()} | All rights reserved
+                </td>
+                </tr>
+                </table>
+                </td>
+                </tr>
+                </table>
+                </body>`,
+        };
+
+        await transporter.sendMail(hostMailOptions);
+
+        // Send emails to the attendees
+        const emailPromises = userEmails.map((email, index) => {
+            const userMailOptions = {
+                from: config.SERVER.EMAIL_USER,
+                to: email,
+                subject: `Event Notification: ${data.eventTopic}`,
+                html: `
+                                      <body style="font-family: 'Poppins', Arial, sans-serif">
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                              <tr>
+                                                  <td align="center" style="padding: 20px;">
+                                                      <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                          <!-- Header -->
+                                                          <tr>
+                                                              <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                              ${data.eventTopic}
+                                                              </td>
+                                                          </tr>
+                              
+                                                          <!-- Body -->
+                                                          <tr>
+                                                              <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                                 <p>Hello ${userNames[index]},</p>
+                                                                    <p>You have been invited to the following event:</p>
+                                                                     <p style="font-weight: bold;color: #345C72">Event Topic: ${data.eventTopic}</p>
+                                                                     <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
+                                                                     <p style="font-weight: bold;color: #345C72">University Name: ${data.universityName}</p>
+                                                                     <p style="font-weight: bold;color: #345C72">Venue: ${data.venue}</p>
+                                                                    <p style="font-weight: bold;color: #345C72">Host: ${staff.empName}</p>
+                                                                    <p style="font-weight: bold;color: #345C72">Participant List: ${userName.join(', ')}</p>
+                                                           
+                                                
+                                                                  <p>This information is for your reference.</p>
+                                                                  <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                              </td>
+                                                          </tr>
+                                                          <tr>
+                                      <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                          <!-- CTA Button -->
+                                          <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                              <tr>
+                                                  <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                      <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </td>
+                                  </tr>  
+                              
+                                                          <!-- Footer -->
+                                                          <tr>
+                                                              <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                                  Copyright &copy; ${new Date().getFullYear()} | All rights reserved
+                                                              </td>
+                                                          </tr>
+                                                      </table>
+                                                  </td>
+                                              </tr>
+                                          </table>
+                                      </body>
+                                  `,
             };
+            return transporter.sendMail(userMailOptions);
+        });
 
-            transporter.sendMail(hostMailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email to the host:', error);
-                    return res.status(500).json({ message: 'Error sending email to the host.' });
-                } else {
-                    console.log('Email sent to the host:', info.response);
-                }
-            });
+        await Promise.all(emailPromises);
 
-            // Fetch the users based on their type
-            let users = [];
-            if (data.typeOfUser === 'student') {
-                users = await Student.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'admin') {
-                users = await Admin.find({ name: { $in: userName } }, { name: 1, email: 1 });
-            } else if (data.typeOfUser === 'agent') {
-                users = await Agent.find({ agentName: { $in: userName } }, { agentName: 1, email: 1 });
-            } else if (data.typeOfUser === 'staff') {
-                users = await Staff.find({ empName: { $in: userName } }, { empName: 1, email: 1 });
-            }
+        // Store meeting details and mark emails as sent
+        const meeting = new Event({
+            ...data,
+            userName: userNames,
+            userEmail: userEmails,
+            sent: true // Mark as sent
+        });
+        await meeting.save();
 
-            if (users.length > 0) {
-                const userEmails = users.map((user) => user.email);
-                const userNames = users.map((user) => user.name || user.empName || user.agentName);
+        // Respond to the client immediately, letting them know the notification is scheduled
+        response(req, res, activity, 'Level-1', 'Create-Event', true, 201, {}, "Event created successfully.");
 
-                // Create a new meeting instance with the user data
-                const event = new Event({
-                    ...data,
-                    userName: userNames,
-                    userEmail: userEmails
-                });
-                // Save the meeting to the database
-                const savedEvent = await event.save();
+        const scheduledTime = moment(`${moment(data.date).format('YYYY-MM-DD')} ${data.time}`, 'YYYY-MM-DD hh:mm A').seconds(0).milliseconds(0);
+        // Schedule the reminder email for the host and participants 2 hours before the scheduled time
+        const reminderTask = cron.schedule('* * * * *', async () => {
+            const now = moment().seconds(0).milliseconds(0);
+          
+            const reminderTime = scheduledTime.clone().subtract(2, 'hours');
 
-                // Send email to the attendees
-                const emailPromises = userEmails.map((email, index) => {
-                    const userMailOptions = {
+            if (now.isSame(reminderTime)) {
+                console.log(`Sending reminder emails for Event: ${data.eventTopic}`);
+
+                // Reminder email to host
+                const hostReminderOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: hostEmail,
+                    subject: `Reminder: You are hosting ${data.eventTopic}`,
+                    html: `
+                    <body style="font-family: 'Poppins', Arial, sans-serif">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td align="center" style="padding: 20px;">
+                                    <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                        <!-- Header -->
+                                        <tr>
+                                            <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                            ${data.eventTopic}
+                                            </td>
+                                        </tr>
+            
+                                        <!-- Body -->
+                                        <tr>
+                                            <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                              <p>Hello ${staff.empName},</p>
+                                                <p>This is a reminder that you are the host for the following event:</p>
+                                                  <p style="font-weight: bold;color: #345C72">Event Topic: ${data.eventTopic}</p>
+                                                 <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
+                                               <p style="font-weight: bold;color: #345C72">University Name: ${data.universityName}</p>
+                                              <p style="font-weight: bold;color: #345C72">Venue: ${data.venue}</p>
+                                         
+                              
+                                                <p>This information is for your reference.</p>
+                                                <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                    <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                        <!-- CTA Button -->
+                        <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                            <tr>
+                                <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                    <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>  
+            
+                                        <!-- Footer -->
+                                        <tr>
+                                            <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                Copyright &copy; ${new Date().getFullYear()} | All rights reserved
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </body>
+                `,
+
+                };
+
+                await transporter.sendMail(hostReminderOptions);
+
+                // Reminder emails to participants
+                const participantReminderPromises = userEmails.map((email, index) => {
+                    const mailOptions = {
                         from: config.SERVER.EMAIL_USER,
                         to: email,
-                        subject: `Event Notification: ${savedEvent.eventTopic}`,
+                        subject: `Reminder: ${data.eventTopic}`,
                         html: `
                         <body style="font-family: 'Poppins', Arial, sans-serif">
                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -340,21 +389,19 @@ export let createEvent = async (req, res, next) => {
                                             <!-- Header -->
                                             <tr>
                                                 <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                ${savedEvent.eventTopic}
+                                                ${data.eventTopic}
                                                 </td>
                                             </tr>
                 
                                             <!-- Body -->
                                             <tr>
                                                 <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
-                                                    <p>Hello ${userNames[index]},</p>
-                                                    <p>Event Schedule Notification.</p>
-                                                    <p style="font-weight: bold,color: #345C72">University Name:  ${savedEvent.universityName}</p>
-                                                      <p style="font-weight: bold,color: #345C72">Event Venue:  ${savedEvent.venue}</p>
-                                                      <p style="font-weight: bold,color: #345C72">Event Date:  ${savedEvent.date}</p>
-                                                        <p style="font-weight: bold,color: #345C72">Event Time:  ${savedEvent.time}</p>
-                                             
-                                  
+                                                   <p>Hello ${userNames[index]},</p>
+                                                    <p>This is a reminder that you have a event scheduled:</p>
+                                                    <p style="font-weight: bold;color: #345C72">Event Topic: ${data.eventTopic}</p>
+                                                   <p style="font-weight: bold;color: #345C72">Schedule Date and Time: ${data.date} at ${data.time}</p>
+                                                    <p style="font-weight: bold;color: #345C72">University Name: ${data.universityName}</p>
+                                                      <p style="font-weight: bold;color: #345C72">Venue: ${data.venue}</p>
                                                     <p>This information is for your reference.</p>
                                                     <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
                                                 </td>
@@ -375,7 +422,7 @@ export let createEvent = async (req, res, next) => {
                                             <!-- Footer -->
                                             <tr>
                                                 <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                                                    Copyright &copy; 2024 | All rights reserved
+                                                    Copyright &copy; ${new Date().getFullYear()} | All rights reserved
                                                 </td>
                                             </tr>
                                         </table>
@@ -385,21 +432,19 @@ export let createEvent = async (req, res, next) => {
                         </body>
                     `,
                     };
-
-                    return transporter.sendMail(userMailOptions);
+                    return transporter.sendMail(mailOptions);
                 });
 
-                await Promise.all(emailPromises);
+                await Promise.all(participantReminderPromises);
+                console.log('Reminder emails sent successfully.');
 
-                response(req, res, activity, 'Level-1', 'Create-Events', true, 200, {}, "Event notifications sent successfully.");
-            } else {
-                response(req, res, activity, 'Level-2', 'Create-Events', false, 404, {}, "No users found for the specified type.");
+                // Stop the cron job after sending the reminder
+                reminderTask.stop();
             }
-        } catch (err) {
-            console.error("Error in createEvent:", err);
-            response(req, res, activity, 'Level-3', 'Create-Events', false, 500, {}, "Internal server error", err.message);
-        }
-    } else {
-        response(req, res, activity, 'Level-3', 'Create-Events', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
+        });
+
+    } catch (err) {
+        response(req, res, activity, 'Level-2', 'Create-Event', false, 500, {}, "Internal server error", err.message);
     }
-};
+} 
+

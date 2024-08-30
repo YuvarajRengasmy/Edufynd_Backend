@@ -60,10 +60,10 @@ export let saveUniversity = async (req, res, next) => {
             const createData = new University(universityDetails);
             let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-2', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
         }
         else {
-            response(req, res, activity, 'Level-3', 'Save-University', true, 422, {}, 'University Name already registered');
+            response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
         }
         } catch (err: any) {
             console.log(err)
@@ -525,7 +525,7 @@ export const getUniversityByName = async (req, res) => {
 
 ////
 
-// correct but old without state and city
+// correct but old without state and city against that state and city corresponding of array
 export const csvToJsonn = async (req, res) => {
     try {
         const csvData = await csv().fromFile(req.file.path);
@@ -594,3 +594,36 @@ export const csvToJsonn = async (req, res) => {
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
+
+
+
+import * as crypto from "crypto";
+
+const generateCouponCode = (universityName, country) => {
+    const randomString = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const formattedUniversityName = universityName.replace(/\s+/g, '').toUpperCase();
+    const formattedCountry = country.replace(/\s+/g, '').toUpperCase();
+    return `${formattedUniversityName}-${formattedCountry}-${randomString}`;
+  };
+  
+export const saveUniversityy = async (req, res) => {
+    try {
+      const { universityName, country } = req.body;
+  
+      // Generate coupon code
+      const couponCode = generateCouponCode(universityName, country);
+  
+      // Create new coupon
+      const newCoupon = new University({
+        universityName,
+        country,
+        couponCode
+      });
+  
+      await newCoupon.save();
+      res.status(201).json({ message: 'Coupon created successfully', couponCode });
+    } catch (error) {
+      res.status(500).json({ message: 'Error creating coupon', error });
+    }
+  };
+  

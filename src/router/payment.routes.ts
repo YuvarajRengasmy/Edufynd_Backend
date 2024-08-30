@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import {getAllPayment, getSinglePayment, createPaymentIntent, updatePayment, deletePayment, 
-    getFilteredPayment } from '../controller/payment.controller';
+    getFilteredPayment, 
+    checkOut} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
+import * as express from 'express';
 
 const router: Router = Router();
 
@@ -10,7 +12,7 @@ router.get('/',
     basicAuthUser,
     getAllPayment
 );
-router.get('/getSingleDemo',
+router.get('/getSinglePayment',
     basicAuthUser,
     checkQuery('_id'),
     getSinglePayment ,
@@ -19,6 +21,13 @@ router.post('/',
     basicAuthUser,
     createPaymentIntent 
 );
+
+
+
+router.post('/create-checkout-session',checkOut);
+
+
+
 router.put('/',
     basicAuthUser,
     checkQuery('_id'),
@@ -29,7 +38,7 @@ router.delete('/',
     checkQuery('_id'),
     deletePayment 
 );
-router.put('/getFilterDemo',
+router.put('/getFilterPayment',
     basicAuthUser,
     getFilteredPayment ,
 );
