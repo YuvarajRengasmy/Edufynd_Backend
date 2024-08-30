@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 const Stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+import * as config from '../config';
 var activity = "Payment";
 
 
@@ -46,33 +47,6 @@ export let createPayment = async (req, res, next) => {
 };
 
 
-export let createPaymentIntent = async (req, res) => {
-    const { amount, currency, studentId } = req.body;
-
-    try {
-        Stripe.cus
-        const paymentIntent = await Stripe.paymentIntents.create({
-         
-            amount: amount , // Convert amount to smallest currency unit
-            currency: currency || 'usd',
-        });
-
-        // Save the payment details in your database
-        const payment = new Payment({
-            studentId: studentId,
-            amount,
-            currency: currency || 'usd',
-            stripePaymentId: paymentIntent.id,
-            status: 'Pending',
-        });
-
-        await payment.save();
-
-        res.status(200).json({clientSecret: paymentIntent.client_secret, details:payment });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 
 export const updatePayment = async (req, res) => {
@@ -142,7 +116,69 @@ export let getFilteredPayment = async (req, res, next) => {
     };
 
 
+    export let createPaymentIntent = async (req, res) => {
+        const { amount, currency, studentId } = req.body;
+    
+        try {
+           
+            const paymentIntent = await Stripe.paymentIntents.create({
+             
+                amount: amount, // Convert amount to smallest currency unit
+                currency: currency || 'usd',
+            });
+    
+            // Save the payment details in your database
+            const payment = new Payment({
+                studentId: studentId,
+                amount,
+                currency: currency || 'usd',
+                stripePaymentId: paymentIntent.id,
+                status: 'Pending',
+            });
+    
+            await payment.save();
+    
+            res.status(200).json({clientSecret: paymentIntent.client_secret, details:payment });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
 
+    
+
+
+
+export let handleWebhook = async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret =  config.SERVER.WEB_HOOK
+
+    let event;
+
+    try {
+        event = Stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } catch (err) {
+        console.log('⚠️ Webhook signature verification failed.', err);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+        case 'payment_intent.succeeded':
+            const paymentIntent = event.data.object;
+
+            // Update the payment status to 'Succeeded'
+            await Payment.findOneAndUpdate(
+                { stripePaymentId: paymentIntent.id },
+                { status: 'Succeeded' }
+            );
+            break;
+        // Add other event types if needed
+        default:
+            console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.status(200).json({ received: true });
+};
 
 
     

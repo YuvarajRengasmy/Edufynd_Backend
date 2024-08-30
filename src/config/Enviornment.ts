@@ -86,5 +86,6 @@ export const SERVER = {
     CRYPTO_KEY: 'test',
     FCM_KEY: '',
     PAGE_ACCESS_TOKEN: process.env['PAGE_ACCESS_TOKEN'],
-    STRIPE_SECRET_KEY: process.env['STRIPE_SECRET_KEY']
+    STRIPE_SECRET_KEY: process.env['STRIPE_SECRET_KEY'],
+    WEB_HOOK: process.env['WEB_HOOK']
 };

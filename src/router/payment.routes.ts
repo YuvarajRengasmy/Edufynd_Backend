@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import {getAllPayment, getSinglePayment, createPaymentIntent, updatePayment, deletePayment, 
-    getFilteredPayment } from '../controller/payment.controller';
+    getFilteredPayment, 
+    handleWebhook} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
+import * as express from 'express';
 
 const router: Router = Router();
 
@@ -19,6 +21,11 @@ router.post('/',
     basicAuthUser,
     createPaymentIntent 
 );
+
+router.post('/webhook', express.raw({ type: 'application/json' }), handleWebhook);
+
+
+
 router.put('/',
     basicAuthUser,
     checkQuery('_id'),
