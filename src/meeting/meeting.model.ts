@@ -7,9 +7,10 @@ export interface MeetingDocument extends mongoose.Document {
     typeOfUser?: string;
 
     attendees?: any[];
+    content?: string;
     userEmail?: any[];
     subject?: string;
-    content?: string;
+   
     date?: Date;
     time?: string;
     scheduledTime?: Date;

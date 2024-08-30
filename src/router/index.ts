@@ -118,7 +118,7 @@ router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
 router.use('/chat', Chat)
-router.use('/payment', Payment)
+
 router.use('/dialCode', DialCode)
 
 
@@ -134,6 +134,7 @@ router.use('/flight', Flight)
 // Invoice API
 router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
+router.use('/payment', Payment)
 
 // Marketing
 router.use('/socialMedia', SocialMedia)

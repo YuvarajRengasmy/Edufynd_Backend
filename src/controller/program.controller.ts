@@ -79,7 +79,6 @@ export let createProgram = async (req, res, next) => {
                 programDetails.programCode = await generateNextProgramCode(currentMaxCounter);
 
                 // Calculate the final value based on application fee and discounted value
-                programDetails.finalValue = programDetails.applicationFee - programDetails.discountedValue;
 
                 const newProgram = new Program(programDetails);
                 let insertedData = await newProgram.save();
@@ -114,8 +113,7 @@ export let updateProgram = async (req, res, next) => {
                     applicationFee: programDetails.applicationFee,
                     currency: programDetails.currency,
                     flag: programDetails.flag,
-                    discountedValue: programDetails.discountedValue,
-                    courseFee: programDetails.courseFee,
+                 
                     campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
@@ -128,10 +126,10 @@ export let updateProgram = async (req, res, next) => {
                 },
 
             })
-            response(req, res, activity, 'Level-1', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
 
         } catch (err: any) {
-            response(req, res, activity, 'Level-2', 'Update-Program', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Update-Program', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
