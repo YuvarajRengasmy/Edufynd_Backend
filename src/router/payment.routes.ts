@@ -4,7 +4,7 @@ import {getAllPayment, getSinglePayment, createPaymentIntent, updatePayment, del
     checkOut} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import * as express from 'express';
+
 
 const router: Router = Router();
 
