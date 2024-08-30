@@ -148,35 +148,6 @@ export let getFilteredPayment = async (req, res, next) => {
 
 
 
-
-
-
-export const checkOutt = async(req,res)=>{
-
-    const {amount} = req.body
-console.log("balannnn", amount)
-
-    const lineItems = {
-        price_data: {
-            currency: 'usd',
-            name: "applicationFess",
-            unit_amount: amount * 100
-        }
-    }
-
-    const session = await stripe.checkout.sessions.create({
-
-        payment_method_types: ["card"],
-        line_items: lineItems,
-        mode: 'payment',
-        success_url: "http://localhost:3000/list_client",
-        cancel_url: "http://localhost:3000/list_university"
-
-    })
-
-    res.json({id:session.id})
-}
-
 export const checkOut = async (req, res) => {
     const { amount } = req.body;
 
@@ -200,7 +171,17 @@ export const checkOut = async (req, res) => {
             cancel_url: 'https://crm.edufynd.in/list_application',
         });
 
-        res.json({ id: session.id });
+          // Save payment details to the database
+          const payment = new Payment({
+            stripeSessionId: session.id,
+            amount: amount,
+            currency: 'usd',
+        
+        });
+
+        await payment.save();
+
+        response(req, res, activity, 'Level-2', 'Make-Payment', true, 200, session, clientError.success.savedSuccessfully);
     } catch (error) {
         console.error('Error creating checkout session:', error.message);
         res.status(500).json({ error: error.message });
