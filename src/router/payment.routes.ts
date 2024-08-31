@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {getAllPayment, getSinglePayment, createPaymentIntent, updatePayment, deletePayment, 
     getFilteredPayment, 
-    handleWebhook} from '../controller/payment.controller';
+    checkOut} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import * as express from 'express';
@@ -22,7 +22,9 @@ router.post('/',
     createPaymentIntent 
 );
 
-router.post('/webhook', express.raw({ type: 'application/json' }), handleWebhook);
+
+
+router.post('/create-checkout-session',checkOut);
 
 
 
