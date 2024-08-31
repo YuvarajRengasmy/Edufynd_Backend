@@ -51,12 +51,17 @@ export const updateEvent = async (req, res) => {
                     universityName: eventData.universityName,
                     eventTopic: eventData.eventTopic,
                     date: eventData.date,
+                    hostName: eventData.hostName,
+                   
                     time: eventData.time,
                     venue: eventData.venue,
                     content: eventData.content,
                     modifiedOn: new Date(),
                     modifiedBy: eventData.modifiedBy,
                 },
+                $addToSet: {
+                    fileUpload: eventData.fileUpload
+                }
 
             }, { new: true });
 
@@ -119,11 +124,6 @@ export let getFilteredEvent = async (req, res, next) => {
 
 export let createEvent = async (req, res, next) => {
     const errors = validationResult(req);
-    // if (!errors.isEmpty()) {
-      
-    //         response(req, res,  activity, 'Level-3', 'Create-Event', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-    //     }
-
     try {
         const data: EventDocument = req.body;
         const userName = req.body.userName; // Array of selected usernames

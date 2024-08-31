@@ -29,6 +29,7 @@ const eventSchema = new mongoose.Schema({
     hostEmail: {type: String},
 
     fileUpload: [{
+        _id: { type: mongoose.Types.ObjectId, auto: true },
         fileName: { type: String},
         fileImage:  { type: String },
     }],

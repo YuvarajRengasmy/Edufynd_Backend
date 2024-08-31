@@ -116,7 +116,7 @@ export let getFilteredPayment = async (req, res, next) => {
     };
 
 
-export let createPaymentIntent = async (req, res) => {
+    export let createPaymentIntent = async (req, res) => {
         const { amount, currency, studentId } = req.body;
     
         try {
@@ -146,6 +146,8 @@ export let createPaymentIntent = async (req, res) => {
 
     
 
+
+
 export const checkOut = async (req, res) => {
     const { amount } = req.body;
 
@@ -165,15 +167,21 @@ export const checkOut = async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: 'https://crm.edufynd.in/Dashboard',
-            cancel_url: 'https://crm.edufynd.in/list_application',
+            success_url: 'https://crm.edufynd.in/list_application',
+            cancel_url: 'https://crm.edufynd.in/view_application',
         });
 
+        //   // Save payment details to the database
+        //   const payment = new Payment({
+        //     stripeSessionId: session.id,
+        //     amount: amount,
+        //     currency: 'usd',
         
+        // });
 
-        res.json({id:session.id})
-
-      
+        //  await payment.save();
+         res.json({ id: session.id });
+        //  response(req, res, activity, 'Level-2', 'Make-Payment', true, 200, session, clientError.success.savedSuccessfully);
     } catch (error) {
         console.error('Error creating checkout session:', error.message);
         res.status(500).json({ error: error.message });
