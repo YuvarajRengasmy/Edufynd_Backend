@@ -63,46 +63,89 @@ export let createCommission = async (req, res, next) => {
 
 
 export let updateCommission = async (req, res, next) => {
-
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-        try{
-          
-            const commissionDetails : CommissionDocument = req.body;
-            const updateData = await Commission.findOneAndUpdate({ _id: commissionDetails._id }, {
-                $set: {  
-                    country: commissionDetails.country,
-                    universityName: commissionDetails.universityName,
-                    paymentMethod: commissionDetails.paymentMethod,
-                    amount: commissionDetails.amount,
-                    percentage:commissionDetails.percentage,
-                    commissionPaidOn: commissionDetails.commissionPaidOn,
-                    eligibility: commissionDetails.eligibility,
-                    tax: commissionDetails.tax,
-                    paymentType: commissionDetails.paymentType,
-                    currency:commissionDetails.currency,
-                    flag: commissionDetails.flag,
-                    clientName:commissionDetails.clientName,
+        try {
+            const { commissionId, year, courseType, intake } = req.body;
+            const otherFields: CommissionDocument = req.body;
 
-                    modifiedOn: new Date(),
-                    modifiedBy:  commissionDetails.modifiedBy,
+            // Update commission details (other fields)
+            const updateDetails = await Commission.findOneAndUpdate(
+                // { _id: commissionId },
+                { _id: otherFields._id},
+                {
+                    $set: {
+                        country: otherFields.country,
+                        universityName: otherFields.universityName,
+                        paymentMethod: otherFields.paymentMethod,
+                        amount: otherFields.amount,
+                        percentage: otherFields.percentage,
+                        commissionPaidOn: otherFields.commissionPaidOn,
+                        eligibility: otherFields.eligibility,
+                        tax: otherFields.tax,
+                        paymentType: otherFields.paymentType,
+                        currency: otherFields.currency,
+                        flag: otherFields.flag,
+                        clientName: otherFields.clientName,
+                        modifiedOn: new Date(),
+                        modifiedBy: otherFields.modifiedBy,
+                    },
+                    $addToSet: {
+                        years: otherFields.years,
+                    },
                 },
-                $addToSet: {
-                    years: commissionDetails.years,
-                 
+                { new: true }
+            );
+
+            // Pull the specific intake from the array
+            const updateIntake = await Commission.findOneAndUpdate(
+                { _id: commissionId },
+                {
+                    $pull: {
+                        "years.$[yearElem].courseTypes.$[courseTypeElem].inTake": { inTake: intake },
+                    },
+                },
+                {
+                    arrayFilters: [
+                        { "yearElem.year": year },
+                        { "courseTypeElem.courseType": courseType },
+                    ],
+                    new: true,
                 }
-                
-            });
-            response(req, res, activity, 'Level-2', 'Update-Commission', true, 200, updateData, clientError.success.updateSuccess);
-        }
-        catch (err: any) {
+            );
+
+            // If no intake, remove the courseType
+            if (updateIntake) {
+                const courseTypeData = updateIntake.years
+                    .find((yr) => yr.year === year)
+                    ?.courseTypes.find((ct) => ct.courseType === courseType);
+
+                if (courseTypeData?.inTake.length === 0) {
+                    await Commission.findOneAndUpdate(
+                        { _id: commissionId },
+                        {
+                            $pull: {
+                                "years.$[yearElem].courseTypes": { courseType },
+                            },
+                        },
+                        {
+                            arrayFilters: [{ "yearElem.year": year }],
+                            new: true,
+                        }
+                    );
+                }
+            }
+
+            response(req, res, activity, 'Level-2', 'Update-Commission', true, 200, updateDetails, clientError.success.updateSuccess);
+        } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Update-Commission', false, 500, {}, errorMessage.internalServer, err.message);
         }
-    }
-    else {
+    } else {
         response(req, res, activity, 'Level-3', 'Update-Commission', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-}
+};
+
+
 
 
 export let deleteCommission = async (req, res, next) => {
@@ -117,34 +160,8 @@ export let deleteCommission = async (req, res, next) => {
     };
 
 
-export let deleteCourseType = async (req, res, next) => {
 
-        try {
-            let commissionId = req.query.commissionId; // The main document's _id
-            let yearId = req.query.yearId; // The _id of the year containing the courseType
-            let courseTypeId = req.query.courseTypeId; // The _id of the courseType to be deleted
-            const updateResult = await Commission.updateOne(
-                { _id: commissionId, 'years._id': yearId },
-                { $pull: { 'years.$.courseTypes': { _id: courseTypeId } } }
-            );
-
-            console.log("33", updateResult)
-    
-            if (updateResult.modifiedCount === 0) {
-                return response(req, res, activity, 'Level-3', 'Delete Course Type', false, 404, {}, 'Course Type not found');
-            }
-    
-            const updatedDocument = await Commission.findById(commissionId);
-            response(req, res, activity, 'Level-2', 'Deleted the Course Type', true, 200, updatedDocument, 'Successfully removed the course type');
-        } catch (err) {
-            console.log("77", err)
-            response(req, res, activity, 'Level-3', 'Delete Course Type', false, 500, {}, 'Internal Server Error', err.message);
-        }
-    };
-
-
-
-    export let getFilteredCommission = async (req, res, next) => {
+export let getFilteredCommission = async (req, res, next) => {
         try {
             var findQuery;
             var andList: any = []
@@ -176,3 +193,154 @@ export let deleteCourseType = async (req, res, next) => {
             response(req, res, activity, 'Level-3', 'Get-Filter Commission', false, 500, {}, errorMessage.internalServer, err.message);
         }
     };
+
+
+
+
+
+//////
+
+export let updateCommissioncc = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      try {
+        const { commissionId, year, courseType, intake,} = req.body;
+  
+        // Update logic for removing a specific intake
+        const updateData = await Commission.findOneAndUpdate(
+          { _id: commissionId },
+          {
+            $pull: {
+              "years.$[yearElem].courseTypes.$[courseTypeElem].inTake": { inTake: intake }
+            }
+          },
+          {
+            arrayFilters: [
+              { "yearElem.year": year },
+              { "courseTypeElem.courseType": courseType }
+            ],
+            new: true
+          }
+        );
+  
+        // If no intake, remove the courseType
+        if (updateData) {
+          const courseTypeData = updateData.years
+            .find((yr) => yr.year === year)
+            ?.courseTypes.find((ct) => ct.courseType === courseType);
+  
+          if (courseTypeData?.inTake.length === 0) {
+            await Commission.findOneAndUpdate(
+              { _id: commissionId },
+              {
+                $pull: {
+                  "years.$[yearElem].courseTypes": { courseType }
+                }
+              },
+              {
+                arrayFilters: [{ "yearElem.year": year }],
+                new: true
+              }
+            );
+          }
+        }
+  
+        response(req, res, activity, 'Level-2', 'Update-Commission', true, 200, updateData, clientError.success.updateSuccess);
+      } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Update-Commission', false, 500, {}, errorMessage.internalServer, err.message);
+      }
+    } else {
+      response(req, res, activity, 'Level-3', 'Update-Commission', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+  };
+
+  
+
+  export const deleteIntake = async (req, res) => {
+    const { commissionId, year, courseType, intake } = req.body;
+  
+    try {
+      // Remove the specific intake
+      const updateResult = await Commission.findOneAndUpdate(
+        { _id: commissionId },
+        {
+          $pull: {
+            "years.$[yearElem].courseTypes.$[courseTypeElem].inTake": { inTake: intake }
+          }
+        },
+        {
+          arrayFilters: [
+            { "yearElem.year": year },
+            { "courseTypeElem.courseType": courseType }
+          ],
+          new: true
+        }
+      );
+  
+      // If no intake is left, remove the courseType
+      if (updateResult) {
+        const courseTypeData = updateResult.years
+          .find((yr) => yr.year === year)
+          ?.courseTypes.find((ct) => ct.courseType === courseType);
+  
+        if (courseTypeData?.inTake.length === 0) {
+          await Commission.findOneAndUpdate(
+            { _id: commissionId },
+            {
+              $pull: {
+                "years.$[yearElem].courseTypes": { courseType }
+              }
+            },
+            {
+              arrayFilters: [{ "yearElem.year": year }],
+              new: true
+            }
+          );
+        }
+      }
+
+      response(req, res, activity, 'Level-2', 'Deleted the Intake', true, 200, {}, 'Intake deleted successfully');
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Deleted the Intake', false, 500, {}, 'Error occur while deleting' );
+    }
+  };
+
+
+  export const deleteCourseType =async (req, res) => {
+    const { commissionId, year, courseType } = req.body;
+  
+    try {
+      // Find the commission document
+      const commission = await Commission.findById(commissionId);
+  
+      if (!commission) {
+        return res.status(404).json({ message: 'Commission not found' });
+      }
+  
+      // Find the year index and courseType index
+      const yearIndex = commission.years.findIndex(y => y.year === year);
+      if (yearIndex === -1) {
+        return res.status(404).json({ message: 'Year not found' });
+      }
+  
+      const courseTypeIndex = commission.years[yearIndex].courseTypes.findIndex(ct => ct.courseType === courseType);
+      if (courseTypeIndex === -1) {
+        return res.status(404).json({ message: 'Course Type not found' });
+      }
+  
+      // Remove the courseType
+      commission.years[yearIndex].courseTypes.splice(courseTypeIndex, 1);
+  
+      // Remove the year if no courseTypes are left
+      if (commission.years[yearIndex].courseTypes.length === 0) {
+        commission.years.splice(yearIndex, 1);
+      }
+  
+      // Save the updated commission document
+      await commission.save();
+      response(req, res, activity, 'Level-2', 'Deleted the Course Type', true, 200, {}, 'Course Type  deleted successfully');
+    } catch (error) {
+    
+      response(req, res, activity, 'Level-3', 'Deleted the Course Type', false, 500, {}, 'Error occur while deleting' );
+    }
+  }

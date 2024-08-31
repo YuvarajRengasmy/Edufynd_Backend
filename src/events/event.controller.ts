@@ -39,7 +39,7 @@ const stripHtmlTags = (html) => {
 
 
 
-export const updateEvent = async (req, res) => {
+export const updateEventt = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -74,6 +74,80 @@ export const updateEvent = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Update-Event', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+export const updateEvent = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      try {
+        const { _id, fileToDelete, ...eventData } = req.body;
+  
+        // Build the update query
+        const updateQuery: any = {
+          $set: {
+            typeOfUser: eventData.typeOfUser,
+            userName: eventData.userName,
+            universityName: eventData.universityName,
+            eventTopic: eventData.eventTopic,
+            date: eventData.date,
+            hostName: eventData.hostName,
+            time: eventData.time,
+            venue: eventData.venue,
+            content: eventData.content,
+            modifiedOn: new Date(),
+            modifiedBy: eventData.modifiedBy,
+          },
+        };
+  
+        // Add $pull operation if fileToDelete is provided
+        if (fileToDelete) {
+       
+          updateQuery.$pull = { fileUpload: { _id: fileToDelete } };
+        }
+  
+        // Add new files if provided
+        if (eventData.fileUpload && eventData.fileUpload.length > 0) {
+          updateQuery.$addToSet = {
+            fileUpload: { $each: eventData.fileUpload },
+          };
+        }
+  
+        // Perform the update operation
+        const statusData = await Event.findByIdAndUpdate(
+          { _id },
+          updateQuery,
+          { new: true }
+        );
+  
+        response(req, res, activity, 'Level-2', 'Update-Event', true, 200, statusData, clientError.success.updateSuccess);
+      } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Update-Event', false, 500, {}, errorMessage.internalServer, err.message);
+      }
+    } else {
+      response(req, res, activity, 'Level-3', 'Update-Event', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+  };
+  
+
+  export const deleteFileFromEvent = async (req, res) => {
+    const { fileId, eventId } = req.body;
+  
+    try {
+      const updatedEvent = await Event.findByIdAndUpdate(
+        eventId,
+        { $pull: { fileUpload: { _id: fileId } } },
+        { new: true }
+      );
+  
+      if (!updatedEvent) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+  
+      response(req, res, activity, 'Level-2', 'Deleted the Event', true, 200, updatedEvent, 'Successfully Deleted the file');
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Deleted the Event', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+  
 
 export let deleteEvent = async (req, res, next) => {
 
@@ -127,10 +201,10 @@ export let createEvent = async (req, res, next) => {
     try {
         const data: EventDocument = req.body;
         const userName = req.body.userName; // Array of selected usernames
-        console.log("staff", userName)
+      
         // Fetch the host details
         const staff = await Staff.findOne({ empName: req.body.hostName });
-        console.log("kkk", staff)
+
         const hostEmail = staff.email;
 
         if (!staff) {
