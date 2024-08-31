@@ -196,7 +196,7 @@ export const checkOut = async (req, res) => {
                 },
             ],
             mode: 'payment',
-            success_url: 'https://crm.edufynd.in/Dashboard',
+            success_url: 'https://crm.edufynd.in/list_application',
             cancel_url: 'https://crm.edufynd.in/list_application',
         });
 
