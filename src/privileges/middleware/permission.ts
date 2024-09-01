@@ -22,7 +22,7 @@ export const checkPermission = async (req: Request, res: Response, next: NextFun
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        next(); // Proceed to the next middleware or route handler
+        next(); 
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', error });
     }
