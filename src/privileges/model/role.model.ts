@@ -40,7 +40,4 @@ const roleSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 });
 
-
-
-
 export const Role = mongoose.model("Role", roleSchema)

@@ -33,7 +33,7 @@ async function seedRoles() {
         ],
     });
 
-    await superAdminRole.save();
+await superAdminRole.save()
     await adminRole.save();
     console.log('Roles seeded successfully');
 }
