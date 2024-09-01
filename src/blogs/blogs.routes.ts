@@ -8,7 +8,7 @@ const router:Router=Router();
 
 router.get('/',               
     basicAuthUser,
-    //  checkSession,
+      checkSession,
      getAllBlog
 );
 
@@ -21,9 +21,9 @@ router.get('/getSingleBlog',
 );
 
 
-router.put('/', 
+router.post('/', 
          basicAuthUser,
-        //  checkSession,
+        checkSession,
         saveBlog
 );
 
@@ -45,6 +45,10 @@ router.delete('/',
 );
 
 
-;
+router.get('/publicBlog', getAllBlog);
+
+router.get('/publicGetSingleBlog',checkQuery('_id'), getSingleBlog);
+
+
 
 export default router
