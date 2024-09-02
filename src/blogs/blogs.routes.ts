@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {getAllBlog, getSingleBlog, saveBlog, updateBlog,deleteBlog} from '../blogs/blogs.controller';
+import {getAllBlog, getSingleBlog, saveBlog, updateBlog,deleteBlog, getFilteredBlog} from '../blogs/blogs.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -42,6 +42,12 @@ router.delete('/',
     // checkSession,
     checkQuery('_id'),
     deleteBlog
+);
+
+router.put('/getFilterBlog',
+    basicAuthUser,
+    checkSession,
+    getFilteredBlog,
 );
 
 

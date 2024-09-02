@@ -109,3 +109,36 @@ export let deleteBlog = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Delete-Blog', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+export let getFilteredBlog = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+        if (req.body.title) {
+            andList.push({ title: req.body.title })
+        }
+        if (req.body.slug) {
+            andList.push({ slug: req.body.slug })
+        }
+        if (req.body.content) {
+            andList.push({ content: req.body.content })
+        }
+        if (req.body.dateOfPublished) {
+            andList.push({ dateOfPublished: req.body.dateOfPublished })
+        }
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const blogList = await Blog.find(findQuery).sort({ adminCode: -1 }).limit(limit).skip(page)
+
+        const blogCount = await Blog.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-Filter Blog', true, 200, { blogList, blogCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-Filter Blog', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
