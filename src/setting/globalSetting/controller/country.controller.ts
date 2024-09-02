@@ -41,7 +41,7 @@ export let createCountry = async (req: any, res:any, next:any) => {
             let insertData = await createData.save();
             response(req, res, activity, 'Level-2', 'Create-Country', true, 200, insertData, clientError.success.savedSuccessfully);
         }else {
-            response(req, res, activity, 'Level-2', 'Create-Country', true, 422, {}, 'The Country name already registered');
+            response(req, res, activity, 'Level-2', 'Create-Country', true, 422, {}, 'Already Registered Country');
         }
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Create-Country', false, 500, {}, errorMessage.internalServer, err.message);
