@@ -134,7 +134,7 @@ export let getFilteredBlog = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const blogList = await Blog.find(findQuery).sort({ adminCode: -1 }).limit(limit).skip(page)
+        const blogList = await Blog.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page)
 
         const blogCount = await Blog.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Blog', true, 200, { blogList, blogCount }, clientError.success.fetchedSuccessfully);

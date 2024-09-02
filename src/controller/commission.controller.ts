@@ -62,88 +62,6 @@ export let createCommission = async (req, res, next) => {
 
 
 
-export let updateCommissioncc = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const { commissionId, year, courseType, intake } = req.body;
-            const otherFields: CommissionDocument = req.body;
-
-            // Update commission details (other fields)
-            const updateDetails = await Commission.findOneAndUpdate(
-                // { _id: commissionId },
-                { _id: otherFields._id},
-                {
-                    $set: {
-                        country: otherFields.country,
-                        universityName: otherFields.universityName,
-                        paymentMethod: otherFields.paymentMethod,
-                        amount: otherFields.amount,
-                        percentage: otherFields.percentage,
-                        commissionPaidOn: otherFields.commissionPaidOn,
-                        eligibility: otherFields.eligibility,
-                        tax: otherFields.tax,
-                        paymentType: otherFields.paymentType,
-                        currency: otherFields.currency,
-                        flag: otherFields.flag,
-                        clientName: otherFields.clientName,
-                        modifiedOn: new Date(),
-                        modifiedBy: otherFields.modifiedBy,
-                    },
-                    $addToSet: {
-                        years: otherFields.years,
-                    },
-                },
-                { new: true }
-            );
-
-            // Pull the specific intake from the array
-            const updateIntake = await Commission.findOneAndUpdate(
-                { _id: commissionId },
-                {
-                    $pull: {
-                        "years.$[yearElem].courseTypes.$[courseTypeElem].inTake": { inTake: intake },
-                    },
-                },
-                {
-                    arrayFilters: [
-                        { "yearElem.year": year },
-                        { "courseTypeElem.courseType": courseType },
-                    ],
-                    new: true,
-                }
-            );
-
-            // If no intake, remove the courseType
-            if (updateIntake) {
-                const courseTypeData = updateIntake.years
-                    .find((yr) => yr.year === year)
-                    ?.courseTypes.find((ct) => ct.courseType === courseType);
-
-                if (courseTypeData?.inTake.length === 0) {
-                    await Commission.findOneAndUpdate(
-                        { _id: commissionId },
-                        {
-                            $pull: {
-                                "years.$[yearElem].courseTypes": { courseType },
-                            },
-                        },
-                        {
-                            arrayFilters: [{ "yearElem.year": year }],
-                            new: true,
-                        }
-                    );
-                }
-            }
-
-            response(req, res, activity, 'Level-2', 'Update-Commission', true, 200, updateDetails, clientError.success.updateSuccess);
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Commission', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    } else {
-        response(req, res, activity, 'Level-3', 'Update-Commission', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
-};
 
 
 
@@ -357,10 +275,56 @@ export let updateCommissioncorrect = async (req, res, next) => {
             const { commissionId, year, courseType, intake } = req.body;
             const otherFields: CommissionDocument = req.body;
 
-            // Update commission details (other fields)
+            // Log the other fields for debugging
+            console.log("Updating fields: ", otherFields);
+
+            // First, try to remove the specific intake (if it exists)
+            let updateData = null;
+            try {
+                updateData = await Commission.findOneAndUpdate(
+                    { _id: commissionId },
+                    {
+                        $pull: {
+                            "years.$[yearElem].courseTypes.$[courseTypeElem].inTake": { inTake: intake }
+                        }
+                    },
+                    {
+                        arrayFilters: [
+                            { "yearElem.year": year },
+                            { "courseTypeElem.courseType": courseType }
+                        ],
+                        new: true
+                    }
+                );
+            } catch (error) {
+                console.error("Error pulling intake:", error.message);
+            }
+
+            // If no intake remains, remove the courseType
+            if (updateData) {
+                const courseTypeData = updateData.years
+                    .find((yr) => yr.year === year)
+                    ?.courseTypes.find((ct) => ct.courseType === courseType);
+
+                if (courseTypeData?.inTake.length === 0) {
+                    await Commission.findOneAndUpdate(
+                        { _id: commissionId },
+                        {
+                            $pull: {
+                                "years.$[yearElem].courseTypes": { courseType }
+                            }
+                        },
+                        {
+                            arrayFilters: [{ "yearElem.year": year }],
+                            new: true
+                        }
+                    );
+                }
+            }
+
+            // Continue to update other commission details regardless of the previous steps
             const updateDetails = await Commission.findOneAndUpdate(
-                // { _id: commissionId },
-                { _id: otherFields._id},
+                {  _id: otherFields._id },
                 {
                     $set: {
                         country: otherFields.country,
@@ -378,59 +342,25 @@ export let updateCommissioncorrect = async (req, res, next) => {
                         modifiedOn: new Date(),
                         modifiedBy: otherFields.modifiedBy,
                     },
-                    $addToSet: {
-                        years: otherFields.years,
-                    },
                 },
-                { new: true }
+                { new: true }  // This ensures the updated document is returned
             );
 
-           
-        // Update logic for removing a specific intake
-        const updateData = await Commission.findOneAndUpdate(
-          { _id: commissionId },
-          {
-            $pull: {
-              "years.$[yearElem].courseTypes.$[courseTypeElem].inTake": { inTake: intake }
+            // Check if update was successful
+            if (!updateDetails) {
+                throw new Error('Failed to update commission details');
             }
-          },
-          {
-            arrayFilters: [
-              { "yearElem.year": year },
-              { "courseTypeElem.courseType": courseType }
-            ],
-            new: true
-          }
-        );
-  
-        // If no intake, remove the courseType
-        if (updateData) {
-          const courseTypeData = updateData.years
-            .find((yr) => yr.year === year)
-            ?.courseTypes.find((ct) => ct.courseType === courseType);
-  
-          if (courseTypeData?.inTake.length === 0) {
-            await Commission.findOneAndUpdate(
-              { _id: commissionId },
-              {
-                $pull: {
-                  "years.$[yearElem].courseTypes": { courseType }
-                }
-              },
-              {
-                arrayFilters: [{ "yearElem.year": year }],
-                new: true
-              }
-            );
-          }
-        }
-  
+
+            console.log("Updated details: ", updateDetails);
 
             response(req, res, activity, 'Level-2', 'Update-Commission', true, 200, updateDetails, clientError.success.updateSuccess);
         } catch (err: any) {
+            console.error("Error updating commission:", err.message);
             response(req, res, activity, 'Level-3', 'Update-Commission', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'Update-Commission', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+
