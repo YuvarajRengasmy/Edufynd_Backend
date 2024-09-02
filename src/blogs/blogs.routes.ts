@@ -8,14 +8,14 @@ const router:Router=Router();
 
 router.get('/',               
     basicAuthUser,
-     checkSession,
+      checkSession,
      getAllBlog
 );
 
 
 router.get('/getSingleBlog',
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     getSingleBlog,
 );
@@ -30,7 +30,7 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     // checkRequestBodyParams('_id'),
     updateBlog
@@ -39,12 +39,16 @@ router.put('/',
 
 router.delete('/',                  
     basicAuthUser,
-    checkSession,
+    // checkSession,
     checkQuery('_id'),
     deleteBlog
 );
 
 
-;
+router.get('/publicBlog', getAllBlog);
+
+router.get('/publicGetSingleBlog',checkQuery('_id'), getSingleBlog);
+
+
 
 export default router

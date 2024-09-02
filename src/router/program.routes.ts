@@ -49,7 +49,7 @@ router.delete('/',
 
 router.get('/getAllProgramForWeb',       
     basicAuthUser,
-     checkSession,
+    checkSession,
     getAllProgramForWeb
 );
 
