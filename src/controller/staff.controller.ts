@@ -1,4 +1,5 @@
 import { Staff, StaffDocument } from '../model/staff.model'
+import { User, UserDocument } from '../privileges/model/user.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin} from '../model/superAdmin.model'
 import { Admin } from '../model/admin.model'
@@ -176,6 +177,8 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             const insertStaff = await createStaff.save();
             const newHash = await decrypt(insertStaff["password"]);
 
+         
+
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
                 to: insertStaff.email,
@@ -251,7 +254,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
         }
 
         } catch (err: any) {
-
+console.log(err)
             return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {

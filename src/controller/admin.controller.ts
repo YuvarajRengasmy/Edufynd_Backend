@@ -1,4 +1,5 @@
 import { Admin, AdminDocument } from '../model/admin.model'
+import { User, UserDocument } from '../privileges/model/user.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin } from '../model/superAdmin.model'
@@ -71,7 +72,11 @@ export let createAdmin = async (req, res, next) => {
                 const adminDetails: AdminDocument = req.body;
                 adminDetails.adminCode = await generateNextAdminCode();
                 const createData = new Admin(adminDetails);
+                const userDetails:UserDocument = req.body;
+                const createUser = new User(userDetails);
+                await createUser.save();
                 let insertData = await createData.save();
+            
                 const token = await TokenManager.CreateJWTToken({
                     id: insertData["_id"],
                     name: insertData["name"],
@@ -91,7 +96,7 @@ export let createAdmin = async (req, res, next) => {
             }
 
         } catch (err: any) {
-
+console.log(err)
             response(req, res, activity, 'Level-3', 'Create-Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }

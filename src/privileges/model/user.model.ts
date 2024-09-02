@@ -11,8 +11,12 @@ export interface Privilege {
     };
 }
 
-export interface RoleDocument extends mongoose.Document {
-    roleName: string;
+export interface UserDocument extends mongoose.Document {
+    userId?: string;
+    name: string;
+    email: string;
+    role: string;
+    status?: string;
     privileges: Privilege[];
     createdOn?: Date;
     createdBy?: string;
@@ -21,7 +25,7 @@ export interface RoleDocument extends mongoose.Document {
 }
 
 const privilegeSchema = new mongoose.Schema({
-    module: { type: String, required: true }, // e.g., "Client", "University", etc.
+    module: { type: String}, // e.g., "Client", "University", etc.
     permissions: {
         add: { type: Boolean, default: false },
         edit: { type: Boolean, default: false },
@@ -31,8 +35,12 @@ const privilegeSchema = new mongoose.Schema({
     },
 });
 
-const roleSchema = new mongoose.Schema({
-    roleName: { type: String, required: true }, // e.g., "Super Admin", "Admin"
+const userSchema = new mongoose.Schema({
+    userId: { type: String },
+    name: { type: String,},
+    email: { type: String},
+    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    status: { type: String },
     privileges: { type: [privilegeSchema], default: [] }, // Array of privileges per module
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
@@ -40,4 +48,4 @@ const roleSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 });
 
-export const Role = mongoose.model("Role", roleSchema)
+export const User = mongoose.model("User", userSchema)
