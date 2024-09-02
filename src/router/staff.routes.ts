@@ -55,8 +55,8 @@ router.post('/createStudentByStaff',             //create student by staff
 
 
 router.post('/createStaffBySuperAdmin',             //create staff by super Admin
-    basicAuthUser,
-    checkSession,
+    // basicAuthUser,
+    // checkSession,
     // checkQuery('_id'),
     createStaffBySuperAdmin
 );

@@ -16,7 +16,9 @@ export interface UserDocument extends mongoose.Document {
     name: string;
     email: string;
     role: string;
-    status?: string;
+    password?: string;
+    confirmPassword?: string;
+  status?: string;
     privileges: Privilege[];
     createdOn?: Date;
     createdBy?: string;
@@ -40,6 +42,8 @@ const userSchema = new mongoose.Schema({
     name: { type: String,},
     email: { type: String},
     role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    password: { type: String},
+    confirmPassword: { type: String},
     status: { type: String },
     privileges: { type: [privilegeSchema], default: [] }, // Array of privileges per module
     createdOn: { type: Date, default: Date.now },

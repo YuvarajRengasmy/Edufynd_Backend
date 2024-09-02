@@ -1,14 +1,18 @@
 import { User } from '../model/user.model';
 import { Request, Response, NextFunction } from 'express';
+import { Staff, StaffDocument } from '../../model/staff.model'
 
 
 
 
 export const checkPermission = async (req: any, res: any, next: any) => {
-    const { userId, module, permissionType } = req.body;
+    console.log("balan")
+    const { id, module, permissionType } = req.body;
+    const staffDetails: StaffDocument = req.body;
 
     try {
-        const user = await User.findById(userId);
+        const user = await Staff.findById( { _id: staffDetails.id});
+        console.log("ll", user)
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }

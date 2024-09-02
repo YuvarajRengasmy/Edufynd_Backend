@@ -1,7 +1,10 @@
 import { User, UserDocument } from '../model/user.model'
+import { Staff, StaffDocument } from '../../model/staff.model'
 import { validationResult } from 'express-validator'
 import { response } from '../../helper/commonResponseHandler'
 import { clientError, errorMessage } from '../../helper/ErrorMessage'
+import { decrypt, encrypt, generateRandomPassword } from "../../helper/Encryption";
+import * as TokenManager from "../../utils/tokenManager";
 
 var activity = "User"
 
@@ -40,7 +43,7 @@ export const assignPrivileges = async (req: any, res: any) => {
     const { userId, privileges } = req.body;
 
     try {
-        const user = await User.findById(userId);
+        const user = await Staff.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -57,42 +60,48 @@ export const assignPrivileges = async (req: any, res: any) => {
 
 
 
-// async function seedRoles() {
-//     const superAdminRole = new Role({
-//         roleName: 'SuperAdmin',
-//         privileges: [
-//             { module: 'Admin', permissions: { add: true, edit: true, view: true, delete: true, approve: false } },
-//             { module: 'Agent', permissions: { add: true, edit: true, view: true, delete: true, approve: true } },
-//             { module: 'Application', permissions: { add: true, edit: true, view: true, delete: true, approve: false } },
-//             { module: 'Client', permissions: { add: true, edit: true, view: true, delete: true, approve: true } },
-//             { module: 'Commission', permissions: { add: true, edit: true, view: true, delete: true, approve: false } },
-//             { module: 'Program', permissions: { add: true, edit: true, view: true, delete: true, approve: true } },
-//             { module: 'Staff', permissions: { add: true, edit: true, view: true, delete: true, approve: false } },
-//             { module: 'Student', permissions: { add: true, edit: true, view: true, delete: true, approve: true } },
-//             { module: 'University', permissions: { add: true, edit: true, view: true, delete: true, approve: true } },
-        
+export let createSuperAdmin = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const admin = await User.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
+
+            if (!admin) {
+                req.body.password = await encrypt(req.body.password)
+                req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+
+                const adminDetails: UserDocument = req.body;
            
-//         ],
-//     });
+                const createData = new User(adminDetails);
+                const userDetails:UserDocument = req.body;
+                const createUser = new User(userDetails);
+                await createUser.save();
+                let insertData = await createData.save();
+            
+                const token = await TokenManager.CreateJWTToken({
+                    id: insertData["_id"],
+                    name: insertData["name"],
+                    loginType: 'superAdmin'
+                });
+                const result = {}
+                result['_id'] = insertData._id
+                result['email'] = insertData.email;
+                let finalResult = {};
+                finalResult["token"] = token;
+                finalResult["loginType"] = 'admin';
+                finalResult["adminDetails"] = result;
+                response(req, res, activity, 'Level-2', 'Create-Admin', true, 200, finalResult, clientError.success.registerSuccessfully);
+            }
+            else {
+                response(req, res, activity, 'Level-3', 'Create-Admin', true, 422, {}, 'Email already registered');
+            }
 
-//     const adminRole = new Role({
-//         roleName: 'Admin',
-//         privileges: [
-//             { module: 'Admin', permissions: { add: true, edit: true, view: true, delete: false, approve: false } },
-//             { module: 'Agent', permissions: { add: true, edit: true, view: true, delete: false, approve: true } },
-//             { module: 'Application', permissions: { add: true, edit: true, view: true, delete: false, approve: false } },
-//             { module: 'Client', permissions: { add: false, edit: true, view: true, delete: false, approve: true } },
-//             { module: 'Commission', permissions: { add: true, edit: true, view: true, delete: false, approve: false } },
-//             { module: 'Program', permissions: { add: true, edit: true, view: true, delete: false, approve: true } },
-//             { module: 'Staff', permissions: { add: true, edit: true, view: true, delete: false, approve: false } },
-//             { module: 'Student', permissions: { add: true, edit: true, view: true, delete: false, approve: true } },
-//             { module: 'University', permissions: { add: true, edit: true, view: true, delete: false, approve: true } },
-//         ],
-//     });
-
-// await superAdminRole.save()
-//     await adminRole.save();
-//     console.log('Roles seeded successfully');
-// }
-
-// seedRoles().catch(console.error);
+        } catch (err: any) {
+console.log(err)
+            response(req, res, activity, 'Level-3', 'Create-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Create-Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}

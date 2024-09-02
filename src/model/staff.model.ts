@@ -71,13 +71,25 @@ export interface StaffDocument extends mongoose.Document {
     modifiedBy?: string;
 }
 
+const privilegeSchema = new mongoose.Schema({
+    module: { type: String}, // e.g., "Client", "University", etc.
+    permissions: {
+        add: { type: Boolean, default: false },
+        edit: { type: Boolean, default: false },
+        view: { type: Boolean, default: false },
+        delete: { type: Boolean, default: false }, // Not applicable for Admin, only for Super Admin
+        approve: { type: Boolean, default: false }, // For modules that need approval
+    },
+});
+
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     employeeID: { type: String },
     photo: { type: String },
-    role:{type:String},
+    // role:{type:String},
     empName: { type: String },
-
+    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    privileges: { type: [privilegeSchema], default: [] }, // Array of privileges per module
     designation: { type: String },
     jobDescription: { type: String },
     reportingManager: { type: String },
@@ -101,7 +113,7 @@ const staffSchema = new mongoose.Schema({
     password: { type: String },
     confirmPassword: { type: String },
     isDeleted: { type: Boolean, default: false },
-    privileges: { type: String },
+    // privileges: { type: String },
     // Newly added fields
     gender: { type: String },
     team: { type: String },

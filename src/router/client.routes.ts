@@ -33,6 +33,7 @@ router.post('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
+    // checkPermission,
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateClient

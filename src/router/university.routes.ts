@@ -7,12 +7,14 @@ import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
+import { checkPermission } from '../privileges/middleware/permission';
 const router: Router = Router();
 
 
 router.get('/',             
     basicAuthUser,
     checkSession,
+    checkPermission,
     getAllUniversity
 );
 
@@ -54,6 +56,7 @@ router.delete('/',
 router.put('/getFilterUniversity',
     basicAuthUser,
     // checkSession,
+    checkPermission,
     getFilteredUniversity,
 );
 
