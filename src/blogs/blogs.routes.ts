@@ -54,7 +54,7 @@ router.put('/getFilterBlog',
 router.get('/publicBlog', getAllBlog);
 
 router.get('/publicGetSingleBlog',checkQuery('_id'), getSingleBlog);
-
+router.put('/publicGetFilterBlog', getFilteredBlog);
 
 
 export default router
