@@ -82,7 +82,6 @@ const privilegeSchema = new mongoose.Schema({
 
 const studentSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
     studentCode: { type: String },
     source: { type: String },
     name: { type: String },

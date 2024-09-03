@@ -123,9 +123,14 @@ export const updateStaff = async (req, res) => {
                     dial1: staffDetails.dial1,
                     dial2: staffDetails.dial2,
                     dial3: staffDetails.dial3,
+                   
               
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
+                },
+                $addToSet: {
+                    privileges: staffDetails.privileges,
+                 
                 }
             });
 
