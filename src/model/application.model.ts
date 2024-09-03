@@ -16,6 +16,7 @@ export interface ApplicantDocument extends mongoose.Document {
     dial2?: string; 
     whatsAppNumber?: number,  
     inTake?: string,
+    applicationFee?: number,
     country?: string;
     universityName?: string,
     course?: string,
@@ -39,13 +40,14 @@ const applicantSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
     applicationCode: { type: String },
     programId: { type: mongoose.Types.ObjectId, ref: 'Program' },
-    studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
+    studentId: {type: String, ref: 'Student'},
     studentCode: { type: String },
     name: {type: String, ref: 'Student'},
     dob: { type: String, ref: 'Student' },
     passportNo: { type: String, ref: 'Student' },
     email: { type: String, ref: 'Student' },
     dial1: {type: String},
+    applicationFee: { type: Number },
     primaryNumber: { type: Number, ref: 'Student' },
     dial2: {type: String},
     whatsAppNumber: { type: Number, ref: 'Student' },
