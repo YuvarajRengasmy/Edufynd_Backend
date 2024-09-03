@@ -1,5 +1,6 @@
 import { User, UserDocument } from '../model/user.model'
 import { Staff, StaffDocument } from '../../model/staff.model'
+import { SuperAdmin, SuperAdminDocument } from '../../model/superAdmin.model'
 import { validationResult } from 'express-validator'
 import { response } from '../../helper/commonResponseHandler'
 import { clientError, errorMessage } from '../../helper/ErrorMessage'
@@ -39,11 +40,12 @@ export let createUser = async (req: any, res:any, next:any) => {
 };
 
 
-export const assignPrivileges = async (req: any, res: any) => {
+export const assignPrivilegesss = async (req: any, res: any) => {
     const { userId, privileges } = req.body;
 
     try {
-        const user = await Staff.findById(userId);
+        // const user = await Staff.findById(userId);
+        const user = await SuperAdmin.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -105,3 +107,41 @@ console.log(err)
         response(req, res, activity, 'Level-3', 'Create-Admin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+
+// Assign Permissions (Only accessible by SuperAdmin)
+export const assignPermissions = async (req, res) => {
+    try {
+        const { userId, module, permissions } = req.body; // Extract user ID, module, and permissions from request body
+        const user = await SuperAdmin.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (user.role === 'superAdmin') {
+            return res.status(403).json({ message: 'SuperAdmin cannot have modified permissions' });
+        }
+
+        // Find or create the privilege entry for the specified module
+        let privilege = user.privileges.find((p) => p.module === module);
+        if (privilege) {
+            privilege.add = permissions.add ?? privilege.add;
+            privilege.edit = permissions.edit ?? privilege.edit;
+            privilege.view = permissions.view ?? privilege.view;
+            privilege.delete = permissions.delete ?? privilege.delete;
+        } else {
+            user.privileges.push({
+                module,
+                ...permissions, // Spread permissions object to handle add, edit, view, and delete
+            });
+        }
+
+        await user.save();
+        res.status(200).json({ message: 'Permissions assigned successfully' });
+    } catch (error) {
+        console.error('Error assigning permissions:', error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};
