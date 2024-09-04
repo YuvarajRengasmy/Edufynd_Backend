@@ -110,7 +110,7 @@ export const updateAdmin = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const adminDetails: AdminDocument = req.body;
-            let statusData = await Admin.findByIdAndUpdate({ _id: req.query._id }, {
+            let statusData = await Admin.findByIdAndUpdate({ _id: req.body._id }, {
                 $set: {
                     name: adminDetails.name,
                     email: adminDetails.email,
