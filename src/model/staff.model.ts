@@ -73,13 +73,13 @@ export interface StaffDocument extends mongoose.Document {
 
 const privilegeSchema = new mongoose.Schema({
     module: { type: String}, // e.g., "Client", "University", etc.
-    permissions: {
+   
         add: { type: Boolean, default: false },
         edit: { type: Boolean, default: false },
         view: { type: Boolean, default: false },
         delete: { type: Boolean, default: false }, // Not applicable for Admin, only for Super Admin
         approve: { type: Boolean, default: false }, // For modules that need approval
-    },
+   
 });
 
 const staffSchema = new mongoose.Schema({
