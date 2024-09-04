@@ -6,7 +6,7 @@ import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProg
     getProgramCategory} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
 
 const router:Router=Router();
@@ -14,12 +14,14 @@ const router:Router=Router();
 router.get('/', 
     basicAuthUser,
     checkSession,
+    checkPermission('program', 'view'),
     getAllProgram
 );
 
 router.get('/getSingleProgram',
     basicAuthUser,
     checkSession,
+    checkPermission('program', 'view'),
     checkQuery('_id'),
     getSingleProgram,
 );
@@ -27,6 +29,7 @@ router.get('/getSingleProgram',
 router.post('/', 
         basicAuthUser,
         checkSession,
+        checkPermission('program', 'add'),
         createProgram
 );
 
@@ -34,6 +37,7 @@ router.post('/',
 router.put('/',            
     basicAuthUser,
     checkSession,
+    checkPermission('program', 'edit'),
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateProgram
@@ -43,6 +47,7 @@ router.put('/',
 router.delete('/',            
     basicAuthUser,
     checkSession,
+    checkPermission('program', 'delete'),
     checkQuery('_id'),
     deleteProgram
 );
@@ -57,6 +62,7 @@ router.get('/getAllProgramForWeb',
 router.put('/getUniversityFilterProgram',
     basicAuthUser,
     checkSession,
+    checkPermission('program', 'view'),
     getFilteredProgram,
 );
 

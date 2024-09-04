@@ -5,13 +5,14 @@ import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createSt
     updateAdmin} from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 const router:Router=Router();
 
 
 router.get('/',                     
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'view'),
     getAllAdmin
 );
 
@@ -26,6 +27,7 @@ router.get('/getSingleAdmin',
 router.post('/', 
          checkRequestBodyParams('email'),
          checkSession,
+         checkPermission('admin', 'add'),
          createAdmin
 );
 
@@ -33,6 +35,7 @@ router.post('/',
 router.put('/',                          
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'edit'),
     checkRequestBodyParams('_id'),
     updateAdmin
 );
@@ -41,6 +44,7 @@ router.put('/',
 router.delete('/',                  
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'delete'),
     checkQuery('_id'),
     deleteAdmin
 );
@@ -49,6 +53,7 @@ router.delete('/',
 router.put('/getFilterAdmin',
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'view'),
     getFilteredAdmin,
 );
 
@@ -57,6 +62,7 @@ router.put('/getFilterAdmin',
 router.post('/createAdminBySuperAdmin',             //create admin by super Admin
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'add'),
     // checkQuery('_id'),
     createAdminBySuperAdmin
 );
@@ -65,6 +71,7 @@ router.post('/createAdminBySuperAdmin',             //create admin by super Admi
 router.put('/editAdminBySuperAdmin',             //Update admin by super Admin
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'edit'),
     editAdminProfileBySuperAdmin
 );
 
@@ -75,12 +82,14 @@ router.post('/createStudentByAdmin',             //create student by Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
+    checkPermission('admin', 'add'),
     createStudentByAdmin
 );
 
 router.put('/editStudentByAdmin',             //Update student by Admin
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'edit'),
     editStudentProfileByAdmin
 );
 
@@ -90,12 +99,14 @@ router.post('/createStaffByAdmin',             //create staff by  Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
+    checkPermission('admin', 'add'),
     createStaffByAdmin
 );
 
 router.put('/editStaffByAdmin',             //Update staff by Admin
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'edit'),
     editStaffProfileByAdmin
 );
 

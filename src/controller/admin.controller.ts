@@ -117,6 +117,7 @@ export const updateAdmin = async (req, res) => {
                     dial: adminDetails.dial,
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    privileges: adminDetails.privileges, 
 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,

@@ -122,7 +122,6 @@ export let updateAgent = async (req, res, next) => {
                     agentsCommission: agentDetails.agentsCommission,
                     agentBusinessLogo: agentDetails.agentBusinessLogo,
                     countryInterested: agentDetails.countryInterested,
-                    privileges: agentDetails.privileges,
                     addressLine1: agentDetails.addressLine1,
                     addressLine2: agentDetails.addressLine2,
                     addressLine3: agentDetails.addressLine3,
@@ -146,6 +145,9 @@ export let updateAgent = async (req, res, next) => {
                     dial2: agentDetails.dial2,
                     dial3: agentDetails.dial3,
                     dial4: agentDetails.dial4,
+                    role: agentDetails.role,
+                    privileges: agentDetails.privileges,
+                  
 
                     modifiedOn: new Date(),
                     modifiedBy: agentDetails.modifiedBy,

@@ -3,13 +3,14 @@ import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getFilt
      getSingleApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 const router:Router=Router();
 
 
 router.get('/',               
     basicAuthUser,
      checkSession,
+     checkPermission('application', 'view'),
     getAllApplicant
 );
 
@@ -17,6 +18,7 @@ router.get('/',
 router.get('/getSingleApplicant',
     basicAuthUser,
     checkSession,
+    checkPermission('application', 'view'),
     checkQuery('_id'),
     getSingleApplicant,
 );
@@ -25,6 +27,7 @@ router.get('/getSingleApplicant',
 router.post('/', 
          basicAuthUser,
          checkSession,
+         checkPermission('application', 'add'),
          createApplicant
 );
 
@@ -39,6 +42,7 @@ router.post('/courseApply',
 router.put('/',                    
     basicAuthUser,
     checkSession,
+    checkPermission('application', 'edit'),
     //   checkQuery('_id'),
      checkRequestBodyParams('_id'),
     updateApplicant
@@ -50,6 +54,7 @@ router.put('/',
 router.delete('/',                
     basicAuthUser,
     checkSession,
+    checkPermission('application', 'delete'),
     checkQuery('_id'),
     deleteApplicant
 );
@@ -58,6 +63,7 @@ router.delete('/',
 router.put('/getFilterApplicant',
     basicAuthUser,
     checkSession,
+    checkPermission('application', 'view'),
     getFilteredApplication,
 );
 
