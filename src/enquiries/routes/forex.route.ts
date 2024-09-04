@@ -2,7 +2,7 @@ import {Router} from 'express';
 import { getAllForexEnquiry,getSingleForexEnquiry, createForexEnquiry,updateForexEnquiry, deleteForexEnquiry,getFilteredForexEnquiry} from '../controller/forex.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
 const router:Router=Router();
 
@@ -11,6 +11,7 @@ const router:Router=Router();
 router.get('/',                          
     basicAuthUser,
       checkSession,
+      checkPermission('forex', 'view'),
     getAllForexEnquiry
 );
 
@@ -18,11 +19,13 @@ router.get('/',
 router.get('/getSingleForexEnquiry',
     basicAuthUser,
      checkSession,
+     checkPermission('forex', 'view'),
     checkQuery('_id'),
     getSingleForexEnquiry,
 );
 
 router.post('/', 
+    checkPermission('forex', 'add'),
          checkRequestBodyParams('email'),
          createForexEnquiry
 );
@@ -30,6 +33,7 @@ router.post('/',
 router.put('/',          
     basicAuthUser,
      checkSession,
+     checkPermission('forex', 'edit'),
     checkRequestBodyParams('_id'),
     updateForexEnquiry,
  
@@ -39,6 +43,7 @@ router.put('/',
 router.delete('/',               
     basicAuthUser,
      checkSession,
+     checkPermission('forex', 'delete'),
     checkQuery('_id'),
     deleteForexEnquiry
 );
@@ -47,6 +52,7 @@ router.delete('/',
 router.put('/getFilterForex',
     basicAuthUser,
      checkSession,
+     checkPermission('forex', 'view'),
     getFilteredForexEnquiry,
 );
 

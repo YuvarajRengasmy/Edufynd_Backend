@@ -183,7 +183,7 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
                         await Agent.findOne({ _id: tokendata.id }) ||
                         await Staff.findOne({ _id: tokendata.id });
 
-                    console.log("User found:", user);
+                    // console.log("User found:", user);
 
                     if (!user) {
                         return res.status(404).json({ message: 'User not found' });
@@ -196,11 +196,6 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // For non-SuperAdmin users, check privileges
                     const privilege = user.privileges.find((p) => p.module === module);
-
-                    console.log("ppppp", privilege)
-                    console.log("klklk", action)
-                    console.log("permis", privilege[action])
-                    console.log("boolean", privilege[actions[action]])
                     console.log(`Checking ${action} permission for module ${module}:`, privilege);
 
                     if (!privilege) {

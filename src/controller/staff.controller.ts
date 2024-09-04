@@ -1,5 +1,4 @@
 import { Staff, StaffDocument } from '../model/staff.model'
-import { User, UserDocument } from '../privileges/model/user.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin} from '../model/superAdmin.model'
 import { Admin } from '../model/admin.model'

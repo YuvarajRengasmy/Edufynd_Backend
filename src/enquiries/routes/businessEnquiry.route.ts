@@ -1,44 +1,49 @@
-import {Router} from 'express';
-import { getAllBusinessEnquiry,getSingleBusinessEnquiry, createBusinessEnquiry,updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry} from '../controller/businessEnquiry.controller';
+import { Router } from 'express';
+import { getAllBusinessEnquiry, getSingleBusinessEnquiry, createBusinessEnquiry, updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry } from '../controller/businessEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                          
+router.get('/',
     basicAuthUser,
-      checkSession,
+    checkSession,
+    checkPermission('businessenquiry', 'view'),
     getAllBusinessEnquiry
 );
 
 
 router.get('/getSingleBusinessEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('businessenquiry', 'view'),
     checkQuery('_id'),
     getSingleBusinessEnquiry,
 );
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         createBusinessEnquiry
+router.post('/',
+    checkPermission('businessenquiry', 'add'),
+    checkRequestBodyParams('email'),
+    createBusinessEnquiry
 );
 
-router.put('/',          
+router.put('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('businessenquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateBusinessEnquiry,
- 
+
 );
 
 
-router.delete('/',               
+router.delete('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('businessenquiry', 'delete'),
     checkQuery('_id'),
     deleteBusinessEnquiry
 );
@@ -46,7 +51,8 @@ router.delete('/',
 
 router.put('/getFilterBusinessEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('businessenquiry', 'view'),
     getFilteredBusinessEnquiry,
 );
 

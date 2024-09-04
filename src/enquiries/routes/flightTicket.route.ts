@@ -1,44 +1,49 @@
-import {Router} from 'express';
-import { getAllFlightTicketEnquiry,getSingleFlightTicketEnquiry, createFlightTicketEnquiry,updateFlightTicketEnquiry, deleteFlightTicketEnquiry,getFilteredFlightTicketEnquiry} from '../controller/flightTicket.controller';
+import { Router } from 'express';
+import { getAllFlightTicketEnquiry, getSingleFlightTicketEnquiry, createFlightTicketEnquiry, updateFlightTicketEnquiry, deleteFlightTicketEnquiry, getFilteredFlightTicketEnquiry } from '../controller/flightTicket.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                          
+router.get('/',
     basicAuthUser,
-      checkSession,
+    checkSession,
+    checkPermission('flightticket', 'view'),
     getAllFlightTicketEnquiry
 );
 
 
 router.get('/getSingleFlightEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('flightticket', 'view'),
     checkQuery('_id'),
     getSingleFlightTicketEnquiry,
 );
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         createFlightTicketEnquiry
+router.post('/',
+    checkPermission('flightticket', 'add'),
+    checkRequestBodyParams('email'),
+    createFlightTicketEnquiry
 );
 
-router.put('/',          
+router.put('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('flightticket', 'edit'),
     checkRequestBodyParams('_id'),
     updateFlightTicketEnquiry,
- 
+
 );
 
 
-router.delete('/',               
+router.delete('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('flightticket', 'delete'),
     checkQuery('_id'),
     deleteFlightTicketEnquiry
 );
@@ -46,7 +51,8 @@ router.delete('/',
 
 router.put('/getFilterFlightEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('flightticket', 'view'),
     getFilteredFlightTicketEnquiry,
 );
 

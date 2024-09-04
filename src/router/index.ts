@@ -65,8 +65,7 @@ import Testimonial from '../testimonial/testimonial.routes'
 // import ELT from '../ELT/elt.routes'
 
 
-//Privileges
-import User from '../privileges/router/user.routes'
+
 
 //HRMS
 import Department from '../hrm/routes/department.route';
@@ -166,8 +165,7 @@ router.use('/testimonial', Testimonial)
 
 //ELT
 
-//Privileges
-router.use('/user', User)
+
 
 
 //HRMS
