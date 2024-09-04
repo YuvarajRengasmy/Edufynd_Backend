@@ -13,6 +13,8 @@ export interface SuperAdminDocument extends mongoose.Document{
     studentId?: any;
     agentId?: any;
     recoveryEmail?: string;
+    role?: string;
+    privileges?: any[];
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -20,6 +22,13 @@ export interface SuperAdminDocument extends mongoose.Document{
     modifiedBy?: string;
 }
 
+const privilegeSchema = new mongoose.Schema({
+    module: { type: String}, // e.g., 'University', 'Program', 'Client'
+    add: { type: Boolean, default: false },
+    edit: { type: Boolean, default: false },
+    view: { type: Boolean, default: false },
+    delete: { type: Boolean, default: false },
+    });
 
 const superAdminSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
@@ -36,6 +45,10 @@ const superAdminSchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin' },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
+
+    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    privileges: [privilegeSchema],
+
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },

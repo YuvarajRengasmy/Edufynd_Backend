@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {createUser, assignPrivileges} from '../controller/user.controller';
+import { assignPermissions} from '../../utils/tokenManager';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -8,10 +8,9 @@ const router:Router=Router();
 
 
 
-router.post('/', createUser);
 
 
-router.post('/privileges', assignPrivileges);
+router.post('/privileges', assignPermissions);
 
 
 export default router

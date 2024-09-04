@@ -5,16 +5,16 @@ import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
-import { checkPermission } from '../privileges/middleware/permission';
+
 const router: Router = Router();
 
 
 router.get('/',             
     basicAuthUser,
     checkSession,
-    // checkPermission,
+    checkPermission('University', 'view'),
     getAllUniversity
 );
 
@@ -31,6 +31,7 @@ router.get('/getSingleUniversity',
 router.post('/',
     basicAuthUser,
     checkSession,
+    checkPermission('University', 'add'),
     saveUniversity
 );
 
@@ -40,6 +41,7 @@ router.put('/',
     basicAuthUser,
     // checkSession,
     // checkQuery('_id'),
+    checkPermission('University', 'edit'),
     checkRequestBodyParams('_id'),
     updateUniversity
 );
@@ -49,6 +51,7 @@ router.delete('/',
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
+    checkPermission('University', 'delete'),
     deleteUniversity
 );
 
@@ -56,7 +59,7 @@ router.delete('/',
 router.put('/getFilterUniversity',
     basicAuthUser,
     checkSession,
-    // checkPermission,
+    checkPermission('University', 'view'),
     getFilteredUniversity,
 );
 

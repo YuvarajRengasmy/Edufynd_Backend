@@ -62,6 +62,7 @@ export interface StudentDocument extends mongoose.Document {
     purposeVisa?: string;
     countryNameVisa?: string;
     activeStatus?: string;
+    role?: string;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -69,6 +70,15 @@ export interface StudentDocument extends mongoose.Document {
     modifiedBy?: string;
 
 };
+
+
+const privilegeSchema = new mongoose.Schema({
+    module: { type: String}, // e.g., 'University', 'Program', 'Client'
+    add: { type: Boolean, default: false },
+    edit: { type: Boolean, default: false },
+    view: { type: Boolean, default: false },
+    delete: { type: Boolean, default: false },
+    });
 
 const studentSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
@@ -134,6 +144,8 @@ const studentSchema = new mongoose.Schema({
     purposeVisa: {type: String},
     countryNameVisa: {type: String},
     activeStatus: {type: String},
+    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    privileges: [privilegeSchema],
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date },
