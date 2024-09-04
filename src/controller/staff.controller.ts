@@ -127,10 +127,6 @@ export const updateStafff = async (req, res) => {
               
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
-                },
-                $addToSet: {
-                    privileges: staffDetails.privileges,
-                 
                 }
             });
 
@@ -163,13 +159,37 @@ export const updateStaff = async (req, res) => {
                 probationDuration: staffDetails.probationDuration,
                 salary: staffDetails.salary,
                 role: staffDetails.role,
-                active: staffDetails.active,
+               active: staffDetails.active,
                 idCard: staffDetails.idCard,
                 manageApplications: staffDetails.manageApplications,
                 teamLead: staffDetails.teamLead,
+
+                // Newly added fields
                 team: staffDetails.team,
                 staffList: staffDetails.staffList,
                 personalMail: staffDetails.personalMail,
+                address2:staffDetails.address2,
+                pin: staffDetails.pin,
+                country:staffDetails.country,
+                state: staffDetails.state,
+                city: staffDetails.city,
+                activeStatus: staffDetails.activeStatus,
+                companyAssests: staffDetails.companyAssests,
+                mobileName: staffDetails.mobileName,
+                brandName:staffDetails.brandName,
+                imei: staffDetails.imei,
+                phoneNumber: staffDetails.phoneNumber,
+                laptopName: staffDetails.laptopName,
+                brand: staffDetails.brand,
+                modelName: staffDetails.modelName,
+                ipAddress: staffDetails.ipAddress,
+                userName: staffDetails.userName,
+                loginPassword: staffDetails.loginPassword,
+                dial1: staffDetails.dial1,
+                dial2: staffDetails.dial2,
+                dial3: staffDetails.dial3,
+               
+          
                 modifiedOn: new Date(),
                 modifiedBy: staffDetails.modifiedBy,
                 privileges: staffDetails.privileges,

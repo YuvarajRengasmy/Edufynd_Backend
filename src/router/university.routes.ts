@@ -14,7 +14,7 @@ const router: Router = Router();
 router.get('/',             
     basicAuthUser,
     checkSession,
-    checkPermission('University', 'view'),
+    checkPermission('university', 'view'),
     getAllUniversity
 );
 
@@ -31,7 +31,7 @@ router.get('/getSingleUniversity',
 router.post('/',
     basicAuthUser,
     checkSession,
-    checkPermission('University', 'add'),
+    checkPermission('university', 'add'),
     saveUniversity
 );
 
@@ -41,7 +41,7 @@ router.put('/',
     basicAuthUser,
     // checkSession,
     // checkQuery('_id'),
-    checkPermission('University', 'edit'),
+    checkPermission('university', 'edit'),
     checkRequestBodyParams('_id'),
     updateUniversity
 );
@@ -51,7 +51,7 @@ router.delete('/',
     basicAuthUser,
     // checkSession,
     checkQuery('_id'),
-    checkPermission('University', 'delete'),
+    checkPermission('university', 'delete'),
     deleteUniversity
 );
 
@@ -59,7 +59,7 @@ router.delete('/',
 router.put('/getFilterUniversity',
     basicAuthUser,
     checkSession,
-    checkPermission('University', 'view'),
+    checkPermission('university', 'view'),
     getFilteredUniversity,
 );
 
