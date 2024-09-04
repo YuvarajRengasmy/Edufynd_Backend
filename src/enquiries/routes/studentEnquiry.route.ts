@@ -11,7 +11,7 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('studentenquiry', 'view'),
+    checkPermission('studentEnquiry', 'view'),
     getAllStudentEnquiry
 );
 
@@ -19,13 +19,13 @@ router.get('/',
 router.get('/getSingleStudentEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('studentenquiry', 'view'),
+    checkPermission('studentEnquiry', 'view'),
     checkQuery('_id'),
     getSingleStudentEnquiry,
 );
 
 router.post('/',
-    checkPermission('studentenquiry', 'add'),
+    checkPermission('studentEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createStudentEnquiry
 );
@@ -33,7 +33,7 @@ router.post('/',
 router.put('/',
     basicAuthUser,
     checkSession,
-    checkPermission('studentenquiry', 'edit'),
+    checkPermission('studentEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateStudentEnquiry,
 
@@ -43,7 +43,7 @@ router.put('/',
 router.delete('/',
     basicAuthUser,
     checkSession,
-    checkPermission('studentenquiry', 'delete'),
+    checkPermission('studentEnquiry', 'delete'),
     checkQuery('_id'),
     deleteStudentEnquiry
 );
@@ -52,7 +52,7 @@ router.delete('/',
 router.put('/getFilterStudentEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('studentenquiry', 'view'),
+    checkPermission('studentEnquiry', 'view'),
     getFilteredStudentEnquiry,
 );
 

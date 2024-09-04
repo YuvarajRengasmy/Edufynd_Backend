@@ -11,7 +11,7 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('businessenquiry', 'view'),
+    checkPermission('businessEnquiry', 'view'),
     getAllBusinessEnquiry
 );
 
@@ -19,13 +19,13 @@ router.get('/',
 router.get('/getSingleBusinessEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('businessenquiry', 'view'),
+    checkPermission('businessEnquiry', 'view'),
     checkQuery('_id'),
     getSingleBusinessEnquiry,
 );
 
 router.post('/',
-    checkPermission('businessenquiry', 'add'),
+    checkPermission('businessEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createBusinessEnquiry
 );
@@ -33,7 +33,7 @@ router.post('/',
 router.put('/',
     basicAuthUser,
     checkSession,
-    checkPermission('businessenquiry', 'edit'),
+    checkPermission('businessEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateBusinessEnquiry,
 
@@ -43,7 +43,7 @@ router.put('/',
 router.delete('/',
     basicAuthUser,
     checkSession,
-    checkPermission('businessenquiry', 'delete'),
+    checkPermission('businessEnquiry', 'delete'),
     checkQuery('_id'),
     deleteBusinessEnquiry
 );

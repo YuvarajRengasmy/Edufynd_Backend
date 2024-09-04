@@ -11,7 +11,7 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('generalenquiry', 'view'),
+    checkPermission('generalEnquiry', 'view'),
     getAllGeneralEnquiry
 );
 
@@ -19,13 +19,13 @@ router.get('/',
 router.get('/getSingleGeneralEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('generalenquiry', 'view'),
+    checkPermission('generalEnquiry', 'view'),
     checkQuery('_id'),
     getSingleGeneralEnquiry,
 );
 
 router.post('/',
-    checkPermission('generalenquiry', 'add'),
+    checkPermission('generalEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createGeneralEnquiry
 );
@@ -33,7 +33,7 @@ router.post('/',
 router.put('/',
     basicAuthUser,
     checkSession,
-    checkPermission('generalenquiry', 'edit'),
+    checkPermission('generalEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateGeneralEnquiry,
 
@@ -43,7 +43,7 @@ router.put('/',
 router.delete('/',
     basicAuthUser,
     checkSession,
-    checkPermission('generalenquiry', 'delete'),
+    checkPermission('generalEnquiry', 'delete'),
     checkQuery('_id'),
     deleteGeneralEnquiry
 );
@@ -52,7 +52,7 @@ router.delete('/',
 router.put('/getFilterGeneralEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('generalenquiry', 'view'),
+    checkPermission('generalEnquiry', 'view'),
     getFilteredGeneralEnquiry,
 );
 

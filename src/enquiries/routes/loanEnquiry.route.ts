@@ -11,7 +11,7 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('loanenquiry', 'view'),
+    checkPermission('loanEnquiry', 'view'),
     getAllLoanEnquiry
 );
 
@@ -19,13 +19,13 @@ router.get('/',
 router.get('/getSingleLoanEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('loanenquiry', 'view'),
+    checkPermission('loanEnquiry', 'view'),
     checkQuery('_id'),
     getSingleLoanEnquiry,
 );
 
 router.post('/',
-    checkPermission('loanenquiry', 'add'),
+    checkPermission('loanEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createLoanEnquiry
 );
@@ -33,7 +33,7 @@ router.post('/',
 router.put('/',
     basicAuthUser,
     checkSession,
-    checkPermission('loanenquiry', 'edit'),
+    checkPermission('loanEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateLoanEnquiry,
 
@@ -43,7 +43,7 @@ router.put('/',
 router.delete('/',
     basicAuthUser,
     checkSession,
-    checkPermission('loanenquiry', 'delete'),
+    checkPermission('loanEnquiry', 'delete'),
     checkQuery('_id'),
     deleteLoanEnquiry
 );
@@ -52,7 +52,7 @@ router.delete('/',
 router.put('/getFilterLoanEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('loanenquiry', 'view'),
+    checkPermission('loanEnquiry', 'view'),
     getFilteredLoanEnquiry,
 );
 
