@@ -73,7 +73,7 @@ export let createStaff = async (req, res, next) => {
 };
 
 
-export const updateStafff = async (req, res) => {
+export const updateStaffdd = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -93,7 +93,7 @@ export const updateStafff = async (req, res) => {
                     probationDuration: staffDetails.probationDuration,
                     salary: staffDetails.salary,
                     role: staffDetails.role,
-                   active: staffDetails.active,
+                    active: staffDetails.active,
                     privileges: staffDetails.privileges,
                     idCard: staffDetails.idCard,
                     manageApplications: staffDetails.manageApplications,
@@ -128,11 +128,13 @@ export const updateStafff = async (req, res) => {
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
                 }
+    
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Staff Details', true, 200, staffData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Staff Details', true, 200, staffData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 500, {}, errorMessage.internalServer, err.message);
+            console.log(err)
+            response(req, res, activity, 'Level-2', 'Update-Staff Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -144,7 +146,7 @@ export const updateStaff = async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
-            const staffDetails = req.body;
+            const staffDetails: StaffDocument = req.body;
             const updateData = {
                 photo: staffDetails.photo,
                 empName: staffDetails.empName,
@@ -199,6 +201,7 @@ export const updateStaff = async (req, res) => {
             if (staffDetails.privileges && staffDetails.privileges.length > 0) {
                 // Updating the entire privileges array
                 updateData.privileges = staffDetails.privileges;
+              
             }
 
             const staffData = await Staff.findByIdAndUpdate(

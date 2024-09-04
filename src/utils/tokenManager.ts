@@ -174,7 +174,7 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
             if (headerType === "Bearer" && tokenValue?.trim()) {
                 try {
                     const tokendata = await jwt.verify(tokenValue.trim(), 'edufynd');
-                    console.log('Token data:', tokendata);
+                    console.log('Token data to check permission:', tokendata);
 
                     // Find the user from any of the models
                     const user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
