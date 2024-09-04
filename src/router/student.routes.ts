@@ -42,9 +42,9 @@ router.post('/contact', createContact);
 
 router.put('/',             
     basicAuthUser,
-    checkPermission('student', 'view'),
-    checkPermission('student', 'edit'),
+
     checkSession,
+    checkPermission('student', 'edit'),
     checkRequestBodyParams('_id'),
     upload.fields([
         { name: 'photo', maxCount: 1 },
@@ -60,11 +60,12 @@ router.put('/',
 );
 
 
-router.delete('/',               
+router.delete('/',   
+            
     basicAuthUser,
     checkSession,
-    checkPermission('student', 'delete'),
     checkQuery('_id'),
+    checkPermission('student', 'delete'),  
     deleteStudent
 );
 
@@ -101,6 +102,7 @@ router.put('/createStudentBySuperAdmin',
 router.put('/editStudentBySuperAdmin',         
     basicAuthUser,
     checkSession,
+    checkPermission('student', 'edit'),
     editStudentProfileBySuperAdmin
 );
 
