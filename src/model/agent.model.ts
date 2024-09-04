@@ -38,7 +38,6 @@ export interface AgentDocument extends mongoose.Document {
   resetOtp?: string;
   resetOtpExpires?: number;
   isDeleted?: boolean;
-  privileges?: string;
   createdOn?: Date;
   createdBy?: string;
   modifiedOn?: Date;
@@ -57,10 +56,19 @@ export interface AgentDocument extends mongoose.Document {
   desiredCountry?: string;
   requireVisaFilingSupport?: string;
   visaCommission?: number;
-  notificationId?: any;
+  role?:string;
+  privileges?: any[];
   activeStatus?: string;
  
 };
+
+const privilegeSchema = new mongoose.Schema({
+  module: { type: String}, // e.g., 'University', 'Program', 'Client'
+  add: { type: Boolean, default: false },
+  edit: { type: Boolean, default: false },
+  view: { type: Boolean, default: false },
+  delete: { type: Boolean, default: false },
+  });
 
 
 const agentSchema = new mongoose.Schema({
@@ -100,7 +108,6 @@ const agentSchema = new mongoose.Schema({
   resetOtp: { type: String },
   resetOtpExpires: { type: Number },
   isDeleted: { type: Boolean, default: false },
-  privileges: { type: String },
   // Newly Added Field
   businessWebsite: { type: String },
   pin: { type: Number },
@@ -115,7 +122,8 @@ const agentSchema = new mongoose.Schema({
   desiredCountry: { type: String },
   requireVisaFilingSupport: { type: String },
   visaCommission: { type: Number },
-  notificationId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }],
+  role: { type: String},
+  privileges: [privilegeSchema],
   activeStatus: {type: String},
   createdOn: { type: Date, default: Date.now()},
   createdBy: { type: String },
