@@ -2,6 +2,7 @@ import { SuperAdmin, SuperAdminDocument } from '../model/superAdmin.model'
 import { University,} from '../model/university.model'
 import { Program} from '../model/program.model'
 import { Client, ClientDocument } from '../model/client.model'
+import { Blog, BlogDocument } from '../blogs/blogs.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -24,8 +25,9 @@ export let getSuperAdminForSearch = async (req, res, next) => {
             const universityList = await University.find({ $and: [{ $or: [{ universityName: { $regex: search, $options: 'i' } }, { country: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('popularCategories',{popularCategories:1})
             const programList = await Program.find({ $and: [{ $or: [{ programTitle: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('country', { country: 1 })
             const clientList = await Client.find({ $and: [{ $or: [{typeOfClient: { $regex: search, $options: 'i' } }, { businessName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('name', { name: 1, image: 1 })
+            const blogList = await Blog.find({ $and: [{ $or: [{title: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('title', { title: 1 })
 
-            response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200, { universityList, programList, clientList }, clientError.success.fetchedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200, { universityList, programList, clientList , blogList}, clientError.success.fetchedSuccessfully);
         } catch (err: any) {
             response(req, res, activity, 'Level-3', 'Get-SuperAdminForSeach', false, 500, {}, errorMessage.internalServer, err.message);
         }

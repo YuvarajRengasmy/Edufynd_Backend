@@ -2,6 +2,9 @@ import * as jwt from 'jsonwebtoken';
 import { response } from '../helper/commonResponseHandler';
 import { clientError, errorMessage } from '../helper/ErrorMessage';
 import * as config from '../config';
+
+import { Staff, StaffDocument } from '../model/staff.model'
+import { SuperAdmin } from "../model/superAdmin.model";
 const activity = 'token';
 
 /**
@@ -26,7 +29,7 @@ export let CreateJWTToken = (data: any = {}) => {
     if (data && data['id']) {
         tokenData['id'] = data['id']
     }
-  
+
     const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '24h' });
     return token;
 }
@@ -47,8 +50,8 @@ export let CreateJWTToken = (data: any = {}) => {
 
 export let checkSession = async (req, res, next) => {
     // console.log("Entering checkSession middleware");
-  
-    let authHeader = req.headers['token'];  
+
+    let authHeader = req.headers['token'];
     if (authHeader) {
         const parts = authHeader.split(' ');
         const headerType = parts[0];
@@ -57,11 +60,12 @@ export let checkSession = async (req, res, next) => {
         if (headerType === "Bearer" && tokenValue) {
             try {
                 const tokendata = await jwt.verify(tokenValue, 'edufynd');
-                // console.log('Token data:', tokendata);
+                console.log('Token data:', tokendata);
 
-                // req.body.loginId = tokendata.userId;
+                req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;
-                req.body.loginUserName = tokendata.userName;
+                req.body.loginUserName = tokendata.userName
+                req.body.name = tokendata.empName
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
                 req.body.modifiedBy = tokendata.loginType;
@@ -80,7 +84,7 @@ export let checkSession = async (req, res, next) => {
 
             // Validate the username and password as per your logic here
             if (username === config.SERVER.BASIC_AUTH_USER && password === config.SERVER.BASIC_AUTH_PWD) {
-         
+
                 next();
             } else {
                 console.error("Invalid Basic Auth credentials");
@@ -95,6 +99,123 @@ export let checkSession = async (req, res, next) => {
         return response(req, res, activity, 'Check-Session', 'Level-3', false, 499, {}, clientError.token.unauthRoute);
     }
 };
+
+
+
+
+// Middleware to Check Permissions
+export const checkPermission = (module: string, action: keyof typeof actions) => {
+    return async (req, res, next: any) => {
+
+        const authHeader = req.headers['token'];
+        if (authHeader) {
+            const parts = authHeader.split(' ');
+            const headerType = parts[0];
+            const tokenValue = parts[1]?.trim();
+    
+            if (headerType === "Bearer" && tokenValue) {
+                try {
+                    const tokendata = await jwt.verify(tokenValue, 'edufynd');
+                    console.log('Token data:', tokendata);
+
+                           // const user = await Staff.findOne({ _id: tokendata.id });
+                const user = await SuperAdmin.findOne({ _id: tokendata.id });
+                console.log("User found:", user);
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const privilege = user.privileges.find((p) => p.module === module);
+            console.log(`Checking ${action} permission for module ${module}:`, privilege);
+
+            if (!privilege) {
+                return res.status(403).json({ message: `Access denied: No privileges found for module ${module}` });
+            }
+
+            // Check if the specific action (add/edit/view/delete) is allowed
+            if (!privilege[actions[action]]) {
+                console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
+                return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
+            }
+            next();
+
+        } catch (error) {
+            console.error('Error checking permissions:', error);
+            res.status(500).json({ message: 'Internal server error', error });
+        }
+    };
+}}}
+
+
+const actions = {
+    add: 'add',
+    edit: 'edit',
+    view: 'view',
+    delete: 'delete',
+};
+
+
+
+
+
+export const assignPermissions = async (req, res) => {
+    try {
+        const { userId, privileges } = req.body; // Expect privileges as an array
+        const user = await SuperAdmin.findOne({userId});
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // if (user.role === 'superAdmin') {
+        //     return res.status(403).json({ message: 'SuperAdmin cannot have modified permissions' });
+        // }
+
+        // Loop through each privilege in the array
+        privileges.forEach((priv: any) => {
+            let privilege = user.privileges.find((p) => p.module === priv.module);
+
+            if (privilege) {
+                // Update existing privilege
+                privilege.add = priv.add ?? privilege.add;
+                privilege.edit = priv.edit ?? privilege.edit;
+                privilege.view = priv.view ?? privilege.view;
+                privilege.delete = priv.delete ?? privilege.delete;
+            } else {
+                // Add new privilege
+                user.privileges.push({
+                    module: priv.module,
+                    add: priv.add,
+                    edit: priv.edit,
+                    view: priv.view,
+                    delete: priv.delete,
+                });
+            }
+        });
+
+        await user.save();
+        res.status(200).json({ message: 'Permissions assigned successfully' });
+    } catch (error) {
+        console.error('Error assigning permissions:', error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

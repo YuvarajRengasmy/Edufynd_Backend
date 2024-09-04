@@ -1,4 +1,5 @@
 import { Staff, StaffDocument } from '../model/staff.model'
+import { User, UserDocument } from '../privileges/model/user.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin} from '../model/superAdmin.model'
 import { Admin } from '../model/admin.model'
@@ -72,7 +73,7 @@ export let createStaff = async (req, res, next) => {
 };
 
 
-export const updateStaff = async (req, res) => {
+export const updateStafff = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -122,6 +123,7 @@ export const updateStaff = async (req, res) => {
                     dial1: staffDetails.dial1,
                     dial2: staffDetails.dial2,
                     dial3: staffDetails.dial3,
+                   
               
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
@@ -137,6 +139,90 @@ export const updateStaff = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+export const updateStaff = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const staffDetails = req.body;
+            const updateData = {
+                photo: staffDetails.photo,
+                empName: staffDetails.empName,
+                designation: staffDetails.designation,
+                jobDescription: staffDetails.jobDescription,
+                reportingManager: staffDetails.reportingManager,
+                shiftTiming: staffDetails.shiftTiming,
+                areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,
+                address: staffDetails.address,
+                description: staffDetails.description,
+                emergencyContactNo: staffDetails.emergencyContactNo,
+                probationDuration: staffDetails.probationDuration,
+                salary: staffDetails.salary,
+                role: staffDetails.role,
+               active: staffDetails.active,
+                idCard: staffDetails.idCard,
+                manageApplications: staffDetails.manageApplications,
+                teamLead: staffDetails.teamLead,
+
+                // Newly added fields
+                team: staffDetails.team,
+                staffList: staffDetails.staffList,
+                personalMail: staffDetails.personalMail,
+                address2:staffDetails.address2,
+                pin: staffDetails.pin,
+                country:staffDetails.country,
+                state: staffDetails.state,
+                city: staffDetails.city,
+                activeStatus: staffDetails.activeStatus,
+                companyAssests: staffDetails.companyAssests,
+                mobileName: staffDetails.mobileName,
+                brandName:staffDetails.brandName,
+                imei: staffDetails.imei,
+                phoneNumber: staffDetails.phoneNumber,
+                laptopName: staffDetails.laptopName,
+                brand: staffDetails.brand,
+                modelName: staffDetails.modelName,
+                ipAddress: staffDetails.ipAddress,
+                userName: staffDetails.userName,
+                loginPassword: staffDetails.loginPassword,
+                dial1: staffDetails.dial1,
+                dial2: staffDetails.dial2,
+                dial3: staffDetails.dial3,
+               
+          
+                modifiedOn: new Date(),
+                modifiedBy: staffDetails.modifiedBy,
+                privileges: staffDetails.privileges,
+
+            };
+
+            if (staffDetails.privileges && staffDetails.privileges.length > 0) {
+                // Updating the entire privileges array
+                updateData.privileges = staffDetails.privileges;
+            }
+
+            const staffData = await Staff.findByIdAndUpdate(
+                { _id: staffDetails._id },
+                {
+                    $set: updateData,
+                },
+                { new: true } // Return the updated document
+            );
+
+            if (!staffData) {
+                return res.status(404).json({ message: 'Staff not found' });
+            }
+
+            response(req, res, activity, 'Level-2', 'Update-Staff Details', true, 200, staffData, 'Staff details updated successfully');
+        } catch (err) {
+            console.error('Error updating staff:', err);
+            response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 500, {}, 'Internal server error', err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 422, {}, 'Validation error', JSON.stringify(errors.mapped()));
+    }
+};
+
 
 export let deleteStaff = async (req, res, next) => {
 
@@ -175,6 +261,8 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             const createStaff = new Staff(staffDetails);
             const insertStaff = await createStaff.save();
             const newHash = await decrypt(insertStaff["password"]);
+
+         
 
             const mailOptions = {
                 from: config.SERVER.EMAIL_USER,
@@ -251,7 +339,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
         }
 
         } catch (err: any) {
-
+console.log(err)
             return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {

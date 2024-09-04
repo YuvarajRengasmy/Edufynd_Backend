@@ -13,9 +13,10 @@ export interface BlogDocument extends mongoose.Document {
   addToSlider?: string;
   addToRecommended?: string;
   showOnlyToRegisteredUsers?: string;
-  tags?: string;
+  tags?: any[];
   optionalURL?: string;
   content?: string;
+  uploadFile?:any[];
   uploadImage?: string;
   addImageURL?: string;
   imageDescription?: string;
@@ -45,10 +46,10 @@ const blogSchema = new mongoose.Schema({
   addToSlider: {type: String},
   addToRecommended:{type: String},
   showOnlyToRegisteredUsers: {type: String},
-  tags:{type: String},
+  tags:[String],
   optionalURL: {type: String},
   content: {type: String},
-  uploadImage: {type: String},
+  uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }],
   addImageURL: {type: String},
   imageDescription: {type: String},
   uploadFiles: {type: String},

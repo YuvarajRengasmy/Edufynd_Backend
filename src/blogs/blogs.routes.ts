@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {getAllBlog, getSingleBlog, saveBlog, updateBlog,deleteBlog} from '../blogs/blogs.controller';
+import {getAllBlog, getSingleBlog, saveBlog, updateBlog,deleteBlog, getFilteredBlog} from '../blogs/blogs.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -8,7 +8,7 @@ const router:Router=Router();
 
 router.get('/',               
     basicAuthUser,
-    //  checkSession,
+      checkSession,
      getAllBlog
 );
 
@@ -21,9 +21,9 @@ router.get('/getSingleBlog',
 );
 
 
-router.put('/', 
+router.post('/', 
          basicAuthUser,
-        //  checkSession,
+        checkSession,
         saveBlog
 );
 
@@ -44,7 +44,17 @@ router.delete('/',
     deleteBlog
 );
 
+router.put('/getFilterBlog',
+    basicAuthUser,
+    checkSession,
+    getFilteredBlog,
+);
 
-;
+
+router.get('/publicBlog', getAllBlog);
+
+router.get('/publicGetSingleBlog',checkQuery('_id'), getSingleBlog);
+router.put('/publicGetFilterBlog', getFilteredBlog);
+
 
 export default router

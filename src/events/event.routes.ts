@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent } from './event.controller';
+import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent } from './event.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -33,6 +33,8 @@ router.put('/',
     updateEvent
 );
 
+
+router.post('/deleteFile', deleteFileFromEvent);
 
 router.delete('/',                  
     basicAuthUser,

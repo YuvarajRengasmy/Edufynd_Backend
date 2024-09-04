@@ -71,13 +71,22 @@ export interface StaffDocument extends mongoose.Document {
     modifiedBy?: string;
 }
 
+const privilegeSchema = new mongoose.Schema({
+    module: { type: String}, // e.g., 'University', 'Program', 'Client'
+    add: { type: Boolean, default: false },
+    edit: { type: Boolean, default: false },
+    view: { type: Boolean, default: false },
+    delete: { type: Boolean, default: false },
+    });
+
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     employeeID: { type: String },
     photo: { type: String },
-    role:{type:String},
+    // role:{type:String},
     empName: { type: String },
-
+    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    privileges: [privilegeSchema],
     designation: { type: String },
     jobDescription: { type: String },
     reportingManager: { type: String },
@@ -90,7 +99,7 @@ const staffSchema = new mongoose.Schema({
     email: { type: String },
     dial1: {type: String},
     mobileNumber: { type: Number },
-    dial2: {type: String},
+    dial2: {type: String,},
     emergencyContactNo: { type: Number },
     probationDuration: { type: String },
     salary: { type: String },
@@ -101,7 +110,7 @@ const staffSchema = new mongoose.Schema({
     password: { type: String },
     confirmPassword: { type: String },
     isDeleted: { type: Boolean, default: false },
-    privileges: { type: String },
+    // privileges: { type: String },
     // Newly added fields
     gender: { type: String },
     team: { type: String },
@@ -117,7 +126,7 @@ const staffSchema = new mongoose.Schema({
     mobileName: { type: String },
     brandName: { type: String },
     imei: { type: String },
-    dial3: {type: String},
+    dial3: {type: String,},
     phoneNumber: { type: Number },
     laptopName: { type: String },
     brand: { type: String },

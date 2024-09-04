@@ -64,6 +64,10 @@ import Testimonial from '../testimonial/testimonial.routes'
 //ELT
 // import ELT from '../ELT/elt.routes'
 
+
+//Privileges
+import User from '../privileges/router/user.routes'
+
 //HRMS
 import Department from '../hrm/routes/department.route';
 import Policies from '../hrm/routes/policies.route'
@@ -161,6 +165,9 @@ router.use('/event', Event)
 router.use('/testimonial', Testimonial)
 
 //ELT
+
+//Privileges
+router.use('/user', User)
 
 
 //HRMS

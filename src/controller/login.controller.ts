@@ -132,9 +132,10 @@ export let loginEmail = async (req, res, next) => {
                 } else {
                     const token = await TokenManager.CreateJWTToken({
                         id: staff["_id"],
-                        name: staff["name"],
+                        empName: staff["empName"],
                         loginType: 'staff'
                     });
+                 
                     const details = {}
                     details['_id'] = staff._id
                     details['email'] = staff.email;
