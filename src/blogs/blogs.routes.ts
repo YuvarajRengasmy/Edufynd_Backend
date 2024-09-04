@@ -15,8 +15,9 @@ router.get('/',
 
 router.get('/getSingleBlog',
     basicAuthUser,
-    // checkSession,
-    checkQuery('_id'),
+     checkSession,
+    checkRequestBodyParams('_id'),
+    // checkQuery('_id'),
     getSingleBlog,
 );
 
@@ -30,9 +31,8 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
-    // checkSession,
-    checkQuery('_id'),
-    // checkRequestBodyParams('_id'),
+     checkSession,
+    
     updateBlog
 );
 
