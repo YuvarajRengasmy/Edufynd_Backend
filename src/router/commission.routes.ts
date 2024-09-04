@@ -49,11 +49,11 @@ router.put('/',
 );
 
 router.post('/deleteCourseType', 
-    checkPermission('commission', 'delete'),
+    
     deleteCourseType);
 
 router.post('/deleteIntake', 
-    checkPermission('commission', 'delete'),
+  
     deleteIntake);
 
 
