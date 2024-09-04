@@ -73,7 +73,7 @@ export let createStaff = async (req, res, next) => {
 };
 
 
-export const updateStaff = async (req, res) => {
+export const updateStafff = async (req, res) => {
     const errors = validationResult(req)
     if (errors.isEmpty()) {
         try {
@@ -143,6 +143,66 @@ export const updateStaff = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+export const updateStaff = async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const staffDetails = req.body;
+            const updateData = {
+                photo: staffDetails.photo,
+                empName: staffDetails.empName,
+                designation: staffDetails.designation,
+                jobDescription: staffDetails.jobDescription,
+                reportingManager: staffDetails.reportingManager,
+                shiftTiming: staffDetails.shiftTiming,
+                areTheyEligibleForCasualLeave: staffDetails.areTheyEligibleForCasualLeave,
+                address: staffDetails.address,
+                description: staffDetails.description,
+                emergencyContactNo: staffDetails.emergencyContactNo,
+                probationDuration: staffDetails.probationDuration,
+                salary: staffDetails.salary,
+                role: staffDetails.role,
+                active: staffDetails.active,
+                idCard: staffDetails.idCard,
+                manageApplications: staffDetails.manageApplications,
+                teamLead: staffDetails.teamLead,
+                team: staffDetails.team,
+                staffList: staffDetails.staffList,
+                personalMail: staffDetails.personalMail,
+                modifiedOn: new Date(),
+                modifiedBy: staffDetails.modifiedBy,
+                privileges: staffDetails.privileges,
+
+            };
+
+            if (staffDetails.privileges && staffDetails.privileges.length > 0) {
+                // Updating the entire privileges array
+                updateData.privileges = staffDetails.privileges;
+            }
+
+            const staffData = await Staff.findByIdAndUpdate(
+                { _id: staffDetails._id },
+                {
+                    $set: updateData,
+                },
+                { new: true } // Return the updated document
+            );
+
+            if (!staffData) {
+                return res.status(404).json({ message: 'Staff not found' });
+            }
+
+            response(req, res, activity, 'Level-2', 'Update-Staff Details', true, 200, staffData, 'Staff details updated successfully');
+        } catch (err) {
+            console.error('Error updating staff:', err);
+            response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 500, {}, 'Internal server error', err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Staff Details', false, 422, {}, 'Validation error', JSON.stringify(errors.mapped()));
+    }
+};
+
 
 export let deleteStaff = async (req, res, next) => {
 

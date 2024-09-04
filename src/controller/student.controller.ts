@@ -1,8 +1,8 @@
 import { Student, StudentDocument } from '../model/student.model'
-import { SuperAdmin} from '../model/superAdmin.model'
-import { Staff} from '../model/staff.model'
+import { SuperAdmin } from '../model/superAdmin.model'
+import { Staff } from '../model/staff.model'
 import { Admin } from '../model/admin.model'
-import { Agent} from '../model/agent.model'
+import { Agent } from '../model/agent.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, transporter } from "../helper/commonResponseHandler";
@@ -194,9 +194,19 @@ export let updateStudent = async (req, res, next) => {
                 dial2: studentDetails.dial2,
                 dial3: studentDetails.dial3,
                 dial4: studentDetails.dial4,
-            
+
                 modifiedOn: new Date(),
                 modifiedBy: studentDetails.modifiedBy,
+            }
+
+            // Use $set to update the fields
+            const update = {
+                $set: updateFields,
+                $addToSet: {
+                    privileges: {
+                        $each: studentDetails.privileges // To add multiple privileges, if privileges is an array
+                    }
+                }
             };
 
             // Conditionally add file fields to updateFields
@@ -208,7 +218,8 @@ export let updateStudent = async (req, res, next) => {
             if (studentDetails.degree) updateFields.degree = studentDetails.degree;
             if (studentDetails.additional) updateFields.additional = studentDetails.additional;
 
-            const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: updateFields }, { new: true });
+            // const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: updateFields }, { new: true });
+            const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: update }, { new: true });
 
             response(req, res, 'Update-Student', 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
         } catch (err: any) {
@@ -271,21 +282,21 @@ export let getFilteredStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-      
+
         // Parse CSV file
         const csvData = await csv().fromFile(req.file.path);
 
         const student = await Student.find({}, 'studentCode').exec();
-                const maxCounter = student.reduce((max, app) => {
-                    const appCode = app.studentCode;
-                    const parts = appCode.split('_')
-                    if (parts.length === 2) {
-                        const counter = parseInt(parts[1], 10)
-                        return counter > max ? counter : max;
-                    }
-                    return max;
-                }, 100);
-                let currentMaxCounter = maxCounter;
+        const maxCounter = student.reduce((max, app) => {
+            const appCode = app.studentCode;
+            const parts = appCode.split('_')
+            if (parts.length === 2) {
+                const counter = parseInt(parts[1], 10)
+                return counter > max ? counter : max;
+            }
+            return max;
+        }, 100);
+        let currentMaxCounter = maxCounter;
 
         // Process CSV data
         let studentList = [];
@@ -294,27 +305,27 @@ export const csvToJson = async (req, res) => {
             currentMaxCounter++;
             studentList.push({
                 studentCode: studentCode,
-                name:data.Name,
+                name: data.Name,
                 email: data.Email,
                 mobileNumber: data.MobileNumber,
                 whatsAppNumber: data.WhatsAppNumber,
-                gender:data.GreGmatRequirementender,
+                gender: data.GreGmatRequirementender,
                 dob: data.DOB,
                 source: data.Source,
                 passportNo: data.PassportNo,
                 expiryDate: data.ExpiryDate,
-                citizenship:data.Citizenship,
+                citizenship: data.Citizenship,
                 highestQualification: data.HighestQualification,
                 degreeName: data.DegreeName,
                 academicYear: data.AcademicYear,
                 yearPassed: data.YearPassed,
-                institution:data.Institution,
+                institution: data.Institution,
                 percentage: data.Percentage,
                 country: data.Country,
                 desiredUniversity: data.DesiredUniversity,
                 desiredCourse: data.DesiredCourse,
                 doHaveAnyEnglishLanguageTest: data.DoHaveAnyEnglishLanguageTest,
-                englishTestType:data.EnglishTestType,
+                englishTestType: data.EnglishTestType,
                 testScore: data.TestScore,
                 dateOfTest: data.DateOfTest,
                 workExperience: data.WorkExperience,
@@ -341,7 +352,7 @@ export const csvToJson = async (req, res) => {
 
 
 export let createStudentBySuperAdmin = async (req, res, next) => {
-  
+
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
@@ -351,36 +362,36 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
             const staff = await Staff.findOne({ email: req.body.email })
             const agent = await Agent.findOne({ email: req.body.email })
             const admin = await Admin.findOne({ email: req.body.email })
-            if(!student && !superAdmin && !staff && !agent && !admin ){
+            if (!student && !superAdmin && !staff && !agent && !admin) {
 
-            const studentDetails: StudentDocument = req.body;
-            const student = await Student.find({}, 'studentCode').exec();
-            const maxCounter = student.reduce((max, app) => {
-                const appCode = app.studentCode;
-                const parts = appCode.split('_')
-                if (parts.length === 2) {
-                    const counter = parseInt(parts[1], 10)
-                    return counter > max ? counter : max;
-                }
-                return max;
-            }, 100);
-            let currentMaxCounter = maxCounter;
-            studentDetails.studentCode = await generateNextStudentCode(currentMaxCounter);
-            // Generate random passwords
-            const password = generateRandomPassword(8);
-            const confirmPassword = password; // Since password and confirmPassword should match
-            studentDetails.password = await encrypt(password)
-            studentDetails.confirmPassword = await encrypt(confirmPassword)
-            studentDetails.createdOn = new Date()
-            const createStudent = new Student(studentDetails);
-            const insertStudent = await createStudent.save();
-            const newHash = await decrypt(insertStudent["password"]);
+                const studentDetails: StudentDocument = req.body;
+                const student = await Student.find({}, 'studentCode').exec();
+                const maxCounter = student.reduce((max, app) => {
+                    const appCode = app.studentCode;
+                    const parts = appCode.split('_')
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10)
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100);
+                let currentMaxCounter = maxCounter;
+                studentDetails.studentCode = await generateNextStudentCode(currentMaxCounter);
+                // Generate random passwords
+                const password = generateRandomPassword(8);
+                const confirmPassword = password; // Since password and confirmPassword should match
+                studentDetails.password = await encrypt(password)
+                studentDetails.confirmPassword = await encrypt(confirmPassword)
+                studentDetails.createdOn = new Date()
+                const createStudent = new Student(studentDetails);
+                const insertStudent = await createStudent.save();
+                const newHash = await decrypt(insertStudent["password"]);
 
-            const mailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to:insertStudent.email,
-                subject: 'Welcome to EduFynd',
-                html: `
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: insertStudent.email,
+                    subject: 'Welcome to EduFynd',
+                    html: `
                               <body style="font-family: 'Poppins', Arial, sans-serif">
                                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                       <tr>
@@ -432,20 +443,20 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                                   </table>
                               </body>
                           `,
-                        
-              };
-            transporter.sendMail(mailOptions, (error, info) => {
 
-                if (error) {
-                    console.error('Error sending email:', error);
-                    return res.status(500).json({ message: 'Error sending email' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
-                }
-            });
-            response(req, res, activity, 'Level-1', 'Create-Student-By-SuperAdmin', true, 200, {student: insertStudent}, 'Student created successfully by SuperAdmin.');
-        }else {
+                };
+                transporter.sendMail(mailOptions, (error, info) => {
+
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'Student profile created and email sent login credentials', student: insertStudent });
+                    }
+                });
+                response(req, res, activity, 'Level-1', 'Create-Student-By-SuperAdmin', true, 200, { student: insertStudent }, 'Student created successfully by SuperAdmin.');
+            } else {
                 response(req, res, activity, 'Level-2', 'Create-Student-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
         } catch (err: any) {
@@ -507,7 +518,7 @@ export const editStudentProfileBySuperAdmin = async (req, res) => {
                     lastDesignation: studentDetails.lastDesignation,
                     date: studentDetails.date,
                     purpose: studentDetails.purpose,
-                    countryName: studentDetails.countryName, 
+                    countryName: studentDetails.countryName,
                     dial1: studentDetails.dial1,
                     dial2: studentDetails.dial2,
                     dial3: studentDetails.dial3,

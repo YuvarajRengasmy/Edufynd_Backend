@@ -63,6 +63,7 @@ export interface StudentDocument extends mongoose.Document {
     countryNameVisa?: string;
     activeStatus?: string;
     role?: string;
+    privileges?: any[]
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
