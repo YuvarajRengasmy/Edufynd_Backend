@@ -2,21 +2,23 @@ import { Router } from 'express';
 import { getAllClient, getSingleClient, saveClient, updateClient, deleteClient, csvToJson, getFilteredClient, editClientProfileBySuperAdmin } from '../controller/client.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
-import { checkPermission } from '../privileges/middleware/permission';
+
 const router: Router = Router();
 
 
 router.get('/',                
     basicAuthUser,
     checkSession,
+    checkPermission('client', 'view'),
     getAllClient
 );
 
 router.get('/getSingleClient',
     basicAuthUser,
     checkSession,
+    checkPermission('client', 'view'),
     checkQuery('_id'),
     getSingleClient,
 );
@@ -25,7 +27,7 @@ router.get('/getSingleClient',
 router.post('/',
     basicAuthUser,
     checkSession,
-    // checkPermission,
+    checkPermission('client', 'add'),
     saveClient
 );
 
@@ -33,7 +35,7 @@ router.post('/',
 router.put('/',                    
     basicAuthUser,
     checkSession,
-    // checkPermission,
+    checkPermission('client', 'edit'),
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateClient
@@ -49,6 +51,7 @@ router.put('/editClientProfileBySuperAdmin',             //Update client by supe
 router.delete('/',                
     basicAuthUser,
      checkSession,
+     checkPermission('client', 'delete'),
     checkQuery('_id'),
     deleteClient
 );
@@ -58,6 +61,7 @@ router.delete('/',
 router.put('/getFilterClient',
     basicAuthUser,
     checkSession,
+    checkPermission('client', 'view'),
     getFilteredClient,
 );
 

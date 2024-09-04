@@ -1,44 +1,49 @@
-import {Router} from 'express';
-import { getAllGeneralEnquiry,getSingleGeneralEnquiry, createGeneralEnquiry,updateGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry} from '../controller/generalEnquiry.controller';
+import { Router } from 'express';
+import { getAllGeneralEnquiry, getSingleGeneralEnquiry, createGeneralEnquiry, updateGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry } from '../controller/generalEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                          
+router.get('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('generalEnquiry', 'view'),
     getAllGeneralEnquiry
 );
 
 
 router.get('/getSingleGeneralEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('generalEnquiry', 'view'),
     checkQuery('_id'),
     getSingleGeneralEnquiry,
 );
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         createGeneralEnquiry
+router.post('/',
+    checkPermission('generalEnquiry', 'add'),
+    checkRequestBodyParams('email'),
+    createGeneralEnquiry
 );
 
-router.put('/',          
+router.put('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('generalEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateGeneralEnquiry,
- 
+
 );
 
 
-router.delete('/',               
+router.delete('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('generalEnquiry', 'delete'),
     checkQuery('_id'),
     deleteGeneralEnquiry
 );
@@ -46,7 +51,8 @@ router.delete('/',
 
 router.put('/getFilterGeneralEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('generalEnquiry', 'view'),
     getFilteredGeneralEnquiry,
 );
 

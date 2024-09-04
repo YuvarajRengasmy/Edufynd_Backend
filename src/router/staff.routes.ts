@@ -4,7 +4,7 @@ import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, get
    } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
 
 const router: Router = Router();
@@ -12,12 +12,14 @@ const router: Router = Router();
 router.get('/',              
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'view'),
     getAllStaff
 );
 
 router.get('/getSingleStaff',
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'view'),
     checkQuery('_id'),
     getSingleStaff,
 );
@@ -26,6 +28,7 @@ router.get('/getSingleStaff',
 router.post('/',           
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'add'),
     createStaff
 );
 
@@ -33,6 +36,7 @@ router.post('/',
 router.put('/',                   
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'edit'),
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateStaff
@@ -42,6 +46,7 @@ router.put('/',
 router.delete('/',                  
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'delete'),
     checkQuery('_id'),
     deleteStaff
 );
@@ -49,14 +54,16 @@ router.delete('/',
 router.post('/createStudentByStaff',             //create student by staff
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'add'),
     // checkQuery('_id'),
     createStudentByStaff
 );
 
 
 router.post('/createStaffBySuperAdmin',             //create staff by super Admin
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
+    checkPermission('staff', 'add'),
     // checkQuery('_id'),
     createStaffBySuperAdmin
 );
@@ -64,6 +71,7 @@ router.post('/createStaffBySuperAdmin',             //create staff by super Admi
 router.put('/getFilterStaffSuperAdmin',
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'view'),
     getFilteredStaff,
 );
 
@@ -74,8 +82,6 @@ router.post('/import',
 );
 
 
-// router.post('/clockIn', staffClockIn)
 
-// router.post('/clockOut', staffClockOut)
 
 export default router

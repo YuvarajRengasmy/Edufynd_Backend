@@ -1,44 +1,49 @@
-import {Router} from 'express';
-import { getAllStudentEnquiry,getSingleStudentEnquiry, createStudentEnquiry,updateStudentEnquiry, deleteStudentEnquiry,getFilteredStudentEnquiry} from '../controller/studentEnquiry.controller';
+import { Router } from 'express';
+import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry, getFilteredStudentEnquiry } from '../controller/studentEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                          
+router.get('/',
     basicAuthUser,
-      checkSession,
+    checkSession,
+    checkPermission('studentEnquiry', 'view'),
     getAllStudentEnquiry
 );
 
 
 router.get('/getSingleStudentEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('studentEnquiry', 'view'),
     checkQuery('_id'),
     getSingleStudentEnquiry,
 );
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         createStudentEnquiry
+router.post('/',
+    checkPermission('studentEnquiry', 'add'),
+    checkRequestBodyParams('email'),
+    createStudentEnquiry
 );
 
-router.put('/',            
+router.put('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('studentEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateStudentEnquiry,
- 
+
 );
 
 
-router.delete('/',              
+router.delete('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('studentEnquiry', 'delete'),
     checkQuery('_id'),
     deleteStudentEnquiry
 );
@@ -46,7 +51,8 @@ router.delete('/',
 
 router.put('/getFilterStudentEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('studentEnquiry', 'view'),
     getFilteredStudentEnquiry,
 );
 

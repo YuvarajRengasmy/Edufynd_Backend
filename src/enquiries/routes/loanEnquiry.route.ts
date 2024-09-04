@@ -1,44 +1,49 @@
-import {Router} from 'express';
-import { getAllLoanEnquiry,getSingleLoanEnquiry, createLoanEnquiry,updateLoanEnquiry, deleteLoanEnquiry,getFilteredLoanEnquiry} from '../controller/loanEnquiry.controller';
+import { Router } from 'express';
+import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry } from '../controller/loanEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                          
+router.get('/',
     basicAuthUser,
-      checkSession,
+    checkSession,
+    checkPermission('loanEnquiry', 'view'),
     getAllLoanEnquiry
 );
 
 
 router.get('/getSingleLoanEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('loanEnquiry', 'view'),
     checkQuery('_id'),
     getSingleLoanEnquiry,
 );
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         createLoanEnquiry
+router.post('/',
+    checkPermission('loanEnquiry', 'add'),
+    checkRequestBodyParams('email'),
+    createLoanEnquiry
 );
 
-router.put('/',          
+router.put('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('loanEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateLoanEnquiry,
- 
+
 );
 
 
-router.delete('/',               
+router.delete('/',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('loanEnquiry', 'delete'),
     checkQuery('_id'),
     deleteLoanEnquiry
 );
@@ -46,7 +51,8 @@ router.delete('/',
 
 router.put('/getFilterLoanEnquiry',
     basicAuthUser,
-     checkSession,
+    checkSession,
+    checkPermission('loanEnquiry', 'view'),
     getFilteredLoanEnquiry,
 );
 

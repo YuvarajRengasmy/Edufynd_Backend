@@ -114,6 +114,7 @@ export let saveStudent = async (req, res, next) => {
 
 
 export let updateStudent = async (req, res, next) => {
+    console.log("balllan")
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
@@ -221,12 +222,12 @@ export let updateStudent = async (req, res, next) => {
             // const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: updateFields }, { new: true });
             const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: update }, { new: true });
 
-            response(req, res, 'Update-Student', 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, 'Update-Student', 'Level-3', 'Update-Student', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-3', 'Update-Student', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
-        response(req, res, 'Update-Student', 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        response(req, res, activity, 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
 

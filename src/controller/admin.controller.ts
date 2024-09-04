@@ -1,5 +1,4 @@
 import { Admin, AdminDocument } from '../model/admin.model'
-import { User, UserDocument } from '../privileges/model/user.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin } from '../model/superAdmin.model'
@@ -72,9 +71,6 @@ export let createAdmin = async (req, res, next) => {
                 const adminDetails: AdminDocument = req.body;
                 adminDetails.adminCode = await generateNextAdminCode();
                 const createData = new Admin(adminDetails);
-                const userDetails:UserDocument = req.body;
-                const createUser = new User(userDetails);
-                await createUser.save();
                 let insertData = await createData.save();
             
                 const token = await TokenManager.CreateJWTToken({
@@ -110,13 +106,14 @@ export const updateAdmin = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const adminDetails: AdminDocument = req.body;
-            let statusData = await Admin.findByIdAndUpdate({ _id: req.query._id }, {
+            let statusData = await Admin.findByIdAndUpdate({ _id: req.body._id }, {
                 $set: {
                     name: adminDetails.name,
                     email: adminDetails.email,
                     dial: adminDetails.dial,
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    privileges: adminDetails.privileges, 
 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,

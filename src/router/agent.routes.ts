@@ -5,7 +5,7 @@ import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, delet
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
@@ -13,12 +13,14 @@ const router: Router = Router();
 router.get('/',                                
     basicAuthUser,
     checkSession,
+    checkPermission('agent', 'view'),
     getAllAgent
 );
 
 router.get('/getSingleAgent',
     basicAuthUser,
     checkSession,
+    checkPermission('agent', 'view'),
     checkQuery('_id'),
     getSingleAgent,
 );
@@ -27,6 +29,7 @@ router.get('/getSingleAgent',
 router.post('/',
     basicAuthUser,
     checkSession,
+    checkPermission('agent', 'add'),
     checkRequestBodyParams('email'),
     createAgent
 );
@@ -40,6 +43,7 @@ router.post('/contact',
 router.put('/',                          
     basicAuthUser,
     checkSession,
+    checkPermission('agent', 'edit'),
     checkRequestBodyParams('_id'),
     updateAgent
 );
@@ -48,6 +52,7 @@ router.put('/',
 router.delete('/',                 
     basicAuthUser,
     checkSession,
+    checkPermission('agent', 'delete'),
     checkQuery('_id'),
     deleteAgent
 );
@@ -55,6 +60,7 @@ router.delete('/',
 router.post('/createAgentBySuperAdmin',             //create agent by super Admin
     basicAuthUser,
     checkSession,
+    checkPermission('agent', 'add'),
     // checkQuery('_id'),
     createAgentBySuperAdmin
 );

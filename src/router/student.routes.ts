@@ -6,7 +6,7 @@ import { forgotPassword } from '../controller/login.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded'
 const router:Router=Router();
 
@@ -15,6 +15,7 @@ const router:Router=Router();
 router.get('/',                        
     basicAuthUser,
      checkSession,
+     checkPermission('student', 'view'),
     getAllStudent
 );
 
@@ -22,7 +23,7 @@ router.get('/',
 router.get('/getSingleStudent',
     basicAuthUser,
     checkSession,
-    
+    checkPermission('student', 'view'),
     checkQuery('_id'),
     getSingleStudent,
 );
@@ -32,6 +33,7 @@ router.get('/get',
 router.post('/', 
          checkRequestBodyParams('email'),
          checkSession,
+         checkPermission('student', 'add'),
         saveStudent
 );
 
@@ -40,7 +42,9 @@ router.post('/contact', createContact);
 
 router.put('/',             
     basicAuthUser,
+
     checkSession,
+    checkPermission('student', 'edit'),
     checkRequestBodyParams('_id'),
     upload.fields([
         { name: 'photo', maxCount: 1 },
@@ -51,14 +55,17 @@ router.put('/',
         { name: 'degree', maxCount: 10 },
         { name: 'additional', maxCount: 10 }
     ]),
+   
     updateStudent,
 );
 
 
-router.delete('/',               
+router.delete('/',   
+            
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
+    checkPermission('student', 'delete'),  
     deleteStudent
 );
 
@@ -66,6 +73,7 @@ router.delete('/',
 router.put('/getFilterStudent',
     basicAuthUser,
     checkSession,
+    checkPermission('student', 'view'),
     getFilteredStudent,
 );
 
@@ -94,6 +102,7 @@ router.put('/createStudentBySuperAdmin',
 router.put('/editStudentBySuperAdmin',         
     basicAuthUser,
     checkSession,
+    checkPermission('student', 'edit'),
     editStudentProfileBySuperAdmin
 );
 

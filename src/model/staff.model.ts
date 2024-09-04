@@ -85,7 +85,7 @@ const staffSchema = new mongoose.Schema({
     photo: { type: String },
     // role:{type:String},
     empName: { type: String },
-    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    role: { type: String},
     privileges: [privilegeSchema],
     designation: { type: String },
     jobDescription: { type: String },

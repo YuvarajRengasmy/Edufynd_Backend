@@ -2,8 +2,10 @@ import * as jwt from 'jsonwebtoken';
 import { response } from '../helper/commonResponseHandler';
 import { clientError, errorMessage } from '../helper/ErrorMessage';
 import * as config from '../config';
-
-import { Staff, StaffDocument } from '../model/staff.model'
+import { Admin } from "../model/admin.model";
+import { Student } from "../model/student.model";
+import { Agent } from "../model/agent.model";
+import { Staff } from '../model/staff.model'
 import { SuperAdmin } from "../model/superAdmin.model";
 const activity = 'token';
 
@@ -22,6 +24,9 @@ export let CreateJWTToken = (data: any = {}) => {
     let tokenData = {};
     if (data && data['name']) {
         tokenData['name'] = data['name']
+    }
+    if (data && data['empName']) {
+        tokenData['empName'] = data['empName']
     }
     if (data && data['loginType']) {
         tokenData['loginType'] = data['loginType']
@@ -104,7 +109,7 @@ export let checkSession = async (req, res, next) => {
 
 
 // Middleware to Check Permissions
-export const checkPermission = (module: string, action: keyof typeof actions) => {
+export const checkPermissiond = (module: string, action: keyof typeof actions) => {
     return async (req, res, next: any) => {
 
         const authHeader = req.headers['token'];
@@ -112,40 +117,111 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
             const parts = authHeader.split(' ');
             const headerType = parts[0];
             const tokenValue = parts[1]?.trim();
-    
+
             if (headerType === "Bearer" && tokenValue) {
                 try {
                     const tokendata = await jwt.verify(tokenValue, 'edufynd');
                     console.log('Token data:', tokendata);
 
-                           // const user = await Staff.findOne({ _id: tokendata.id });
-                const user = await SuperAdmin.findOne({ _id: tokendata.id });
-                console.log("User found:", user);
+                    let user: any;
 
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
+                    user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
+                        await Admin.findOne({ _id: tokendata.id }) ||
+                        await Student.findOne({ _id: tokendata.id }) ||
+                        await Agent.findOne({ _id: tokendata.id }) ||
+                        await Staff.findOne({ _id: tokendata.id });
+                    console.log("User found:", user);
+
+                    if (!user) {
+                        return res.status(404).json({ message: 'User not found' });
+                    }
+
+                    // If the user is a SuperAdmin, directly call next()
+                    if (user.role === "superAdmin") {
+                        return next();
+                    }
+
+                    const privilege = user.privileges.find((p) => p.module === module);
+                    console.log(`Checking ${action} permission for module ${module}:`, privilege);
+
+                    if (!privilege) {
+                        return res.status(403).json({ message: `Access denied: No privileges found for module ${module}` });
+                    }
+
+                    // Check if the specific action (add/edit/view/delete) is allowed
+                    if (!privilege[actions[action]]) {
+                        console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
+                        return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
+                    }
+                    next();
+                } catch (error) {
+                    console.error('Error checking permissions:', error);
+                    res.status(500).json({ message: 'Internal server error', error });
+                }
+            };
+        }
+    }
+}
+
+
+export const checkPermission = (module: string, action: keyof typeof actions) => {
+    return async (req, res, next) => {
+        const authHeader = req.headers['token'];
+
+        if (authHeader) {
+            const [headerType, tokenValue] = authHeader.split(' ');
+
+            if (headerType === "Bearer" && tokenValue?.trim()) {
+                try {
+                    const tokendata = await jwt.verify(tokenValue.trim(), 'edufynd');
+                    console.log('Token data to check permission:', tokendata);
+
+                    // Find the user from any of the models
+                    const user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
+                        await Admin.findOne({ _id: tokendata.id }) ||
+                        await Student.findOne({ _id: tokendata.id }) ||
+                        await Agent.findOne({ _id: tokendata.id }) ||
+                        await Staff.findOne({ _id: tokendata.id });
+
+                    // console.log("User found:", user);
+
+                    if (!user) {
+                        return res.status(404).json({ message: 'User not found' });
+                    }
+
+                    // If the user is a SuperAdmin, directly call next()
+                    if (user.role === "superAdmin") {
+                        return next();
+                    }
+
+                    // For non-SuperAdmin users, check privileges
+                    const privilege = user.privileges.find((p) => p.module === module);
+                    console.log(`Checking ${action} permission for module ${module}:`, privilege);
+
+                    if (!privilege) {
+                        return res.status(403).json({ message: `Access denied: No privileges found for module ${module}` });
+                    }
+
+                    // Check if the specific action (add/edit/view/delete) is allowed
+                    if (!privilege[actions[action]]) {
+                        console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
+                        return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
+                    }
+
+                    next();
+                } catch (error) {
+                    console.error('Error checking permissions:', error);
+                    return res.status(500).json({ message: 'Internal server error', error });
+                }
+            } else {
+                return res.status(401).json({ message: 'Invalid or missing authorization header' });
             }
-
-            const privilege = user.privileges.find((p) => p.module === module);
-            console.log(`Checking ${action} permission for module ${module}:`, privilege);
-
-            if (!privilege) {
-                return res.status(403).json({ message: `Access denied: No privileges found for module ${module}` });
-            }
-
-            // Check if the specific action (add/edit/view/delete) is allowed
-            if (!privilege[actions[action]]) {
-                console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
-                return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
-            }
-            next();
-
-        } catch (error) {
-            console.error('Error checking permissions:', error);
-            res.status(500).json({ message: 'Internal server error', error });
+        } else {
+            return res.status(401).json({ message: 'Authorization header not provided' });
         }
     };
-}}}
+};
+
 
 
 const actions = {
@@ -162,7 +238,7 @@ const actions = {
 export const assignPermissions = async (req, res) => {
     try {
         const { userId, privileges } = req.body; // Expect privileges as an array
-        const user = await SuperAdmin.findOne({userId});
+        const user = await SuperAdmin.findOne({ userId });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
