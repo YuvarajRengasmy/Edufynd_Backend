@@ -20,9 +20,6 @@ const activity = 'token';
 
 
 export let CreateJWTToken = (data: any = {}) => {
-
-    console.log("ddd", data)
-
     let tokenData = {};
     if (data && data['name']) {
         tokenData['name'] = data['name']

@@ -113,7 +113,7 @@ export let saveStudent = async (req, res, next) => {
 }
 
 
-export let updateStudent = async (req, res, next) => {
+export let updateStudentt = async (req, res, next) => {
     console.log("balllan")
     const errors = validationResult(req);
 
@@ -567,3 +567,115 @@ export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
     }
 };
 
+
+///
+export let updateStudent = async (req, res, next) => {
+   
+    const errors = validationResult(req);
+
+    if (errors.isEmpty()) {
+        try {
+            const studentDetails: StudentDocument = req.body;
+
+            // Handling file uploads
+            if (req.files && req.files['photo']) {
+                studentDetails.photo = `${req.protocol}://${req.get('host')}/uploads/${req.files['photo'][0].filename}`;
+            }
+            if (req.files && req.files['resume']) {
+                studentDetails.resume = `${req.protocol}://${req.get('host')}/uploads/${req.files['resume'][0].filename}`;
+            }
+            if (req.files && req.files['passport']) {
+                studentDetails.passport = `${req.protocol}://${req.get('host')}/uploads/${req.files['passport'][0].filename}`;
+            }
+            if (req.files && req.files['sslc']) {
+                studentDetails.sslc = `${req.protocol}://${req.get('host')}/uploads/${req.files['sslc'][0].filename}`;
+            }
+            if (req.files && req.files['hsc']) {
+                studentDetails.hsc = `${req.protocol}://${req.get('host')}/uploads/${req.files['hsc'][0].filename}`;
+            }
+            if (req.files && req.files['degree']) {
+                studentDetails.degree = req.files['degree'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+            }
+            if (req.files && req.files['additional']) {
+                studentDetails.additional = req.files['additional'].map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+            }
+
+            const updateFields = {
+                name: studentDetails.name,
+                passportNo: studentDetails.passportNo,
+                expiryDate: studentDetails.expiryDate,
+                dob: studentDetails.dob,
+                citizenship: studentDetails.citizenship,
+                gender: studentDetails.gender,
+                whatsAppNumber: studentDetails.whatsAppNumber,
+                primaryNumber: studentDetails.primaryNumber,
+                degreeName: studentDetails.degreeName,
+                academicYear: studentDetails.academicYear,
+                institution: studentDetails.institution,
+                percentage: studentDetails.percentage,
+                doHaveAnyEnglishLanguageTest: studentDetails.doHaveAnyEnglishLanguageTest,
+                englishTestType: studentDetails.englishTestType,
+                testScore: studentDetails.testScore,
+                dateOfTest: studentDetails.dateOfTest,
+                desiredCountry: studentDetails.desiredCountry,
+                desiredUniversity: studentDetails.desiredUniversity,
+                desiredCourse: studentDetails.desiredCourse,
+                workExperience: studentDetails.workExperience,
+                anyVisaRejections: studentDetails.anyVisaRejections,
+                visaReason: studentDetails.visaReason,
+                doYouHaveTravelHistory: studentDetails.doYouHaveTravelHistory,
+                travelReason: studentDetails.travelReason,
+                finance: studentDetails.finance,
+                twitter: studentDetails.twitter,
+                facebook: studentDetails.facebook,
+                instagram: studentDetails.instagram,
+                linkedIn: studentDetails.linkedIn,
+                photo: studentDetails.photo,
+                resume: studentDetails.resume,
+                passport: studentDetails.passport,
+                sslc: studentDetails.sslc,
+                hsc: studentDetails.hsc,
+                degree: studentDetails.degree,
+                additional: studentDetails.additional,
+                privileges: studentDetails.privileges,
+
+                duration: studentDetails.duration,
+                lastEmployeer: studentDetails.lastEmployeer,
+                lastDesignation: studentDetails.lastDesignation,
+                date: studentDetails.date,
+                purpose: studentDetails.purpose,
+                countryName: studentDetails.countryName,
+                dateVisa: studentDetails.dateVisa,
+                purposeVisa: studentDetails.purposeVisa,
+                countryNameVisa: studentDetails.countryNameVisa,
+                dial1: studentDetails.dial1,
+                dial2: studentDetails.dial2,
+                dial3: studentDetails.dial3,
+                dial4: studentDetails.dial4,
+
+                modifiedOn: new Date(),
+                modifiedBy: studentDetails.modifiedBy,
+            }
+
+        
+
+            // Conditionally add file fields to updateFields
+            if (studentDetails.photo) updateFields.photo = studentDetails.photo;
+            if (studentDetails.resume) updateFields.resume = studentDetails.resume;
+            if (studentDetails.passport) updateFields.passport = studentDetails.passport;
+            if (studentDetails.sslc) updateFields.sslc = studentDetails.sslc;
+            if (studentDetails.hsc) updateFields.hsc = studentDetails.hsc;
+            if (studentDetails.degree) updateFields.degree = studentDetails.degree;
+            if (studentDetails.additional) updateFields.additional = studentDetails.additional;
+
+            const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: updateFields }, { new: true });
+            // const updateData = await Student.findOneAndUpdate({ _id: req.body._id }, { $set: update }, { new: true });
+
+            response(req, res, activity, 'Level-2', 'Update-Student', true, 200, updateData, clientError.success.updateSuccess);
+        } catch (err: any) {
+            response(req, res, activity, 'Level-3', 'Update-Student', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
