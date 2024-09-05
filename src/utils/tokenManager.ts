@@ -20,13 +20,12 @@ const activity = 'token';
 
 
 export let CreateJWTToken = (data: any = {}) => {
-
     let tokenData = {};
     if (data && data['name']) {
         tokenData['name'] = data['name']
     }
-    if (data && data['empName']) {
-        tokenData['empName'] = data['empName']
+    if (data && data['name']) {
+        tokenData['empName'] = data['name']
     }
     if (data && data['loginType']) {
         tokenData['loginType'] = data['loginType']
@@ -70,7 +69,7 @@ export let checkSession = async (req, res, next) => {
                 req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;
                 req.body.loginUserName = tokendata.userName
-                req.body.name = tokendata.empName
+                req.body.empName = tokendata.empName
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
                 req.body.modifiedBy = tokendata.loginType;
@@ -106,62 +105,6 @@ export let checkSession = async (req, res, next) => {
 };
 
 
-
-
-// Middleware to Check Permissions
-export const checkPermissiond = (module: string, action: keyof typeof actions) => {
-    return async (req, res, next: any) => {
-
-        const authHeader = req.headers['token'];
-        if (authHeader) {
-            const parts = authHeader.split(' ');
-            const headerType = parts[0];
-            const tokenValue = parts[1]?.trim();
-
-            if (headerType === "Bearer" && tokenValue) {
-                try {
-                    const tokendata = await jwt.verify(tokenValue, 'edufynd');
-                    console.log('Token data:', tokendata);
-
-                    let user: any;
-
-                    user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
-                        await Admin.findOne({ _id: tokendata.id }) ||
-                        await Student.findOne({ _id: tokendata.id }) ||
-                        await Agent.findOne({ _id: tokendata.id }) ||
-                        await Staff.findOne({ _id: tokendata.id });
-                    console.log("User found:", user);
-
-                    if (!user) {
-                        return res.status(404).json({ message: 'User not found' });
-                    }
-
-                    // If the user is a SuperAdmin, directly call next()
-                    if (user.role === "superAdmin") {
-                        return next();
-                    }
-
-                    const privilege = user.privileges.find((p) => p.module === module);
-                    console.log(`Checking ${action} permission for module ${module}:`, privilege);
-
-                    if (!privilege) {
-                        return res.status(403).json({ message: `Access denied: No privileges found for module ${module}` });
-                    }
-
-                    // Check if the specific action (add/edit/view/delete) is allowed
-                    if (!privilege[actions[action]]) {
-                        console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
-                        return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
-                    }
-                    next();
-                } catch (error) {
-                    console.error('Error checking permissions:', error);
-                    res.status(500).json({ message: 'Internal server error', error });
-                }
-            };
-        }
-    }
-}
 
 
 export const checkPermission = (module: string, action: keyof typeof actions) => {

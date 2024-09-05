@@ -34,7 +34,7 @@ export let loginEmail = async (req, res, next) => {
             const superAdmin = await SuperAdmin.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
             const admin = await Admin.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
             const agent = await Agent.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
-            const staff = await Staff.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, name: 1, status: 1 })
+            const staff = await Staff.findOne({ $and: [{ email: email }, { isDeleted: false }] }, { email: 1, password: 1, empName: 1, status: 1 })
 
             if (student) {
                 const newHash = await decrypt(student["password"]);
@@ -132,7 +132,7 @@ export let loginEmail = async (req, res, next) => {
                 } else {
                     const token = await TokenManager.CreateJWTToken({
                         id: staff["_id"],
-                        empName: staff["empName"],
+                        name: staff["empName"],
                         loginType: 'staff'
                     });
                  

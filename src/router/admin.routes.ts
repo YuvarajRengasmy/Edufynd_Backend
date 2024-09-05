@@ -1,15 +1,17 @@
-import {Router} from 'express';
-import { getAllAdmin,getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin, deleteAdmin, 
-    createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin,editStudentProfileByAdmin,
+import { Router } from 'express';
+import {
+    getAllAdmin, getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin, deleteAdmin,
+    createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin, editStudentProfileByAdmin,
     editStaffProfileByAdmin,
-    updateAdmin} from '../controller/admin.controller';
+    updateAdmin
+} from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
-const router:Router=Router();
+const router: Router = Router();
 
 
-router.get('/',                     
+router.get('/',
     basicAuthUser,
     checkSession,
     checkPermission('admin', 'view'),
@@ -20,19 +22,20 @@ router.get('/',
 router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
+    checkPermission('admin', 'view'),
     checkQuery('_id'),
     getSingleAdmin,
 );
 
-router.post('/', 
-         checkRequestBodyParams('email'),
-         checkSession,
-         checkPermission('admin', 'add'),
-         createAdmin
+router.post('/',
+    checkSession,
+    checkPermission('admin', 'add'),
+    checkRequestBodyParams('email'),
+    createAdmin
 );
 
 
-router.put('/',                          
+router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('admin', 'edit'),
@@ -41,7 +44,7 @@ router.put('/',
 );
 
 
-router.delete('/',                  
+router.delete('/',
     basicAuthUser,
     checkSession,
     checkPermission('admin', 'delete'),
