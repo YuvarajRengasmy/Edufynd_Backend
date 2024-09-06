@@ -140,6 +140,15 @@ export let getFilteredClient = async (req, res, next) => {
         if (req.body.businessName) {
             andList.push({ businessName: req.body.businessName })
         }
+        if (req.body.businessContactNo) {
+            andList.push({ businessContactNo: req.body.businessContactNo })
+        }
+        if (req.body.emailID) {
+            andList.push({ emailID: req.body.emailID })
+        }
+        if (req.body.clientID) {
+            andList.push({ clientID: req.body.clientID })
+        }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
         const clientList = await Client.find(findQuery).sort({clientID: -1}).limit(limit).skip(page)

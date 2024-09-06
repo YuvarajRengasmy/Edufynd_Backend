@@ -42,7 +42,6 @@ router.post('/contact', createContact);
 
 router.put('/',             
     basicAuthUser,
-
     checkSession,
     checkPermission('student', 'edit'),
     checkRequestBodyParams('_id'),
