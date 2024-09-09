@@ -1,0 +1,12 @@
+[
+    {
+        "userName": "edufynd",
+        "mobile": 90000000000,
+        "password": "U2FsdGVkX18cjIsBqhRP6KMZSlI5Iq3GpGtGF0/yrr8=",
+        "email": "saravana@gmail.com",
+        "role": "ADMIN",
+        "imageUrl": "https://upturnhrmanagement.s3.ap-south-1.amazonaws.com/employee/men.png",
+        "status": 1,
+        "isDeleted": false
+    }
+]
