@@ -69,7 +69,7 @@ export let checkSession = async (req, res, next) => {
                 req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;
                 req.body.loginUserName = tokendata.userName
-                req.body.empName = tokendata.empName
+                // req.body.empName = tokendata.empName
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
                 req.body.modifiedBy = tokendata.loginType;
