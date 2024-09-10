@@ -18,14 +18,15 @@ router.get('/',
     getAllAdmin
 );
 
-
 router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
+    //  checkPermission('admin', 'view'),
     checkQuery('_id'),
     getSingleAdmin,
 );
+
+
 
 router.post('/',
     checkSession,
