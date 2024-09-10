@@ -11,7 +11,7 @@ const router:Router=Router();
 router.get('/',                          
     basicAuthUser,
       checkSession,
-      checkPermission('accommodation', 'view'),
+      checkPermission('accommodationEnquiry', 'view'),
     getAllAccommodation
 );
 
@@ -19,13 +19,13 @@ router.get('/',
 router.get('/getSingleAccommodation',
     basicAuthUser,
      checkSession,
-     checkPermission('accommodation', 'view'),
+     checkPermission('accommodationEnquiry', 'view'),
     checkQuery('_id'),
     getSingleAccommodation,
 );
 
 router.post('/', 
-    checkPermission('accommodation', 'add'),
+    checkPermission('accommodationEnquiry', 'add'),
          checkRequestBodyParams('email'),
          createAccommodation
 );
@@ -33,7 +33,7 @@ router.post('/',
 router.put('/',             
     basicAuthUser,
      checkSession,
-     checkPermission('accommodation', 'edit'),
+     checkPermission('accommodationEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateAccommodation,
  
@@ -43,7 +43,7 @@ router.put('/',
 router.delete('/',                
     basicAuthUser,
      checkSession,
-     checkPermission('accommodation', 'delete'),
+     checkPermission('accommodationEnquiry', 'delete'),
     checkQuery('_id'),
     deleteAccommodationEnquiry
 );
@@ -52,7 +52,7 @@ router.delete('/',
 router.put('/getFilterAccommodation',
     basicAuthUser,
      checkSession,
-     checkPermission('accommodation', 'view'),
+     checkPermission('accommodationEnquiry', 'view'),
     getFilteredAccommodation,
 );
 
