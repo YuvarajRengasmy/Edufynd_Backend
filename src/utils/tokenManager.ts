@@ -24,9 +24,9 @@ export let CreateJWTToken = (data: any = {}) => {
     if (data && data['name']) {
         tokenData['name'] = data['name']
     }
-    if (data && data['name']) {
-        tokenData['empName'] = data['name']
-    }
+    // if (data && data['name']) {
+    //     tokenData['empName'] = data['name']
+    // }
     if (data && data['loginType']) {
         tokenData['loginType'] = data['loginType']
     }
@@ -64,12 +64,12 @@ export let checkSession = async (req, res, next) => {
         if (headerType === "Bearer" && tokenValue) {
             try {
                 const tokendata = await jwt.verify(tokenValue, 'edufynd');
-                console.log('Token data:', tokendata);
+                // console.log('Token data:', tokendata);
 
                 req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;
                 req.body.loginUserName = tokendata.userName
-                req.body.empName = tokendata.empName
+                // req.body.empName = tokendata.empName
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
                 req.body.modifiedBy = tokendata.loginType;
@@ -121,8 +121,8 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // Find the user from any of the models
                     const user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
+                    await Student.findOne({ _id: tokendata.id }) ||
                         await Admin.findOne({ _id: tokendata.id }) ||
-                        await Student.findOne({ _id: tokendata.id }) ||
                         await Agent.findOne({ _id: tokendata.id }) ||
                         await Staff.findOne({ _id: tokendata.id });
 
@@ -139,6 +139,7 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // For non-SuperAdmin users, check privileges
                     const privilege = user.privileges.find((p) => p.module === module);
+                    console.log("jjj", privilege)
                     console.log(`Checking ${action} permission for module ${module}:`, privilege);
 
                     if (!privilege) {
