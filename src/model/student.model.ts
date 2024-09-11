@@ -3,6 +3,8 @@ import * as mongoose from 'mongoose'
 export interface StudentDocument extends mongoose.Document {
     _id?: any;
     studentCode?: string;
+    adminId?: any;
+    superAdminId?: any;
     source?: string;
     name?: string;
     citizenship?: string;
@@ -83,6 +85,8 @@ const privilegeSchema = new mongoose.Schema({
 
 const studentSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    adminId: { type: mongoose.Types.ObjectId,ref:'Admin'},
+    superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     studentCode: { type: String },
     source: { type: String },
     name: { type: String },

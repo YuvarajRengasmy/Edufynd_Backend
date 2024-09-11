@@ -1,8 +1,10 @@
 import * as mongoose from 'mongoose'
+import { getSingleSuperAdmin } from 'src/controller/superAdmin.controller';
 
 
 export interface AdminDocument extends mongoose.Document{
     _id?: any;
+    superAdminId?:any;
     name?: string;
     adminCode?: string;
     email?: string;
@@ -37,6 +39,7 @@ const privilegeSchema = new mongoose.Schema({
 
 const adminSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     name: {type: String},
     adminCode: {type: String},
     email: { type: String},

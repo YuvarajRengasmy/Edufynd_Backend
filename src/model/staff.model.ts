@@ -1,13 +1,14 @@
 import * as mongoose from 'mongoose'
 
 
+
 export interface StaffDocument extends mongoose.Document {
     _id?: any;
     employeeID?: string;
     empName?: string;
     role?: string;
     dob?: String;
-   
+     adminId?: any;
     designation?: string;
     doj?: String;
     reportingManager?: string;
@@ -20,7 +21,13 @@ export interface StaffDocument extends mongoose.Document {
     emergencyContactNo?: number;
     address?: string;
     idCard?: boolean;
-    privileges?: string;
+    privileges?: {
+        module: string;
+        add: boolean;
+        edit: boolean;
+        view: boolean;
+        delete: boolean;
+    }[];
     description?: string;
     // Extra Fields  
     photo?: string;
@@ -81,12 +88,13 @@ const privilegeSchema = new mongoose.Schema({
 
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    adminId: { type: mongoose.Types.ObjectId, ref:"Admin" },
     employeeID: { type: String },
     photo: { type: String },
     // role:{type:String},
     empName: { type: String },
     role: { type: String},
-    privileges: [privilegeSchema],
+    privileges: { type: [privilegeSchema], default: [] },
     designation: { type: String },
     jobDescription: { type: String },
     reportingManager: { type: String },
@@ -110,7 +118,7 @@ const staffSchema = new mongoose.Schema({
     password: { type: String },
     confirmPassword: { type: String },
     isDeleted: { type: Boolean, default: false },
-    // privileges: { type: String },
+  
     // Newly added fields
     gender: { type: String },
     team: { type: String },

@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose'
 export interface AgentDocument extends mongoose.Document {
   _id?: any;
   source?: string;
+  adminId?: any;
   studentId?: any;
   agentCode?: string;
   agentName?: string;
@@ -73,6 +74,7 @@ const privilegeSchema = new mongoose.Schema({
 
 const agentSchema = new mongoose.Schema({
   _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+  adminId: { type: mongoose.Types.ObjectId, ref:"Admin" },
   agentCode: { type: String },
   source: { type: String },
   studentId: { type: mongoose.Types.ObjectId, ref: 'Student' },

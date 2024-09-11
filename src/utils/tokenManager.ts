@@ -64,7 +64,7 @@ export let checkSession = async (req, res, next) => {
         if (headerType === "Bearer" && tokenValue) {
             try {
                 const tokendata = await jwt.verify(tokenValue, 'edufynd');
-                console.log('Token data:', tokendata);
+                // console.log('Token data:', tokendata);
 
                 req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;
@@ -121,8 +121,8 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // Find the user from any of the models
                     const user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
+                    await Student.findOne({ _id: tokendata.id }) ||
                         await Admin.findOne({ _id: tokendata.id }) ||
-                        await Student.findOne({ _id: tokendata.id }) ||
                         await Agent.findOne({ _id: tokendata.id }) ||
                         await Staff.findOne({ _id: tokendata.id });
 
