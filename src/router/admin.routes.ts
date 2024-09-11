@@ -14,7 +14,7 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
+    // checkPermission('admin', 'view'),
     getAllAdmin
 );
 
@@ -22,14 +22,14 @@ router.get('/',
 router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
+    // checkPermission('admin', 'view'),
     checkQuery('_id'),
     getSingleAdmin,
 );
 
 router.post('/',
     checkSession,
-    checkPermission('admin', 'add'),
+    // checkPermission('admin', 'add'),
     checkRequestBodyParams('email'),
     createAdmin
 );
@@ -38,7 +38,7 @@ router.post('/',
 router.put('/',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'edit'),
+    // checkPermission('admin', 'edit'),
     // checkRequestBodyParams('_id'),
     updateAdmin
 );
@@ -47,7 +47,7 @@ router.put('/',
 router.delete('/',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'delete'),
+    // checkPermission('admin', 'delete'),
     checkQuery('_id'),
     deleteAdmin
 );
@@ -56,7 +56,7 @@ router.delete('/',
 router.put('/getFilterAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
+    // checkPermission('admin', 'view'),
     getFilteredAdmin,
 );
 
@@ -65,8 +65,8 @@ router.put('/getFilterAdmin',
 router.post('/createAdminBySuperAdmin',             //create admin by super Admin
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'add'),
-    // checkQuery('_id'),
+    // checkPermission('admin', 'add'),
+ 
     createAdminBySuperAdmin
 );
 
@@ -74,7 +74,7 @@ router.post('/createAdminBySuperAdmin',             //create admin by super Admi
 router.put('/editAdminBySuperAdmin',             //Update admin by super Admin
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'edit'),
+    // checkPermission('admin', 'edit'),
     editAdminProfileBySuperAdmin
 );
 

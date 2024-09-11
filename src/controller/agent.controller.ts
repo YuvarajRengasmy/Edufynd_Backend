@@ -178,6 +178,45 @@ export let deleteAgent = async (req, res, next) => {
     }
 };
 
+export let getFilteredAgent = async (req, res, next) => {
+    try {
+        var findQuery;
+        var andList: any = []
+        var limit = req.body.limit ? req.body.limit : 0;
+        var page = req.body.page ? req.body.page : 0;
+        andList.push({ isDeleted: false })
+        andList.push({ status: 1 })
+
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
+        }
+        if (req.body.agentName) {
+            andList.push({ agentName: req.body.agentName })
+        }
+        if (req.body.businessName) {
+            andList.push({ businessName: req.body.businessName })
+        }
+        if (req.body.email) {
+            andList.push({ email: req.body.email })
+        }
+        if (req.body.mobileNumber) {
+            andList.push({ studentId: req.body.mobileNumber })
+        }
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body.studentId })
+        }
+
+        findQuery = (andList.length > 0) ? { $and: andList } : {}
+
+        const agentList = await Agent.find(findQuery).sort({ agentCode: -1 }).limit(limit).skip(page)
+
+        const agentCount = await Agent.find(findQuery).count()
+        response(req, res, activity, 'Level-1', 'Get-Filter-Agent', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'Get-Filter-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
 
 
 export let createAgentBySuperAdmin = async (req, res, next) => {
@@ -393,6 +432,11 @@ export let deleteStudentByAgent = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Delete-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+
 
 
 export let getFilteredStudentByAgent = async (req, res, next) => {
