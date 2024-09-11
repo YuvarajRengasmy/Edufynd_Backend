@@ -39,15 +39,6 @@ export let getSingleStudent = async (req, res, next) => {
 }
 
 
-export let getNotification = async (req, res, next) => {
-    try {
-        const data = await Student.find({ notificationId: { $exists: true, $ne: [] } }).populate('notificationId', { typeOfUser: 1, subject: 1, content: 1 });
-        response(req, res, 'activity', 'Level-1', 'GetAll-Student', true, 200, data, clientError.success.fetchedSuccessfully);
-    } catch (err) {
-        response(req, res, 'activity', 'Level-3', 'GetAll-Student', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
 
 
 const generateNextStudentCode = async (currentMaxCounter): Promise<string> => {
@@ -114,7 +105,7 @@ export let saveStudent = async (req, res, next) => {
 
 
 export let updateStudentt = async (req, res, next) => {
-    console.log("balllan")
+    
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {

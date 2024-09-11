@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
     createStudentBySuperAdmin,getFilteredStudent,editStudentProfileBySuperAdmin,
-    getNotification} from '../controller/student.controller';
+   } from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact} from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
@@ -27,9 +27,8 @@ router.get('/getSingleStudent',
     checkQuery('_id'),
     getSingleStudent,
 );
-router.get('/get', 
-    getNotification
-)
+
+
 router.post('/', 
          checkRequestBodyParams('email'),
          checkSession,

@@ -36,7 +36,6 @@ router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('client', 'edit'),
-    // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateClient
 );

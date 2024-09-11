@@ -43,8 +43,7 @@ router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('application', 'edit'),
-    //   checkQuery('_id'),
-     checkRequestBodyParams('_id'),
+    checkRequestBodyParams('_id'),
     updateApplicant
 );
 
