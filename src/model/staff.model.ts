@@ -7,7 +7,7 @@ export interface StaffDocument extends mongoose.Document {
     empName?: string;
     role?: string;
     dob?: String;
-   
+     adminId?: any;
     designation?: string;
     doj?: String;
     reportingManager?: string;
@@ -81,6 +81,7 @@ const privilegeSchema = new mongoose.Schema({
 
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    adminId: { type: mongoose.Types.ObjectId, ref:"Admin" },
     employeeID: { type: String },
     photo: { type: String },
     // role:{type:String},

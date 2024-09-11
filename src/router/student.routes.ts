@@ -94,7 +94,7 @@ router.put('/createStudentBySuperAdmin',
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
-  
+  checkPermission('student', 'edit'),
     createStudentBySuperAdmin
 );
 
