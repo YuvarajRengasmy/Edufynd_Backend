@@ -365,12 +365,18 @@ export let getFilteredApplication = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
         if (req.body.universityId) {
             andList.push({ universityId: req.body.universityId })
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId })
+        }
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId })
         }
         if (req.body.feesPaid) {
             andList.push({ feesPaid: req.body.feesPaid })
@@ -381,7 +387,7 @@ export let getFilteredApplication = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const applicantList = await Applicant.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page)
+        const applicantList = await Applicant.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page).populate("adminId")
 
         const applicantCount = await Applicant.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterApplicant', true, 200, { applicantList, applicantCount }, clientError.success.fetchedSuccessfully);
