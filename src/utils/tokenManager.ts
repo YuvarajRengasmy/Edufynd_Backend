@@ -24,9 +24,9 @@ export let CreateJWTToken = (data: any = {}) => {
     if (data && data['name']) {
         tokenData['name'] = data['name']
     }
-    if (data && data['name']) {
-        tokenData['empName'] = data['name']
-    }
+    // if (data && data['name']) {
+    //     tokenData['empName'] = data['name']
+    // }
     if (data && data['loginType']) {
         tokenData['loginType'] = data['loginType']
     }
@@ -139,6 +139,7 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // For non-SuperAdmin users, check privileges
                     const privilege = user.privileges.find((p) => p.module === module);
+                    console.log("jjj", privilege)
                     console.log(`Checking ${action} permission for module ${module}:`, privilege);
 
                     if (!privilege) {

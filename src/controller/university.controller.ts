@@ -30,9 +30,7 @@ export let getSingleUniversity = async (req, res, next) => {
 
 
 const generateNextUniversityCode = async (currentMaxCounter): Promise<string> => {
-    console.log("rrr", currentMaxCounter)
     const newCounter = currentMaxCounter + 1;
-    console.log("ddd", newCounter)
     const formattedCounter = String(newCounter).padStart(3, '0');
     return `UN_${formattedCounter}`;
 };
@@ -341,12 +339,10 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
-        console.log("start nnnn")
         const csvData = await csv().fromFile(req.file.path);
         const univesity = await University.find({}, 'universityCode').exec();
         const maxCounter = univesity.reduce((max, app) => {
             const appCode = app.universityCode;
-            console.log("kkk", appCode)
             const parts = appCode.split('_')
             if (parts.length === 2) {
                 const counter = parseInt(parts[1], 10)
@@ -356,8 +352,6 @@ export const csvToJson = async (req, res) => {
         }, 100);
 
         let currentMaxCounter = maxCounter;
-
-        console.log("ppp", currentMaxCounter)
 
         const universityList = [];
         for (const data of csvData) {
@@ -378,8 +372,7 @@ export const csvToJson = async (req, res) => {
                 }));
             });
         for (const data of csvData) {
-            const universityCode = await  generateNextUniversityCode(currentMaxCounter)
-            currentMaxCounter++; 
+         
             universityList.push({
                 universityCode: universityCode,
                 universityName: data.UniversityName,
