@@ -345,7 +345,7 @@ export const csvToJson = async (req, res) => {
             const appCode = app.universityCode;
             const parts = appCode.split('_')
             if (parts.length === 2) {
-                const counter = parseInt(parts[1], 10)
+                const counter = parseInt(parts[1], 10);
                 return counter > max ? counter : max;
             }
             return max;
@@ -355,9 +355,6 @@ export const csvToJson = async (req, res) => {
 
         const universityList = [];
         for (const data of csvData) {
-            const universityCode = await generateNextUniversityCode(currentMaxCounter);
-            currentMaxCounter++;
-
             // Parse the State and City fields as arrays from strings like "[TamilNadu],[Karnataka]"
             const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
             const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
@@ -371,8 +368,11 @@ export const csvToJson = async (req, res) => {
                     _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
                 }));
             });
-        for (const data of csvData) {
-         
+
+            // Generate university code and create university data object
+            const universityCode = await generateNextUniversityCode(currentMaxCounter);
+            currentMaxCounter++;
+
             universityList.push({
                 universityCode: universityCode,
                 universityName: data.UniversityName,
@@ -402,17 +402,17 @@ export const csvToJson = async (req, res) => {
                 currency: data.Currency,
                 paymentTAT: data.PaymentTAT,
                 tax: data.Tax,
-                inTake:  data.InTake ? data.InTake.split(',') : [],
+                inTake: data.InTake ? data.InTake.split(',') : [],
                 website: data.Website,
                 commissionPaidOn: data.CommissionPaidOn,
                 about: data.About,
                 typeOfClient: data.TypeOfClient
-
-            })
+            });
         }
+
         await University.insertMany(universityList);
-        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Store Into Database');
-    } }catch (err) {
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Stored Into Database');
+    } catch (err) {
         console.error(err);
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
