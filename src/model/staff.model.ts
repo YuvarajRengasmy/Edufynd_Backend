@@ -21,7 +21,13 @@ export interface StaffDocument extends mongoose.Document {
     emergencyContactNo?: number;
     address?: string;
     idCard?: boolean;
-    privileges?: any[]
+    privileges?: {
+        module: string;
+        add: boolean;
+        edit: boolean;
+        view: boolean;
+        delete: boolean;
+    }[];
     description?: string;
     // Extra Fields  
     photo?: string;
