@@ -252,12 +252,18 @@ export let getFilteredStudent = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.studentCode) {
             andList.push({ studentCode: req.body.studentCode })
         }
         if (req.body.name) {
             andList.push({ name: req.body.name })
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId })
+        }
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId })
         }
         if (req.body.passportNo) {
             andList.push({ passportNo: req.body.passportNo })
@@ -271,7 +277,7 @@ export let getFilteredStudent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await Student.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page)
+        const studentList = await Student.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page).populate('adminId').populate('staffId');
 
         const studentCount = await Student.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStudent', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
