@@ -75,6 +75,7 @@ router.post('/createAgentBySuperAdmin',             //create agent by super Admi
 router.put('/getFilterStudentByAgent',
     basicAuthUser,
      checkSession,
+     checkPermission('agent', 'view'),
     getFilteredStudentByAgent,
 );
 
