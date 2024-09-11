@@ -85,7 +85,7 @@ router.post('/createStudentByAdmin',             //create student by Admin
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
-    checkPermission('admin', 'add'),
+    // checkPermission('admin', 'add'),
     createStudentByAdmin
 );
 
