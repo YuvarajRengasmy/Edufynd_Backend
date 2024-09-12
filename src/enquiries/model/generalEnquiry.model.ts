@@ -35,7 +35,8 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
      agentPrimaryNumber?: string;
      dial4?: string;
      agentWhatsAppNumber?: string;
- 
+     adminId?: any;
+     staffId?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -44,6 +45,8 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
 
 
 const generalEnquirySchema = new mongoose.Schema({
+    adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     studentId: {type: String},
     country: {type: String},
     universityName: {type: String},

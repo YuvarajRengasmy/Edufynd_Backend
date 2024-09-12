@@ -145,7 +145,14 @@ export let getFilteredForexEnquiry = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
+
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId });
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId });
+        }
         if (req.body.universityName) {
             andList.push({ universityName: req.body.universityName })
         }
@@ -164,7 +171,7 @@ export let getFilteredForexEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const forexList = await Forex.find(findQuery).sort({ forexID: -1 }).limit(limit).skip(page)
+        const forexList = await Forex.find(findQuery).sort({ forexID: -1 }).limit(limit).skip(page).populate('staffId').populate('adminId').populate('studentId')
 
         const forexCount = await Forex.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Forex Enquiry', true, 200, { forexList, forexCount }, clientError.success.fetchedSuccessfully);

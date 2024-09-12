@@ -122,6 +122,13 @@ export let getFilteredBusinessEnquiry = async (req, res, next) => {
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
        
+
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId });
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId });
+        }
         if (req.body.name) {
             andList.push({ name: req.body.name })
         }
@@ -135,7 +142,7 @@ export let getFilteredBusinessEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const businessEnquiryList = await BusinessEnquiry.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
+        const businessEnquiryList = await BusinessEnquiry.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page).populate({ path: 'adminId', select: 'name' }).populate({ path: 'staffId', select: 'name' })
 
         const businessEnquiryCount = await BusinessEnquiry.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Business Enquiry', true, 200, { businessEnquiryList, businessEnquiryCount }, clientError.success.fetchedSuccessfully);
