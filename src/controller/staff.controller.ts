@@ -374,6 +374,10 @@ export let getFilteredStaff = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         // andList.push({ status: 1 })
+        if (req.body.agentID) {
+            andList.push({ agentID: req.body.agentID })
+        }
+        
         if (req.body.empName) {
             andList.push({ empName: req.body.empName })
         }
@@ -391,11 +395,11 @@ export let getFilteredStaff = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate('adminId');
-
+        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate({ path: 'adminId', select: 'empName' })
         const staffCount = await Staff.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStaff', true, 200, { staffList, staffCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
+        console.log(err)
         response(req, res, activity, 'Level-3', 'Get-FilterStaff', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
