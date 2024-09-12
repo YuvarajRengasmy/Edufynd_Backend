@@ -3,6 +3,9 @@ import * as mongoose from 'mongoose'
 export interface StudentDocument extends mongoose.Document {
     _id?: any;
     studentCode?: string;
+    adminId?: any;
+    staffId?: any;
+    superAdminId?: any;
     source?: string;
     name?: string;
     citizenship?: string;
@@ -63,7 +66,7 @@ export interface StudentDocument extends mongoose.Document {
     countryNameVisa?: string;
     activeStatus?: string;
     role?: string;
-    privileges?: any[]
+    privileges?: any[];
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -83,6 +86,9 @@ const privilegeSchema = new mongoose.Schema({
 
 const studentSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
+    adminId: { type: mongoose.Types.ObjectId,ref:'Admin'},
+    staffId: { type: mongoose.Types.ObjectId,ref:'Staff'},
+    superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     studentCode: { type: String },
     source: { type: String },
     name: { type: String },
@@ -144,7 +150,7 @@ const studentSchema = new mongoose.Schema({
     purposeVisa: {type: String},
     countryNameVisa: {type: String},
     activeStatus: {type: String},
-    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    role: { type: String},
     privileges: [privilegeSchema],
 
     isDeleted: { type: Boolean, default: false },

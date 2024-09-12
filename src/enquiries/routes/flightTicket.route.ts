@@ -11,7 +11,7 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('flightticket', 'view'),
+    checkPermission('flightEnquiry', 'view'),
     getAllFlightTicketEnquiry
 );
 
@@ -19,13 +19,13 @@ router.get('/',
 router.get('/getSingleFlightEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('flightticket', 'view'),
+    checkPermission('flightEnquiry', 'view'),
     checkQuery('_id'),
     getSingleFlightTicketEnquiry,
 );
 
 router.post('/',
-    checkPermission('flightticket', 'add'),
+    checkPermission('flightEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createFlightTicketEnquiry
 );
@@ -33,7 +33,7 @@ router.post('/',
 router.put('/',
     basicAuthUser,
     checkSession,
-    checkPermission('flightticket', 'edit'),
+    checkPermission('flightEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateFlightTicketEnquiry,
 
@@ -43,7 +43,7 @@ router.put('/',
 router.delete('/',
     basicAuthUser,
     checkSession,
-    checkPermission('flightticket', 'delete'),
+    checkPermission('flightEnquiry', 'delete'),
     checkQuery('_id'),
     deleteFlightTicketEnquiry
 );
@@ -52,7 +52,7 @@ router.delete('/',
 router.put('/getFilterFlightEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('flightticket', 'view'),
+    checkPermission('flightEnquiry', 'view'),
     getFilteredFlightTicketEnquiry,
 );
 

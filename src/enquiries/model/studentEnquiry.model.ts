@@ -40,7 +40,8 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     dial3?: string;
     dial4?: string;
     dial?: string;
-   
+    adminId?: any;
+    staffId?: any;
     assignedTo?: string;
     isDeleted?: boolean;
     createdOn?: Date;
@@ -50,6 +51,8 @@ export interface StudentEnquiryDocument extends mongoose.Document {
 };
 
 const studentEnquirySchema = new mongoose.Schema({
+    adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     _id: { type: mongoose.Types.ObjectId, auto: true },
     studentCode: { type: String },
     studentId: {type: String},

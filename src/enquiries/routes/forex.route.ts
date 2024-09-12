@@ -1,49 +1,51 @@
-import {Router} from 'express';
-import { getAllForexEnquiry,getSingleForexEnquiry, createForexEnquiry,updateForexEnquiry, deleteForexEnquiry,getFilteredForexEnquiry} from '../controller/forex.controller';
+import { Router } from 'express';
+import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry } from '../controller/forex.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
 
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                          
+router.get('/',
     basicAuthUser,
-      checkSession,
-      checkPermission('forex', 'view'),
+    checkSession,
+    checkPermission('forexEnquiry', 'view'),
     getAllForexEnquiry
 );
 
 
 router.get('/getSingleForexEnquiry',
     basicAuthUser,
-     checkSession,
-     checkPermission('forex', 'view'),
+    checkSession,
+    checkPermission('forexEnquiry', 'view'),
     checkQuery('_id'),
     getSingleForexEnquiry,
 );
 
-router.post('/', 
-    checkPermission('forex', 'add'),
-         checkRequestBodyParams('email'),
-         createForexEnquiry
+router.post('/',
+    basicAuthUser,
+    checkSession,
+    checkPermission('forexEnquiry', 'add'),
+    checkRequestBodyParams('email'),
+    createForexEnquiry
 );
 
-router.put('/',          
+router.put('/',
     basicAuthUser,
-     checkSession,
-     checkPermission('forex', 'edit'),
+    checkSession,
+    checkPermission('forexEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateForexEnquiry,
- 
+
 );
 
 
-router.delete('/',               
+router.delete('/',
     basicAuthUser,
-     checkSession,
-     checkPermission('forex', 'delete'),
+    checkSession,
+    checkPermission('forexEnquiry', 'delete'),
     checkQuery('_id'),
     deleteForexEnquiry
 );
@@ -51,11 +53,10 @@ router.delete('/',
 
 router.put('/getFilterForex',
     basicAuthUser,
-     checkSession,
-     checkPermission('forex', 'view'),
+    checkSession,
+    checkPermission('forexEnquiry', 'view'),
     getFilteredForexEnquiry,
 );
-
 
 
 export default router

@@ -30,7 +30,8 @@ export interface FlightDocument extends mongoose.Document {
     to?: string;
     dateOfTravel?: string;
     message?: string;
-
+    adminId?: any;
+    staffId?: any;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -40,6 +41,8 @@ export interface FlightDocument extends mongoose.Document {
 
 
 const flightTicketSchema = new mongoose.Schema({
+    adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     flightID: {type: String},
     source: {type: String},
     studentId: {type: String},

@@ -1,8 +1,8 @@
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
-import { SuperAdmin} from '../model/superAdmin.model'
+import { SuperAdmin } from '../model/superAdmin.model'
 import { Admin } from '../model/admin.model'
-import { Agent} from '../model/agent.model'
+import { Agent } from '../model/agent.model'
 import { validationResult } from 'express-validator'
 import { response, transporter } from '../helper/commonResponseHandler'
 import { decrypt, encrypt, generateRandomPassword } from "../helper/Encryption";
@@ -15,7 +15,7 @@ var activity = "Staff"
 
 export const getAllStaff = async (req, res) => {
     try {
-        const data = await Staff.find({ isDeleted: false }).sort({employeeID: -1})
+        const data = await Staff.find({ isDeleted: false }).sort({ employeeID: -1 })
         response(req, res, activity, 'Level-1', 'GetAll-Staff', true, 200, data, clientError.success.fetchedSuccessfully)
 
     } catch (err: any) {
@@ -102,15 +102,15 @@ export const updateStaffdd = async (req, res) => {
                     team: staffDetails.team,
                     staffList: staffDetails.staffList,
                     personalMail: staffDetails.personalMail,
-                    address2:staffDetails.address2,
+                    address2: staffDetails.address2,
                     pin: staffDetails.pin,
-                    country:staffDetails.country,
+                    country: staffDetails.country,
                     state: staffDetails.state,
                     city: staffDetails.city,
                     activeStatus: staffDetails.activeStatus,
                     companyAssests: staffDetails.companyAssests,
                     mobileName: staffDetails.mobileName,
-                    brandName:staffDetails.brandName,
+                    brandName: staffDetails.brandName,
                     imei: staffDetails.imei,
                     phoneNumber: staffDetails.phoneNumber,
                     laptopName: staffDetails.laptopName,
@@ -122,12 +122,12 @@ export const updateStaffdd = async (req, res) => {
                     dial1: staffDetails.dial1,
                     dial2: staffDetails.dial2,
                     dial3: staffDetails.dial3,
-                   
-              
+
+
                     modifiedOn: new Date(),
                     modifiedBy: staffDetails.modifiedBy,
                 }
-    
+
             });
 
             response(req, res, activity, 'Level-1', 'Update-Staff Details', true, 200, staffData, clientError.success.updateSuccess);
@@ -160,7 +160,7 @@ export const updateStaff = async (req, res) => {
                 probationDuration: staffDetails.probationDuration,
                 salary: staffDetails.salary,
                 role: staffDetails.role,
-               active: staffDetails.active,
+                active: staffDetails.active,
                 idCard: staffDetails.idCard,
                 manageApplications: staffDetails.manageApplications,
                 teamLead: staffDetails.teamLead,
@@ -169,15 +169,15 @@ export const updateStaff = async (req, res) => {
                 team: staffDetails.team,
                 staffList: staffDetails.staffList,
                 personalMail: staffDetails.personalMail,
-                address2:staffDetails.address2,
+                address2: staffDetails.address2,
                 pin: staffDetails.pin,
-                country:staffDetails.country,
+                country: staffDetails.country,
                 state: staffDetails.state,
                 city: staffDetails.city,
                 activeStatus: staffDetails.activeStatus,
                 companyAssests: staffDetails.companyAssests,
                 mobileName: staffDetails.mobileName,
-                brandName:staffDetails.brandName,
+                brandName: staffDetails.brandName,
                 imei: staffDetails.imei,
                 phoneNumber: staffDetails.phoneNumber,
                 laptopName: staffDetails.laptopName,
@@ -189,8 +189,8 @@ export const updateStaff = async (req, res) => {
                 dial1: staffDetails.dial1,
                 dial2: staffDetails.dial2,
                 dial3: staffDetails.dial3,
-               
-          
+
+
                 modifiedOn: new Date(),
                 modifiedBy: staffDetails.modifiedBy,
                 privileges: staffDetails.privileges,
@@ -200,7 +200,7 @@ export const updateStaff = async (req, res) => {
             if (staffDetails.privileges && staffDetails.privileges.length > 0) {
                 // Updating the entire privileges array
                 updateData.privileges = staffDetails.privileges;
-              
+
             }
 
             const staffData = await Staff.findByIdAndUpdate(
@@ -251,26 +251,26 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
             const agent = await Agent.findOne({ email: req.body.email })
             const admin = await Admin.findOne({ email: req.body.email })
 
-            if(!student && !superAdmin && !staff && !agent && !admin ){
+            if (!student && !superAdmin && !staff && !agent && !admin) {
 
-            const staffDetails: StaffDocument = req.body;
-            const password = generateRandomPassword(8);
-            const confirmPassword = password; // Since password and confirmPassword should match
-            staffDetails.password = await encrypt(password)
-            staffDetails.confirmPassword = await encrypt(confirmPassword)
-            staffDetails.createdOn = new Date();
-            staffDetails.employeeID = await generateNextStaffID();
-            const createStaff = new Staff(staffDetails);
-            const insertStaff = await createStaff.save();
-            const newHash = await decrypt(insertStaff["password"]);
+                const staffDetails: StaffDocument = req.body;
+                const password = generateRandomPassword(8);
+                const confirmPassword = password; // Since password and confirmPassword should match
+                staffDetails.password = await encrypt(password)
+                staffDetails.confirmPassword = await encrypt(confirmPassword)
+                staffDetails.createdOn = new Date();
+                staffDetails.employeeID = await generateNextStaffID();
+                const createStaff = new Staff(staffDetails);
+                const insertStaff = await createStaff.save();
+                const newHash = await decrypt(insertStaff["password"]);
 
-         
 
-            const mailOptions = {
-                from: config.SERVER.EMAIL_USER,
-                to: insertStaff.email,
-                subject: 'Welcome to EduFynd',
-                html: `
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: insertStaff.email,
+                    subject: 'Welcome to EduFynd',
+                    html: `
                               <body style="font-family: 'Poppins', Arial, sans-serif">
                                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                       <tr>
@@ -322,32 +322,38 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                                   </table>
                               </body>
                           `,
-                        
-              };
 
-            transporter.sendMail(mailOptions, (error, info) => {
+                };
 
-                if (error) {
-                    console.error('Error sending email:', error);
-                    return res.status(500).json({ message: 'Error sending email' });
-                } else {
-                    console.log('Email sent:', info.response);
-                    return res.status(201).json({ message: 'Staff profile created and email sent login credentials', agent: insertStaff });
-                }
-            });
-            return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, {agent: insertStaff}, 'Staff created successfully by SuperAdmin.');
-        }else {
-            response(req, res, activity, 'Level-2', 'Create-Staff-By-SuperAdmin', true, 422, {}, 'This Email already registered');
-        }
+                transporter.sendMail(mailOptions, (error, info) => {
+
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        return res.status(201).json({ message: 'Staff profile created and email sent login credentials', agent: insertStaff });
+                    }
+                });
+                return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', true, 200, { agent: insertStaff }, 'Staff created successfully by SuperAdmin.');
+            } else {
+                response(req, res, activity, 'Level-2', 'Create-Staff-By-SuperAdmin', true, 422, {}, 'This Email already registered');
+            }
 
         } catch (err: any) {
-console.log(err)
+            console.log(err)
             return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
         return response(req, res, activity, 'Level-3', 'Create-Staff-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
     }
 };
+
+
+
+
+
+
 
 
 
@@ -367,7 +373,7 @@ export let getFilteredStaff = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.empName) {
             andList.push({ empName: req.body.empName })
         }
@@ -385,7 +391,7 @@ export let getFilteredStaff = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page)
+        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate('adminId');
 
         const staffCount = await Staff.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStaff', true, 200, { staffList, staffCount }, clientError.success.fetchedSuccessfully);

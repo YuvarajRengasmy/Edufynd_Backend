@@ -18,16 +18,18 @@ router.get('/',
     getAllAdmin
 );
 
-
 router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
+    //  checkPermission('admin', 'view'),
     checkQuery('_id'),
     getSingleAdmin,
 );
 
+
+
 router.post('/',
+    basicAuthUser,
     checkSession,
     checkPermission('admin', 'add'),
     checkRequestBodyParams('email'),
@@ -84,7 +86,6 @@ router.put('/editAdminBySuperAdmin',             //Update admin by super Admin
 router.post('/createStudentByAdmin',             //create student by Admin
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
     checkPermission('admin', 'add'),
     createStudentByAdmin
 );
@@ -101,7 +102,6 @@ router.put('/editStudentByAdmin',             //Update student by Admin
 router.post('/createStaffByAdmin',             //create staff by  Admin
     basicAuthUser,
     checkSession,
-    // checkQuery('_id'),
     checkPermission('admin', 'add'),
     createStaffByAdmin
 );

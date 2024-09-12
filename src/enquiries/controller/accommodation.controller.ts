@@ -138,10 +138,14 @@ export let getFilteredAccommodation = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.agentID) {
             andList.push({ agentID: req.body.agentID })
         }
+        if (req.body.staffID) {
+            andList.push({ staffID: req.body.staffID })
+        }
+
         if (req.body.studentName) {
             andList.push({ studentName: req.body.studentName })
         }
@@ -157,7 +161,7 @@ export let getFilteredAccommodation = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const accommodationList = await Accommodation.find(findQuery).sort({ accommodationID: -1 }).limit(limit).skip(page)
+        const accommodationList = await Accommodation.find(findQuery).sort({ accommodationID: -1 }).limit(limit).skip(page).populate({ path: 'adminId', select: 'name' }).populate({ path: 'staffId', select: 'name' })
 
         const accommodationCount = await Accommodation.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Accommodation Enquiry', true, 200, { accommodationList, accommodationCount }, clientError.success.fetchedSuccessfully);

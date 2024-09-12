@@ -248,9 +248,15 @@ export let getFilteredStudentEnquiry = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false });
-        andList.push({ status: 1 });
+        // andList.push({ status: 1 });
         if (req.body.studentCode) {
             andList.push({ studentCode: req.body.studentCode });
+        }
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId });
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId });
         }
         if (req.body.name) {
             andList.push({ name: req.body.name });
@@ -270,7 +276,7 @@ export let getFilteredStudentEnquiry = async (req, res, next) => {
         const studentList = await StudentEnquiry.find(findQuery)
             .sort({ studentCode: -1 })
             .limit(limit)
-            .skip(page);
+            .skip(page).populate('staffId').populate('adminId');
 
         const studentCount = await StudentEnquiry.find(findQuery).count();
         response(

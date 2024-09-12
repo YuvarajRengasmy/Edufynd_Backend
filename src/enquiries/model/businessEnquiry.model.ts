@@ -7,6 +7,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
+    
     dial1?: string;
     mobileNumber?: number;  
     message?: string;
@@ -26,7 +27,9 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
      whatsAppNumber?: string;
      qualification?: string;
      assignedTo?: string;
-
+     adminId?: any;
+     staffId?: any;
+    
 
     createdOn?: Date;
     createdBy?: string;
@@ -36,6 +39,8 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
 
 
 const businessEnquirySchema = new mongoose.Schema({
+    adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     studentId: {type: String},
     country: {type: String},
     universityName: {type: String},
