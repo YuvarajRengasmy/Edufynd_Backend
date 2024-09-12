@@ -52,7 +52,7 @@ router.delete('/',
 router.put('/getFilterBusinessEnquiry',
     basicAuthUser,
     checkSession,
-    checkPermission('businessenquiry', 'view'),
+    checkPermission('businessEnquiry', 'view'),
     getFilteredBusinessEnquiry,
 );
 

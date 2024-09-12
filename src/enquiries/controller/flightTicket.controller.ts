@@ -139,7 +139,12 @@ export let getFilteredFlightTicketEnquiry = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-       
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId });
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId });
+        }
         if (req.body.studentName) {
             andList.push({ studentName: req.body.studentName })
         }
@@ -155,7 +160,7 @@ export let getFilteredFlightTicketEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const flightList = await Flight.find(findQuery).sort({ flightID: -1 }).limit(limit).skip(page)
+        const flightList = await Flight.find(findQuery).sort({ flightID: -1 }).limit(limit).skip(page).populate({ path: 'adminId', select: 'name' }).populate({ path: 'staffId', select: 'name' })
 
         const flightCount = await Flight.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Flight Ticket Enquiry', true, 200, { flightList, flightCount }, clientError.success.fetchedSuccessfully);

@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
+ 
     studentId?: string,
     name?: string
     source?: string
@@ -16,6 +17,8 @@ export interface ForexDocument extends mongoose.Document {
     passportNo?: string;
     email?: string;
     dial3?: string;
+    adminId?: any;
+    staffId?: any;
     primaryNumber?: string;
     dial4?: string;
     whatsAppNumber?: string;
@@ -45,6 +48,8 @@ export interface ForexDocument extends mongoose.Document {
 
 
 const forexSchema = new mongoose.Schema({
+    adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     forexID: {type: String},
     source: {type: String},
     studentId: {type: String},

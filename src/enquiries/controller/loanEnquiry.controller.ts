@@ -161,9 +161,15 @@ export let getFilteredLoanEnquiry = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.desiredCountry) {
             andList.push({ desiredCountry: req.body.desiredCountry })
+        }
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId });
+        }
+        if (req.body.adminId) {
+            andList.push({ adminId: req.body.adminId });
         }
         if (req.body.studentName) {
             andList.push({ studentName: req.body.studentName })
@@ -180,7 +186,7 @@ export let getFilteredLoanEnquiry = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const loanList = await LoanEnquiry.find(findQuery).sort({ loanID: -1 }).limit(limit).skip(page)
+        const loanList = await LoanEnquiry.find(findQuery).sort({ loanID: -1 }).limit(limit).skip(page).populate('staffId').populate('adminId').populate('studentId')
 
         const loanCount = await LoanEnquiry.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterLoanEnquiry', true, 200, { loanList, loanCount }, clientError.success.fetchedSuccessfully);
