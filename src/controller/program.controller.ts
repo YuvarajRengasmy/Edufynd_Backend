@@ -18,7 +18,7 @@ export const getAllProgram = async (req, res, next) => {
         andList.push({ isDeleted: false })
         const program = await Program.find({ isDeleted: false })
         findQuery = (andList.length > 0) ? { $and: andList } : {}
-        const programList = await Program.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page)
+        const programList = await Program.find(findQuery).sort({ programCode: -1 }).limit(limit).skip(page)
         const programCount = await Program.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'GetAll-Program', true, 200, { programList, programCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
@@ -158,7 +158,7 @@ export let deleteProgram = async (req, res, next) => {
 
 export let getAllProgramForWeb = async (req, res, next) => {
     try {
-        const programDetails = await Program.find({ isDeleted: false }).sort({ createdAt: -1 });
+        const programDetails = await Program.find({ isDeleted: false }).sort({ programCode: -1});
         response(req, res, activity, 'Level-2', 'Get-All-Program for web', true, 200, programDetails, clientError.success.fetchedSuccessfully);
     }
     catch (err: any) {
@@ -396,10 +396,7 @@ export const getProgramDetailsByUniversity = async (req, res, next) => {
         const findQuery = {isDeleted: false,universityId: universityId};
 
         const programList = await Program.find(findQuery)
-            .sort({ createdAt: -1 })
-            .limit(limit)
-            .skip(page)
-            .populate('universityId', { universityName: 1 });
+            .sort({ programCode: -1 }).limit(limit).skip(page).populate('universityId', { universityName: 1 });
 
         const programCount = await Program.countDocuments(findQuery);
 
@@ -475,16 +472,7 @@ export const getProgramCategory = async (req, res) => {
 }
 
 
-// export const getProgramByUniversity = async (req, res) => {
-//     const { universityId } = req.query; 
-//     try {
-//         const universities = await Program.find({ universityName: universityId });
-//         response(req, res, activity, 'Level-2', 'Get-Program By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
-//     } catch (err) {
-//         console.error('Error fetching universities:', err);
-//         response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
-//     }
-// }
+
 
 export const getProgramByCountry = async (req, res) => {
     const { country, inTake } = req.query; 
