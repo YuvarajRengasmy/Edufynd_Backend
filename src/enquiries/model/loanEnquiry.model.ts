@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 
 
 export interface LoanEnquiryDocument extends mongoose.Document {
+  
     loanID?: string;
     studentId?: string,
     country?: string;
@@ -48,7 +49,8 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     dial6?: string;
     coApplicantWhatsAppNo?: string;
     relationship?: string;
-
+    adminId?: any;
+    staffId?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -59,6 +61,8 @@ export interface LoanEnquiryDocument extends mongoose.Document {
 
 
 const loanEnquirySchema = new mongoose.Schema({
+    adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     loanID: { type: String },
     studentId: { type: String },
     country: { type: String },
