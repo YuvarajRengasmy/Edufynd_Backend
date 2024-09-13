@@ -66,7 +66,7 @@ export interface StudentDocument extends mongoose.Document {
     countryNameVisa?: string;
     activeStatus?: string;
     role?: string;
-    privileges?: any[]
+    privileges?: any[];
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -150,7 +150,7 @@ const studentSchema = new mongoose.Schema({
     purposeVisa: {type: String},
     countryNameVisa: {type: String},
     activeStatus: {type: String},
-    role: { type: String, enum: ['superAdmin', 'admin', 'staff', 'student', 'agent'] },
+    role: { type: String},
     privileges: [privilegeSchema],
 
     isDeleted: { type: Boolean, default: false },

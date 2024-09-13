@@ -1,21 +1,22 @@
-import {Router} from 'express';
-import { getAllStudent,getSingleStudent, saveStudent,updateStudent, deleteStudent,  getFilteredStudentBySuperAdmin, csvToJson, 
-    createStudentBySuperAdmin,getFilteredStudent,editStudentProfileBySuperAdmin,
-    getNotification} from '../controller/student.controller';
+import { Router } from 'express';
+import {
+    getAllStudent, getSingleStudent, saveStudent, updateStudent, deleteStudent, getFilteredStudentBySuperAdmin, csvToJson,
+    createStudentBySuperAdmin, getFilteredStudent, editStudentProfileBySuperAdmin,
+} from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
-import { createContact} from '../controller/contact.controller';
+import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-import { basicAuthUser,  } from '../middleware/checkAuth';
+import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded'
-const router:Router=Router();
+const router: Router = Router();
 
 
 
-router.get('/',                        
+router.get('/',
     basicAuthUser,
-     checkSession,
-     checkPermission('student', 'view'),
+    checkSession,
+    checkPermission('student', 'view'),
     getAllStudent
 );
 
@@ -27,22 +28,29 @@ router.get('/getSingleStudent',
     checkQuery('_id'),
     getSingleStudent,
 );
-router.get('/get', 
-    getNotification
-)
-router.post('/', 
+
+
+router.post('/',
     basicAuthUser,
     checkSession,
-        checkRequestBodyParams('email'),
-      
-        checkPermission('student', 'add'),
-        saveStudent
+
+    checkPermission('student', 'add'),
+    checkRequestBodyParams('email'),
+    saveStudent
 );
+
+router.post('/register',
+
+    checkRequestBodyParams('email'),
+    saveStudent
+);
+
+
 
 router.post('/contact', createContact);
 
 
-router.put('/',             
+router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('student', 'edit'),
@@ -56,17 +64,17 @@ router.put('/',
         { name: 'degree', maxCount: 10 },
         { name: 'additional', maxCount: 10 }
     ]),
-   
+
     updateStudent,
 );
 
 
-router.delete('/',   
-            
+router.delete('/',
+
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
-    checkPermission('student', 'delete'),  
+    checkPermission('student', 'delete'),
     deleteStudent
 );
 
@@ -92,25 +100,25 @@ router.post('/import',      // CSV File to json and Store into Database
 );
 
 
-router.put('/createStudentBySuperAdmin',            
+router.put('/createStudentBySuperAdmin',
     basicAuthUser,
     checkSession,
     // checkQuery('_id'),
-  checkPermission('student', 'edit'),
+    checkPermission('student', 'edit'),
     createStudentBySuperAdmin
 );
 
-router.put('/editStudentBySuperAdmin',         
+router.put('/editStudentBySuperAdmin',
     basicAuthUser,
     checkSession,
     checkPermission('student', 'edit'),
     editStudentProfileBySuperAdmin
 );
 
-router.put('/forgot',           
+router.put('/forgot',
     basicAuthUser,
     checkSession,
-// checkQuery('_id'),
+    // checkQuery('_id'),
     forgotPassword
 );
 

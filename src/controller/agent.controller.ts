@@ -20,7 +20,7 @@ export let getAllAgent = async (req, res, next) => {
         const data = await Agent.find({ isDeleted: false }).sort({ agentCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Agent', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -30,7 +30,7 @@ export let getSingleAgent = async (req, res, next) => {
         const agent = await Agent.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Agent', true, 200, agent, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Single-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Single-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
@@ -80,15 +80,15 @@ export let createAgent = async (req, res, next) => {
                 finalResult["token"] = token;
                 finalResult["loginType"] = 'agent';
                 finalResult["agentDetails"] = result;
-                response(req, res, activity, 'Level-2', 'Create-Agent', true, 200, finalResult, clientError.success.registerSuccessfully);
+                response(req, res, activity, 'Level-1', 'Create-Agent', true, 200, finalResult, clientError.success.registerSuccessfully);
             }
             else {
-                response(req, res, activity, 'Level-3', 'Create-Agent', true, 422, {}, 'Email already registered');
+                response(req, res, activity, 'Level-2', 'Create-Agent', true, 422, {}, 'Email already registered');
             }
 
         } catch (err: any) {
 
-            response(req, res, activity, 'Level-3', 'Create-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Create-Agent', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -155,10 +155,10 @@ export let updateAgent = async (req, res, next) => {
 
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Agent', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -171,10 +171,10 @@ export let updateAgent = async (req, res, next) => {
 export let deleteAgent = async (req, res, next) => {
     try {
         const agent = await Agent.findOneAndDelete({ _id: req.query._id })
-        response(req, res, activity, 'Level-2', 'Delete-Agent', true, 200, agent, 'Successfully Remove the Agent');
+        response(req, res, activity, 'Level-1', 'Delete-Agent', true, 200, agent, 'Successfully Remove the Agent');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -213,7 +213,7 @@ export let getFilteredAgent = async (req, res, next) => {
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter-Agent', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Filter-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Filter-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -310,7 +310,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                         res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
                     }
                 });
-                response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, { agent: insertAgent }, 'Agent created successfully by SuperAdmin.');
+                response(req, res, activity, 'Level-1', 'Create-Agent-By-SuperAdmin', true, 200, { agent: insertAgent }, 'Agent created successfully by SuperAdmin.');
             } else {
                 response(req, res, activity, 'Level-2', 'Create-Agent-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
@@ -334,9 +334,9 @@ export const createStudentProfileByAgent = async (req, res) => {
             const agentId = req.agent._id;
             const newStudent = new Student({ ...studentDetails, agentId: agentId });
             await newStudent.save();
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
+            response(req, res, activity, 'Level-1', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
 
@@ -358,7 +358,7 @@ export const viewStudentProfileByAgent = async (req, res) => {
             }
             response(req, res, activity, 'Level-1', 'View Student by Agent', true, 200, student, clientError.success.fetchedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
@@ -408,10 +408,10 @@ export const editStudentProfileByAgent = async (req, res) => {
                 }
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {

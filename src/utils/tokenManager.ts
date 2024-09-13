@@ -24,9 +24,6 @@ export let CreateJWTToken = (data: any = {}) => {
     if (data && data['name']) {
         tokenData['name'] = data['name']
     }
-    // if (data && data['name']) {
-    //     tokenData['empName'] = data['name']
-    // }
     if (data && data['loginType']) {
         tokenData['loginType'] = data['loginType']
     }
@@ -56,6 +53,7 @@ export let checkSession = async (req, res, next) => {
     // console.log("Entering checkSession middleware");
 
     let authHeader = req.headers['token'];
+    console.log("ppp", authHeader)
     if (authHeader) {
         const parts = authHeader.split(' ');
         const headerType = parts[0];
@@ -69,7 +67,6 @@ export let checkSession = async (req, res, next) => {
                 req.body.loginId = tokendata.userId;
                 req.body.loginId = tokendata.id;
                 req.body.loginUserName = tokendata.userName
-                // req.body.empName = tokendata.empName
                 req.body.createdBy = tokendata.loginType;
                 req.body.createdOn = new Date();
                 req.body.modifiedBy = tokendata.loginType;
