@@ -34,6 +34,12 @@ router.post('/',
     createAgent
 );
 
+router.post('/register',
+    
+    checkRequestBodyParams('email'),
+    createAgent
+);
+
 
 router.post('/contact',
     createContact

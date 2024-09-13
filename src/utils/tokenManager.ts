@@ -53,6 +53,7 @@ export let checkSession = async (req, res, next) => {
     // console.log("Entering checkSession middleware");
 
     let authHeader = req.headers['token'];
+    console.log("ppp", authHeader)
     if (authHeader) {
         const parts = authHeader.split(' ');
         const headerType = parts[0];

@@ -302,7 +302,8 @@ export const csvToJson = async (req, res) => {
             const worksheet = workbook.Sheets[sheetName];
             fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
         } else {
-            return res.status(400).json({ message: 'Unsupported file format. Please upload CSV or XLSX.' });
+          
+            response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Unsupported file format. Please upload CSV or XLSX.');
         }
 
         const program = await Program.find({}, 'programCode').exec();
