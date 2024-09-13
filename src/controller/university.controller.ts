@@ -4,6 +4,7 @@ import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
+import xlsx = require('xlsx')
 
 
 var activity = "University";
@@ -337,7 +338,7 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
  */
 
 
-export const csvToJson = async (req, res) => {
+export const csvToJsonc = async (req, res) => {
     try {
         const csvData = await csv().fromFile(req.file.path);
         const univesity = await University.find({}, 'universityCode').exec();
@@ -378,7 +379,7 @@ export const csvToJson = async (req, res) => {
                 universityName: data.UniversityName,
                 universityLogo: data.UniversityLogo,
                 courseType: data.CourseType ? data.CourseType.split(',') : [],
-                businessName: data.BusinessName,
+                businessName: data.ClientName,
                 banner: data.Banner,
                 country: data.Country,
                 campuses: campuses,
@@ -524,42 +525,69 @@ export const getUniversityByName = async (req, res) => {
 
 ////
 
-// correct but old without state and city against that state and city corresponding of array
-export const csvToJsonn = async (req, res) => {
+
+export const csvToJson = async (req, res) => {
     try {
-        const csvData = await csv().fromFile(req.file.path);
-        const univesity = await University.find({}, 'universityCode').exec();
-        const maxCounter = univesity.reduce((max, app) => {
+        let fileData = [];
+
+        // Check file extension
+        const fileExtension = req.file.originalname.split('.').pop();
+
+        if (fileExtension === 'csv') {
+            // Parse CSV file
+            fileData = await csv().fromFile(req.file.path);
+        } else if (fileExtension === 'xlsx') {
+            // Parse XLSX file
+            const workbook = xlsx.readFile(req.file.path);
+            const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+            const worksheet = workbook.Sheets[sheetName];
+            fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
+        } else {
+            return res.status(400).json({ message: 'Unsupported file format. Please upload CSV or XLSX.' });
+        }
+
+        const university = await University.find({}, 'universityCode').exec();
+        const maxCounter = university.reduce((max, app) => {
             const appCode = app.universityCode;
-            const parts = appCode.split('_')
+            const parts = appCode.split('_');
             if (parts.length === 2) {
-                const counter = parseInt(parts[1], 10)
+                const counter = parseInt(parts[1], 10);
                 return counter > max ? counter : max;
             }
             return max;
         }, 100);
 
         let currentMaxCounter = maxCounter;
-
         const universityList = [];
-        for (const data of csvData) {
-            const universityCode = await  generateNextUniversityCode(currentMaxCounter)
-            currentMaxCounter++; 
+
+        for (const data of fileData) {
+            // Parse State and City fields as arrays
+            const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
+            const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
+
+            // Create campuses by mapping states to corresponding city groups
+            const campuses = states.flatMap((state, index) => {
+                const correspondingCities = cityGroups[index] || [];
+                return correspondingCities.map(city => ({
+                    state: state,
+                    lga: city,
+                    _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
+                }));
+            });
+
+            // Generate university code and create university data object
+            const universityCode = await generateNextUniversityCode(currentMaxCounter);
+            currentMaxCounter++;
+
             universityList.push({
                 universityCode: universityCode,
                 universityName: data.UniversityName,
                 universityLogo: data.UniversityLogo,
                 courseType: data.CourseType ? data.CourseType.split(',') : [],
-                businessName: data.BusinessName,
+                businessName: data.ClientName,
                 banner: data.Banner,
                 country: data.Country,
-                campuses: [
-                    {
-                        state: data.State,               // ? data.State.split(',') : [],
-                        lga: data.City,                  // ? data.City.split(',') : [],
-                        _id: new mongoose.Types.ObjectId() // Generate a new ObjectId for _id
-                    }
-                ],
+                campuses: campuses,
                 countryName: data.CountryName,
                 email: data.Email,
                 ranking: data.Ranking,
@@ -580,17 +608,19 @@ export const csvToJsonn = async (req, res) => {
                 currency: data.Currency,
                 paymentTAT: data.PaymentTAT,
                 tax: data.Tax,
-                inTake:  data.InTake ? data.InTake.split(',') : [],
+                inTake: data.InTake ? data.InTake.split(',') : [],
                 website: data.Website,
-                about: data.About
-
-            })
+                commissionPaidOn: data.CommissionPaidOn,
+                about: data.About,
+                typeOfClient: data.TypeOfClient
+            });
         }
+
         await University.insertMany(universityList);
-        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Store Into Database');
+        response(req, res, activity, 'Level-1', 'File-Insert-Database', true, 200, { universityList }, 'Successfully File Stored Into Database');
     } catch (err) {
         console.error(err);
-        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
+        response(req, res, activity, 'Level-3', 'File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
 
