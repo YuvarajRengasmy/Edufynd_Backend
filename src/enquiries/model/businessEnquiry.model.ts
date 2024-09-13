@@ -29,7 +29,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
      assignedTo?: string;
      adminId?: any;
      staffId?: any;
-    
+     typeOfClient?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -49,7 +49,7 @@ const businessEnquirySchema = new mongoose.Schema({
     dial1: {type: String},
     mobileNumber: {type: Number},
     message: {type: String},
-
+    typeOfClient: { type: String },
      //Newly added 
      source: { type: String },
      studentName: { type: String },
