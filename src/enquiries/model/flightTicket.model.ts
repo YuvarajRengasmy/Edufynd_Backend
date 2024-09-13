@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import { TypeOfClient } from 'src/setting/moduleSetting/model/typeOfClient.model';
 
 
 export interface FlightDocument extends mongoose.Document {
@@ -8,6 +9,7 @@ export interface FlightDocument extends mongoose.Document {
     name?: string,
     country?: string;
     universityName?: string;
+    typeOfClient?: string;
     //If Student request for the following
     passportNo?: string;
     expiryDate?: string;
@@ -47,7 +49,7 @@ const flightTicketSchema = new mongoose.Schema({
     source: {type: String},
     studentId: {type: String},
     name:{type:String},
-
+    typeOfClient: { type: String },
     country: {type: String},
     universityName: {type: String},
     message: {type: String},
