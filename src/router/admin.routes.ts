@@ -21,7 +21,6 @@ router.get('/',
 router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
-    //  checkPermission('admin', 'view'),
     checkQuery('_id'),
     getSingleAdmin,
 );

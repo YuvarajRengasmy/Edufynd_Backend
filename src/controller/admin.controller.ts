@@ -19,7 +19,7 @@ export let getAllAdmin = async (req, res, next) => {
         const data = await Admin.find({ isDeleted: false }).sort({ adminCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Admin', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -29,7 +29,7 @@ export let getSingleAdmin = async (req, res, next) => {
         const agent = await Admin.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Admin', true, 200, agent, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Single-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Single-Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
@@ -85,10 +85,10 @@ export let createAdmin = async (req, res, next) => {
                 finalResult["token"] = token;
                 finalResult["loginType"] = 'admin';
                 finalResult["adminDetails"] = result;
-                response(req, res, activity, 'Level-2', 'Create-Admin', true, 200, finalResult, clientError.success.registerSuccessfully);
+                response(req, res, activity, 'Level-1', 'Create-Admin', true, 200, finalResult, clientError.success.registerSuccessfully);
             }
             else {
-                response(req, res, activity, 'Level-3', 'Create-Admin', true, 422, {}, 'Email already registered');
+                response(req, res, activity, 'Level-2', 'Create-Admin', true, 422, {}, 'Email already registered');
             }
 
         } catch (err: any) {
@@ -120,9 +120,9 @@ export const updateAdmin = async (req, res) => {
                 }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Admin Details', true, 200, statusData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Admin Details', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Admin Details', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Admin Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -136,10 +136,10 @@ export let deleteAdmin = async (req, res, next) => {
     try {
         const agent = await Admin.findOneAndDelete({ _id: req.query._id })
 
-        response(req, res, activity, 'Level-2', 'Delete-Admin', true, 200, agent, 'Successfully Remove the Admin');
+        response(req, res, activity, 'Level-1', 'Delete-Admin', true, 200, agent, 'Successfully Remove the Admin');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Delete-Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -171,7 +171,7 @@ export let getFilteredAdmin = async (req, res, next) => {
         const adminCount = await Admin.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterAdmin', true, 200, { adminList, adminCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-FilterAdmin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-FilterAdmin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -266,13 +266,13 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                         res.status(201).json({ message: 'Admin profile created and email sent login credentials', admin: insertAdmin });
                     }
                 });
-                response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
+                response(req, res, activity, 'Level-1', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
             } else {
                 response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
@@ -292,10 +292,10 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
                     modifiedBy: adminDetails.modifiedBy,
                 }
             });
-            response(req, res, activity, 'Level-2', 'Update-Admin by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Admin by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Admin by Super Admin', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Admin by Super Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -380,10 +380,10 @@ export const editStudentProfileByAdmin = async (req, res) => {
                 }
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Student by Admin', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Student by Admin', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Student by Admin', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Student by Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -444,9 +444,9 @@ export const editStaffProfileByAdmin = async (req, res) => {
                 }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Staff by Admin', true, 200, staffData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Staff by Admin', true, 200, staffData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Staff by Admin', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Staff by Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {

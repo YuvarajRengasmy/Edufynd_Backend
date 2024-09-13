@@ -61,7 +61,6 @@ export let updateBusinessEnquiry = async (req, res, next) => {
                     studentId: EnquiryDetails.studentId,
                     country: EnquiryDetails.country,
                     universityName: EnquiryDetails.universityName,
-                    
                     source: EnquiryDetails.source,
                     studentName: EnquiryDetails.studentName,
                     gender: EnquiryDetails.gender,
@@ -79,7 +78,6 @@ export let updateBusinessEnquiry = async (req, res, next) => {
                     dial1: EnquiryDetails.dial1,
                     dial2:EnquiryDetails.dial2,
                  
-                  
                     modifiedOn: new Date(),
                     modifiedBy: EnquiryDetails.modifiedBy,
                 }
@@ -121,8 +119,6 @@ export let getFilteredBusinessEnquiry = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         andList.push({ status: 1 })
-       
-
         if (req.body.staffId) {
             andList.push({ staffId: req.body.staffId });
         }
