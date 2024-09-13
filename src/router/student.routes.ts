@@ -31,9 +31,11 @@ router.get('/get',
     getNotification
 )
 router.post('/', 
-         checkRequestBodyParams('email'),
-         checkSession,
-         checkPermission('student', 'add'),
+    basicAuthUser,
+    checkSession,
+        checkRequestBodyParams('email'),
+      
+        checkPermission('student', 'add'),
         saveStudent
 );
 
