@@ -40,7 +40,7 @@ router.post('/',
 );
 
 router.post('/register',
-
+   
     checkRequestBodyParams('email'),
     saveStudent
 );
