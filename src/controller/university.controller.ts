@@ -42,30 +42,30 @@ export let saveUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const university = await University.findOne({ universityName: req.body.universityName });
-            if(!university){
-            const universityDetails: UniversityDocument = req.body;
-            universityDetails.createdOn = new Date()
-            const univesity = await University.find({}, 'universityCode').exec();
-            const maxCounter = univesity.reduce((max, app) => {
-                const appCode = app.universityCode;
-                const parts = appCode.split('_')
-                if (parts.length === 2) {
-                    const counter = parseInt(parts[1], 10)
-                    return counter > max ? counter : max;
-                }
-                return max;
-            }, 100);
+            if (!university) {
+                const universityDetails: UniversityDocument = req.body;
+                universityDetails.createdOn = new Date()
+                const univesity = await University.find({}, 'universityCode').exec();
+                const maxCounter = univesity.reduce((max, app) => {
+                    const appCode = app.universityCode;
+                    const parts = appCode.split('_')
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10)
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100);
 
-            let currentMaxCounter = maxCounter;
-            universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
-            const createData = new University(universityDetails);
-            let insertData = await createData.save();
+                let currentMaxCounter = maxCounter;
+                universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
+                const createData = new University(universityDetails);
+                let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
-        }
-        else {
-            response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
-        }
+                response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
+            }
+            else {
+                response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
+            }
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -113,14 +113,14 @@ export let updateUniversity = async (req, res, next) => {
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
                     website: universityDetails.website,
                     inTake: universityDetails.inTake,
-                   
+
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
 
                 },
-                 $addToSet: {
+                $addToSet: {
                     campuses: universityDetails.campuses,
-                 
+
                 }
             });
 
@@ -498,7 +498,7 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 
 
 export const getUniversityByCountry = async (req, res) => {
-    const { country } = req.query; 
+    const { country } = req.query;
     try {
         const universities = await University.find({ country: country });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
@@ -512,21 +512,21 @@ export const getUniversityByCountry = async (req, res) => {
 export const getUniversityByName = async (req, res) => {
     try {
         const { name } = req.params;
-        const university = await University.findOne({universityName: name });
+        const university = await University.findOne({ universityName: name });
         if (!university) {
-          return res.status(404).json({ message: 'University not found' });
+            return res.status(404).json({ message: 'University not found' });
         }
         res.json({ result: university });
-      } catch (err) {
+    } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
-      }
-  };
+    }
+};
 
 
 ////
 
 
-export const csvToJson = async (req, res) => {
+export const csvToJsonf = async (req, res) => {
     try {
         let fileData = [];
 
@@ -612,7 +612,113 @@ export const csvToJson = async (req, res) => {
                 website: data.Website,
                 commissionPaidOn: data.CommissionPaidOn,
                 about: data.About,
-                typeOfClient: data.TypeOfClient
+                typeOfClient: data.ClientName,
+                primary: data.PrimaryCampus
+            });
+        }
+
+        await University.insertMany(universityList);
+        response(req, res, activity, 'Level-1', 'File-Insert-Database', true, 200, { universityList }, 'Successfully File Stored Into Database');
+    } catch (err) {
+        console.error(err);
+        response(req, res, activity, 'Level-3', 'File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export const csvToJson = async (req, res) => {
+    try {
+        let fileData = [];
+
+        // Check file extension
+        const fileExtension = req.file.originalname.split('.').pop();
+
+        if (fileExtension === 'csv') {
+            // Parse CSV file
+            fileData = await csv().fromFile(req.file.path);
+        } else if (fileExtension === 'xlsx') {
+            // Parse XLSX file
+            const workbook = xlsx.readFile(req.file.path);
+            const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+            const worksheet = workbook.Sheets[sheetName];
+            fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
+        } else {
+            return res.status(400).json({ message: 'Unsupported file format. Please upload CSV or XLSX.' });
+        }
+
+        const university = await University.find({}, 'universityCode').exec();
+        const maxCounter = university.reduce((max, app) => {
+            const appCode = app.universityCode;
+            const parts = appCode.split('_');
+            if (parts.length === 2) {
+                const counter = parseInt(parts[1], 10);
+                return counter > max ? counter : max;
+            }
+            return max;
+        }, 100);
+
+        let currentMaxCounter = maxCounter;
+        const universityList = [];
+
+        for (const data of fileData) {
+            // Parse State and City fields as arrays
+            const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
+            const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
+
+        
+            const primaryCampus = data.PrimaryCampus ? data.PrimaryCampus.trim() : '';
+
+            // Create campuses by mapping states to corresponding city groups
+            const campuses = states.flatMap((state, index) => {
+                const correspondingCities = cityGroups[index] || [];
+
+                return correspondingCities.map(city => ({
+                    state: state,
+                    lga: city,
+                    primary: state === primaryCampus ? "Primary Campus" : "Secondary Campus",
+                    _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
+                }));
+            });
+
+            // Generate university code and create university data object
+            const universityCode = await generateNextUniversityCode(currentMaxCounter);
+            currentMaxCounter++;
+
+            universityList.push({
+                universityCode: universityCode,
+                universityName: data.UniversityName,
+                universityLogo: data.UniversityLogo,
+                courseType: data.CourseType ? data.CourseType.split(',') : [],
+                businessName: data.ClientName,
+                banner: data.Banner,
+                country: data.Country,
+                campuses: campuses,
+                countryName: data.CountryName,
+                email: data.Email,
+                ranking: data.Ranking,
+                applicationFees: data.ApplicationFees,
+                averageFees: data.AverageFees,
+                popularCategories: data.PopularCategories ? data.PopularCategories.split(',') : [],
+                offerTAT: data.OfferTAT,
+                founded: data.Founded,
+                institutionType: data.InstitutionType,
+                costOfLiving: data.CostOfLiving,
+                admissionRequirement: data.AdmissionRequirement,
+                grossTuition: data.GrossTuition,
+                flag: data.Flag,
+                paymentMethod: data.PaymentMethod,
+                amount: data.Amount,
+                percentage: data.Percentage,
+                eligibilityForCommission: data.EligibilityForCommission,
+                currency: data.Currency,
+                paymentTAT: data.PaymentTAT,
+                tax: data.Tax,
+                inTake: data.InTake ? data.InTake.split(',') : [],
+                website: data.Website,
+                commissionPaidOn: data.CommissionPaidOn,
+                about: data.About,
+                typeOfClient: data.ClientName,
+                primary: data.PrimaryCampus
             });
         }
 
