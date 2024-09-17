@@ -15,6 +15,39 @@ export let getAllClient = async (req, res, next) => {
     }
 };
 
+export let getAllClientCardDetails = async (req, res, next) => {
+    try {
+        // Find all client that are not deleted
+        const client = await Client.find({ isDeleted: false }).sort({ clientID: -1 });
+
+        // Total number of client
+        const totalClient = client.length;
+
+        // Number of unique countries
+        const uniqueCountries = await Client.distinct("country", { isDeleted: false });
+        const totalUniqueCountries = uniqueCountries.length;
+
+        // Active and inactive universities
+        const activeClient = await Client.countDocuments({ clientStatus: "Active", isActive: true });
+        const inactiveClient = await Client.countDocuments({ clientStatus: "Inactive", isActive: false });
+
+        // Construct the response data
+        const responseData = {
+            totalClient,
+            totalUniqueCountries,
+            activeClient,
+            inactiveClient,
+         
+         
+        };
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-Client Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'GetAll-Client Card Details', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
 
 export let getSingleClient = async (req, res, next) => {
     try {
@@ -24,6 +57,8 @@ export let getSingleClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+
 
 
 

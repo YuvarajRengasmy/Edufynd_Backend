@@ -10,7 +10,7 @@ import xlsx = require('xlsx')
 var activity = "Program"
 
 
-export const getAllProgramm = async (req, res, next) => {
+export const getAllProgram = async (req, res, next) => {
     try {
         var findQuery;
         var andList: any = []
@@ -28,6 +28,45 @@ export const getAllProgramm = async (req, res, next) => {
     }
 }
 
+
+export let getAllProgramCard = async (req, res, next) => {
+    try {
+        // Find all program that are not deleted
+        const program = await Program.find({ isDeleted: false }).sort({ programCode: -1 });
+
+        // Total number of program
+        const totalProgram = program.length;
+
+        // Number of unique countries
+        const uniqueCountries = await Program.distinct("country", { isDeleted: false });
+        const totalUniqueCountries = uniqueCountries.length;
+
+        // Number of unique universityName
+        const uniqueUniversityName = await Program.distinct("universityName", { isDeleted: false });
+        const universityName= uniqueUniversityName.length;
+
+        // Active and inactive universities
+        const activeProgram = await Program.countDocuments({ isDeleted: false, isActive: true });
+        const inactiveProgram = await Program.countDocuments({ isDeleted: true, isActive: false });
+
+      
+
+        // Construct the response data
+        const responseData = {
+            totalProgram,
+            totalUniqueCountries,
+            universityName,
+            activeProgram,
+            inactiveProgram,
+            program
+        };
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-Program Count', true, 200, responseData, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'GetAll-Program Count', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 
 
@@ -623,41 +662,3 @@ export const csvToJsonn = async (req, res) => {
 
 
 
-export let getAllProgram = async (req, res, next) => {
-    try {
-        // Find all program that are not deleted
-        const program = await Program.find({ isDeleted: false }).sort({ programCode: -1 });
-
-        // Total number of program
-        const totalProgram = program.length;
-
-        // Number of unique countries
-        const uniqueCountries = await Program.distinct("country", { isDeleted: false });
-        const totalUniqueCountries = uniqueCountries.length;
-
-        // Number of unique universityName
-        const uniqueUniversityName = await Program.distinct("universityName", { isDeleted: false });
-        const universityName= uniqueUniversityName.length;
-
-        // Active and inactive universities
-        const activeProgram = await Program.countDocuments({ isDeleted: false, isActive: true });
-        const inactiveProgram = await Program.countDocuments({ isDeleted: true, isActive: false });
-
-      
-
-        // Construct the response data
-        const responseData = {
-            totalProgram,
-            totalUniqueCountries,
-            universityName,
-            activeProgram,
-            inactiveProgram,
-            program
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};

@@ -19,6 +19,49 @@ export let getAllUniversity = async (req, res, next) => {
 };
 
 
+
+export let getAllUniversit = async (req, res, next) => {
+    try {
+        // Find all universities that are not deleted
+        const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
+
+        // Total number of universities
+        const totalUniversities = universities.length;
+
+        // Number of unique countries
+        const uniqueCountries = await University.distinct("country", { isDeleted: false });
+        const totalUniqueCountries = uniqueCountries.length;
+
+        // Active and inactive universities
+        const activeUniversities = await University.countDocuments({ isDeleted: false, isActive: true });
+        const inactiveUniversities = await University.countDocuments({ isDeleted: true, isActive: false });
+
+        // Popular categories count for each university
+        const universitiesWithPopularCategories = universities.map(university => {
+            return {
+                universityName: university.universityName,
+                popularCategoryCount: university.popularCategories.length
+            };
+        });
+
+        // Construct the response data
+        const responseData = {
+            totalUniversities,
+            totalUniqueCountries,
+            activeUniversities,
+            inactiveUniversities,
+            universitiesWithPopularCategories,
+            universities
+        };
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
 export let getSingleUniversity = async (req, res, next) => {
     try {
         const student = await University.findOne({ _id: req.query._id });
@@ -632,49 +675,5 @@ export const csvToJson = async (req, res) => {
 
 
 
-////////////
-
-
-
-export let getAllUniversit = async (req, res, next) => {
-    try {
-        // Find all universities that are not deleted
-        const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
-
-        // Total number of universities
-        const totalUniversities = universities.length;
-
-        // Number of unique countries
-        const uniqueCountries = await University.distinct("country", { isDeleted: false });
-        const totalUniqueCountries = uniqueCountries.length;
-
-        // Active and inactive universities
-        const activeUniversities = await University.countDocuments({ isDeleted: false, isActive: true });
-        const inactiveUniversities = await University.countDocuments({ isDeleted: true, isActive: false });
-
-        // Popular categories count for each university
-        const universitiesWithPopularCategories = universities.map(university => {
-            return {
-                universityName: university.universityName,
-                popularCategoryCount: university.popularCategories.length
-            };
-        });
-
-        // Construct the response data
-        const responseData = {
-            totalUniversities,
-            totalUniqueCountries,
-            activeUniversities,
-            inactiveUniversities,
-            universitiesWithPopularCategories,
-            universities
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
 
 

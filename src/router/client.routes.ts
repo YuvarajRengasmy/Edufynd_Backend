@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllClient, getSingleClient, saveClient, updateClient, deleteClient, csvToJson, getFilteredClient, editClientProfileBySuperAdmin } from '../controller/client.controller';
+import { getAllClient, getSingleClient, saveClient, updateClient, deleteClient, csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails } from '../controller/client.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -13,6 +13,13 @@ router.get('/',
     checkSession,
     checkPermission('client', 'view'),
     getAllClient
+);
+
+router.get('/card', 
+    basicAuthUser,
+    checkSession,
+    checkPermission('client', 'view'),
+    getAllClientCardDetails
 );
 
 router.get('/getSingleClient',
