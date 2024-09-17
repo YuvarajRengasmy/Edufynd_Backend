@@ -51,6 +51,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     relationship?: string;
     adminId?: any;
     staffId?: any;
+    typeOfClient?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -64,6 +65,7 @@ const loanEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     loanID: { type: String },
+    typeOfClient:{ type: String },
     studentId: { type: String },
     country: { type: String },
     message: { type: String },

@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import { TypeOfClient } from 'src/setting/moduleSetting/model/typeOfClient.model';
 
 
 export interface FlightDocument extends mongoose.Document {
@@ -8,6 +9,7 @@ export interface FlightDocument extends mongoose.Document {
     name?: string,
     country?: string;
     universityName?: string;
+    typeOfClient?: string;
     //If Student request for the following
     passportNo?: string;
     expiryDate?: string;
@@ -32,6 +34,7 @@ export interface FlightDocument extends mongoose.Document {
     message?: string;
     adminId?: any;
     staffId?: any;
+    status?: any;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -47,7 +50,7 @@ const flightTicketSchema = new mongoose.Schema({
     source: {type: String},
     studentId: {type: String},
     name:{type:String},
-
+    typeOfClient: { type: String },
     country: {type: String},
     universityName: {type: String},
     message: {type: String},
@@ -72,6 +75,23 @@ const flightTicketSchema = new mongoose.Schema({
     from: {type: String},
     to: {type: String},
     dateOfTravel: {type: String},
+
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }]
+    }],
  
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },

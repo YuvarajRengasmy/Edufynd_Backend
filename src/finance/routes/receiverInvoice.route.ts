@@ -2,7 +2,7 @@ import {Router} from 'express';
 import { getAllReceiverInvoice, getSingleReceiverInvoice, createReceiverInvoice, updateReceiverInvoice, deleteReceiverInvoice, getFilteredReceiverInvoice} from '../controller/receiverInvoice.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
-import { checkSession } from '../../utils/tokenManager';
+import { checkSession, checkPermission } from '../../utils/tokenManager';
 
 const router:Router=Router();
 

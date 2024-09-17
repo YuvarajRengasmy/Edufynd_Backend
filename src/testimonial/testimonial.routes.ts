@@ -3,18 +3,20 @@ import { getAllTestimonial, getSingleTestimonial, createTestimonial, updateTesti
      deleteTestimonial, getFilteredTestimonial } from './testimonial.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission} from '../utils/tokenManager';
 
 
 const router: Router = Router();
 
 router.get('/',                
     basicAuthUser,
+    checkSession,
     getAllTestimonial
 );
 
 router.get('/getSingleTestimonial',
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     getSingleTestimonial,
 );
@@ -37,12 +39,14 @@ router.put('/',
 
 router.delete('/',                  
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     deleteTestimonial
 );
 
 router.put('/getFilterTestimonial',
     basicAuthUser,
+    checkSession,
     getFilteredTestimonial,
 );
 

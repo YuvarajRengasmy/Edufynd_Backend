@@ -36,9 +36,9 @@ export let createGeneralEnquiry = async (req, res, next) => {
             const createData = new GeneralEnquiry(contactDetails);
             let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-2', 'General Enquiry-Created', true, 200, insertData, clientError.success.registerSuccessfully);
+            response(req, res, activity, 'Level-1', 'General Enquiry-Created', true, 200, insertData, clientError.success.registerSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'General Enquiry-Created', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'General Enquiry-Created', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -92,10 +92,10 @@ export let updateGeneralEnquiry = async (req, res, next) => {
                 }
 
             });
-            response(req, res, activity, 'Level-2', 'Update-LoanEnquiryDetails', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-LoanEnquiryDetails', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-LoanEnquiryDetails', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-LoanEnquiryDetails', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {

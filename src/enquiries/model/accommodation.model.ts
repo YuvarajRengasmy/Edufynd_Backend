@@ -34,7 +34,7 @@ export interface AccommodationDocument extends mongoose.Document {
     final?: string;
     accommodationType?: string;
     assignedTo?: string;
-
+    typeOfClient?: string;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -48,6 +48,7 @@ const accommodationSchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     name:{type:String},
+    typeOfClient: { type: String },
     studentId: {type: String},
     country: {type: String},
     state:{type: String},

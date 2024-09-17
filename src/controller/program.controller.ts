@@ -4,6 +4,7 @@ import { validationResult } from 'express-validator'
 import { response } from '../helper/commonResponseHandler'
 import { clientError, errorMessage } from '../helper/ErrorMessage'
 import csv = require('csvtojson')
+import xlsx = require('xlsx')
 
 
 var activity = "Program"
@@ -286,11 +287,26 @@ export let getFilteredProgramForAppliedStudent = async (req, res, next) => {
 
 export const csvToJson = async (req, res) => {
     try {
+        let fileData = [];
 
-        // Parse CSV file
-        const csvData = await csv().fromFile(req.file.path);
+        // Check file extension
+        const fileExtension = req.file.originalname.split('.').pop();
+
+        if (fileExtension === 'csv') {
+            // Parse CSV file
+            fileData = await csv().fromFile(req.file.path);
+        } else if (fileExtension === 'xlsx') {
+            // Parse XLSX file
+            const workbook = xlsx.readFile(req.file.path);
+            const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+            const worksheet = workbook.Sheets[sheetName];
+            fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
+        } else {
+          
+            response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Unsupported file format. Please upload CSV or XLSX.');
+        }
+
         const program = await Program.find({}, 'programCode').exec();
-
         const maxCounter = program.reduce((max, app) => {
             const programCode = app.programCode;
             const counter = parseInt(programCode.split('_')[1], 10);
@@ -298,19 +314,37 @@ export const csvToJson = async (req, res) => {
         }, 100);
 
         let currentMaxCounter = maxCounter;
-
-        // Process CSV data
         let programList = [];
-        for (const data of csvData) {
+
+        for (const data of fileData) {
             const programCode = await generateNextProgramCode(currentMaxCounter);
             currentMaxCounter++;
+
+            // Parse campuses information
+            const campuses = [];
+            const campusNames = data.Campus ? data.Campus.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').trim()) : [];
+            const inTakeData = data.InTake ? data.InTake.match(/\[([^\]]+)\]/g).map(i => i.replace(/[\[\]]/g, '').trim()) : [];
+            const durationData = data.Duration ? data.Duration.match(/\[([^\]]+)\]/g).map(d => d.replace(/[\[\]]/g, '').trim()) : [];
+            const courseFeesData = data.CourseFee ? data.CourseFee.match(/\[([^\]]+)\]/g).map(f => f.replace(/[\[\]]/g, '').trim()) : [];
+
+            // Map campuses with intake, duration, and course fees
+            campusNames.forEach((campusName, index) => {
+                campuses.push({
+                    campus: campusName,
+                    inTake: inTakeData[index] || '',
+                    duration: durationData[index] || '',
+                    courseFees: courseFeesData[index] || ''
+                });
+            });
+
+            // Add the program data
             programList.push({
                 programCode: programCode,
                 universityName: data.UniversityName,
-                campus: data.Campus ? data.Campus.split(',') : [],
+                campuses: campuses,
                 applicationFee: data.ApplicationFee,
                 country: data.Country,
-                courseType: data.CourseType,                   
+                courseType: data.CourseType,
                 programTitle: data.ProgramTitle,
                 currency: data.Currency,
                 flag: data.Flag,
@@ -327,9 +361,10 @@ export const csvToJson = async (req, res) => {
                 commission: data.Commission,
             });
         }
-    
+
+        // Insert into the database
         await Program.insertMany(programList);
-        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { programList }, 'Successfully CSV File Store Into Database');
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { programList }, 'Successfully CSV File Stored Into Database');
     } catch (err) {
         console.error(err);
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
@@ -437,10 +472,10 @@ export const updateProgramApplications = async (req, res, next) => {
                     { new: true }
                 );
 
-                response(req, res, activity, 'Level-2', 'Update-Program-Applications', true, 200, updatedProgram, 'Student applied successfully');
+                response(req, res, activity, 'Level-1', 'Update-Program-Applications', true, 200, updatedProgram, 'Student applied successfully');
             }
         } catch (err) {
-            response(req, res, activity, 'Level-3', 'Update-Program-Applications', false, 500, {}, 'Internal server error', err.message);
+            response(req, res, activity, 'Level-2', 'Update-Program-Applications', false, 500, {}, 'Internal server error', err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'Update-Program-Applications', false, 422, {}, 'Field validation error', JSON.stringify(errors.mapped()));
@@ -504,3 +539,71 @@ export const  getProgramByUniversity = async (req, res) => {
 
 
 
+
+
+export const csvToJsonn = async (req, res) => {
+    try {
+
+        let fileData = [];
+
+        // Check file extension
+        const fileExtension = req.file.originalname.split('.').pop();
+
+        if (fileExtension === 'csv') {
+            // Parse CSV file
+            fileData = await csv().fromFile(req.file.path);
+        } else if (fileExtension === 'xlsx') {
+            // Parse XLSX file
+            const workbook = xlsx.readFile(req.file.path);
+            const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+            const worksheet = workbook.Sheets[sheetName];
+            fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
+        } else {
+            return res.status(400).json({ message: 'Unsupported file format. Please upload CSV or XLSX.' });
+        }
+        const program = await Program.find({}, 'programCode').exec();
+
+        const maxCounter = program.reduce((max, app) => {
+            const programCode = app.programCode;
+            const counter = parseInt(programCode.split('_')[1], 10);
+            return counter > max ? counter : max;
+        }, 100);
+
+        let currentMaxCounter = maxCounter;
+
+        // Process CSV data
+        let programList = [];
+        for (const data of fileData) {
+            const programCode = await generateNextProgramCode(currentMaxCounter);
+            currentMaxCounter++;
+            programList.push({
+                programCode: programCode,
+                universityName: data.UniversityName,
+                campus: data.Campus ? data.Campus.split(',') : [],
+                applicationFee: data.ApplicationFee,
+                country: data.Country,
+                courseType: data.CourseType,                   
+                programTitle: data.ProgramTitle,
+                currency: data.Currency,
+                flag: data.Flag,
+                discountedValue: data.DiscountedValue,
+                courseFee: data.CourseFee,
+                inTake: data.InTake ? data.InTake.split(',') : [],
+                duration: data.Duration,
+                englishlanguageTest: data.EnglishlanguageTest,
+                textBox: data.TextBox,
+                universityInterview: data.UniversityInterview,
+                greGmatRequirement: data.GreGmatRequirement,
+                score: data.Score,
+                academicRequirement: data.AcademicRequirement,
+                commission: data.Commission,
+            });
+        }
+    
+        await Program.insertMany(programList);
+        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { programList }, 'Successfully CSV File Store Into Database');
+    } catch (err) {
+        console.error(err);
+        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
