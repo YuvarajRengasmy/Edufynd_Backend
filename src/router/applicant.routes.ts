@@ -16,9 +16,9 @@ router.get('/',
 
 
 router.get('/card',               
-    // basicAuthUser,
-    //  checkSession,
-    //  checkPermission('application', 'view'),
+    basicAuthUser,
+     checkSession,
+     checkPermission('application', 'view'),
     getAllApplicantCardDetails
 );
 
