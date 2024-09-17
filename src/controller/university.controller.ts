@@ -9,7 +9,7 @@ import xlsx = require('xlsx')
 
 var activity = "University";
 
-export let getAllUniversity = async (req, res, next) => {
+export let getAllUniversityy = async (req, res, next) => {
     try {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
@@ -526,106 +526,6 @@ export const getUniversityByName = async (req, res) => {
 ////
 
 
-export const csvToJsonf = async (req, res) => {
-    try {
-        let fileData = [];
-
-        // Check file extension
-        const fileExtension = req.file.originalname.split('.').pop();
-
-        if (fileExtension === 'csv') {
-            // Parse CSV file
-            fileData = await csv().fromFile(req.file.path);
-        } else if (fileExtension === 'xlsx') {
-            // Parse XLSX file
-            const workbook = xlsx.readFile(req.file.path);
-            const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
-            const worksheet = workbook.Sheets[sheetName];
-            fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
-        } else {
-            return res.status(400).json({ message: 'Unsupported file format. Please upload CSV or XLSX.' });
-        }
-
-        const university = await University.find({}, 'universityCode').exec();
-        const maxCounter = university.reduce((max, app) => {
-            const appCode = app.universityCode;
-            const parts = appCode.split('_');
-            if (parts.length === 2) {
-                const counter = parseInt(parts[1], 10);
-                return counter > max ? counter : max;
-            }
-            return max;
-        }, 100);
-
-        let currentMaxCounter = maxCounter;
-        const universityList = [];
-
-        for (const data of fileData) {
-            // Parse State and City fields as arrays
-            const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
-            const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
-
-            // Create campuses by mapping states to corresponding city groups
-            const campuses = states.flatMap((state, index) => {
-                const correspondingCities = cityGroups[index] || [];
-                return correspondingCities.map(city => ({
-                    state: state,
-                    lga: city,
-                    _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
-                }));
-            });
-
-            // Generate university code and create university data object
-            const universityCode = await generateNextUniversityCode(currentMaxCounter);
-            currentMaxCounter++;
-
-            universityList.push({
-                universityCode: universityCode,
-                universityName: data.UniversityName,
-                universityLogo: data.UniversityLogo,
-                courseType: data.CourseType ? data.CourseType.split(',') : [],
-                businessName: data.ClientName,
-                banner: data.Banner,
-                country: data.Country,
-                campuses: campuses,
-                countryName: data.CountryName,
-                email: data.Email,
-                ranking: data.Ranking,
-                applicationFees: data.ApplicationFees,
-                averageFees: data.AverageFees,
-                popularCategories: data.PopularCategories ? data.PopularCategories.split(',') : [],
-                offerTAT: data.OfferTAT,
-                founded: data.Founded,
-                institutionType: data.InstitutionType,
-                costOfLiving: data.CostOfLiving,
-                admissionRequirement: data.AdmissionRequirement,
-                grossTuition: data.GrossTuition,
-                flag: data.Flag,
-                paymentMethod: data.PaymentMethod,
-                amount: data.Amount,
-                percentage: data.Percentage,
-                eligibilityForCommission: data.EligibilityForCommission,
-                currency: data.Currency,
-                paymentTAT: data.PaymentTAT,
-                tax: data.Tax,
-                inTake: data.InTake ? data.InTake.split(',') : [],
-                website: data.Website,
-                commissionPaidOn: data.CommissionPaidOn,
-                about: data.About,
-                typeOfClient: data.ClientName,
-                primary: data.PrimaryCampus
-            });
-        }
-
-        await University.insertMany(universityList);
-        response(req, res, activity, 'Level-1', 'File-Insert-Database', true, 200, { universityList }, 'Successfully File Stored Into Database');
-    } catch (err) {
-        console.error(err);
-        response(req, res, activity, 'Level-3', 'File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
-    }
-};
-
-
 export const csvToJson = async (req, res) => {
     try {
         let fileData = [];
@@ -730,5 +630,51 @@ export const csvToJson = async (req, res) => {
     }
 };
 
+
+
+////////////
+
+
+
+export let getAllUniversity = async (req, res, next) => {
+    try {
+        // Find all universities that are not deleted
+        const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
+
+        // Total number of universities
+        const totalUniversities = universities.length;
+
+        // Number of unique countries
+        const uniqueCountries = await University.distinct("country", { isDeleted: false });
+        const totalUniqueCountries = uniqueCountries.length;
+
+        // Active and inactive universities
+        const activeUniversities = await University.countDocuments({ isDeleted: false, isActive: true });
+        const inactiveUniversities = await University.countDocuments({ isDeleted: true, isActive: false });
+
+        // Popular categories count for each university
+        const universitiesWithPopularCategories = universities.map(university => {
+            return {
+                universityName: university.universityName,
+                popularCategoryCount: university.popularCategories.length
+            };
+        });
+
+        // Construct the response data
+        const responseData = {
+            totalUniversities,
+            totalUniqueCountries,
+            activeUniversities,
+            inactiveUniversities,
+            universitiesWithPopularCategories,
+            universities
+        };
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 
