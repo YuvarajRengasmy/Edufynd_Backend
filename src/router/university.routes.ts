@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
-     getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName} from '../controller/university.controller';
+     getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName,
+    } from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -12,11 +13,13 @@ const router: Router = Router();
 
 
 router.get('/',             
-    basicAuthUser,
-    checkSession,
-    checkPermission('university', 'view'),
+    // basicAuthUser,
+    // checkSession,
+    // checkPermission('university', 'view'),
     getAllUniversity
 );
+
+
 
 
 router.get('/getSingleUniversity',

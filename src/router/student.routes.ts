@@ -33,7 +33,6 @@ router.get('/getSingleStudent',
 router.post('/',
     basicAuthUser,
     checkSession,
-
     checkPermission('student', 'add'),
     checkRequestBodyParams('email'),
     saveStudent

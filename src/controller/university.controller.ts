@@ -9,7 +9,7 @@ import xlsx = require('xlsx')
 
 var activity = "University";
 
-export let getAllUniversity = async (req, res, next) => {
+export let getAllUniversityy = async (req, res, next) => {
     try {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
@@ -42,30 +42,30 @@ export let saveUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const university = await University.findOne({ universityName: req.body.universityName });
-            if(!university){
-            const universityDetails: UniversityDocument = req.body;
-            universityDetails.createdOn = new Date()
-            const univesity = await University.find({}, 'universityCode').exec();
-            const maxCounter = univesity.reduce((max, app) => {
-                const appCode = app.universityCode;
-                const parts = appCode.split('_')
-                if (parts.length === 2) {
-                    const counter = parseInt(parts[1], 10)
-                    return counter > max ? counter : max;
-                }
-                return max;
-            }, 100);
+            if (!university) {
+                const universityDetails: UniversityDocument = req.body;
+                universityDetails.createdOn = new Date()
+                const univesity = await University.find({}, 'universityCode').exec();
+                const maxCounter = univesity.reduce((max, app) => {
+                    const appCode = app.universityCode;
+                    const parts = appCode.split('_')
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10)
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100);
 
-            let currentMaxCounter = maxCounter;
-            universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
-            const createData = new University(universityDetails);
-            let insertData = await createData.save();
+                let currentMaxCounter = maxCounter;
+                universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
+                const createData = new University(universityDetails);
+                let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
-        }
-        else {
-            response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
-        }
+                response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
+            }
+            else {
+                response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
+            }
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -113,14 +113,14 @@ export let updateUniversity = async (req, res, next) => {
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
                     website: universityDetails.website,
                     inTake: universityDetails.inTake,
-                   
+
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
 
                 },
-                 $addToSet: {
+                $addToSet: {
                     campuses: universityDetails.campuses,
-                 
+
                 }
             });
 
@@ -498,7 +498,7 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 
 
 export const getUniversityByCountry = async (req, res) => {
-    const { country } = req.query; 
+    const { country } = req.query;
     try {
         const universities = await University.find({ country: country });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
@@ -512,15 +512,15 @@ export const getUniversityByCountry = async (req, res) => {
 export const getUniversityByName = async (req, res) => {
     try {
         const { name } = req.params;
-        const university = await University.findOne({universityName: name });
+        const university = await University.findOne({ universityName: name });
         if (!university) {
-          return res.status(404).json({ message: 'University not found' });
+            return res.status(404).json({ message: 'University not found' });
         }
         res.json({ result: university });
-      } catch (err) {
+    } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
-      }
-  };
+    }
+};
 
 
 ////
@@ -565,12 +565,17 @@ export const csvToJson = async (req, res) => {
             const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
             const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
 
+        
+            const primaryCampus = data.PrimaryCampus ? data.PrimaryCampus.trim() : '';
+
             // Create campuses by mapping states to corresponding city groups
             const campuses = states.flatMap((state, index) => {
                 const correspondingCities = cityGroups[index] || [];
+
                 return correspondingCities.map(city => ({
                     state: state,
                     lga: city,
+                    primary: state === primaryCampus ? "Primary Campus" : "Secondary Campus",
                     _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
                 }));
             });
@@ -612,7 +617,8 @@ export const csvToJson = async (req, res) => {
                 website: data.Website,
                 commissionPaidOn: data.CommissionPaidOn,
                 about: data.About,
-                typeOfClient: data.TypeOfClient
+                typeOfClient: data.ClientName,
+                primary: data.PrimaryCampus
             });
         }
 
@@ -624,5 +630,51 @@ export const csvToJson = async (req, res) => {
     }
 };
 
+
+
+////////////
+
+
+
+export let getAllUniversity = async (req, res, next) => {
+    try {
+        // Find all universities that are not deleted
+        const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
+
+        // Total number of universities
+        const totalUniversities = universities.length;
+
+        // Number of unique countries
+        const uniqueCountries = await University.distinct("country", { isDeleted: false });
+        const totalUniqueCountries = uniqueCountries.length;
+
+        // Active and inactive universities
+        const activeUniversities = await University.countDocuments({ isDeleted: false, isActive: true });
+        const inactiveUniversities = await University.countDocuments({ isDeleted: true, isActive: false });
+
+        // Popular categories count for each university
+        const universitiesWithPopularCategories = universities.map(university => {
+            return {
+                universityName: university.universityName,
+                popularCategoryCount: university.popularCategories.length
+            };
+        });
+
+        // Construct the response data
+        const responseData = {
+            totalUniversities,
+            totalUniqueCountries,
+            activeUniversities,
+            inactiveUniversities,
+            universitiesWithPopularCategories,
+            universities
+        };
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 

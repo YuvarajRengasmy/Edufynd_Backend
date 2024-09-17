@@ -55,8 +55,8 @@ export let createProgram = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             // Check if a program with the same title already exists for the same university
-            const existingProgram = await Program.findOne({ 
-                universityName: req.body.universityName, 
+            const existingProgram = await Program.findOne({
+                universityName: req.body.universityName,
                 programTitle: req.body.programTitle
             });
 
@@ -73,7 +73,7 @@ export let createProgram = async (req, res, next) => {
                         return counter > max ? counter : max;
                     }
                     return max;
-                }, 100); 
+                }, 100);
 
                 // Generate the next program code based on the current max counter
                 let currentMaxCounter = maxCounter;
@@ -114,7 +114,7 @@ export let updateProgram = async (req, res, next) => {
                     applicationFee: programDetails.applicationFee,
                     currency: programDetails.currency,
                     flag: programDetails.flag,
-                 
+
                     campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
@@ -159,7 +159,7 @@ export let deleteProgram = async (req, res, next) => {
 
 export let getAllProgramForWeb = async (req, res, next) => {
     try {
-        const programDetails = await Program.find({ isDeleted: false }).sort({ programCode: -1});
+        const programDetails = await Program.find({ isDeleted: false }).sort({ programCode: -1 });
         response(req, res, activity, 'Level-2', 'Get-All-Program for web', true, 200, programDetails, clientError.success.fetchedSuccessfully);
     }
     catch (err: any) {
@@ -302,7 +302,7 @@ export const csvToJson = async (req, res) => {
             const worksheet = workbook.Sheets[sheetName];
             fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
         } else {
-          
+
             response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Unsupported file format. Please upload CSV or XLSX.');
         }
 
@@ -319,6 +319,17 @@ export const csvToJson = async (req, res) => {
         for (const data of fileData) {
             const programCode = await generateNextProgramCode(currentMaxCounter);
             currentMaxCounter++;
+
+
+            // Fetch universityId based on universityName
+            const university = await University.findOne({ universityName: data.UniversityName.trim() }).exec();
+            if (!university) {
+                // If university not found, handle error
+                console.error(`University with name ${data.UniversityName} not found`);
+                continue;
+            }
+
+            const universityId = university._id;
 
             // Parse campuses information
             const campuses = [];
@@ -341,6 +352,7 @@ export const csvToJson = async (req, res) => {
             programList.push({
                 programCode: programCode,
                 universityName: data.UniversityName,
+                universityId: universityId,
                 campuses: campuses,
                 applicationFee: data.ApplicationFee,
                 country: data.Country,
@@ -407,8 +419,8 @@ export const getProgramsByUniversityName = async (req, res) => {
                     universityLogo: university.universityLogo,
                     country: university.country,
                     programDetails: programs.map(program => ({
-                    programTitle: program.programTitle,
-                    campuses: program.campuses,
+                        programTitle: program.programTitle,
+                        campuses: program.campuses,
                     }))
                 }
             }
@@ -428,7 +440,7 @@ export const getProgramDetailsByUniversity = async (req, res, next) => {
     try {
         const { limit, page, universityId } = req.body;
 
-        const findQuery = {isDeleted: false,universityId: universityId};
+        const findQuery = { isDeleted: false, universityId: universityId };
 
         const programList = await Program.find(findQuery)
             .sort({ programCode: -1 }).limit(limit).skip(page).populate('universityId', { universityName: 1 });
@@ -485,9 +497,9 @@ export const updateProgramApplications = async (req, res, next) => {
 
 export const getProgramUniversity = async (req, res) => {
     try {
-        
-        const data = await Program.find({universityId:req.query.universityId})
-  
+
+        const data = await Program.find({ universityId: req.query.universityId })
+
         response(req, res, activity, 'Level-1', 'GetSingle-Program', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Program', false, 500, {}, errorMessage.internalServer, err.message)
@@ -497,9 +509,9 @@ export const getProgramUniversity = async (req, res) => {
 
 export const getProgramCategory = async (req, res) => {
     try {
-        
-        const data = await Program.find({popularCategories:req.query.popularCategories})
-  
+
+        const data = await Program.find({ popularCategories: req.query.popularCategories })
+
         response(req, res, activity, 'Level-1', 'GetSingle-Program', true, 200, data, clientError.success.fetchedSuccessfully)
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetSingle-Program', false, 500, {}, errorMessage.internalServer, err.message)
@@ -510,9 +522,9 @@ export const getProgramCategory = async (req, res) => {
 
 
 export const getProgramByCountry = async (req, res) => {
-    const { country, inTake } = req.query; 
+    const { country, inTake } = req.query;
     try {
-        const query = {country,inTake};
+        const query = { country, inTake };
         if (country) query.country = country;
         if (inTake) query['campuses.inTake'] = inTake;
 
@@ -524,11 +536,11 @@ export const getProgramByCountry = async (req, res) => {
     }
 }
 
-export const  getProgramByUniversity = async (req, res) => {
+export const getProgramByUniversity = async (req, res) => {
     const {
-        universityId} = req.query; 
+        universityId } = req.query;
     try {
-        const universities = await University.find({  _id:  universityId });
+        const universities = await University.find({ _id: universityId });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
     } catch (err) {
         console.error('Error fetching universities:', err);
@@ -582,7 +594,7 @@ export const csvToJsonn = async (req, res) => {
                 campus: data.Campus ? data.Campus.split(',') : [],
                 applicationFee: data.ApplicationFee,
                 country: data.Country,
-                courseType: data.CourseType,                   
+                courseType: data.CourseType,
                 programTitle: data.ProgramTitle,
                 currency: data.Currency,
                 flag: data.Flag,
@@ -599,7 +611,7 @@ export const csvToJsonn = async (req, res) => {
                 commission: data.Commission,
             });
         }
-    
+
         await Program.insertMany(programList);
         response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { programList }, 'Successfully CSV File Store Into Database');
     } catch (err) {
