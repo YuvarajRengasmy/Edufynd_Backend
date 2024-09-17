@@ -22,6 +22,30 @@ export let getAllApplicant = async (req, res, next) => {
 };
 
 
+export let getAllApplicantCardDetails = async (req, res, next) => {
+    try {
+        // Find all client that are not deleted
+        const totalApplication = await Applicant.find({ isDeleted: false }).count()
+    
+
+        // Active and inactive universities
+        const activeClient = await Applicant.countDocuments({ clientStatus: "Active", isActive: true });
+        const inactiveClient = await Applicant.countDocuments({ clientStatus: "Inactive", isActive: false });
+
+        // Construct the response data
+        const responseData = {
+            totalApplication,
+            activeClient,
+            inactiveClient, 
+        };
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-Application Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'GetAll-Application Card Details', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
 export let getSingleApplicant = async (req, res, next) => {
     try {
         const applicant = await Applicant.findOne({ _id: req.query._id });
