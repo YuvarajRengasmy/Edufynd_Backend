@@ -25,7 +25,7 @@ router.get('/getSingleGeneralEnquiry',
 );
 
 router.post('/',
-    checkPermission('generalEnquiry', 'add'),
+     checkPermission('generalEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createGeneralEnquiry
 );
