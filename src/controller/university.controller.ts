@@ -9,7 +9,7 @@ import xlsx = require('xlsx')
 
 var activity = "University";
 
-export let getAllUniversityy = async (req, res, next) => {
+export let getAllUniversity = async (req, res, next) => {
     try {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
@@ -636,7 +636,7 @@ export const csvToJson = async (req, res) => {
 
 
 
-export let getAllUniversity = async (req, res, next) => {
+export let getAllUniversit = async (req, res, next) => {
     try {
         // Find all universities that are not deleted
         const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
