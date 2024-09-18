@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
+import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getAllApplicantCardDetails, getFilteredApplication,
      getSingleApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
@@ -12,6 +12,14 @@ router.get('/',
      checkSession,
      checkPermission('application', 'view'),
     getAllApplicant
+);
+
+
+router.get('/card',               
+    // basicAuthUser,
+    //  checkSession,
+    //  checkPermission('application', 'view'),
+    getAllApplicantCardDetails
 );
 
 
