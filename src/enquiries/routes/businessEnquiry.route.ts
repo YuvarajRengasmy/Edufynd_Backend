@@ -57,6 +57,13 @@ router.put('/getFilterBusinessEnquiry',
 );
 
 
+//Public API
+
+router.get('/public', getAllBusinessEnquiry);
+
+router.get('/publicGetSingleBusinessEnquiry', getSingleBusinessEnquiry);
+
+router.post('/', createBusinessEnquiry);
 
 
 export default router

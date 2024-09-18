@@ -56,6 +56,12 @@ router.put('/getFilterLoanEnquiry',
     getFilteredLoanEnquiry,
 );
 
+//Public API
 
+router.get('/public', getAllLoanEnquiry);
+
+router.get('/publicGetSingleLoanEnquiry', getSingleLoanEnquiry);
+
+router.post('/', createLoanEnquiry);
 
 export default router
