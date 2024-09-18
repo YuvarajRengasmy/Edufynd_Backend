@@ -60,4 +60,17 @@ router.put('/getFilterAccommodation',
 
 
 
+//Public API
+
+router.get('/public', getAllAccommodation);
+
+router.get('/publicGetSingleAccommodation', getSingleAccommodation);
+
+router.post('/', createAccommodation);
+
+
+
+
+
+
 export default router

@@ -56,6 +56,12 @@ router.put('/getFilterFlightEnquiry',
     getFilteredFlightTicketEnquiry,
 );
 
+//Public API
 
+router.get('/public', getAllFlightTicketEnquiry);
+
+router.get('/publicGetSingleFlightEnquiry', getSingleFlightTicketEnquiry);
+
+router.post('/', createFlightTicketEnquiry);
 
 export default router

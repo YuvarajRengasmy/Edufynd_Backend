@@ -57,6 +57,12 @@ router.put('/getFilterGeneralEnquiry',
 );
 
 
+//Public API
 
+router.get('/public', getAllGeneralEnquiry);
+
+router.get('/publicGetSingleGeneralEnquiry', getSingleGeneralEnquiry);
+
+router.post('/', createGeneralEnquiry);
 
 export default router

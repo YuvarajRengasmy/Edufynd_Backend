@@ -59,4 +59,12 @@ router.put('/getFilterForex',
 );
 
 
+//Public API
+
+router.get('/public', getAllForexEnquiry);
+
+router.get('/publicGetSingleForexEnquiry', getSingleForexEnquiry);
+
+router.post('/', createForexEnquiry);
+
 export default router
