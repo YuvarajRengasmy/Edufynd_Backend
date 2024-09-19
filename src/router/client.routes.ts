@@ -48,6 +48,14 @@ router.put('/',
 );
 
 
+router.put('/activeClient',                
+    basicAuthUser,
+     checkSession,
+    //  checkPermission('client', 'delete'),
+    checkRequestBodyParams('_id'),
+    activeClient
+);
+
 router.put('/editClientProfileBySuperAdmin',             //Update client by super Admin
     basicAuthUser,
     checkSession,
@@ -62,13 +70,7 @@ router.delete('/',
     deleteClient
 );
 
-router.put('/activeClient',                
-    basicAuthUser,
-     checkSession,
-    //  checkPermission('client', 'delete'),
-    checkRequestBodyParams('_id'),
-    activeClient
-);
+
 
 router.put('/getFilterClient',
     basicAuthUser,
