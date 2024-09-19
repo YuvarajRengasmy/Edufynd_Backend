@@ -56,6 +56,12 @@ router.put('/getFilterStudentEnquiry',
     getFilteredStudentEnquiry,
 );
 
+//Public API
 
+router.get('/public', getAllStudentEnquiry);
+
+router.get('/publicGetSingleStudentEnquiry', getSingleStudentEnquiry);
+
+router.post('/', createStudentEnquiry);
 
 export default router
