@@ -62,6 +62,6 @@ router.get('/public', getAllFlightTicketEnquiry);
 
 router.get('/publicGetSingleFlightEnquiry', getSingleFlightTicketEnquiry);
 
-router.post('/', createFlightTicketEnquiry);
+router.post('/public', createFlightTicketEnquiry);
 
 export default router

@@ -63,6 +63,6 @@ router.get('/public', getAllGeneralEnquiry);
 
 router.get('/publicGetSingleGeneralEnquiry', getSingleGeneralEnquiry);
 
-router.post('/', createGeneralEnquiry);
+router.post('/public', createGeneralEnquiry);
 
 export default router

@@ -133,6 +133,7 @@ export let updateUniversity = async (req, res, next) => {
                     universityLogo: universityDetails.universityLogo,
                     countryName: universityDetails.countryName,
                     about: universityDetails.about,
+                    universityStatus: universityDetails.universityStatus,
                     courseType: universityDetails.courseType,
                     email: universityDetails.email,
                     country: universityDetails.country,
@@ -253,6 +254,7 @@ export let getFilteredUniversity = async (req, res, next) => {
             andList.push({ courseType: req.body.courseType })
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
+
 
         const universityList = await University.find(findQuery).sort({ universityCode: -1 }).limit(limit).skip(page)
 

@@ -62,6 +62,6 @@ router.get('/public', getAllStudentEnquiry);
 
 router.get('/publicGetSingleStudentEnquiry', getSingleStudentEnquiry);
 
-router.post('/', createStudentEnquiry);
+router.post('/public', createStudentEnquiry);
 
 export default router
