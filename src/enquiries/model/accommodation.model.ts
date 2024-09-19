@@ -34,8 +34,7 @@ export interface AccommodationDocument extends mongoose.Document {
     final?: string;
     accommodationType?: string;
     assignedTo?: string;
-    status?: any;
-
+    typeOfClient?: string;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -49,6 +48,7 @@ const accommodationSchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     name:{type:String},
+    typeOfClient: { type: String },
     studentId: {type: String},
     country: {type: String},
     state:{type: String},
@@ -78,23 +78,6 @@ const accommodationSchema = new mongoose.Schema({
     final: {type: String},
     accommodationType: {type: String},
     assignedTo: {type: String},
-
-    status: [{
-        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
-        commentBox: {type: String},
-        duration: {type: String},
-        progress: {type: String},
-        document:  {type: String},
-        delay: {type: String},
-        tagPerson: {type: String},
-        subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }]
-    }],
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },

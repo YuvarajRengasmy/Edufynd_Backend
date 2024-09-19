@@ -37,8 +37,7 @@ export interface ForexDocument extends mongoose.Document {
     value?: string;
     markUp?: string;
     profit?: string;
-    status?: any;
-
+    typeOfClient: string;
     isDeleted?: boolean;
     createdOn?: Date;
     createdBy?: string;
@@ -58,6 +57,7 @@ const forexSchema = new mongoose.Schema({
     message: {type: String},
     //If Student request for the following
     studentName: {type: String},
+    typeOfClient: { type: String },
     country: {type: String},
     currency: {type: String},
     flag: {type: String},
@@ -86,23 +86,6 @@ const forexSchema = new mongoose.Schema({
     value:{type: String},
     markUp: {type: String},
     profit: {type: String},
-
-    status: [{
-        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
-        commentBox: {type: String},
-        duration: {type: String},
-        progress: {type: String},
-        document:  {type: String},
-        delay: {type: String},
-        tagPerson: {type: String},
-        subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }]
-    }],
 
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },

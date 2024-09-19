@@ -50,10 +50,10 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
-    // checkSession,
+     checkSession,
     // checkQuery('_id'),
     checkPermission('university', 'edit'),
-    checkRequestBodyParams('_id'),
+     checkRequestBodyParams('_id'),
     updateUniversity
 );
 

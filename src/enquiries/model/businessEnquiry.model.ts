@@ -29,8 +29,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
      assignedTo?: string;
      adminId?: any;
      staffId?: any;
-     status?: any;
-    
+     typeOfClient?: string;
 
     createdOn?: Date;
     createdBy?: string;
@@ -50,7 +49,7 @@ const businessEnquirySchema = new mongoose.Schema({
     dial1: {type: String},
     mobileNumber: {type: Number},
     message: {type: String},
-
+    typeOfClient: { type: String },
      //Newly added 
      source: { type: String },
      studentName: { type: String },
@@ -67,23 +66,6 @@ const businessEnquirySchema = new mongoose.Schema({
      whatsAppNumber: { type: String },
      qualification: { type: String },
      assignedTo: { type: String },
-
-     status: [{
-        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
-        commentBox: {type: String},
-        duration: {type: String},
-        progress: {type: String},
-        document:  {type: String},
-        delay: {type: String},
-        tagPerson: {type: String},
-        subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }]
-    }],
 
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },

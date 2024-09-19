@@ -51,7 +51,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     relationship?: string;
     adminId?: any;
     staffId?: any;
-    status?: any;
+    typeOfClient?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -65,6 +65,7 @@ const loanEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     loanID: { type: String },
+    typeOfClient:{ type: String },
     studentId: { type: String },
     country: { type: String },
     message: { type: String },
@@ -110,22 +111,8 @@ const loanEnquirySchema = new mongoose.Schema({
     dial6: { type: String },
     coApplicantWhatsAppNo: { type: String },
     relationship: { type: String },
-    status: [{
-        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
-        commentBox: {type: String},
-        duration: {type: String},
-        progress: {type: String},
-        document:  {type: String},
-        delay: {type: String},
-        tagPerson: {type: String},
-        subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }]
-    }],
+
+
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
