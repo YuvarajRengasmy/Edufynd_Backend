@@ -66,7 +66,7 @@ router.get('/public', getAllAccommodation);
 
 router.get('/publicGetSingleAccommodation', getSingleAccommodation);
 
-router.post('/', createAccommodation);
+router.post('/public', createAccommodation);
 
 
 

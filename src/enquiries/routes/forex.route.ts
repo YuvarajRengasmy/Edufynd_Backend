@@ -65,6 +65,6 @@ router.get('/public', getAllForexEnquiry);
 
 router.get('/publicGetSingleForexEnquiry', getSingleForexEnquiry);
 
-router.post('/', createForexEnquiry);
+router.post('/public', createForexEnquiry);
 
 export default router

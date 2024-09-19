@@ -3,11 +3,18 @@ import { University,} from '../model/university.model'
 import { Program} from '../model/program.model'
 import { Client, ClientDocument } from '../model/client.model'
 import { Blog, BlogDocument } from '../blogs/blogs.model'
+import { Commission, CommissionDocument } from '../model/commission.model'
+import { Student, StudentDocument } from '../model/student.model'
+import { Staff, StaffDocument } from '../model/staff.model'
+import { Agent, AgentDocument } from '../model/agent.model'
+
+
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { decrypt, encrypt } from "../helper/Encryption";
+import { normalizeUnits } from 'moment'
 
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
@@ -26,9 +33,16 @@ export let getSuperAdminForSearch = async (req, res, next) => {
             const programList = await Program.find({ $and: [{ $or: [{ programTitle: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('country', { country: 1 })
             const clientList = await Client.find({ $and: [{ $or: [{typeOfClient: { $regex: search, $options: 'i' } }, { businessName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('name', { name: 1, image: 1 })
             const blogList = await Blog.find({ $and: [{ $or: [{title: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('title', { title: 1 })
+            const commissionList = await Commission.find({ $and: [{ $or: [{ universityName: { $regex: search, $options: 'i' } }, { country: { $regex: search, $options: 'i' } }, { paymentType: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('universityName', { universityName: 1 })
+            const studentList = await Student.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('name', { name: 1 })
+            const staffList = await Staff.find({ $and: [{ $or: [{ empName: { $regex: search, $options: 'i' } }, { designation: { $regex: search, $options: 'i' } },{ reportingManager: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('empName', { empName: 1 })
+            const agentList = await Agent.find({ $and: [{ $or: [{ agentName: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('agentName', { agentName: 1 })
 
-            response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200, { universityList, programList, clientList , blogList}, clientError.success.fetchedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200,
+                 { commissionList,universityList, programList, clientList , blogList,studentList,staffList,agentList},
+                 clientError.success.fetchedSuccessfully);
         } catch (err: any) {
+            console.log(err)
             response(req, res, activity, 'Level-3', 'Get-SuperAdminForSeach', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {

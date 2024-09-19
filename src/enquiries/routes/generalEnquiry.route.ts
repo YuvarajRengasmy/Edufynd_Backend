@@ -25,7 +25,7 @@ router.get('/getSingleGeneralEnquiry',
 );
 
 router.post('/',
-    checkPermission('generalEnquiry', 'add'),
+     checkPermission('generalEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createGeneralEnquiry
 );
@@ -63,6 +63,6 @@ router.get('/public', getAllGeneralEnquiry);
 
 router.get('/publicGetSingleGeneralEnquiry', getSingleGeneralEnquiry);
 
-router.post('/', createGeneralEnquiry);
+router.post('/public', createGeneralEnquiry);
 
 export default router
