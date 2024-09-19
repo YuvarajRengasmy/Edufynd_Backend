@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllClient,activeClient, getSingleClient, saveClient, updateClient, deleteClient, csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient } from '../controller/client.controller';
+import { getAllClient,activeClient, getSingleClient, saveClient, updateClient, deleteClient, 
+    csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient } from '../controller/client.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
