@@ -135,7 +135,6 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // For non-SuperAdmin users, check privileges
                     const privilege = user.privileges.find((p) => p.module === module);
-                    console.log("jjj", privilege)
                     console.log(`Checking ${action} permission for module ${module}:`, privilege);
 
                     if (!privilege) {

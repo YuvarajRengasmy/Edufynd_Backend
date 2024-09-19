@@ -1,4 +1,5 @@
 import { University, UniversityDocument } from '../model/university.model'
+import { Logs } from "../model/logs.model";
 import * as mongoose from 'mongoose'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
@@ -14,7 +15,17 @@ export let getAllUniversity = async (req, res, next) => {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+export let getAllLoggedUniversity = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "University" })
+        response(req, res, activity, 'Level-1', 'All-Logged University', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged University', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -70,6 +81,8 @@ export let getSingleUniversity = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-University', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+
 
 
 

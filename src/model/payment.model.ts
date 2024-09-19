@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 
@@ -28,5 +29,5 @@ const paymentSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
-
+LoggingMiddleware(paymentSchema)
 export const Payment = mongoose.model("Payment", paymentSchema)

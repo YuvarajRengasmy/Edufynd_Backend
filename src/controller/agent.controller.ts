@@ -1,4 +1,5 @@
 import { Agent, AgentDocument } from '../model/agent.model'
+import { Logs } from "../model/logs.model";
 import { Student, StudentDocument } from '../model/student.model'
 import { Admin} from '../model/admin.model'
 import { Staff} from '../model/staff.model'
@@ -21,6 +22,15 @@ export let getAllAgent = async (req, res, next) => {
         response(req, res, activity, 'Level-1', 'GetAll-Agent', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-2', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getAllLoggedAgent= async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Agent" })
+        response(req, res, activity, 'Level-1', 'All-Logged Agent', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 

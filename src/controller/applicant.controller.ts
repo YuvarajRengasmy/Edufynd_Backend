@@ -1,4 +1,5 @@
 import { Applicant, ApplicantDocument } from '../model/application.model'
+import { Logs } from "../model/logs.model";
 import { Program, ProgramDocument } from '../model/program.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { University, UniversityDocument } from '../model/university.model'
@@ -18,6 +19,15 @@ export let getAllApplicant = async (req, res, next) => {
         response(req, res, activity, 'Level-1', 'GetAll-Applicant', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Applicant', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getAllLoggedApplication= async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Applicant" })
+        response(req, res, activity, 'Level-1', 'All-Logged Applicant', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Applicant', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 

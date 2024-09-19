@@ -3,7 +3,8 @@ import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProg
     getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, getProgramUniversity,
     getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
     updateProgramApplications,getProgramByCountry,getProgramByUniversity,
-    getProgramCategory, getAllProgramCard} from '../controller/program.controller';
+    getProgramCategory, getAllProgramCard,
+    getAllLoggedProgram} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -16,6 +17,13 @@ router.get('/',
     checkSession,
     checkPermission('program', 'view'),
     getAllProgram
+);
+
+
+router.get('/logs',             
+    // basicAuthUser,
+    // checkSession,
+    getAllLoggedProgram
 );
 
 router.get('/card', 

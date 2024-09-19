@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface ClientDocument extends mongoose.Document {
@@ -70,5 +71,5 @@ const clientSchema = new mongoose.Schema({
 
 })
 
-
+LoggingMiddleware(clientSchema)
 export const Client = mongoose.model("Client", clientSchema)
