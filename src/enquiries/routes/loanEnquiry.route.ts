@@ -62,6 +62,6 @@ router.get('/public', getAllLoanEnquiry);
 
 router.get('/publicGetSingleLoanEnquiry', getSingleLoanEnquiry);
 
-router.post('/', createLoanEnquiry);
+router.post('/public', createLoanEnquiry);
 
 export default router
