@@ -1,5 +1,4 @@
 import { Client, ClientDocument } from '../model/client.model'
-import { Logs } from "../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -13,16 +12,6 @@ export let getAllClient = async (req, res, next) => {
         response(req, res, activity, 'Level-1', 'GetAll-Client', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Client', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
-
-export let getAllLoggedClient = async (req, res, next) => {
-    try {
-        const data = await Logs.find({ modelName: "Client" })
-        response(req, res, activity, 'Level-1', 'All-Logged Client', true, 200, data, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-2', 'All-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -109,103 +98,50 @@ export let saveClient = async (req, res, next) => {
 };
 
 
-// export let updateClient = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const clientDetails: ClientDocument = req.body;
-//             let clientData = await Client.findByIdAndUpdate({ _id: clientDetails._id }, {
-//                 $set: {
-//                     typeOfClient: clientDetails.typeOfClient,
-//                     businessName: clientDetails.businessName,
-//                     businessMailID: clientDetails.businessMailID,
-//                     clientStatus: clientDetails.clientStatus,
-//                     businessContactNo: clientDetails.businessContactNo,
-//                     whatsAppNumber: clientDetails.whatsAppNumber,
-//                     website: clientDetails.website,
-//                     country: clientDetails.country,
-//                     lga: clientDetails.lga,
-//                     state: clientDetails.state,
-//                     addressLine1: clientDetails.addressLine1,
-//                     addressLine2: clientDetails.addressLine2,
-//                     addressLine3: clientDetails.addressLine3,
-//                     name: clientDetails.name,
-//                     dial1: clientDetails.dial1,
-//                     dial2: clientDetails.dial2,
-//                     dial3: clientDetails.dial3,
-               
-//                     contactNo: clientDetails.contactNo,
-//                     emailID: clientDetails.emailID,
-//                     staffStatus: clientDetails.staffStatus,
-//                     privileges: clientDetails.privileges,
-//                     modifiedOn: new Date(),
-//                     modifiedBy: clientDetails.modifiedBy,
-//                 }
-//             });
-
-//             response(req, res, activity, 'Level-2', 'Update-Client', true, 200, clientData, clientError.success.updateSuccess);
-//         } catch (err: any) {
-//             response(req, res, activity, 'Level-3', 'Update-Client', false, 500, {}, errorMessage.internalServer, err.message);
-//         }
-//     }
-//     else {
-//         response(req, res, activity, 'Level-3', 'Update-Client', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-//     }
-// }
-
 export let updateClient = async (req, res, next) => {
     const errors = validationResult(req);
-    
-   
+    if (errors.isEmpty()) {
         try {
             const clientDetails: ClientDocument = req.body;
-            // Prepare the update object
-            let updateFields: any = {
-                typeOfClient: clientDetails.typeOfClient,
-                businessName: clientDetails.businessName,
-                businessMailID: clientDetails.businessMailID,
-                clientStatus: clientDetails.clientStatus,
-                businessContactNo: clientDetails.businessContactNo,
-                whatsAppNumber: clientDetails.whatsAppNumber,
-                website: clientDetails.website,
-                country: clientDetails.country,
-                lga: clientDetails.lga,
-                state: clientDetails.state,
-                addressLine1: clientDetails.addressLine1,
-                addressLine2: clientDetails.addressLine2,
-                addressLine3: clientDetails.addressLine3,
-                name: clientDetails.name,
-                dial1: clientDetails.dial1,
-                dial2: clientDetails.dial2,
-                dial3: clientDetails.dial3,
-                contactNo: clientDetails.contactNo,
-                emailID: clientDetails.emailID,
-                staffStatus: clientDetails.staffStatus,
-                privileges: clientDetails.privileges,
-                modifiedOn: new Date(),
-                modifiedBy: clientDetails.modifiedBy,
-                isActive: true,  // Ensure isActive is set to true in the update object
-            };
+            let clientData = await Client.findByIdAndUpdate({ _id: clientDetails._id }, {
+                $set: {
+                    typeOfClient: clientDetails.typeOfClient,
+                    businessName: clientDetails.businessName,
+                    businessMailID: clientDetails.businessMailID,
+                    clientStatus: clientDetails.clientStatus,
+                    businessContactNo: clientDetails.businessContactNo,
+                    whatsAppNumber: clientDetails.whatsAppNumber,
+                    website: clientDetails.website,
+                    country: clientDetails.country,
+                    lga: clientDetails.lga,
+                    state: clientDetails.state,
+                    addressLine1: clientDetails.addressLine1,
+                    addressLine2: clientDetails.addressLine2,
+                    addressLine3: clientDetails.addressLine3,
+                    name: clientDetails.name,
+                    dial1: clientDetails.dial1,
+                    dial2: clientDetails.dial2,
+                    dial3: clientDetails.dial3,
+               
+                    contactNo: clientDetails.contactNo,
+                    emailID: clientDetails.emailID,
+                    staffStatus: clientDetails.staffStatus,
+                    privileges: clientDetails.privileges,
+                    modifiedOn: new Date(),
+                    modifiedBy: clientDetails.modifiedBy,
+                }
+            });
 
-             // Update the client data in the database using clientDetails._id
-             let clientData = await Client.findByIdAndUpdate(
-                {  _id: clientDetails._id},  // Use clientDetails._id
-                { $set: updateFields },
-                { new: true }  // Return the updated client data
-            );
-console.log("jkjk", clientData)
-
-            if (!clientData) {
-                return response(req, res, activity, 'Level-3', 'Update-Client', false, 404, {}, 'Client not found');
-            }
-
-            // Successful update
-            response(req, res, activity, 'Level-2', 'Update-Client', true, 200, clientData, 'Client updated successfully');
+            response(req, res, activity, 'Level-2', 'Update-Client', true, 200, clientData, clientError.success.updateSuccess);
         } catch (err: any) {
-            console.log("ll", err)
-            response(req, res, activity, 'Level-3', 'Update-Client', false, 500, {}, 'Internal server error', err.message);
+            response(req, res, activity, 'Level-3', 'Update-Client', false, 500, {}, errorMessage.internalServer, err.message);
         }
-    } 
+    }
+    else {
+        response(req, res, activity, 'Level-3', 'Update-Client', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+}
+
 
 
 
@@ -220,28 +156,17 @@ export let deleteClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Delete-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
-
-
 export let activeClient = async (req, res, next) => {
 
     try {
         const { id } = req.params;
-        // const client = await Client.findByIdAndUpdate(  id,
-        //     { isActive: true }, 
-        //     { new: true })
-
-        const clientDetails: ClientDocument = req.body;
-
-            let client = await Client.findByIdAndUpdate(
-                {  _id: clientDetails._id},  // Use clientDetails._id
-                { isActive: true }, 
-                { new: true }  // Return the updated client data
-            );
+        const client = await Client.findByIdAndUpdate(  id,
+            { isActive: true }, // Assuming `isActive` is a field in your Notification schema
+            { new: true })
 
         response(req, res, activity, 'Level-2', 'Active-Client', true, 200, client, 'Successfully Active Client');
     }
     catch (err: any) {
-        console.log(err)
         response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
