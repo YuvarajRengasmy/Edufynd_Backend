@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, deleteStudentByAgent,
      editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent,
-      updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent, getFilteredAgent} from '../controller/agent.controller';
+      updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent, getFilteredAgent,
+      getAllLoggedAgent} from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
@@ -15,6 +16,13 @@ router.get('/',
     checkSession,
     checkPermission('agent', 'view'),
     getAllAgent
+);
+
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedAgent
 );
 
 router.get('/getSingleAgent',

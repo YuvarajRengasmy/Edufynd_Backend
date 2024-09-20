@@ -1,4 +1,5 @@
 import { Client, ClientDocument } from '../model/client.model'
+import { Logs } from "../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -12,6 +13,15 @@ export let getAllClient = async (req, res, next) => {
         response(req, res, activity, 'Level-1', 'GetAll-Client', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Client', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getAllLoggedClient = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Client" })
+        response(req, res, activity, 'Level-1', 'All-Logged Client', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 

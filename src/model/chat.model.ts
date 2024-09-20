@@ -1,5 +1,6 @@
 import mongoose,{Types} from 'mongoose';
 import { DateTime } from "luxon";
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface chatMessageDocument extends mongoose.Document{
     _id?: any;
@@ -42,4 +43,6 @@ const chatMessageSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 
 })
+
+LoggingMiddleware(chatMessageSchema)
 export const ChatMessage = mongoose.model('chat',chatMessageSchema);

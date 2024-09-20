@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface CommissionDocument extends mongoose.Document {
@@ -56,4 +57,6 @@ const commissionSchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(commissionSchema)
 export const Commission = mongoose.model("Commission", commissionSchema)

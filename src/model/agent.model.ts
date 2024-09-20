@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface AgentDocument extends mongoose.Document {
   _id?: any;
@@ -133,5 +134,5 @@ const agentSchema = new mongoose.Schema({
   modifiedBy: { type: String },
 })
 
-
+LoggingMiddleware(agentSchema)
 export const Agent = mongoose.model("Agent", agentSchema)

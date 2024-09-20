@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { getAllCommission, getSingleCommission,getSingleUniversity, createCommission, updateCommission, 
     deleteCommission, getFilteredCommission, 
     deleteCourseType,
-    deleteIntake} from '../controller/commission.controller';
+    deleteIntake,
+    getAllLoggedCommission} from '../controller/commission.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -14,6 +15,12 @@ router.get('/',
     basicAuthUser,
     checkPermission('commission', 'view'),
     getAllCommission
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedCommission
 );
 
 router.get('/getSingleCommission',

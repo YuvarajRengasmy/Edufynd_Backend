@@ -1,4 +1,5 @@
 import { Admin, AdminDocument } from '../model/admin.model'
+import { Logs } from "../model/logs.model";
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin } from '../model/superAdmin.model'
@@ -23,6 +24,16 @@ export let getAllAdmin = async (req, res, next) => {
     }
 };
 
+
+
+export let getAllLoggedAdmin= async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Admin" })
+        response(req, res, activity, 'Level-1', 'All-Logged Admin', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 export let getSingleAdmin = async (req, res, next) => {
     try {

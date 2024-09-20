@@ -1,4 +1,5 @@
 import { Payment, PaymentDocument } from '../model/payment.model'
+import { Logs } from "../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -17,6 +18,15 @@ export const getAllPayment = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetAll-Payment', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+export let getAllLoggedPayment = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Payment" })
+        response(req, res, activity, 'Level-1', 'All-Logged Payment', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Payment', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
 
 
 export const getSinglePayment = async (req, res) => {

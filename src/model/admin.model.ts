@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { getSingleSuperAdmin } from 'src/controller/superAdmin.controller';
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface AdminDocument extends mongoose.Document{
@@ -62,4 +62,6 @@ const adminSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
+
+LoggingMiddleware(adminSchema)
 export const Admin = mongoose.model("Admin", adminSchema)

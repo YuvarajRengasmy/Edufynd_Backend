@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllClient,activeClient, getSingleClient, saveClient, updateClient, deleteClient, csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails } from '../controller/client.controller';
+import { getAllClient,activeClient, getSingleClient, saveClient, updateClient, deleteClient, 
+    csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient } from '../controller/client.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -13,6 +14,12 @@ router.get('/',
     checkSession,
     checkPermission('client', 'view'),
     getAllClient
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedClient
 );
 
 router.get('/card', 
@@ -43,10 +50,18 @@ router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('client', 'edit'),
+    // checkQuery('_id'),
      checkRequestBodyParams('_id'),
     updateClient
 );
 
+
+router.put('/activeClient',                
+    basicAuthUser,
+     checkSession,
+    checkRequestBodyParams('_id'),
+    activeClient
+);
 
 router.put('/editClientProfileBySuperAdmin',             //Update client by super Admin
     basicAuthUser,
@@ -62,13 +77,7 @@ router.delete('/',
     deleteClient
 );
 
-router.put('/activeClient',                
-    basicAuthUser,
-     checkSession,
-    //  checkPermission('client', 'delete'),
-    checkRequestBodyParams('_id'),
-    activeClient
-);
+
 
 router.put('/getFilterClient',
     basicAuthUser,

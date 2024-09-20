@@ -3,6 +3,7 @@ import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
      getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName,
      getAllUniversit,
+     getAllLoggedUniversity,
     } from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -16,6 +17,12 @@ router.get('/',
     checkSession,
     checkPermission('university', 'view'),
     getAllUniversity
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedUniversity
 );
 
 router.get('/getAllUniversit',             

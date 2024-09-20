@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
     getAllStudent, getSingleStudent, saveStudent, updateStudent, deleteStudent, getFilteredStudentBySuperAdmin, csvToJson,
     createStudentBySuperAdmin, getFilteredStudent, editStudentProfileBySuperAdmin,
+    getAllLoggedStudent,
 } from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact } from '../controller/contact.controller';
@@ -20,6 +21,12 @@ router.get('/',
     getAllStudent
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedStudent
+);
 
 router.get('/getSingleStudent',
     basicAuthUser,
