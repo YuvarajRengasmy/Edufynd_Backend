@@ -35,6 +35,22 @@ export let getAllLoggedAgent= async (req, res, next) => {
 };
 
 
+export let getSingleLoggedAgent = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Agent', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
+  
 export let getSingleAgent = async (req, res, next) => {
     try {
         const agent = await Agent.findOne({ _id: req.query._id });

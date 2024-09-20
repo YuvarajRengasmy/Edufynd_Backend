@@ -3,7 +3,8 @@ import { getAllCommission, getSingleCommission,getSingleUniversity, createCommis
     deleteCommission, getFilteredCommission, 
     deleteCourseType,
     deleteIntake,
-    getAllLoggedCommission} from '../controller/commission.controller';
+    getAllLoggedCommission,
+    getSingleLoggedCommission} from '../controller/commission.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -22,6 +23,15 @@ router.get('/logs',
     checkSession,
     getAllLoggedCommission
 );
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedCommission,
+);
+
 
 router.get('/getSingleCommission',
     basicAuthUser,

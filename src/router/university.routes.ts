@@ -28,8 +28,8 @@ router.get('/logs',
 
 
 router.get('/SingleLog',
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     getSingleLoggedUniversity,
 );

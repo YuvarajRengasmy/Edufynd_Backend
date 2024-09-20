@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getAllApplicantCardDetails, getAllLoggedApplication, getFilteredApplication,
-     getSingleApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
+     getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -20,6 +20,15 @@ router.get('/logs',
     checkSession,
     getAllLoggedApplication
 );
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedApplicant,
+);
+
 
 router.get('/card',               
     basicAuthUser,

@@ -35,6 +35,23 @@ export let getAllLoggedAdmin= async (req, res, next) => {
     }
 };
 
+export let getSingleLoggedAdmin = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return res.status(404).json({ message: "No logs found for this Admin." });
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
+
+  
 export let getSingleAdmin = async (req, res, next) => {
     try {
         const agent = await Admin.findOne({ _id: req.query._id });

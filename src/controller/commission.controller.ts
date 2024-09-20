@@ -27,6 +27,22 @@ export let getAllLoggedCommission = async (req, res, next) => {
 };
 
 
+export let getSingleLoggedCommission = async (req, res) => {
+  try {
+    const {_id } = req.query
+    const logs = await Logs.find({ documentId: _id });
+
+    if (!logs || logs.length === 0) {
+      response(req, res, activity, 'Level-3', 'Single-Logged Commission', false, 404, {},"No logs found.");
+    }
+
+    response(req, res, activity, 'Level-1', 'Single-Logged Commission', true, 200, logs, clientError.success.fetchedSuccessfully);
+  } catch (err) {
+    response(req, res, activity, 'Level-2', 'Single-Logged Commission', false, 500, {}, errorMessage.internalServer, err.message);
+  }
+}
+
+
 export const getSingleCommission = async (req, res) => {
     try {
         const data = await Commission.findOne({ _id: req.query._id })

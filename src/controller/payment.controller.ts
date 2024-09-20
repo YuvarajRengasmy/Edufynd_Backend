@@ -28,6 +28,21 @@ export let getAllLoggedPayment = async (req, res, next) => {
     }
   };
 
+  export let getSingleLoggedPayment = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged Payment', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Payment', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Payment', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 
 export const getSinglePayment = async (req, res) => {
     try {

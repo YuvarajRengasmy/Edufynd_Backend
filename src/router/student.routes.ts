@@ -3,6 +3,7 @@ import {
     getAllStudent, getSingleStudent, saveStudent, updateStudent, deleteStudent, getFilteredStudentBySuperAdmin, csvToJson,
     createStudentBySuperAdmin, getFilteredStudent, editStudentProfileBySuperAdmin,
     getAllLoggedStudent,
+    getSingleLoggedStudent,
 } from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact } from '../controller/contact.controller';
@@ -26,6 +27,13 @@ router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedStudent
+);
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedStudent,
 );
 
 router.get('/getSingleStudent',
