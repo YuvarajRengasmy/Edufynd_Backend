@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 export interface GeneralEnquiryDocument extends mongoose.Document{
     studentId?: string,
@@ -104,4 +104,6 @@ const generalEnquirySchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
+
+LoggingMiddleware(generalEnquirySchema)
 export const GeneralEnquiry = mongoose.model("GeneralEnquiry", generalEnquirySchema)

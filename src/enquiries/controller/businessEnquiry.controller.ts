@@ -1,4 +1,5 @@
 import { BusinessEnquiry,BusinessEnquiryDocument} from '../model/businessEnquiry.model'
+import { Logs } from "../../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
@@ -26,6 +27,31 @@ export let getSingleBusinessEnquiry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Business Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+export let getAllLoggedBusinessEnquiry = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "BusinessEnquiry" })
+        response(req, res, activity, 'Level-1', 'All-Logged BusinessEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged BusinessEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedBusinessEnquiry = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged BusinessEnquiry', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged BusinessEnquiry', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged BusinessEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
 
 
 export let createBusinessEnquiry = async (req, res, next) => {

@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { TypeOfClient } from 'src/setting/moduleSetting/model/typeOfClient.model';
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 
 export interface FlightDocument extends mongoose.Document {
@@ -101,4 +101,6 @@ const flightTicketSchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(flightTicketSchema)
 export const Flight = mongoose.model("FlightTicket", flightTicketSchema)
