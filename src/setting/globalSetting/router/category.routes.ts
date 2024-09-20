@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { getAllCategory, getSingleCategory, createCategory, 
-    updateCategory, deleteCategory, getFilteredCategory } from '../../globalSetting/controller/category.controller';
+    updateCategory, deleteCategory, getFilteredCategory, 
+    getAllLoggedCategory,
+    getSingleLoggedCategory} from '../../globalSetting/controller/category.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
-import { basicAuthUser } from '../../../middleware/checkAuth';
+import { basicAuthUser,} from '../../../middleware/checkAuth';
 
 
 const router: Router = Router();
@@ -16,6 +18,18 @@ router.get('/getSingleCategory',
     basicAuthUser,
     checkQuery('_id'),
     getSingleCategory,
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedCategory
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedCategory
 );
 
 

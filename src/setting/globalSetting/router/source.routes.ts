@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { getAllSource, getSingleSource, createSource, updateSource, deleteSource, 
-    getFilteredSource } from '../../globalSetting/controller/source.controller';
+    getFilteredSource, 
+    getAllLoggedSource,
+    getSingleLoggedSource} from '../../globalSetting/controller/source.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 import { checkSession } from '../../../utils/tokenManager';
@@ -19,6 +21,18 @@ router.get('/getSingleSource',
     getSingleSource,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedSource
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedSource
+);
 
 router.post('/',
     basicAuthUser,

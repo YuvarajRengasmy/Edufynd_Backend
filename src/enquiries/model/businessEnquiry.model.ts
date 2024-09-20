@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 
 export interface BusinessEnquiryDocument extends mongoose.Document{
@@ -73,4 +74,6 @@ const businessEnquirySchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
+
+LoggingMiddleware(businessEnquirySchema)
 export const BusinessEnquiry = mongoose.model("BusinessEnquiry", businessEnquirySchema)

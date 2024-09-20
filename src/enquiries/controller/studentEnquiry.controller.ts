@@ -1,7 +1,5 @@
-import {
-    StudentEnquiry,
-    StudentEnquiryDocument,
-} from "../model/studentEnquiry.model";
+import {StudentEnquiry,StudentEnquiryDocument} from "../model/studentEnquiry.model";
+import { Logs } from "../../model/logs.model";
 import { validationResult } from "express-validator";
 import * as TokenManager from "../../utils/tokenManager";
 import { response, transporter } from "../../helper/commonResponseHandler";
@@ -71,6 +69,32 @@ export let getSingleStudentEnquiry = async (req, res, next) => {
         );
     }
 };
+
+export let getAllLoggedStudentEnquiry = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "StudentEnquiry" })
+        response(req, res, activity, 'Level-1', 'All-Logged StudentEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedStudentEnquiry = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged StudentEnquiry', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged StudentEnquiry', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 
 const generateNextStudentCode = async (): Promise<string> => {
     const student = await StudentEnquiry.find({}, "studentCode").exec();

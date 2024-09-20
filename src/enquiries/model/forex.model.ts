@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
  
@@ -95,4 +95,6 @@ const forexSchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(forexSchema)
 export const Forex = mongoose.model("Forex", forexSchema)

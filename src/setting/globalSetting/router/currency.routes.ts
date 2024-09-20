@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCurrency, getSingleCurrency, createCurrency, deleteCurrency, getFilteredCurrency } from '../../globalSetting/controller/currency.controller';
+import { getAllCurrency, getSingleCurrency, createCurrency, deleteCurrency, getFilteredCurrency, getAllLoggedCurrency, getSingleLoggedCurrency } from '../../globalSetting/controller/currency.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
@@ -17,6 +17,18 @@ router.get('/getSingleCurrency',
     getSingleCurrency,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedCurrency
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedCurrency
+);
 
 router.post('/',
     basicAuthUser,

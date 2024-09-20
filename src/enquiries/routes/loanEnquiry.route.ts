@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry } from '../controller/loanEnquiry.controller';
+import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry, getAllLoggedLoanEnquiry, getSingleLoggedLoanEnquiry } from '../controller/loanEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -23,6 +23,22 @@ router.get('/getSingleLoanEnquiry',
     checkQuery('_id'),
     getSingleLoanEnquiry,
 );
+
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedLoanEnquiry
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedLoanEnquiry
+);
+
 
 router.post('/',
     checkPermission('loanEnquiry', 'add'),

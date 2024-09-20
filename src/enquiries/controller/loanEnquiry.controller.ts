@@ -1,4 +1,5 @@
 import { LoanEnquiry, LoanEnquiryDocument } from '../model/loanEnquiry.model'
+import { Logs } from "../../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, transporter } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
@@ -26,6 +27,34 @@ export let getSingleLoanEnquiry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-LoanEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+
+export let getAllLoggedLoanEnquiry = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "LoanEnquiry" })
+        response(req, res, activity, 'Level-1', 'All-Logged LoanEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged LoanEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedLoanEnquiry  = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged LoanEnquiry', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged LoanEnquiry', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged LoanEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
+
 
 const generateNextLoanID = async (): Promise<string> => {
     const loan = await LoanEnquiry.find({}, 'loanID').exec();
