@@ -185,8 +185,8 @@ export let deleteClient = async (req, res, next) => {
 export let activeClient = async (req, res, next) => {
 
     try {
-        const { id } = req.params;
-        const client = await Client.findByIdAndUpdate(  id,
+        const clientDetails: ClientDocument = req.body;
+        const client = await Client.findByIdAndUpdate( { _id: clientDetails._id,},
             { isActive: true }, // Assuming `isActive` is a field in your Notification schema
             { new: true })
 

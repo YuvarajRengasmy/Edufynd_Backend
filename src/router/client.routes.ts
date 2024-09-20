@@ -67,7 +67,7 @@ router.put('/',
 router.put('/activeClient',                
     basicAuthUser,
      checkSession,
-    checkRequestBodyParams('_id'),
+    //  checkQuery('_id'),
     activeClient
 );
 
