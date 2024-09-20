@@ -1,4 +1,5 @@
 import { InTake, InTakeDocument } from '../../globalSetting/model/intake.model'
+import { Logs } from "../../../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
@@ -28,6 +29,31 @@ export const getSingleInTake = async (req: any, res:any, next:any) => {
     }
 }
 
+
+export let getAllLoggedInTake = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "InTake" })
+        response(req, res, activity, 'Level-1', 'All-Logged InTake', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged InTake', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedInTake = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged InTake', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged InTake', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged InTake', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
 
 export let createInTake = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);

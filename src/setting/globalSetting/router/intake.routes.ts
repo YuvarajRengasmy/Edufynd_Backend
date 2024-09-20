@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllInTake, getSingleInTake, createInTake, updateInTake, deleteInTake, getFilteredInTake } from '../../globalSetting/controller/intake.controller';
+import { getAllInTake, getSingleInTake, createInTake, updateInTake, deleteInTake, getFilteredInTake, getAllLoggedInTake, getSingleLoggedInTake } from '../../globalSetting/controller/intake.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
@@ -15,6 +15,18 @@ router.get('/getSingleInTake',
     basicAuthUser,
     checkQuery('_id'),
     getSingleInTake,
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedInTake
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedInTake
 );
 
 

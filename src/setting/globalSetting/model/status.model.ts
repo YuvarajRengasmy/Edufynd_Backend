@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 
 export interface StatusDocument extends mongoose.Document{
     _id?: any;
@@ -23,4 +24,6 @@ export const statusSchema = new mongoose.Schema({
  
 })
 
+
+LoggingMiddleware(statusSchema)
 export const Status = mongoose.model("Status", statusSchema)

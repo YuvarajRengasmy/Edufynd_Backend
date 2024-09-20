@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 
 export interface CategoryDocument extends mongoose.Document {
     categoryName?: string;
@@ -17,4 +17,5 @@ const categorySchema = new mongoose.Schema({
     modifiedBy: { type: String },
 })
 
+LoggingMiddleware(categorySchema)
 export const Category = mongoose.model("Category", categorySchema)

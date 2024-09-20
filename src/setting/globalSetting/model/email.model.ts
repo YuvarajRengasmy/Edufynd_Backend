@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 export interface EmailDocument extends mongoose.Document{
     from?: string;
     to?: string;
@@ -25,4 +25,6 @@ export const emailSchema = new mongoose.Schema({
  
 })
 
+
+LoggingMiddleware(emailSchema)
 export const Email = mongoose.model("Email", emailSchema)

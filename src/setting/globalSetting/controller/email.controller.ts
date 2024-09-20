@@ -1,4 +1,5 @@
 import { Email, EmailDocument } from '../../globalSetting/model/email.model'
+import { Logs } from "../../../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
@@ -27,6 +28,31 @@ export const getSingleTemplate = async (req: any, res:any, next:any) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Template', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+export let getAllLoggedEmail = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Email" })
+        response(req, res, activity, 'Level-1', 'All-Logged Email', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Email', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedEmail = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged Email', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Email', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Email', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
 
 
 export let createEmailTemplate = async (req: any, res:any, next:any) => {
