@@ -1,4 +1,5 @@
 import { Student, StudentDocument } from '../model/student.model'
+import { Logs } from "../model/logs.model";
 import { SuperAdmin } from '../model/superAdmin.model'
 import { Staff } from '../model/staff.model'
 import { Admin } from '../model/admin.model'
@@ -24,6 +25,18 @@ export let getAllStudent = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'GetAll-Student', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+export let getAllLoggedStudent = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Student" })
+        response(req, res, activity, 'Level-1', 'All-Logged Student', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Student', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
 
 
 export let getSingleStudent = async (req, res, next) => {
@@ -244,6 +257,9 @@ export let getFilteredStudent = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         // andList.push({ status: 1 })
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body._id })
+        }
         if (req.body.studentCode) {
             andList.push({ studentCode: req.body.studentCode })
         }

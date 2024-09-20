@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface UniversityDocument extends mongoose.Document {
     _id?: any;
@@ -100,5 +100,5 @@ const universitySchema = new mongoose.Schema({
 
 })
 
-
+LoggingMiddleware(universitySchema)
 export const University = mongoose.model("University", universitySchema)

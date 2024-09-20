@@ -1,4 +1,5 @@
 import { Program, ProgramDocument } from '../model/program.model'
+import { Logs } from "../model/logs.model";
 import { University, UniversityDocument } from '../model/university.model'
 import { validationResult } from 'express-validator'
 import { response } from '../helper/commonResponseHandler'
@@ -27,6 +28,18 @@ export const getAllProgram = async (req, res, next) => {
 
     }
 }
+
+
+
+
+export let getAllLoggedProgram = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Program" })
+        response(req, res, activity, 'Level-1', 'All-Logged Program', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Program', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
 
 
 export let getAllProgramCard = async (req, res, next) => {

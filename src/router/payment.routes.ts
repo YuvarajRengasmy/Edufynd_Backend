@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import {getAllPayment, getSinglePayment, createPaymentIntent, updatePayment, deletePayment, 
     getFilteredPayment, 
-    checkOut} from '../controller/payment.controller';
+    checkOut,
+    getAllLoggedPayment} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -12,6 +13,12 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     getAllPayment
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedPayment
 );
 router.get('/getSinglePayment',
     basicAuthUser,

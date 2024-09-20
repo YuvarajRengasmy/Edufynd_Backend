@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface StaffDocument extends mongoose.Document {
@@ -157,4 +157,7 @@ const staffSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 
 })
+
+
+LoggingMiddleware(staffSchema)
 export const Staff = mongoose.model('Staff', staffSchema)

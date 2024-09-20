@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
-    createStaffBySuperAdmin, createStudentByStaff, 
+    createStaffBySuperAdmin, createStudentByStaff,
+    getAllLoggedStaff, 
    } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
@@ -15,6 +16,14 @@ router.get('/',
     checkPermission('staff', 'view'),
     getAllStaff
 );
+
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedStaff
+);
+
 
 router.get('/getSingleStaff',
     basicAuthUser,
