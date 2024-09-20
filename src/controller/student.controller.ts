@@ -244,6 +244,9 @@ export let getFilteredStudent = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         // andList.push({ status: 1 })
+        if (req.body.studentId) {
+            andList.push({ studentId: req.body._id })
+        }
         if (req.body.studentCode) {
             andList.push({ studentCode: req.body.studentCode })
         }
