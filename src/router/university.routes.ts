@@ -4,6 +4,7 @@ import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity
      getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName,
      getAllUniversit,
      getAllLoggedUniversity,
+     getSingleLoggedUniversity,
     } from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 
@@ -26,6 +27,15 @@ router.get('/logs',
     checkSession,
     getAllLoggedUniversity
 );
+
+
+router.get('/SingleLog',
+    // basicAuthUser,
+    // checkSession,
+    checkQuery('_id'),
+    getSingleLoggedUniversity,
+);
+
 
 router.get('/getAllUniversit',             
     basicAuthUser,
