@@ -4,7 +4,8 @@ import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProg
     getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
     updateProgramApplications,getProgramByCountry,getProgramByUniversity,
     getProgramCategory, getAllProgramCard,
-    getAllLoggedProgram} from '../controller/program.controller';
+    getAllLoggedProgram,
+    getSingleLoggedProgram} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -21,9 +22,17 @@ router.get('/',
 
 
 router.get('/logs',             
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
     getAllLoggedProgram
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedProgram,
 );
 
 router.get('/card', 

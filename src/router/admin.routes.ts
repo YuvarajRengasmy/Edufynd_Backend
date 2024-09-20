@@ -4,7 +4,8 @@ import {
     createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin, editStudentProfileByAdmin,
     editStaffProfileByAdmin,
     updateAdmin,
-    getAllLoggedAdmin
+    getAllLoggedAdmin,
+    getSingleLoggedAdmin
 } from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -23,6 +24,14 @@ router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedAdmin
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedAdmin,
 );
 
 router.get('/getSingleAdmin',

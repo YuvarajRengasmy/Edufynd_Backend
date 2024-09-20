@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
     createStaffBySuperAdmin, createStudentByStaff,
-    getAllLoggedStaff, 
+    getAllLoggedStaff,
+    getSingleLoggedStaff, 
    } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
@@ -22,6 +23,13 @@ router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedStaff
+);
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedStaff,
 );
 
 

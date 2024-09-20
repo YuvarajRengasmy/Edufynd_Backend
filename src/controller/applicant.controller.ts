@@ -32,6 +32,21 @@ export let getAllLoggedApplication= async (req, res, next) => {
 };
 
 
+export let getSingleLoggedApplicant = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged Applicant', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Applicant', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Applicant', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 export let getAllApplicantCardDetails = async (req, res, next) => {
     try {
         // Find all client that are not deleted

@@ -2,7 +2,8 @@ import { Router } from 'express';
 import {getAllPayment, getSinglePayment, createPaymentIntent, updatePayment, deletePayment, 
     getFilteredPayment, 
     checkOut,
-    getAllLoggedPayment} from '../controller/payment.controller';
+    getAllLoggedPayment,
+    getSingleLoggedPayment} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -20,6 +21,16 @@ router.get('/logs',
     checkSession,
     getAllLoggedPayment
 );
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedPayment,
+);
+
+
 router.get('/getSinglePayment',
     basicAuthUser,
     checkQuery('_id'),
