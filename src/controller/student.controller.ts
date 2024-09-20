@@ -37,6 +37,21 @@ export let getAllLoggedStudent = async (req, res, next) => {
   };
 
 
+  export let getSingleLoggedStudent = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged Student', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Student', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Student', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 
 
 export let getSingleStudent = async (req, res, next) => {

@@ -29,6 +29,24 @@ export let getAllLoggedUniversity = async (req, res, next) => {
     }
 };
 
+export let getSingleLoggedUniversity = async (req, res) => {
+    try {
+        const { _id } = req.query
+
+
+        const logs = await Logs.find({ documentId: _id });
+
+        if (!logs || logs.length === 0) {
+            response(req, res, activity, 'Level-3', 'Single-Logged University', false, 404, {}, "No logs found.");
+        }
+
+        response(req, res, activity, 'Level-1', 'Single-Logged University', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        response(req, res, activity, 'Level-2', 'Single-Logged University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+}
+
+
 
 
 export let getAllUniversit = async (req, res, next) => {
@@ -623,7 +641,7 @@ export const csvToJson = async (req, res) => {
             const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
             const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
 
-        
+
             const primaryCampus = data.PrimaryCampus ? data.PrimaryCampus.trim() : '';
 
             // Create campuses by mapping states to corresponding city groups
