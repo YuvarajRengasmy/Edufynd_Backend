@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 
 export interface SourceDocument extends mongoose.Document{
     _id?: any;
@@ -21,4 +22,6 @@ export const sourceSchema = new mongoose.Schema({
  
 })
 
+
+LoggingMiddleware(sourceSchema)
 export const Source = mongoose.model("Source", sourceSchema)

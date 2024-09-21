@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 
 export interface YearDocument extends mongoose.Document{
   
@@ -19,4 +20,5 @@ export const yearSchema = new mongoose.Schema({
  
 })
 
+LoggingMiddleware(yearSchema)
 export const Year = mongoose.model("Year", yearSchema)

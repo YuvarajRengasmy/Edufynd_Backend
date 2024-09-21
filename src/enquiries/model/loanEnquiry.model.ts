@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 export interface LoanEnquiryDocument extends mongoose.Document {
   
@@ -120,4 +120,6 @@ const loanEnquirySchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(loanEnquirySchema)
 export const LoanEnquiry = mongoose.model('LoanEnquiry', loanEnquirySchema)

@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 export interface CurrencyDocument extends mongoose.Document{
     country?: string;
     currency?: string;
@@ -23,4 +23,6 @@ export const currencySchema = new mongoose.Schema({
  
 })
 
+
+LoggingMiddleware(currencySchema)
 export const Currency = mongoose.model("Currency", currencySchema)

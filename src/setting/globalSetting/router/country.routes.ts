@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllCountry, getSingleCountry, createCountry, updateCountry, deleteCountry, getFilteredCountry } from '../../globalSetting/controller/country.controller';
+import { getAllCountry, getSingleCountry, createCountry, updateCountry, deleteCountry, getFilteredCountry, getAllLoggedCountry, getSingleLoggedCountry } from '../../globalSetting/controller/country.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
@@ -17,6 +17,18 @@ router.get('/getSingleCountry',
     getSingleCountry,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedCountry
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedCountry
+);
 
 router.post('/',
     basicAuthUser,

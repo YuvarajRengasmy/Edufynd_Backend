@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 export interface AccommodationDocument extends mongoose.Document {
     accommodationID?: any;
@@ -87,4 +88,5 @@ const accommodationSchema = new mongoose.Schema({
 
 })
 
+LoggingMiddleware(accommodationSchema)
 export const Accommodation = mongoose.model("Accommodation", accommodationSchema)
