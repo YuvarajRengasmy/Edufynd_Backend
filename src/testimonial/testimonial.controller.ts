@@ -3,6 +3,8 @@ import { Student} from '../model/student.model'
 import { Staff} from '../model/staff.model'
 import { Admin} from '../model/admin.model'
 import { Agent} from '../model/agent.model'
+import { Logs } from "../model/logs.model";
+
 import { validationResult } from "express-validator";
 import { response, transporter} from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -76,16 +78,16 @@ export let createTestimonial = async (req, res, next) => {
                 // Prepare email attachments
                 const attachments = [];
                 let cid = ''
-                    if (savedTestimonial.uploadImage) {
-                        const [fileType, fileContent] = savedTestimonial.uploadImage.split("base64,");
-                        const extension = fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    if (savedTestimonial.uploadFile) {
+                        // const [fileType, fileContent] = savedTestimonial.uploadFile.split("base64,");
+                        // const extension = fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
                         const timestamp = format(new Date(), 'yyyyMMdd');
-                        const dynamicFilename = `${savedTestimonial.courseOrUniversityName.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
-                        cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
+                        const dynamicFilename = `${savedTestimonial.courseOrUniversityName.replace(/\s+/g, '_')}_${timestamp}`;
+                        // cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
 
                     attachments.push({
                         filename: dynamicFilename,
-                        content: savedTestimonial.uploadImage.split("base64,")[1],
+                        // content: savedTestimonial.uploadFile.split("base64,")[1],
                         encoding: 'base64',
                         cid: cid
 
@@ -197,9 +199,9 @@ export const updateTestimonial = async (req, res) => {
                     courseOrUniversityName:testimonialData.courseOrUniversityName,
                     location: testimonialData.location,
                     content: testimonialData.content,
-                    uploadImage: testimonialData.uploadImage,
+                    uploadFile: testimonialData.uploadFile,
                     counselorName: testimonialData.counselorName,
-                 
+                    hostName: testimonialData.hostName,
                     modifiedOn: new Date(),
                     modifiedBy:  testimonialData.modifiedBy,
                 },
@@ -267,7 +269,50 @@ export let getFilteredTestimonial   = async (req, res, next) => {
     }
 };
 
+export let getSingleLogged = async (req, res) => {
+    try {
+        const { _id } = req.query;
 
+        // Fetch logs that match the documentId
+        const logs = await Logs.find({ documentId: _id });
+
+        // If no logs are found, return a 404 response and stop further execution
+        if (!logs || logs.length === 0) {
+            return response(req, res, 'activity', 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
+        }
+
+        // If logs are found, return a 200 response with logs data
+        return response(req, res, 'activity', 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        // Handle errors and send a 500 response, then stop execution
+        return response(req, res, 'activity', 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+// export let getSingleLogged = async (req, res) => {
+//     try {
+//       const { _id } = req.query; // Extract _id from query params
+  
+//       // Fetch logs that have the documentId matching _id
+//       const logs = await Logs.find({ documentId: _id });
+  
+//       // If no logs are found, send a 404 response
+//       if (!logs || logs.length === 0) {
+//         console.log("ui",logs)
+//         return response(req, res, 'activity', 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
+//       }
+     
+  
+//       // If logs are found, send a 200 response with logs data
+//       return response(req, res, 'activity', 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
+//     } catch (err) {
+//       // Handle server errors and send a 500 response
+//       return response(req, res, 'activity', 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
+//     }
+//   };
+  
+  
 
 // export let createTestimonial = async (req, res, next) => {
 //     const errors = validationResult(req);

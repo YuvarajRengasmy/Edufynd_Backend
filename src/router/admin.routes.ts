@@ -56,7 +56,7 @@ router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('admin', 'edit'),
-    // checkRequestBodyParams('_id'),
+     checkRequestBodyParams('_id'),
     updateAdmin
 );
 

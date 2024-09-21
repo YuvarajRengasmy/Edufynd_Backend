@@ -9,7 +9,9 @@ export interface TestimonialDocument extends mongoose.Document {
     courseOrUniversityName?: string;
     location?: string;
     content?: string;
-    uploadImage?: string;
+    uploadFile?:any[];
+    hostName?: string;
+
     counselorName?: string;
 
     createdOn?: Date;
@@ -25,9 +27,9 @@ const testimonialSchema = new mongoose.Schema({
     courseOrUniversityName: {type: String},
     location: {type: String},
     content: {type: String},
-    uploadImage: {type: String},
+    uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }],
     counselorName: {type: String},
-
+    hostName:{type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

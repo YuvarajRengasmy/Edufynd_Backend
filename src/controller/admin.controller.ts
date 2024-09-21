@@ -37,18 +37,24 @@ export let getAllLoggedAdmin= async (req, res, next) => {
 
 export let getSingleLoggedAdmin = async (req, res) => {
     try {
-      const {_id } = req.query
+      const { _id } = req.query;
+  
+      // Fetch logs by documentId
       const logs = await Logs.find({ documentId: _id });
   
+      // If no logs are found, return a 404 response and stop further execution
       if (!logs || logs.length === 0) {
         return res.status(404).json({ message: "No logs found for this Admin." });
       }
   
-      response(req, res, activity, 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
+      // If logs are found, return them with a 200 response
+      return response(req, res, 'activity', 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
-      response(req, res, activity, 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+      // In case of an error, return a 500 response and stop further execution
+      return response(req, res, 'activity', 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
-  }
+  };
+  
 
 
   
@@ -134,7 +140,7 @@ export const updateAdmin = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const adminDetails: AdminDocument = req.body;
-            let statusData = await Admin.findByIdAndUpdate({ _id: req.body._id }, {
+            let statusData = await Admin.findByIdAndUpdate({ _id: adminDetails._id }, {
                 $set: {
                     name: adminDetails.name,
                     email: adminDetails.email,
@@ -315,9 +321,15 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
             const adminDetails: AdminDocument = req.body;
             const updateData = await Admin.findOneAndUpdate({ _id: adminDetails._id }, {
                 $set: {
+                    name: adminDetails.name,
+                    email: adminDetails.email,
+                    dial: adminDetails.dial,
+                    mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    // privileges: adminDetails.privileges, 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
+                    
                 }
             });
             response(req, res, activity, 'Level-1', 'Update-Admin by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
