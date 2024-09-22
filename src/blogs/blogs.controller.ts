@@ -72,6 +72,7 @@ export let updateBlog = async (req, res, next) => {
                     addImageURL: blogDetails.addImageURL,
                     imageDescription: blogDetails.imageDescription,
                     uploadFiles: blogDetails.uploadFiles,
+                    uploadFile: blogDetails.uploadFile,
                     language:blogDetails.language,
                     category:blogDetails.category,
                     subCategory: blogDetails.subCategory,

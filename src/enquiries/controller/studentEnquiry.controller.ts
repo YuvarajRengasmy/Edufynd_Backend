@@ -86,12 +86,12 @@ export let getAllLoggedStudentEnquiry = async (req, res, next) => {
       const logs = await Logs.find({ documentId: _id });
   
       if (!logs || logs.length === 0) {
-        response(req, res, activity, 'Level-3', 'Single-Logged StudentEnquiry', false, 404, {},"No logs found.");
+        return response(req, res, activity, 'Level-3', 'Single-Logged StudentEnquiry', false, 404, {},"No logs found.");
       }
   
-      response(req, res, activity, 'Level-1', 'Single-Logged StudentEnquiry', true, 200, logs, clientError.success.fetchedSuccessfully);
+      return response(req, res, activity, 'Level-1', 'Single-Logged StudentEnquiry', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
-      response(req, res, activity, 'Level-2', 'Single-Logged StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        return response(req, res, activity, 'Level-2', 'Single-Logged StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
   }
 
