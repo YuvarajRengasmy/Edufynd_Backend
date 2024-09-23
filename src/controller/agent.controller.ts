@@ -44,14 +44,14 @@ export let getSingleLoggedAgent = async (req, res) => {
 
         // If no logs are found, return a 404 response and stop further execution
         if (!logs || logs.length === 0) {
-            return response(req, res, 'activity', 'Level-2', 'Single-Logged Agent', false, 404, {}, "No logs found.");
+            return response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 404, {}, "No logs found.");
         }
 
         // If logs are found, return a 200 response with logs data
-        return response(req, res, 'activity', 'Level-1', 'Single-Logged Agent', true, 200, logs, clientError.success.fetchedSuccessfully);
+        return response(req, res, activity, 'Level-1', 'Single-Logged Agent', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
         // Handle errors and return a 500 response, then stop execution
-        return response(req, res, 'activity', 'Level-2', 'Single-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        return response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
