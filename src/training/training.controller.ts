@@ -198,6 +198,7 @@ export const updateTraining = async (req, res) => {
                     requestTraining: trainingData.requestTraining,
                     trainingTopic: trainingData.trainingTopic,
                     date:trainingData.date,
+                    fileUpload: trainingData.fileUpload,
                     time:trainingData.time,
                     typeOfUser: trainingData.typeOfUser,
                     usersName:trainingData.usersName,
@@ -205,7 +206,7 @@ export const updateTraining = async (req, res) => {
                     name: trainingData.name,
                     subject: trainingData.subject,
                     content: trainingData.content,
-                    uploadDocument: trainingData.uploadDocument,
+                    hostName:trainingData.hostName,
                  
                     modifiedOn: new Date(),
                     modifiedBy:  trainingData.modifiedBy,

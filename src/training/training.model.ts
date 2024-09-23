@@ -14,9 +14,9 @@ export interface TrainingDocument extends mongoose.Document {
     name?: string;
     subject?: string;
     content?: string;
-    uploadDocument?: string;
-
-
+    fileUpload?: any[];
+    uploadDocument?:string;
+    hostName: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -29,7 +29,7 @@ const trainingSchema = new mongoose.Schema({
     trainingTopic: { type: String },
     date: { type: Date },
     time: { type: String },
-
+    hostName: { type: String },
     typeOfUser: { type: String },
     usersName: [String],
     userEmail: [String],
@@ -38,7 +38,11 @@ const trainingSchema = new mongoose.Schema({
     subject: { type: String },
     content: { type: String },
     uploadDocument: { type: String },
-
+    fileUpload: [{
+        _id: { type: mongoose.Types.ObjectId, auto: true },
+        fileName: { type: String},
+        fileImage:  { type: String },
+    }],
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

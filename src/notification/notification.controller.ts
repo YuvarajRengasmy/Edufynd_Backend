@@ -37,7 +37,7 @@ export const getSingleNotification = async (req, res) => {
 }
 
 
-export let createNotificationf = async (req, res, next) => {
+export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -192,8 +192,7 @@ export const updateNotification = async (req, res) => {
                     userName: notificationData.userName,
                     subject: notificationData.subject,
                     content: notificationData.content,
-                    uploadImage: notificationData.uploadImage,
-
+                    uploadFile: notificationData.uploadFile,
                     modifiedOn: new Date(),
                     modifiedBy: notificationData.modifiedBy,
                 },
@@ -260,7 +259,7 @@ export let getFilteredNotification = async (req, res, next) => {
 
 
 //with Remainder
-export let createNotification = async (req, res, next) => {
+export let createNotificationf = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
