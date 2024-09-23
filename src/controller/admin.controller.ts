@@ -48,10 +48,10 @@ export let getSingleLoggedAdmin = async (req, res) => {
       }
   
       // If logs are found, return them with a 200 response
-      return response(req, res, 'activity', 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
+      return response(req, res, activity, 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
       // In case of an error, return a 500 response and stop further execution
-      return response(req, res, 'activity', 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+      return response(req, res, activity, 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
   };
   

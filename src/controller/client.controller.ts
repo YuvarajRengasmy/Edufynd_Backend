@@ -35,14 +35,14 @@ export let getSingleLoggedClient = async (req, res) => {
 
         // If no logs are found, return a 404 response and stop further execution
         if (!logs || logs.length === 0) {
-            return response(req, res, 'activity', 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
+            return response(req, res, activity, 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
         }
 
         // If logs are found, return a 200 response with logs data
-        return response(req, res, 'activity', 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
+        return response(req, res, activity, 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
         // Handle errors and send a 500 response, then stop execution
-        return response(req, res, 'activity', 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
+        return response(req, res, activity, 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -191,24 +191,6 @@ export let deleteClient = async (req, res, next) => {
 };
 
 
-export let activeClientt = async (req, res, next) => {
-
-    try {
-        const clientDetails: ClientDocument = req.body;
-        const client = await Client.findByIdAndUpdate( { _id: clientDetails._id,},
-            { isActive: true }, // Assuming `isActive` is a field in your Notification schema
-            { new: true })
-
-        response(req, res, activity, 'Level-2', 'Active-Client', true, 200, client, 'Successfully Active Client');
-    }
-    catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
-
-
-
 
 export let getFilteredClient = async (req, res, next) => {
     try {
@@ -340,9 +322,6 @@ export const editClientProfileBySuperAdmin = async (req, res) => {
 }
 
 
-////
-
-
 export let activeClient = async (req, res, next) => {
     try {
         const clientIds = req.body.clientIds; // Array of client IDs
@@ -363,3 +342,26 @@ export let activeClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
+
+
+export let deactivateClient = async (req, res, next) => {
+    try {
+      const clientIds = req.body.clientIds; // Array of client IDs to deactivate
+  
+      // Update all clients whose IDs are in clientIds to set isActive to false
+      const clients = await Client.updateMany(
+        { _id: { $in: clientIds } }, // Match clients with the given IDs
+        { $set: { isActive: false } }, // Set isActive to false
+        { new: true }
+      );
+  
+      if (clients.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Client', true, 200, clients, 'Successfully deactivated clients.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Client', false, 400, {}, 'No clients were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Client', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
