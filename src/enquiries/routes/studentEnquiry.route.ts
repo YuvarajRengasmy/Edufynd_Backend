@@ -86,7 +86,13 @@ router.put('/getFilterStudentEnquiry',
 );
 
 
-router.post('/assign', assignStaffId)
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
+
 
 //Public API
 
