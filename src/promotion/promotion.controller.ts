@@ -188,7 +188,7 @@ export const updatePromotion = async (req, res) => {
                     subject: promotionData.subject,
                     content: promotionData.content,
                     uploadImage: promotionData.uploadImage,
-
+                    fileUpload: promotionData.fileUpload,
                     modifiedOn: new Date(),
                     modifiedBy: promotionData.modifiedBy,
                 },

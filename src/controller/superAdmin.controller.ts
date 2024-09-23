@@ -8,7 +8,7 @@ import { Student, StudentDocument } from '../model/student.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Agent, AgentDocument } from '../model/agent.model'
 import { Testimonial, TestimonialDocument } from '../testimonial/testimonial.model'
-
+import {Admin, AdminDocument} from '../model/admin.model'
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -29,6 +29,7 @@ export let getSuperAdminForSearch = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             let search = req.query.search
+            const adminList = await Admin.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { adminCode: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('role',{role:1})
             const universityList = await University.find({ $and: [{ $or: [{ universityName: { $regex: search, $options: 'i' } }, { country: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('popularCategories',{popularCategories:1})
             const programList = await Program.find({ $and: [{ $or: [{ programTitle: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('country', { country: 1 })
             const clientList = await Client.find({ $and: [{ $or: [{typeOfClient: { $regex: search, $options: 'i' } }, { businessName: { $regex: search, $options: 'i' } }] }, { isDeleted: false }] }).populate('name', { name: 1, image: 1 })
@@ -41,7 +42,7 @@ export let getSuperAdminForSearch = async (req, res, next) => {
                 { courseOrUniversityName: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } },{counselorname: { $regex: search, $options: 'i' } },{location: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('hostName', { hostName: 1 })
 
             response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200,
-                 { commissionList,universityList,testimonialList, programList, clientList , blogList,studentList,staffList,agentList},
+                 { adminList,commissionList,universityList,testimonialList, programList, clientList , blogList,studentList,staffList,agentList},
                  clientError.success.fetchedSuccessfully);
         } catch (err: any) {
             console.log(err)

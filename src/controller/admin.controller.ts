@@ -148,7 +148,7 @@ export const updateAdmin = async (req, res) => {
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
                     privileges: adminDetails.privileges, 
-
+                    dial1: adminDetails.dial1,
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
                 }
@@ -185,7 +185,7 @@ export let getFilteredAdmin = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
@@ -326,6 +326,7 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
                     dial: adminDetails.dial,
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    dial1: adminDetails.dial1,
                     // privileges: adminDetails.privileges, 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,

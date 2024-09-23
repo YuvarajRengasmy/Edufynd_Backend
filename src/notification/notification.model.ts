@@ -9,10 +9,11 @@ export interface NotificationDocument extends mongoose.Document {
     userEmail?: any[];
     subject?: string;
     content?: string;
-    uploadImage?: string;
+    
     scheduledTime?: Date;
     sent?: Boolean;
-
+    uploadFile?:any[];
+    hostName?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -26,10 +27,11 @@ const notificationSchema = new mongoose.Schema({
     userEmail: [String],
     subject: {type: String},
     content: {type: String},
-    uploadImage: {type: String},
+    uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }],
+    hostName:{type: String},
     scheduledTime: {type: Date},
     sent: { type: Boolean, default: false },
-
+    uploadImage: { type: String },
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

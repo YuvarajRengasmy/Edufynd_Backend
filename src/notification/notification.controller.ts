@@ -192,8 +192,7 @@ export const updateNotification = async (req, res) => {
                     userName: notificationData.userName,
                     subject: notificationData.subject,
                     content: notificationData.content,
-                    uploadImage: notificationData.uploadImage,
-
+                    uploadFile: notificationData.uploadFile,
                     modifiedOn: new Date(),
                     modifiedBy: notificationData.modifiedBy,
                 },
