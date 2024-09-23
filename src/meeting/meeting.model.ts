@@ -15,7 +15,7 @@ export interface MeetingDocument extends mongoose.Document {
     time?: string;
     scheduledTime?: Date;
     sent?: Boolean;
-
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -37,7 +37,7 @@ const meetingSchema = new mongoose.Schema({
     time: {type: String},
     scheduledTime: {type: Date},
     sent: { type: Boolean, default: false },
-
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

@@ -211,3 +211,42 @@ export let getFilteredForexEnquiry = async (req, res, next) => {
 
 
 
+export let activeForex= async (req, res, next) => {
+    try {
+        const forexIds = req.body.forexIds; 
+  
+        const forex = await Forex.updateMany(
+            { _id: { $in: forexIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (forex.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Forex ', true, 200, forex, 'Successfully Activated Forex .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Forex ', false, 400, {}, 'Already Forex were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Forex ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateForex = async (req, res, next) => {
+    try {
+        const forexIds = req.body.forexIds;   
+      const forex = await Forex.updateMany(
+        { _id: { $in: forexIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (forex.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-forex', true, 200, forex, 'Successfully deactivated forex.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-forex', false, 400, {}, 'Already forex were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-forex', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

@@ -36,6 +36,7 @@ export interface FlightDocument extends mongoose.Document {
     staffId?: any;
     status?: any;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -94,6 +95,7 @@ const flightTicketSchema = new mongoose.Schema({
     }],
  
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

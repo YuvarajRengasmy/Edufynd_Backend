@@ -38,6 +38,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
      adminId?: any;
      staffId?: any;
      status?: any;
+     isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -98,6 +99,7 @@ const generalEnquirySchema = new mongoose.Schema({
     
         }]
     }],
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

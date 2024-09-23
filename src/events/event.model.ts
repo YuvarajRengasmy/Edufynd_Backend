@@ -17,7 +17,7 @@ export interface EventDocument extends mongoose.Document {
     time?: string;
     venue?: string;
     sent?: Boolean;
-
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -44,7 +44,7 @@ const eventSchema = new mongoose.Schema({
     time: {type: String},
     venue: {type: String},
     sent: { type: Boolean, default: false },
-
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

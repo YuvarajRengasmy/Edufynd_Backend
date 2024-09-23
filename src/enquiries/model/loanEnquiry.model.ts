@@ -52,6 +52,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     adminId?: any;
     staffId?: any;
     typeOfClient?: string;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -112,7 +113,7 @@ const loanEnquirySchema = new mongoose.Schema({
     coApplicantWhatsAppNo: { type: String },
     relationship: { type: String },
 
-
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

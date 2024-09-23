@@ -39,6 +39,7 @@ export interface ForexDocument extends mongoose.Document {
     profit?: string;
     typeOfClient: string;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -88,6 +89,7 @@ const forexSchema = new mongoose.Schema({
     profit: {type: String},
 
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

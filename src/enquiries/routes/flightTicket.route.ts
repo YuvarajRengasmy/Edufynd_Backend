@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllFlightTicketEnquiry, getSingleFlightTicketEnquiry, createFlightTicketEnquiry, updateFlightTicketEnquiry, deleteFlightTicketEnquiry, getFilteredFlightTicketEnquiry, getAllLoggedFlight, getSingleLoggedFlight } from '../controller/flightTicket.controller';
+import { getAllFlightTicketEnquiry, getSingleFlightTicketEnquiry, createFlightTicketEnquiry, updateFlightTicketEnquiry, deleteFlightTicketEnquiry, getFilteredFlightTicketEnquiry, getAllLoggedFlight, getSingleLoggedFlight, activeFlight, deactivateFlight } from '../controller/flightTicket.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -51,6 +51,18 @@ router.put('/',
     checkRequestBodyParams('_id'),
     updateFlightTicketEnquiry,
 
+);
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeFlight
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateFlight
 );
 
 

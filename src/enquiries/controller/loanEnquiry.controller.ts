@@ -226,3 +226,43 @@ export let getFilteredLoanEnquiry = async (req, res, next) => {
 
 
 
+
+export let activeLoanEnquiry= async (req, res, next) => {
+    try {
+        const loanEnquiryIds = req.body.loanEnquiryIds; 
+  
+        const loan = await LoanEnquiry.updateMany(
+            { _id: { $in: loanEnquiryIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (loan.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-LoanEnquiry ', true, 200, loan, 'Successfully Activated LoanEnquiry .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-LoanEnquiry ', false, 400, {}, 'Already LoanEnquiry were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-LoanEnquiry ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateLoanEnquiry = async (req, res, next) => {
+    try {
+        const loanEnquiryIds = req.body.loanEnquiryIds;  
+      const loan = await LoanEnquiry.updateMany(
+        { _id: { $in: loanEnquiryIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (loan.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-LoanEnquiry', true, 200, loan, 'Successfully deactivated LoanEnquiry.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-LoanEnquiry', false, 400, {}, 'Already LoanEnquiry were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-LoanEnquiry', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

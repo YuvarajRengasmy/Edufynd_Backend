@@ -204,3 +204,43 @@ export let getFilteredAccommodation = async (req, res, next) => {
 
 
 
+
+export let activeAccommodation = async (req, res, next) => {
+    try {
+        const accommodationIds = req.body.accommodationIds; 
+  
+        const accommodation = await Accommodation.updateMany(
+            { _id: { $in: accommodationIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (accommodation.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Accommodation ', true, 200, accommodation, 'Successfully Activated Accommodation .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Accommodation ', false, 400, {}, 'Already Accommodation were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Accommodation ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateAccommodation = async (req, res, next) => {
+    try {
+        const accommodationIds = req.body.accommodationIds     
+      const accommodation = await Accommodation.updateMany(
+        { _id: { $in: accommodationIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (accommodation.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Accommodation', true, 200, accommodation, 'Successfully deactivated Accommodation.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Accommodation', false, 400, {}, 'Already Accommodation were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Accommodation', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

@@ -442,3 +442,46 @@ export let createMeeting = async (req, res, next) => {
     }
 };
 
+
+
+
+export let activeMeeting = async (req, res, next) => {
+    try {
+        const meetingIds = req.body.meetingIds; 
+  
+        const meeting = await Meeting.updateMany(
+            { _id: { $in: meetingIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (meeting.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Meeting ', true, 200, meeting, 'Successfully Activated Meeting .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Meeting ', false, 400, {}, 'Already Meeting were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Meeting ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateMeeting = async (req, res, next) => {
+    try {
+        const meetingIds = req.body.meetingIds; 
+  
+        const meeting = await Meeting.updateMany(
+        { _id: { $in: meetingIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (meeting.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Meeting', true, 200, meeting, 'Successfully deactivated Meeting.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Meeting', false, 400, {}, 'Already Meeting were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Meeting', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

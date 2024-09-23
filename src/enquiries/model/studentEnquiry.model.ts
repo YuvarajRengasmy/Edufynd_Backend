@@ -46,6 +46,7 @@ export interface StudentEnquiryDocument extends mongoose.Document {
     assignedTo?: string;
     status?: any;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -111,6 +112,7 @@ const studentEnquirySchema = new mongoose.Schema({
             createdBy: { type: String },
         }]
     }],
+    isActive: {type: String,default: "InActive"},
     isDeleted: { type: Boolean, default: false },
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },

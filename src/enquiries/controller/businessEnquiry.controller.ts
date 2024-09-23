@@ -172,3 +172,46 @@ export let getFilteredBusinessEnquiry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Filter Business Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+
+
+export let activeBusinessEnquiry = async (req, res, next) => {
+    try {
+        const businessEnquiryIds = req.body.businessEnquiryIds; 
+  
+        const businessEnquiry = await BusinessEnquiry.updateMany(
+            { _id: { $in: businessEnquiryIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (businessEnquiry.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-BusinessEnquiry ', true, 200, businessEnquiry, 'Successfully Activated BusinessEnquiry .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-BusinessEnquiry ', false, 400, {}, 'Already BusinessEnquiry were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-BusinessEnquiry ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateBusinessEnquiry = async (req, res, next) => {
+    try {
+        const businessEnquiryIds = req.body.businessEnquiryIds;     
+      const businessEnquiry = await BusinessEnquiry.updateMany(
+        { _id: { $in: businessEnquiryIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (businessEnquiry.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-BusinessEnquiry', true, 200, businessEnquiry, 'Successfully deactivated BusinessEnquiry.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-BusinessEnquiry', false, 400, {}, 'Already BusinessEnquiry were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-BusinessEnquiry', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

@@ -329,3 +329,45 @@ export let getFilteredStudentEnquiry = async (req, res, next) => {
         );
     }
 };
+
+
+
+export let activeStudentEnquiry = async (req, res, next) => {
+    try {
+        const studentEnquiryIds = req.body.studentEnquiryIds; 
+  
+        const student = await StudentEnquiry.updateMany(
+            { _id: { $in: studentEnquiryIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (student.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-StudentEnquiry ', true, 200, student, 'Successfully Activated StudentEnquiry .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-StudentEnquiry ', false, 400, {}, 'Already StudentEnquiry were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-StudentEnquiry ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateStudentEnquiry = async (req, res, next) => {
+    try {
+        const studentEnquiryIds = req.body.studentEnquiryIds;   
+      const student = await StudentEnquiry.updateMany(
+        { _id: { $in: studentEnquiryIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (student.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-StudentEnquiry', true, 200, student, 'Successfully deactivated StudentEnquiry.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-StudentEnquiry', false, 400, {}, 'Already StudentEnquiry were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-StudentEnquiry', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

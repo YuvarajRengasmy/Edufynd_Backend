@@ -31,7 +31,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
      adminId?: any;
      staffId?: any;
      typeOfClient?: string;
-
+     isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -67,7 +67,7 @@ const businessEnquirySchema = new mongoose.Schema({
      whatsAppNumber: { type: String },
      qualification: { type: String },
      assignedTo: { type: String },
-
+     isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

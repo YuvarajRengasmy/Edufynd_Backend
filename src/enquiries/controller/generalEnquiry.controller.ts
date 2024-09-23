@@ -182,3 +182,44 @@ export let getFilteredGeneralEnquiry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Filter General Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+export let activeGeneralEnquiry= async (req, res, next) => {
+    try {
+        const generalIds = req.body.generalIds; 
+  
+        const general = await GeneralEnquiry.updateMany(
+            { _id: { $in: generalIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (general.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-GeneralEnquiry ', true, 200, general, 'Successfully Activated GeneralEnquiry .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-GeneralEnquiry ', false, 400, {}, 'Already GeneralEnquiry were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-GeneralEnquiry ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateGeneralEnquiry = async (req, res, next) => {
+    try {
+        const generalIds = req.body.generalIds;  
+      const general = await GeneralEnquiry.updateMany(
+        { _id: { $in: generalIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (general.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-GeneralEnquiry', true, 200, general, 'Successfully deactivated GeneralEnquiry.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-GeneralEnquiry', false, 400, {}, 'Already GeneralEnquiry were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-GeneralEnquiry', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

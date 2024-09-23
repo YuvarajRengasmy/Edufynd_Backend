@@ -200,3 +200,42 @@ export let getFilteredFlightTicketEnquiry = async (req, res, next) => {
 
 
 
+export let activeFlight = async (req, res, next) => {
+    try {
+        const flightIds = req.body.flightIds; 
+  
+        const flight = await Flight.updateMany(
+            { _id: { $in: flightIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (flight.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-FlightEnquiry ', true, 200, flight, 'Successfully Activated FlightEnquiry .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-FlightEnquiry ', false, 400, {}, 'Already FlightEnquiry were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-FlightEnquiry ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateFlight = async (req, res, next) => {
+    try {
+        const flightIds = req.body.flightIds;   
+      const flight = await Flight.updateMany(
+        { _id: { $in: flightIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (flight.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-FlightEnquiry', true, 200, flight, 'Successfully deactivated Flight.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-FlightEnquiry', false, 400, {}, 'Already Flight were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-FlightEnquiry', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

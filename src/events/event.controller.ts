@@ -522,3 +522,44 @@ export let createEvent = async (req, res, next) => {
     }
 } 
 
+
+
+export let activeEvent = async (req, res, next) => {
+    try {
+        const eventIds = req.body.eventIds; 
+  
+        const event = await Event.updateMany(
+            { _id: { $in: eventIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (event.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Event ', true, 200, event, 'Successfully Activated Event .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Event ', false, 400, {}, 'Already Event were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Event ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateEvent = async (req, res, next) => {
+    try {
+        const eventIds = req.body.eventIds;    
+      const event = await Event.updateMany(
+        { _id: { $in: eventIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (event.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Event', true, 200, event, 'Successfully deactivated Event.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Event', false, 400, {}, 'Already Event were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Event', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
