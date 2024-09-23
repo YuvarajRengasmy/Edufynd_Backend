@@ -329,7 +329,7 @@ export let activeClient = async (req, res, next) => {
         // Update all clients whose IDs are in clientIds to set isActive to true
         const clients = await Client.updateMany(
             { _id: { $in: clientIds } }, // Match any client whose _id is in the clientIds array
-            { $set: { isActive: true } }, // Set isActive to true for all matched clients
+            { $set: { isActive: "Active" } }, // Set isActive to true for all matched clients
             { new: true }
         );
 
@@ -351,7 +351,7 @@ export let deactivateClient = async (req, res, next) => {
       // Update all clients whose IDs are in clientIds to set isActive to false
       const clients = await Client.updateMany(
         { _id: { $in: clientIds } }, // Match clients with the given IDs
-        { $set: { isActive: false } }, // Set isActive to false
+        { $set: { isActive: "InActive" } }, // Set isActive to false
         { new: true }
       );
   
