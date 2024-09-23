@@ -6,6 +6,7 @@ export interface AdminDocument extends mongoose.Document{
     _id?: any;
     superAdminId?:any;
     name?: string;
+    dial1?: string;
     adminCode?: string;
     email?: string;
     dial?: string;
@@ -42,6 +43,7 @@ const adminSchema = new mongoose.Schema({
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     name: {type: String},
     adminCode: {type: String},
+    dial1: {type: String},  
     email: { type: String},
     dial:{type: String},
     mobileNumber: {type: Number},   

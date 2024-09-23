@@ -148,7 +148,7 @@ export const updateAdmin = async (req, res) => {
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
                     privileges: adminDetails.privileges, 
-
+                    dial1: adminDetails.dial1,
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
                 }
@@ -326,6 +326,7 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
                     dial: adminDetails.dial,
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    dial1: adminDetails.dial1,
                     // privileges: adminDetails.privileges, 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
