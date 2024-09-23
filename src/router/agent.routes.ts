@@ -3,7 +3,9 @@ import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, delet
      editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent,
       updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent, getFilteredAgent,
       getAllLoggedAgent,
-      getSingleLoggedAgent} from '../controller/agent.controller';
+      getSingleLoggedAgent,
+      activeAgent,
+      deactivateAgent} from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
@@ -69,6 +71,19 @@ router.put('/',
     checkPermission('agent', 'edit'),
     checkRequestBodyParams('_id'),
     updateAgent
+);
+
+
+router.post('/activeAgent',
+    basicAuthUser,
+    checkSession,
+    activeAgent
+);
+
+router.post('/deActiveAgent',
+    basicAuthUser,
+    checkSession,
+    deactivateAgent
 );
 
 

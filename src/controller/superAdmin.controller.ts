@@ -173,6 +173,45 @@ export let getFilteredSuperAdmin = async (req, res, next) => {
 
 
 
+export let activeSuperAdmin = async (req, res, next) => {
+    try {
+        const superAdminIds = req.body.superAdminIds; 
+  
+        const superAdmin = await SuperAdmin.updateMany(
+            { _id: { $in: superAdminIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (superAdmin.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-SuperAdmin ', true, 200, superAdmin, 'Successfully Activated SuperAdmin .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-SuperAdmin ', false, 400, {}, 'Already SuperAdmin were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-SuperAdmin ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateSuperAdmin = async (req, res, next) => {
+    try {
+        const superAdminIds = req.body.superAdminIds;      
+      const superAdmin = await SuperAdmin.updateMany(
+        { _id: { $in: superAdminIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (superAdmin.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-SuperAdmin', true, 200, superAdmin, 'Successfully deactivated SuperAdmin.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-SuperAdmin', false, 400, {}, 'Already SuperAdmin were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-SuperAdmin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
 
 
 

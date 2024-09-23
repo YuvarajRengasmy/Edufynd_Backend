@@ -1,10 +1,14 @@
 import { Router } from 'express';
-import { getAllCommission, getSingleCommission,getSingleUniversity, createCommission, updateCommission, 
-    deleteCommission, getFilteredCommission, 
+import {
+    getAllCommission, getSingleCommission, getSingleUniversity, createCommission, updateCommission,
+    deleteCommission, getFilteredCommission,
     deleteCourseType,
     deleteIntake,
     getAllLoggedCommission,
-    getSingleLoggedCommission} from '../controller/commission.controller';
+    getSingleLoggedCommission,
+    activeCommission,
+    deactivateCommission
+} from '../controller/commission.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -18,7 +22,7 @@ router.get('/',
     getAllCommission
 );
 
-router.get('/logs',             
+router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedCommission
@@ -65,13 +69,21 @@ router.put('/',
     updateCommission
 );
 
-router.post('/deleteCourseType', 
-    
-    deleteCourseType);
+router.post('/activeCommission',
+    basicAuthUser,
+    checkSession,
+    activeCommission
+);
 
-router.post('/deleteIntake', 
-  
-    deleteIntake);
+router.post('/deActiveCommission',
+    basicAuthUser,
+    checkSession,
+    deactivateCommission
+);
+
+router.post('/deleteCourseType',deleteCourseType);
+
+router.post('/deleteIntake',deleteIntake);
 
 
 router.delete('/',

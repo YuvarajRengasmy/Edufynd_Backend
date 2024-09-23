@@ -17,7 +17,7 @@ export interface CommissionDocument extends mongoose.Document {
     flag?: string;
     clientName?: string;
     years?: any;
-
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -50,6 +50,7 @@ const commissionSchema = new mongoose.Schema({
           
         }],
     }],
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

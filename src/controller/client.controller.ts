@@ -334,9 +334,9 @@ export let activeClient = async (req, res, next) => {
         );
 
         if (clients.modifiedCount > 0) {
-            response(req, res, activity, 'Level-2', 'Active-Client', true, 200, clients, 'Successfully activated clients.');
+            response(req, res, activity, 'Level-2', 'Active-Client', true, 200, clients, 'Successfully Activated Clients.');
         } else {
-            response(req, res, activity, 'Level-3', 'Active-Client', false, 400, {}, 'No clients were activated.');
+            response(req, res, activity, 'Level-3', 'Active-Client', false, 400, {}, 'No clients were Activated.');
         }
     } catch (err) {
         response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, 'Internal Server Error', err.message);

@@ -31,6 +31,7 @@ export interface ApplicantDocument extends mongoose.Document {
     commentBox?: string;
     programTitle?: string;
     isDeleted?: boolean;
+    isActive?: string;
     status?: any;
     createdOn?: Date;
     createdBy?: string;
@@ -68,6 +69,7 @@ const applicantSchema = new mongoose.Schema({
     document:  {type: String},
     commentBox: {type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
         newStatus: {type: String},

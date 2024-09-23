@@ -5,7 +5,9 @@ import {
     editStaffProfileByAdmin,
     updateAdmin,
     getAllLoggedAdmin,
-    getSingleLoggedAdmin
+    getSingleLoggedAdmin,
+    activeAdmin,
+    deactivateAdmin
 } from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -58,6 +60,18 @@ router.put('/',
     checkPermission('admin', 'edit'),
      checkRequestBodyParams('_id'),
     updateAdmin
+);
+
+router.post('/activeAdmin',
+    basicAuthUser,
+    checkSession,
+    activeAdmin
+);
+
+router.post('/deActiveAdmin',
+    basicAuthUser,
+    checkSession,
+    deactivateAdmin
 );
 
 

@@ -9,7 +9,7 @@ export interface PaymentDocument extends mongoose.Document {
     currency?: string;
     stripePaymentId?: string;
     status?: string;
-
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -22,7 +22,7 @@ const paymentSchema = new mongoose.Schema({
     currency: { type: String, required: true, default: 'usd' },
     stripePaymentId: { type: String },
     status: { type: String, enum: ['Pending', 'Completed', 'Failed'], default: 'Pending' },
-  
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

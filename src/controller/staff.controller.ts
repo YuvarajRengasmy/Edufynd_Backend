@@ -499,3 +499,42 @@ export let createStudentByStaff = async (req, res, next) => {
 };
 
 
+export let activeStaff = async (req, res, next) => {
+    try {
+        const staffIds = req.body.staffIds; 
+  
+        const staff = await Staff.updateMany(
+            { _id: { $in: staffIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (staff.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-staff ', true, 200, staff, 'Successfully Activated staff .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-staff ', false, 400, {}, 'Already staff  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-staff ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateStaff = async (req, res, next) => {
+    try {
+        const staffIds = req.body.staffIds;    
+      const staff = await Staff.updateMany(
+        { _id: { $in: staffIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (staff.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-staff', true, 200, staff, 'Successfully deactivated staff.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-staff', false, 400, {}, 'Already staff were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

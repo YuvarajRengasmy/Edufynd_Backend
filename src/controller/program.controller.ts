@@ -688,3 +688,42 @@ export const csvToJsonn = async (req, res) => {
 
 
 
+export let activeProgram = async (req, res, next) => {
+    try {
+        const programIds = req.body.programIds; 
+  
+        const program = await Program.updateMany(
+            { _id: { $in: programIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (program.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Program ', true, 200, program, 'Successfully Activated Program .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Program ', false, 400, {}, 'Already Program  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Program ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateProgram = async (req, res, next) => {
+    try {
+        const programIds = req.body.programIds;    
+      const program = await Program.updateMany(
+        { _id: { $in: programIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (program.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-program', true, 200, program, 'Successfully deactivated program.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-program', false, 400, {}, 'Already program were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-program', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

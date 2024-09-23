@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
     createStaffBySuperAdmin, createStudentByStaff,
     getAllLoggedStaff,
-    getSingleLoggedStaff, 
+    getSingleLoggedStaff,
+    activeStaff,
+    deactivateStaff, 
    } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
@@ -57,6 +59,19 @@ router.put('/',
     // checkQuery('_id'),
     checkRequestBodyParams('_id'),
     updateStaff
+);
+
+
+router.post('/activeStaff',
+    basicAuthUser,
+    checkSession,
+    activeStaff
+);
+
+router.post('/deActiveStaff',
+    basicAuthUser,
+    checkSession,
+    deactivateStaff
 );
 
 

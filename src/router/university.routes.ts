@@ -5,6 +5,8 @@ import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity
      getAllUniversit,
      getAllLoggedUniversity,
      getSingleLoggedUniversity,
+     activeUniversity,
+     deactivateUniversity,
     } from '../controller/university.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -70,6 +72,18 @@ router.put('/',
     checkPermission('university', 'edit'),
      checkRequestBodyParams('_id'),
     updateUniversity
+);
+
+router.post('/activeUniversity',
+    basicAuthUser,
+    checkSession,
+    activeUniversity
+);
+
+router.post('/deActiveUniversity',
+    basicAuthUser,
+    checkSession,
+    deactivateUniversity
 );
 
 

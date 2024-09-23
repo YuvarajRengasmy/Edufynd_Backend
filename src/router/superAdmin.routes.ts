@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {createSuperAdmin, getFilteredSuperAdmin,getSuperAdminForSearch,getCommonSearch, getSingleSuperAdmin, getAllSuperAdmin} from '../controller/superAdmin.controller';
+import {createSuperAdmin, getFilteredSuperAdmin,getSuperAdminForSearch,getCommonSearch, getSingleSuperAdmin, getAllSuperAdmin, activeSuperAdmin, deactivateSuperAdmin} from '../controller/superAdmin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -45,4 +45,19 @@ router.get('/getCommonSearch',
     basicAuthUser,
     checkSession,
     getCommonSearch); 
+
+
+router.post('/activeSuperAdmin',
+        basicAuthUser,
+        checkSession,
+        activeSuperAdmin
+    );
+    
+router.post('/deActiveSuperAdmin',
+        basicAuthUser,
+        checkSession,
+        deactivateSuperAdmin
+    );
+
+    
 export default router

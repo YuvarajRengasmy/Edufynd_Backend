@@ -40,6 +40,7 @@ export interface AgentDocument extends mongoose.Document {
   resetOtp?: string;
   resetOtpExpires?: number;
   isDeleted?: boolean;
+  isActive?: string;
   createdOn?: Date;
   createdBy?: string;
   modifiedOn?: Date;
@@ -111,6 +112,7 @@ const agentSchema = new mongoose.Schema({
   resetOtp: { type: String },
   resetOtpExpires: { type: Number },
   isDeleted: { type: Boolean, default: false },
+  isActive: {type: String,default: "InActive"},
   // Newly Added Field
   businessWebsite: { type: String },
   pin: { type: Number },
