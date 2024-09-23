@@ -189,7 +189,9 @@ export let deleteClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Delete-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
-export let activeClient = async (req, res, next) => {
+
+
+export let activeClientt = async (req, res, next) => {
 
     try {
         const clientDetails: ClientDocument = req.body;
@@ -203,6 +205,8 @@ export let activeClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
 
 
 
@@ -334,3 +338,28 @@ export const editClientProfileBySuperAdmin = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Update-Client-By-SuperAdmin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+////
+
+
+export let activeClient = async (req, res, next) => {
+    try {
+        const clientIds = req.body.clientIds; // Array of client IDs
+
+        // Update all clients whose IDs are in clientIds to set isActive to true
+        const clients = await Client.updateMany(
+            { _id: { $in: clientIds } }, // Match any client whose _id is in the clientIds array
+            { $set: { isActive: true } }, // Set isActive to true for all matched clients
+            { new: true }
+        );
+
+        if (clients.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Client', true, 200, clients, 'Successfully activated clients.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Client', false, 400, {}, 'No clients were activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
