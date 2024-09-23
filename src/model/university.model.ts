@@ -40,6 +40,7 @@ export interface UniversityDocument extends mongoose.Document {
     couponCode?: string;
     universityStatus?: string;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -93,6 +94,7 @@ const universitySchema = new mongoose.Schema({
     couponCode: {type: String},
     universityStatus:{type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

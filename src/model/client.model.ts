@@ -48,10 +48,7 @@ const clientSchema = new mongoose.Schema({
     addressLine1: { type: String }, 
     addressLine2: { type: String },
     addressLine3: { type: String },   
-    isActive: {
-        type: String,
-        default: "InActive",
-      },
+    isActive: {type: String,default: "InActive"},
     name: { type: String },
     country: { type: String },
     state: { type: String },

@@ -72,6 +72,7 @@ export interface StaffDocument extends mongoose.Document {
     notificationId?: any;
     clockIn?: Date;
     clockOut?: Date;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -118,6 +119,7 @@ const staffSchema = new mongoose.Schema({
     password: { type: String },
     confirmPassword: { type: String },
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
   
     // Newly added fields
     gender: { type: String },

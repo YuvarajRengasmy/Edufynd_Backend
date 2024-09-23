@@ -16,6 +16,7 @@ export interface SuperAdminDocument extends mongoose.Document{
     role?: string;
     privileges?: any[];
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -50,6 +51,7 @@ const superAdminSchema = new mongoose.Schema({
     privileges: [privilegeSchema],
 
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

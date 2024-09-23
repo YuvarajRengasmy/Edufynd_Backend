@@ -391,3 +391,44 @@ export let updateCommissioncorrect = async (req, res, next) => {
 };
 
 
+
+
+export let activeCommission = async (req, res, next) => {
+  try {
+      const commissionIds = req.body.commissionIds; 
+
+      const commissions = await Commission.updateMany(
+          { _id: { $in: commissionIds } }, 
+          { $set: { isActive: "Active" } }, 
+          { new: true }
+      );
+
+      if (commissions.modifiedCount > 0) {
+          response(req, res, activity, 'Level-2', 'Active-Commission ', true, 200, commissions, 'Successfully Activated Commission .');
+      } else {
+          response(req, res, activity, 'Level-3', 'Active-Commission ', false, 400, {}, 'Already Commission  were Activated.');
+      }
+  } catch (err) {
+      response(req, res, activity, 'Level-3', 'Active-Commission ', false, 500, {}, 'Internal Server Error', err.message);
+  }
+};
+
+
+export let deactivateCommission = async (req, res, next) => {
+  try {
+    const commissionIds = req.body.commissionIds;    
+    const commissions = await Commission.updateMany(
+      { _id: { $in: commissionIds } }, 
+      { $set: { isActive: "InActive" } }, 
+      { new: true }
+    );
+
+    if (commissions.modifiedCount > 0) {
+      response(req, res, activity, 'Level-2', 'Deactivate-Commission', true, 200, commissions, 'Successfully deactivated Commission.');
+    } else {
+      response(req, res, activity, 'Level-3', 'Deactivate-Commission', false, 400, {}, 'Already Commission were deactivated.');
+    }
+  } catch (err) {
+    response(req, res, activity, 'Level-3', 'Deactivate-Commission', false, 500, {}, 'Internal Server Error', err.message);
+  }
+};

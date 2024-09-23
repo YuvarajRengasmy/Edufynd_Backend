@@ -712,3 +712,44 @@ export let updateStudent = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+
+export let activeStudent = async (req, res, next) => {
+    try {
+        const studentIds = req.body.studentIds; 
+  
+        const student = await Student.updateMany(
+            { _id: { $in: studentIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (student.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Student ', true, 200, student, 'Successfully Activated Student .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Student ', false, 400, {}, 'Already Student  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Student ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateStudent = async (req, res, next) => {
+    try {
+        const studentIds = req.body.studentIds;    
+      const student = await Student.updateMany(
+        { _id: { $in: studentIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (student.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-student', true, 200, student, 'Successfully deactivated student.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-student', false, 400, {}, 'Already student were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-student', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

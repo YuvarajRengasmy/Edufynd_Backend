@@ -494,3 +494,44 @@ export const editStaffProfileByAdmin = async (req, res) => {
     }
 }
 
+
+export let activeAdmin = async (req, res, next) => {
+    try {
+        const adminIds = req.body.adminIds; 
+
+        const admins = await Admin.updateMany(
+            { _id: { $in: adminIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (admins.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Admin', true, 200, admins, 'Successfully Activated Admin.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Admin', false, 400, {}, 'Already Admin were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateAdmin = async (req, res, next) => {
+    try {
+      const adminIds = req.body.adminIds; 
+      const admins = await Admin.updateMany(
+        { _id: { $in: adminIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (admins.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Admin', true, 200, admins, 'Successfully deactivated Admin.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Admin', false, 400, {}, 'Already Admin were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  

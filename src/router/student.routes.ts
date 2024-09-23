@@ -4,6 +4,8 @@ import {
     createStudentBySuperAdmin, getFilteredStudent, editStudentProfileBySuperAdmin,
     getAllLoggedStudent,
     getSingleLoggedStudent,
+    activeStudent,
+    deactivateStudent,
 } from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact } from '../controller/contact.controller';
@@ -62,6 +64,19 @@ router.post('/register',
 
 
 router.post('/contact', createContact);
+
+
+router.post('/activeStudent',
+    basicAuthUser,
+    checkSession,
+    activeStudent
+);
+
+router.post('/deActiveStudent',
+    basicAuthUser,
+    checkSession,
+    deactivateStudent
+);
 
 
 router.put('/',

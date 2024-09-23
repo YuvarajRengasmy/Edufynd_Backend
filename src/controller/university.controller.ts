@@ -713,4 +713,42 @@ export const csvToJson = async (req, res) => {
 
 
 
-
+export let activeUniversity = async (req, res, next) => {
+    try {
+        const universityIds = req.body.universityIds; 
+  
+        const university = await University.updateMany(
+            { _id: { $in: universityIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (university.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-University ', true, 200, university, 'Successfully Activated University .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-University ', false, 400, {}, 'Already University were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-University ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateUniversity = async (req, res, next) => {
+    try {
+        const universityIds = req.body.universityIds;     
+      const university = await University.updateMany(
+        { _id: { $in: universityIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (university.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-University', true, 200, university, 'Successfully deactivated University.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-University', false, 400, {}, 'Already University were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-University', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

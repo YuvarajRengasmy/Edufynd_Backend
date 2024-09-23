@@ -537,3 +537,44 @@ export const csvToJson = async (req, res) => {
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for agent module', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
+
+
+export let activeAgent = async (req, res, next) => {
+    try {
+        const agentIds = req.body.agentIds; 
+
+        const agents = await Agent.updateMany(
+            { _id: { $in: agentIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (agents.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Agent', true, 200, agents, 'Successfully Activated Agent.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Agent', false, 400, {}, 'Already Agent were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Agent', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateAgent = async (req, res, next) => {
+    try {
+        const agentIds = req.body.agentIds;  
+      const agents = await Agent.updateMany(
+        { _id: { $in: agentIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (agents.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Agent', true, 200, agents, 'Successfully deactivated Agent.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Agent', false, 400, {}, 'Already Agent were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Agent', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

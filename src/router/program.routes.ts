@@ -5,7 +5,9 @@ import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProg
     updateProgramApplications,getProgramByCountry,getProgramByUniversity,
     getProgramCategory, getAllProgramCard,
     getAllLoggedProgram,
-    getSingleLoggedProgram} from '../controller/program.controller';
+    getSingleLoggedProgram,
+    activeProgram,
+    deactivateProgram} from '../controller/program.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -67,6 +69,18 @@ router.put('/',
     updateProgram
 );
 
+
+router.post('/activeProgram',
+    basicAuthUser,
+    checkSession,
+    activeProgram
+);
+
+router.post('/deActiveProgram',
+    basicAuthUser,
+    checkSession,
+    deactivateProgram
+);
 
 router.delete('/',            
     basicAuthUser,

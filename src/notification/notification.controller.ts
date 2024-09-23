@@ -37,7 +37,7 @@ export const getSingleNotification = async (req, res) => {
 }
 
 
-export let createNotificationf = async (req, res, next) => {
+export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -260,7 +260,7 @@ export let getFilteredNotification = async (req, res, next) => {
 
 
 //with Remainder
-export let createNotification = async (req, res, next) => {
+export let createNotificationf = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));

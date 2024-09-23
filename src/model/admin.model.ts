@@ -22,6 +22,7 @@ export interface AdminDocument extends mongoose.Document{
     resetOtpExpires?: number;  
 
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -56,6 +57,7 @@ const adminSchema = new mongoose.Schema({
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

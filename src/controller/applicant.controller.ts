@@ -646,3 +646,42 @@ export const getStudentApplication = async (req, res) => {
 }
 
 
+export let activeApplicant = async (req, res, next) => {
+    try {
+        const applicantIds = req.body.applicantIds; 
+
+        const applicants = await Applicant .updateMany(
+            { _id: { $in: applicantIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (applicants.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Applicant ', true, 200, applicants, 'Successfully Activated Applicant .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Applicant ', false, 400, {}, 'Already Applicant  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Applicant ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateApplicant = async (req, res, next) => {
+    try {
+        const applicantIds = req.body.applicantIds;   
+      const applicants = await Applicant.updateMany(
+        { _id: { $in: applicantIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (applicants.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Applicant', true, 200, applicants, 'Successfully deactivated Applicant.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Applicant', false, 400, {}, 'Already Applicant were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Applicant', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
