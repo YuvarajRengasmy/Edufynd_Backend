@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry, getFilteredStudentEnquiry, getAllLoggedStudentEnquiry, getSingleLoggedStudentEnquiry, activeStudentEnquiry, deactivateStudentEnquiry } from '../controller/studentEnquiry.controller';
+import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry, getFilteredStudentEnquiry, getAllLoggedStudentEnquiry, getSingleLoggedStudentEnquiry, activeStudentEnquiry, deactivateStudentEnquiry, assignStaffId } from '../controller/studentEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -84,6 +84,9 @@ router.put('/getFilterStudentEnquiry',
     checkPermission('studentEnquiry', 'view'),
     getFilteredStudentEnquiry,
 );
+
+
+router.post('/assign', assignStaffId)
 
 //Public API
 

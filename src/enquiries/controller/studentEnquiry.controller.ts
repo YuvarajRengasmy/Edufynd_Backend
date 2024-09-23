@@ -371,3 +371,26 @@ export let activeStudentEnquiry = async (req, res, next) => {
       response(req, res, activity, 'Level-3', 'Deactivate-StudentEnquiry', false, 500, {}, 'Internal Server Error', err.message);
     }
   };
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { studentEnquiryIds, staffId } = req.body;  // Destructure studentEnquiryIds and staffId from the request body
+
+        // Update all student enquiries with the selected staffId
+        const student = await StudentEnquiry.updateMany(
+            { _id: { $in: studentEnquiryIds } },  // Find student enquiries by IDs
+            { $set: { staffId: staffId } },       // Set the staffId field
+            { new: true }
+        );
+
+        if (student.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, student, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
