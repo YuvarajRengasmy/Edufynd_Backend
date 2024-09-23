@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { getAllClient,activeClient, getSingleClient, saveClient, updateClient, deleteClient, 
-    csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient, 
+import {
+    getAllClient, activeClient, getSingleClient, saveClient, updateClient, deleteClient,
+    csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient,
     getSingleLoggedClient,
-    deactivateClient} from '../controller/client.controller';
+    deactivateClient
+} from '../controller/client.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -11,14 +13,14 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/',                
+router.get('/',
     basicAuthUser,
     checkSession,
     checkPermission('client', 'view'),
     getAllClient
 );
 
-router.get('/logs',             
+router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedClient
@@ -31,7 +33,7 @@ router.get('/SingleLog',
     getSingleLoggedClient,
 );
 
-router.get('/card', 
+router.get('/card',
     basicAuthUser,
     checkSession,
     checkPermission('client', 'view'),
@@ -55,26 +57,25 @@ router.post('/',
 );
 
 
-router.put('/',                    
+router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('client', 'edit'),
     // checkQuery('_id'),
-     checkRequestBodyParams('_id'),
+    checkRequestBodyParams('_id'),
     updateClient
 );
 
 
-router.post('/activeClient',                
+router.post('/activeClient',
     basicAuthUser,
-     checkSession,
- 
+    checkSession,
     activeClient
 );
 
-router.post('/deActiveClient',                
+router.post('/deActiveClient',
     basicAuthUser,
-     checkSession,
+    checkSession,
     deactivateClient
 );
 
@@ -84,10 +85,10 @@ router.put('/editClientProfileBySuperAdmin',             //Update client by supe
     editClientProfileBySuperAdmin
 );
 
-router.delete('/',                
+router.delete('/',
     basicAuthUser,
-     checkSession,
-     checkPermission('client', 'delete'),
+    checkSession,
+    checkPermission('client', 'delete'),
     checkQuery('_id'),
     deleteClient
 );

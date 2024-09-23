@@ -18,7 +18,7 @@ export interface ClientDocument extends mongoose.Document {
     state?: string;
     emailID?: string;
     clientID?: string;
-    isActive?: boolean;
+    isActive?: string;
     clientStatus?: string;
     addressLine1?: string;
     addressLine2?: string;
@@ -49,8 +49,8 @@ const clientSchema = new mongoose.Schema({
     addressLine2: { type: String },
     addressLine3: { type: String },   
     isActive: {
-        type: Boolean,
-        default: false, // Initially set to false
+        type: String,
+        default: "InActive",
       },
     name: { type: String },
     country: { type: String },
