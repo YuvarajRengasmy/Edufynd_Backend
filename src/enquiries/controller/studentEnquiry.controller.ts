@@ -375,12 +375,12 @@ export let activeStudentEnquiry = async (req, res, next) => {
 
   export let assignStaffId = async (req, res, next) => {
     try {
-        const { studentEnquiryIds, staffId } = req.body;  // Destructure studentEnquiryIds and staffId from the request body
+        const { studentEnquiryIds, staffId,staffName } = req.body;  // Destructure studentEnquiryIds and staffId from the request body
 
         // Update all student enquiries with the selected staffId
         const student = await StudentEnquiry.updateMany(
             { _id: { $in: studentEnquiryIds } },  // Find student enquiries by IDs
-            { $set: { staffId: staffId } },       // Set the staffId field
+            { $set: { staffId: staffId , staffName:staffName } },       // Set the staffId field
             { new: true }
         );
 
