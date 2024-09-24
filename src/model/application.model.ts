@@ -8,6 +8,7 @@ export interface ApplicantDocument extends mongoose.Document {
     programId?: any;
     adminId?: any;
     staffId?: any;
+    staffName?: any;
     studentCode?: string;
     studentId?:string;
     name?: string,       
@@ -46,6 +47,8 @@ const applicantSchema = new mongoose.Schema({
     programId: { type: mongoose.Types.ObjectId, ref: 'Program' },
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin' },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+  
+    staffName: { type: String},
     studentId: {type: String, ref: 'Student'},
     studentCode: { type: String },
     name: {type: String, ref: 'Student'},
