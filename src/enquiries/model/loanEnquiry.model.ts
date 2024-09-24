@@ -47,6 +47,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     dial5?: string;
     coApplicantPrimaryNo?: string;
     dial6?: string;
+    staffName?: string;
     coApplicantWhatsAppNo?: string;
     relationship?: string;
     adminId?: any;
@@ -65,6 +66,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
 const loanEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String },
     loanID: { type: String },
     typeOfClient:{ type: String },
     studentId: { type: String },

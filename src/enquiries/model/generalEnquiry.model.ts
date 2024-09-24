@@ -11,7 +11,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
     mobileNumber?: number;   
     message?: string;
     typeOfUser?: string;
-
+    staffName?:string;
      //Newly added 
      source?: string;
      studentName?: string;
@@ -49,6 +49,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
 const generalEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: {type: String},
     studentId: {type: String},
     country: {type: String},
     universityName: {type: String},

@@ -39,12 +39,13 @@ router.get('/getSuperAdminForSearch',
     checkSession,
     getSuperAdminForSearch);
 
- 
+    router.get('/getCommonSearch',
+        basicAuthUser,
+        checkSession,
+        getCommonSearch);
+        
 router.get('/publicGetSuperAdminForSearch',getSuperAdminForSearch);
-router.get('/getCommonSearch',
-    basicAuthUser,
-    checkSession,
-    getCommonSearch); 
+ 
 
 
 router.post('/activeSuperAdmin',

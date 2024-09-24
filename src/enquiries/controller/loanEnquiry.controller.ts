@@ -271,9 +271,9 @@ export let activeLoanEnquiry= async (req, res, next) => {
 
   export let assignStaffId = async (req, res, next) => {
     try {
-        const { studentEnquiryIds, staffId,staffName } = req.body;  
+        const { loanEnquiryIds, staffId,staffName } = req.body;  
         const user = await LoanEnquiry.updateMany(
-            { _id: { $in: studentEnquiryIds } }, 
+            { _id: { $in: loanEnquiryIds } }, 
             { $set: { staffId: staffId , staffName:staffName } }, 
             { new: true }
         );
