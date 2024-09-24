@@ -6,6 +6,8 @@ export interface AgentDocument extends mongoose.Document {
   source?: string;
   adminId?: any;
   studentId?: any;
+  staffId?: any;
+  staffName?: string;
   agentCode?: string;
   agentName?: string;
   businessName?: string;
@@ -21,7 +23,7 @@ export interface AgentDocument extends mongoose.Document {
   gstn?: string; 
   panNumberIndividual?: string;
   panNumberCompany?: string; 
-  staffName?: string;
+  
   dial3?: string;
   staffContactNo?: number;  
   // Bank Details
@@ -130,6 +132,7 @@ const agentSchema = new mongoose.Schema({
   role: { type: String},
   privileges: [privilegeSchema],
   activeStatus: {type: String},
+  staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
   createdOn: { type: Date, default: Date.now()},
   createdBy: { type: String },
   modifiedOn: { type: Date },

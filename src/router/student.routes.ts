@@ -6,6 +6,7 @@ import {
     getSingleLoggedStudent,
     activeStudent,
     deactivateStudent,
+    assignStaffId,
 } from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact } from '../controller/contact.controller';
@@ -78,6 +79,12 @@ router.post('/deActiveStudent',
     deactivateStudent
 );
 
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.put('/',
     basicAuthUser,

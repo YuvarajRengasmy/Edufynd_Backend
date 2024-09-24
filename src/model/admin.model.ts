@@ -5,6 +5,8 @@ import {LoggingMiddleware} from '../helper/commonResponseHandler'
 export interface AdminDocument extends mongoose.Document{
     _id?: any;
     superAdminId?:any;
+    staffId?: any;
+  staffName?: string;
     name?: string;
     dial1?: string;
     adminCode?: string;
@@ -58,6 +60,8 @@ const adminSchema = new mongoose.Schema({
     programId: { type: mongoose.Types.ObjectId, ref : 'Program'},
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
