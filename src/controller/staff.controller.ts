@@ -540,3 +540,23 @@ export let activeStaff = async (req, res, next) => {
   };
 
 
+  export let assignAdminId = async (req, res, next) => {
+    try {
+        const { Ids, adminId,adminName } = req.body;  
+
+
+        const user = await Student.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { adminId: adminId , adminName:adminName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign Admin', true, 200, user, 'Successfully Assigned Admin');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign Admin', false, 400, {}, 'No Admin were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

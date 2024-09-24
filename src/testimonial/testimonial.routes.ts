@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { getAllTestimonial, getSingleTestimonial, createTestimonial, updateTestimonial,
-     deleteTestimonial,getSingleLogged, getFilteredTestimonial } from './testimonial.controller';
+     deleteTestimonial,getSingleLogged, getFilteredTestimonial, 
+     activeTestimonial,
+     deactivateTestimonial} from './testimonial.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -40,6 +42,20 @@ router.put('/',
     // checkQuery('_id'),
     updateTestimonial
 );
+
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeTestimonial
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateTestimonial
+);
+
 
 
 router.delete('/',                  

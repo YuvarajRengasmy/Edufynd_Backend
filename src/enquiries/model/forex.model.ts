@@ -19,6 +19,7 @@ export interface ForexDocument extends mongoose.Document {
     dial3?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     primaryNumber?: string;
     dial4?: string;
     whatsAppNumber?: string;
@@ -87,7 +88,7 @@ const forexSchema = new mongoose.Schema({
     value:{type: String},
     markUp: {type: String},
     profit: {type: String},
-
+    staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },

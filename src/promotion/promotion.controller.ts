@@ -252,3 +252,43 @@ export let getFilteredPromotion = async (req, res, next) => {
 
 
 
+export let activePromotion = async (req, res, next) => {
+    try {
+        const promotionIds = req.body.promotionIds; 
+  
+        const promotion = await Promotion.updateMany(
+            { _id: { $in: promotionIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (promotion.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Promotion ', true, 200, promotion, 'Successfully Activated Promotion .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Promotion ', false, 400, {}, 'Already Promotion were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Promotion ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivatePromotion = async (req, res, next) => {
+    try {
+        const promotionIds = req.body.promotionIds; 
+  
+        const promotion = await Promotion.updateMany(
+        { _id: { $in: promotionIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (promotion.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Promotion', true, 200, promotion, 'Successfully deactivated Promotion.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Promotion', false, 400, {}, 'Already Promotion were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Promotion', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

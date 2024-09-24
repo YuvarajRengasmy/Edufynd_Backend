@@ -5,7 +5,8 @@ import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, delet
       getAllLoggedAgent,
       getSingleLoggedAgent,
       activeAgent,
-      deactivateAgent} from '../controller/agent.controller';
+      deactivateAgent,
+      assignStaffId} from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
@@ -86,6 +87,12 @@ router.post('/deActiveAgent',
     deactivateAgent
 );
 
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                 
     basicAuthUser,

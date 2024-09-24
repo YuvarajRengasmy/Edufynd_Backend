@@ -7,11 +7,13 @@ import {
     getAllLoggedAdmin,
     getSingleLoggedAdmin,
     activeAdmin,
-    deactivateAdmin
+    deactivateAdmin,
+    assignStaffId 
 } from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
+
 const router: Router = Router();
 
 
@@ -73,6 +75,12 @@ router.post('/deActiveAdmin',
     checkSession,
     deactivateAdmin
 );
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',

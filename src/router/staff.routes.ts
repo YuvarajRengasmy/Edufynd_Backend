@@ -4,7 +4,8 @@ import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, get
     getAllLoggedStaff,
     getSingleLoggedStaff,
     activeStaff,
-    deactivateStaff, 
+    deactivateStaff,
+    assignAdminId, 
    } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
@@ -73,6 +74,12 @@ router.post('/deActiveStaff',
     checkSession,
     deactivateStaff
 );
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignAdminId
+)
 
 
 router.delete('/',                  

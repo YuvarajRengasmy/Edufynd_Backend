@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {createSuperAdmin, getFilteredSuperAdmin,getSuperAdminForSearch,getCommonSearch, getSingleSuperAdmin, getAllSuperAdmin, activeSuperAdmin, deactivateSuperAdmin} from '../controller/superAdmin.controller';
+import {createSuperAdmin, getFilteredSuperAdmin,getSuperAdminForSearch,getCommonSearch, getSingleSuperAdmin, getAllSuperAdmin, activeSuperAdmin, deactivateSuperAdmin, assignStaffId} from '../controller/superAdmin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -59,6 +59,12 @@ router.post('/deActiveSuperAdmin',
         checkSession,
         deactivateSuperAdmin
     );
+
+router.post('/assign', 
+        basicAuthUser,
+        checkSession,
+        assignStaffId
+)
 
     
 export default router
