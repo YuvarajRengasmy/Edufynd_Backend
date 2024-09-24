@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface EventDocument extends mongoose.Document {
@@ -51,5 +51,5 @@ const eventSchema = new mongoose.Schema({
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(eventSchema)
 export const Event = mongoose.model("Event", eventSchema)

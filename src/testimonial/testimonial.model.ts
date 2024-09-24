@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose'
-
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface TestimonialDocument extends mongoose.Document {
     typeOfUser?: string;
@@ -37,5 +36,5 @@ const testimonialSchema = new mongoose.Schema({
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(testimonialSchema)
 export const Testimonial = mongoose.model("Testimonial", testimonialSchema)

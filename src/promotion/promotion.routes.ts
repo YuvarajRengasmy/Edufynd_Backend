@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllPromotion, getSinglePromotion, createPromotion, updatePromotion, deletePromotion, getFilteredPromotion, activePromotion, deactivatePromotion } from './promotion.controller';
+import { getAllPromotion, getSinglePromotion, createPromotion, updatePromotion, deletePromotion, getFilteredPromotion, activePromotion, deactivatePromotion, getAllLoggedPromotion, getSingleLoggedPromotion } from './promotion.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { checkSession, checkPermission} from '../utils/tokenManager';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -18,6 +18,20 @@ router.get('/getSinglePromotion',
     getSinglePromotion,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedPromotion
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedPromotion
+);
 
 router.post('/',
     basicAuthUser,

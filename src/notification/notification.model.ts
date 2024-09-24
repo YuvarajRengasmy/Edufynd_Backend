@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface NotificationDocument extends mongoose.Document {
@@ -40,5 +40,5 @@ const notificationSchema = new mongoose.Schema({
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(notificationSchema)
 export const Notification = mongoose.model("Notification", notificationSchema)

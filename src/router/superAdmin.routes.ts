@@ -41,6 +41,8 @@ router.get('/getSuperAdminForSearch',
 
  
 router.get('/publicGetSuperAdminForSearch',getSuperAdminForSearch);
+
+
 router.get('/getCommonSearch',
     basicAuthUser,
     checkSession,

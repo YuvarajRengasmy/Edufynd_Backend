@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface MeetingDocument extends mongoose.Document {
     hostName?: string;
@@ -44,5 +45,5 @@ const meetingSchema = new mongoose.Schema({
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(meetingSchema)
 export const Meeting = mongoose.model("Meeting", meetingSchema)
