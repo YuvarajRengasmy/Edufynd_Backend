@@ -215,3 +215,25 @@ export let activeBusinessEnquiry = async (req, res, next) => {
       response(req, res, activity, 'Level-3', 'Deactivate-BusinessEnquiry', false, 500, {}, 'Internal Server Error', err.message);
     }
   };
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { studentEnquiryIds, staffId,staffName } = req.body;  
+
+
+        const user = await BusinessEnquiry.updateMany(
+            { _id: { $in: studentEnquiryIds } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
