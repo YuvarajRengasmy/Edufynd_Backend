@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining } from './training.controller';
+import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining, activeTraining, deactivateTraining } from './training.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -35,6 +35,18 @@ router.put('/',
     updateTraining
 );
 
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeTraining
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateTraining
+);
 
 router.delete('/',                  
     basicAuthUser,

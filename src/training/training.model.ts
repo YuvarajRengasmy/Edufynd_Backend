@@ -17,6 +17,7 @@ export interface TrainingDocument extends mongoose.Document {
     fileUpload?: any[];
     uploadDocument?:string;
     hostName: string;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -43,6 +44,7 @@ const trainingSchema = new mongoose.Schema({
         fileName: { type: String},
         fileImage:  { type: String },
     }],
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

@@ -271,61 +271,41 @@ export let getFilteredTraining   = async (req, res, next) => {
 
 
 
-
-// export let createTraining = async (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (errors.isEmpty()) {
-//         try {
-//             const data: TrainingDocument = req.body;
-//             const usersName = req.body.usersName; // Array of selected usernames
-//             // const userIds = req.body._id; // Array of selected user IDs (assuming this is passed in the request body)
-
-//             let users = [];
-
-//             // Fetch users based on typeOfUser
-//             if (data.typeOfUser === 'student') {
-//                 users = await Student.find({ name: { $in: usersName } });
-//             } else if (data.typeOfUser === 'admin') {
-//                 users = await Admin.find({ name: { $in: usersName } });
-//             } else if (data.typeOfUser === 'agent') {
-//                 users = await Agent.find({ agentName: { $in: usersName } });
-//             } else if (data.typeOfUser === 'staff') {
-//                 users = await Staff.find({ empName: { $in: usersName } });
-//             }
-
-//             // Check if any users were found
-//             if (users.length > 0) {
-//                 // Collect usernames for the notification
-//                 const usersNames = users.map((user) => user.name || user.empName || user.agentName);
-
-//                 // Create a single notification document with all selected usernames
-//                 const notification = new Training({
-//                     ...data,
-//                     usersName: usersNames,
-//                 });
-
-//                 // Save the notification to the database
-//                 const savedNotification = await notification.save();
-
-//                 // Add the notification ID to each selected user's notifications array
-//                 const updatePromises = users.map((user) => {
-//                     user.notificationId.push(savedNotification._id);
-//                     return user.save();
-//                 });
-               
-
-//                 // Wait for all user updates to be saved
-//                 await Promise.all(updatePromises);
-
-//                 response(req, res, activity, 'Level-1', 'Create-Training', true, 200, {}, " Training Notifications sent successfully");
-//             } else {
-//                 response(req, res,  activity, 'Level-2', 'Create-Training', false, 404, {}, "No users found for the specified type.");
-//             }
-//         } catch (err) {
-//          console.log("44", err)
-//             response(req, res,  activity, 'Level-3', 'Create-Training', false, 500, {}, "Internal server error", err.message);
-//         }
-//     } else {
-//         response(req, res,  activity, 'Level-3', 'Create-Training', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
-//     }
-// };
+export let activeTraining = async (req, res, next) => {
+    try {
+        const trainingIds = req.body.trainingIds; 
+        const training = await Training.updateMany(
+            { _id: { $in: trainingIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (training.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Training ', true, 200, training, 'Successfully Activated Training .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Training ', false, 400, {}, 'Already Training were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Training ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateTraining = async (req, res, next) => {
+    try {
+        const trainingIds = req.body.trainingIds;  
+        const training = await Training.updateMany(
+        { _id: { $in: trainingIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (training.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Training', true, 200, training, 'Successfully deactivated Training.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Training', false, 400, {}, 'Already Training were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Training', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
