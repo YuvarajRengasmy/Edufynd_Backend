@@ -686,8 +686,6 @@ export let deactivateApplicant = async (req, res, next) => {
     }
   };
 
-
-
   
   export let assignStaffId = async (req, res, next) => {
     try {
