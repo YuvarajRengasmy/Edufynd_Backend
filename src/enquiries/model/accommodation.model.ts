@@ -6,6 +6,7 @@ export interface AccommodationDocument extends mongoose.Document {
     studentName?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     name?: string;
     passportNumber?: string;
     expiryDate?: string;
@@ -80,6 +81,8 @@ const accommodationSchema = new mongoose.Schema({
     final: {type: String},
     accommodationType: {type: String},
     assignedTo: {type: String},
+   
+    staffName: { type: String},
 
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},

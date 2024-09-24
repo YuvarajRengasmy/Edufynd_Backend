@@ -37,6 +37,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
      agentWhatsAppNumber?: string;
      adminId?: any;
      staffId?: any;
+     staffName?:string,
      status?: any;
      isActive?: string;
     createdOn?: Date;
@@ -99,6 +100,7 @@ const generalEnquirySchema = new mongoose.Schema({
     
         }]
     }],
+    staffName: { type: String},
     isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },

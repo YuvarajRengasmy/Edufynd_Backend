@@ -51,6 +51,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     relationship?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     typeOfClient?: string;
     isActive?: string;
     createdOn?: Date;
