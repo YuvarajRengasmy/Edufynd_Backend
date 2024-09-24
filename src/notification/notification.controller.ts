@@ -445,3 +445,43 @@ export let createNotificationf = async (req, res, next) => {
 };
 
 
+export let activeNotification = async (req, res, next) => {
+    try {
+        const notificationIds = req.body.notificationIds; 
+  
+        const notification = await Notification.updateMany(
+            { _id: { $in: notificationIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (notification.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Notification ', true, 200, notification, 'Successfully Activated Notification .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Notification ', false, 400, {}, 'Already Notification were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Notification ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateNotification = async (req, res, next) => {
+    try {
+        const notificationIds = req.body.notificationIds; 
+  
+        const notification = await Notification.updateMany(
+        { _id: { $in: notificationIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (notification.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Notification', true, 200, notification, 'Successfully deactivated Notification.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Notification', false, 400, {}, 'Already Notification were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Notification', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

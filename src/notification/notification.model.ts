@@ -14,6 +14,7 @@ export interface NotificationDocument extends mongoose.Document {
     sent?: Boolean;
     uploadFile?:any[];
     hostName?: string;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -32,6 +33,7 @@ const notificationSchema = new mongoose.Schema({
     scheduledTime: {type: Date},
     sent: { type: Boolean, default: false },
     uploadImage: { type: String },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

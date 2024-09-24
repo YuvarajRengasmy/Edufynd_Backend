@@ -10,6 +10,7 @@ export interface PromotionDocument extends mongoose.Document {
     content?: string;
     uploadImage?: string;
     fileUpload?: any[];
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -29,6 +30,7 @@ const promotionSchema = new mongoose.Schema({
         fileName: { type: String},
         fileImage:  { type: String },
     }],
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
