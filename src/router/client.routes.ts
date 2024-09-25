@@ -34,9 +34,9 @@ router.get('/SingleLog',
 );
 
 router.get('/card',
-    basicAuthUser,
-    checkSession,
-    checkPermission('client', 'view'),
+    // basicAuthUser,
+    // checkSession,
+    // checkPermission('client', 'view'),
     getAllClientCardDetails
 );
 
