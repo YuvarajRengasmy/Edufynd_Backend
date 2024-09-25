@@ -16,8 +16,12 @@ import { Forex, ForexDocument } from "../enquiries/model/forex.model";
 import { Flight, FlightDocument } from "../enquiries/model/flightTicket.model";
 import { BusinessEnquiry, BusinessEnquiryDocument } from "../enquiries/model/businessEnquiry.model";
 import { Accommodation, AccommodationDocument } from "../enquiries/model/accommodation.model";
-
-
+import {Applicant, ApplicantDocument} from "../model/application.model";
+import {Notification , NotificationDocument} from "../notification/notification.model";
+import { Meeting ,MeetingDocument } from '../meeting/meeting.model';
+import { Event , EventDocument } from '../events/event.model';
+import { Promotion ,PromotionDocument } from '../promotion/promotion.model';
+import { Training , TrainingDocument } from '../training/training.model';
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -47,10 +51,9 @@ export let getSuperAdminForSearch = async (req, res, next) => {
             const studentList = await Student.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('name', { name: 1 })
             const staffList = await Staff.find({ $and: [{ $or: [{ empName: { $regex: search, $options: 'i' } }, { designation: { $regex: search, $options: 'i' } },{ reportingManager: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('empName', { empName: 1 })
             const agentList = await Agent.find({ $and: [{ $or: [{ agentName: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('agentName', { agentName: 1 })
-            const testimonialList = await Testimonial.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { courseOrUniversityName: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } },{counselorname: { $regex: search, $options: 'i' } },{location: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('hostName', { hostName: 1 })
-           
+            const applicationList = await Applicant.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } },{programTitle: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }]}).populate('isActive', { isActive: 1 })
             response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200,
-                 { adminList,commissionList,universityList,testimonialList, programList, clientList , blogList,studentList,staffList,agentList,},
+                 { adminList,commissionList,applicationList,universityList, programList, clientList , blogList,studentList,staffList,agentList,},
                  clientError.success.fetchedSuccessfully);
         } catch (err: any) {
             console.log(err)
@@ -88,7 +91,27 @@ export let getCommonSearch = async (req, res, next) => {
     }
 };
 
+export let getNotificationSearch = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            let search = req.query.search
+                const notificationList = await Notification.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } },{ subject: { $regex: search, $options: 'i' } }  ] }, { isDeleted: false }] },).populate('hostName', { hostName: 1 })
+                const meetingList = await Meeting.find({ $and: [{ $or: [{ hostName: { $regex: search, $options: 'i' } },{ subject: { $regex: search, $options: 'i' } }  ] }, { isDeleted: false }] },).populate('isActive', { isActive: 1 })
+                const testimonialList = await Testimonial.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { courseOrUniversityName: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } },{counselorname: { $regex: search, $options: 'i' } },{location: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('hostName', { hostName: 1 })
+                const trainingList = await Training.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { trainingTopic: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('isActive', { isActive: 1 })
+                const eventList = await Event.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('isActive', { isActive: 1 })
+                const promotionList = await Promotion.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { subject: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('isActive', { isActive: 1 })
 
+            response(req, res, activity, 'Level-1', 'Get-CommonSearch', true, 200,{eventList,promotionList,trainingList,testimonialList,meetingList,notificationList},clientError.success.fetchedSuccessfully);
+        } catch (err: any) {
+            console.log(err)
+            response(req, res, activity, 'Level-3', 'Get-CommonSearch', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Get-SuperAdminForSeach', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
 export const getAllSuperAdmin = async (req, res) => {
     try {
         const data = await SuperAdmin.find({ isDeleted: false }).sort({ _id: -1 })
