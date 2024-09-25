@@ -545,7 +545,7 @@ export let activeStaff = async (req, res, next) => {
         const { Ids, adminId,adminName } = req.body;  
 
 
-        const user = await Student.updateMany(
+        const user = await Staff.updateMany(
             { _id: { $in: Ids } }, 
             { $set: { adminId: adminId , adminName:adminName } }, 
             { new: true }

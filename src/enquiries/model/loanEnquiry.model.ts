@@ -47,7 +47,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     dial5?: string;
     coApplicantPrimaryNo?: string;
     dial6?: string;
-    staffName?: string;
+  
     coApplicantWhatsAppNo?: string;
     relationship?: string;
     adminId?: any;

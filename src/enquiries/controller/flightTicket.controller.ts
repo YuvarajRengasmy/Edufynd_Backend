@@ -167,7 +167,7 @@ export let getFilteredFlightTicketEnquiry = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.staffId) {
             andList.push({ staffId: req.body.staffId });
         }
