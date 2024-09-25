@@ -2,7 +2,9 @@ import { Router } from 'express';
 import { getAllNotification, getSingleNotification, createNotification, updateNotification, 
     deleteNotification, getFilteredNotification,
     activeNotification,
-    deactivateNotification, } from './notification.controller';
+    deactivateNotification,
+    getAllLoggedNotification,
+    getSingleLoggedNotification, } from './notification.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -21,7 +23,19 @@ router.get('/getSingleNotification',
     getSingleNotification,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedNotification
+);
 
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedNotification
+);
 
 router.post('/',
     basicAuthUser,

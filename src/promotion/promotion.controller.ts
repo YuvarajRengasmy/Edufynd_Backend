@@ -3,6 +3,7 @@ import { Student } from '../model/student.model'
 import { Staff } from '../model/staff.model'
 import { Admin } from '../model/admin.model'
 import { Agent } from '../model/agent.model'
+import { Logs } from "../model/logs.model"
 import { validationResult } from "express-validator";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -33,6 +34,33 @@ export const getSinglePromotion = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Promotion', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+
+
+export let getAllLoggedPromotion = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Promotion" })
+        response(req, res, activity, 'Level-1', 'All-Logged Promotion', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Promotion', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedPromotion = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged Promotion', false, 404, {},"No logs found.");
+      }
+  
+      return response(req, res, activity, 'Level-1', 'Single-Logged Promotion', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        console.log(err)
+        return response(req, res, activity, 'Level-2', 'Single-Logged Promotion', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
 
 
 export let createPromotion = async (req, res, next) => {

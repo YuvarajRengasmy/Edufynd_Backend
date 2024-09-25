@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { activeApplicant, courseApply, createApplicant, deactivateApplicant, deleteApplicant, getAllApplicant, getAllApplicantCardDetails, getAllLoggedApplication, getFilteredApplication,
+import { activeApplicant, assignStaffId, courseApply, createApplicant, deactivateApplicant, deleteApplicant, getAllApplicant, getAllApplicantCardDetails, getAllLoggedApplication, getFilteredApplication,
      getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser,  } from '../middleware/checkAuth';
@@ -81,6 +81,12 @@ router.post('/deActiveApplicant',
     checkSession,
     deactivateApplicant
 );
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',                

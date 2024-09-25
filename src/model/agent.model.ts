@@ -103,7 +103,6 @@ const agentSchema = new mongoose.Schema({
   panNumberCompany: { type: String }, 
   gstn: { type: String },
   inc: { type: String }, 
-  staffName: { type: String },
   dial3: {type: String},
   staffContactNo: { type: Number },
   agentsCommission: { type: Number },  
@@ -133,7 +132,7 @@ const agentSchema = new mongoose.Schema({
   privileges: [privilegeSchema],
   activeStatus: {type: String},
   staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
-
+  staffName: { type: String },
   createdOn: { type: Date, default: Date.now()},
   createdBy: { type: String },
   modifiedOn: { type: Date },

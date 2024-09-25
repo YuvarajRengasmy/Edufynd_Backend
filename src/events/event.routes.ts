@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent, activeEvent, deactivateEvent } from './event.controller';
+import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent, activeEvent, deactivateEvent, getAllLoggedEvent, getSingleLoggedEvent } from './event.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession,checkPermission } from '../utils/tokenManager';
@@ -18,6 +18,20 @@ router.get('/getSingleEvent',
     checkSession,
     checkQuery('_id'),
     getSingleEvent,
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedEvent
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedEvent
 );
 
 

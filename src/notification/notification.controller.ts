@@ -3,6 +3,7 @@ import { Student, StudentDocument } from '../model/student.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Admin, AdminDocument } from '../model/admin.model'
 import { Agent, AgentDocument } from '../model/agent.model'
+import { Logs } from "../model/logs.model"
 import { validationResult } from "express-validator";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -35,6 +36,33 @@ export const getSingleNotification = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Notification', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+
+
+export let getAllLoggedNotification = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Notification" })
+        response(req, res, activity, 'Level-1', 'All-Logged Notification', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Notification', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedNotification = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged Notification', false, 404, {},"No logs found.");
+      }
+  
+      return response(req, res, activity, 'Level-1', 'Single-Logged Notification', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        console.log(err)
+        return response(req, res, activity, 'Level-2', 'Single-Logged Notification', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
 
 
 export let createNotification = async (req, res, next) => {

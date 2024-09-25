@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface TrainingDocument extends mongoose.Document {
@@ -51,5 +51,5 @@ const trainingSchema = new mongoose.Schema({
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(trainingSchema)
 export const Training = mongoose.model("Training", trainingSchema)

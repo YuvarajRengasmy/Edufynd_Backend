@@ -37,6 +37,33 @@ export const getSingleTestimonial = async (req, res) => {
 }
 
 
+
+export let getAllLoggedTestimonial = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Testimonial" })
+        response(req, res, activity, 'Level-1', 'All-Logged Testimonial', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Testimonial', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedTestimonial = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged Testimonial', false, 404, {},"No logs found.");
+      }
+  
+      return response(req, res, activity, 'Level-1', 'Single-Logged Testimonial', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        console.log(err)
+        return response(req, res, activity, 'Level-2', 'Single-Logged Testimonial', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
+
 export let createTestimonial = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

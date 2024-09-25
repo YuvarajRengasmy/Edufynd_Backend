@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface PromotionDocument extends mongoose.Document {
@@ -37,5 +37,5 @@ const promotionSchema = new mongoose.Schema({
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(promotionSchema)
 export const Promotion = mongoose.model("Promotion", promotionSchema)
