@@ -692,8 +692,7 @@ export let deactivateApplicant = async (req, res, next) => {
         const { Ids, staffId,staffName } = req.body;  
         const user = await Applicant.updateMany(
             { _id: { $in: Ids } }, 
-            { $set: { staffId: staffId , staffName:staffName } }, 
-            { new: true }
+            { $set: { staffId: staffId , staffName:staffName } }
         );
 
         if (user.modifiedCount > 0) {
