@@ -4,7 +4,8 @@ import { getAllTestimonial, getSingleTestimonial, createTestimonial, updateTesti
      activeTestimonial,
      deactivateTestimonial,
      getAllLoggedTestimonial,
-     getSingleLoggedTestimonial} from './testimonial.controller';
+     getSingleLoggedTestimonial,
+     assignStaffId} from './testimonial.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -72,7 +73,11 @@ router.post('/deActive',
     deactivateTestimonial
 );
 
-
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                  
     basicAuthUser,

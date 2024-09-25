@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllMeeting, getSingleMeeting, createMeeting, updateMeeting, deleteMeeting, getFilteredMeeting, activeMeeting, deactivateMeeting, getAllLoggedMeeting, getSingleLoggedMeeting } from './meeting.controller';
+import { getAllMeeting, getSingleMeeting, createMeeting, updateMeeting, deleteMeeting, getFilteredMeeting, activeMeeting, deactivateMeeting, getAllLoggedMeeting, getSingleLoggedMeeting, assignStaffId } from './meeting.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -59,6 +59,12 @@ router.post('/deActive',
     checkSession,
     deactivateMeeting
 );
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                  
     basicAuthUser,

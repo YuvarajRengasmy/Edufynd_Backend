@@ -9,7 +9,8 @@ export interface NotificationDocument extends mongoose.Document {
     userEmail?: any[];
     subject?: string;
     content?: string;
-    
+    staffId?: any;
+    staffName?: string;
     scheduledTime?: Date;
     sent?: Boolean;
     uploadFile?:any[];
@@ -34,6 +35,8 @@ const notificationSchema = new mongoose.Schema({
     sent: { type: Boolean, default: false },
     uploadImage: { type: String },
     isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
