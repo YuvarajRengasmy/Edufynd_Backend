@@ -19,6 +19,9 @@ import { Accommodation, AccommodationDocument } from "../enquiries/model/accommo
 import {Applicant, ApplicantDocument} from "../model/application.model";
 import {Notification , NotificationDocument} from "../notification/notification.model";
 import { Meeting ,MeetingDocument } from '../meeting/meeting.model';
+import { Event , EventDocument } from '../events/event.model';
+import { Promotion ,PromotionDocument } from '../promotion/promotion.model';
+import { Training , TrainingDocument } from '../training/training.model';
 import { validationResult } from "express-validator";
 import * as TokenManager from "../utils/tokenManager";
 import { response, } from "../helper/commonResponseHandler";
@@ -96,9 +99,11 @@ export let getNotificationSearch = async (req, res, next) => {
                 const notificationList = await Notification.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } },{ subject: { $regex: search, $options: 'i' } }  ] }, { isDeleted: false }] },).populate('hostName', { hostName: 1 })
                 const meetingList = await Meeting.find({ $and: [{ $or: [{ hostName: { $regex: search, $options: 'i' } },{ subject: { $regex: search, $options: 'i' } }  ] }, { isDeleted: false }] },).populate('isActive', { isActive: 1 })
                 const testimonialList = await Testimonial.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { courseOrUniversityName: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } },{counselorname: { $regex: search, $options: 'i' } },{location: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('hostName', { hostName: 1 })
+                const trainingList = await Training.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { trainingTopic: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('isActive', { isActive: 1 })
+                const eventList = await Event.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('isActive', { isActive: 1 })
+                const promotionList = await Promotion.find({ $and: [{ $or: [{ typeOfUser: { $regex: search, $options: 'i' } }, { subject: { $regex: search, $options: 'i' } },{hostName: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('isActive', { isActive: 1 })
 
-
-            response(req, res, activity, 'Level-1', 'Get-CommonSearch', true, 200,{testimonialList,meetingList,notificationList},clientError.success.fetchedSuccessfully);
+            response(req, res, activity, 'Level-1', 'Get-CommonSearch', true, 200,{eventList,promotionList,trainingList,testimonialList,meetingList,notificationList},clientError.success.fetchedSuccessfully);
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Get-CommonSearch', false, 500, {}, errorMessage.internalServer, err.message);
