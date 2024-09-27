@@ -313,7 +313,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Staff Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -324,7 +324,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                                                                <p>Hello ${insertStaff.empName},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertStaff.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -384,21 +384,6 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
 };
 
 
-
-
-
-
-
-
-
-/**
- * @author Balan K K
- * @date 28-05-2024
- * @param {Object} req 
- * @param {Object} res 
- * @param {Function} next  
- * @description This Function is used to get filter Staff Details
- */
 
 export let getFilteredStaff = async (req, res, next) => {
     try {

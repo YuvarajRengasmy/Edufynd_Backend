@@ -288,7 +288,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Agent Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -299,7 +299,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                                               <p>Hello ${insertAgent.agentName},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertAgent.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -464,10 +464,6 @@ export let deleteStudentByAgent = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Delete-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
-
-
-
-
 
 
 
