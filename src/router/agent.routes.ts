@@ -40,11 +40,17 @@ router.get('/SingleLog',
 router.get('/getSingleAgent',
     basicAuthUser,
     checkSession,
-    checkPermission('agent', 'view'),
+     checkPermission('agent', 'view'),
     checkQuery('_id'),
     getSingleAgent,
 );
 
+router.get('/getSingleAgentView',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleAgent,
+);
 
 router.post('/',
     basicAuthUser,

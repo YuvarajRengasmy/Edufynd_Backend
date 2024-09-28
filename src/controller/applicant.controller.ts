@@ -421,6 +421,9 @@ export let getFilteredApplication = async (req, res, next) => {
         if (req.body.universityId) {
             andList.push({ universityId: req.body.universityId })
         }
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId })
+        }
         if (req.body.adminId) {
             andList.push({ adminId: req.body.adminId })
         }
@@ -436,7 +439,7 @@ export let getFilteredApplication = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const applicantList = await Applicant.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page).populate("adminId")
+        const applicantList = await Applicant.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page).populate("adminId").populate("studentId").populate("universityId").populate("agentId").populate("staffId")
 
         const applicantCount = await Applicant.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterApplicant', true, 200, { applicantList, applicantCount }, clientError.success.fetchedSuccessfully);

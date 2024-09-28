@@ -104,7 +104,7 @@ router.delete('/courseType',
 
 router.put('/getFilterCommission',
     basicAuthUser,
-    checkPermission('commission', 'delete'),
+    checkPermission('commission', 'view'),
     getFilteredCommission,
 );
 
