@@ -18,7 +18,6 @@ const router: Router = Router();
 
 router.get('/',
     basicAuthUser,
-    checkPermission('commission', 'view'),
     getAllCommission
 );
 
@@ -39,14 +38,12 @@ router.get('/SingleLog',
 
 router.get('/getSingleCommission',
     basicAuthUser,
-    checkPermission('commission', 'view'),
     checkQuery('_id'),
     getSingleCommission,
 );
 
 router.get('/getSingleUniversity',
     basicAuthUser,
-    checkPermission('commission', 'view'),
     checkQuery('universityId'),
     getSingleUniversity,
 );
@@ -104,7 +101,6 @@ router.delete('/courseType',
 
 router.put('/getFilterCommission',
     basicAuthUser,
-    checkPermission('commission', 'view'),
     getFilteredCommission,
 );
 

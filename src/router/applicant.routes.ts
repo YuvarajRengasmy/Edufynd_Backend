@@ -10,7 +10,6 @@ const router:Router=Router();
 router.get('/',               
     basicAuthUser,
      checkSession,
-     checkPermission('application', 'view'),
     getAllApplicant
 );
 
@@ -33,7 +32,6 @@ router.get('/SingleLog',
 router.get('/card',               
     basicAuthUser,
      checkSession,
-   
     getAllApplicantCardDetails
 );
 
@@ -41,7 +39,6 @@ router.get('/card',
 router.get('/getSingleApplicant',
     basicAuthUser,
     checkSession,
-    checkPermission('application', 'view'),
     checkQuery('_id'),
     getSingleApplicant,
 );
@@ -101,7 +98,6 @@ router.delete('/',
 router.put('/getFilterApplicant',
     basicAuthUser,
     checkSession,
-    checkPermission('application', 'view'),
     getFilteredApplication,
 );
 

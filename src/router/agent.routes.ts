@@ -18,7 +18,6 @@ const router: Router = Router();
 router.get('/',                                
     basicAuthUser,
     checkSession,
-    checkPermission('agent', 'view'),
     getAllAgent
 );
 
@@ -40,7 +39,6 @@ router.get('/SingleLog',
 router.get('/getSingleAgent',
     basicAuthUser,
     checkSession,
-    checkPermission('agent', 'view'),
     checkQuery('_id'),
     getSingleAgent,
 );
@@ -105,7 +103,6 @@ router.delete('/',
 router.put('/getFilterAgent',
     basicAuthUser,
      checkSession,
-     checkPermission('agent', 'view'),
     getFilteredAgent,
 );
 
@@ -120,7 +117,6 @@ router.post('/createAgentBySuperAdmin',             //create agent by super Admi
 router.put('/getFilterStudentByAgent',
     basicAuthUser,
      checkSession,
-     checkPermission('agent', 'view'),
     getFilteredStudentByAgent,
 );
 

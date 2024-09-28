@@ -16,7 +16,6 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     getAllClient
 );
 
@@ -34,16 +33,14 @@ router.get('/SingleLog',
 );
 
 router.get('/card',
-    // basicAuthUser,
-    // checkSession,
-    // checkPermission('client', 'view'),
+    basicAuthUser,
+    checkSession,
     getAllClientCardDetails
 );
 
 router.get('/getSingleClient',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     checkQuery('_id'),
     getSingleClient,
 );
@@ -98,7 +95,6 @@ router.delete('/',
 router.put('/getFilterClient',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     getFilteredClient,
 );
 

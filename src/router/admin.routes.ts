@@ -20,7 +20,6 @@ const router: Router = Router();
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
     getAllAdmin
 );
 
@@ -95,7 +94,6 @@ router.delete('/',
 router.put('/getFilterAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
     getFilteredAdmin,
 );
 

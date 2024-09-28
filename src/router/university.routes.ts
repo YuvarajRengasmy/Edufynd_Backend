@@ -40,7 +40,7 @@ router.get('/SingleLog',
 router.get('/getAllUniversit',             
     basicAuthUser,
     checkSession,
-    checkPermission('university', 'view'),
+    // checkPermission('university', 'view'),
     getAllUniversit
 );
 
