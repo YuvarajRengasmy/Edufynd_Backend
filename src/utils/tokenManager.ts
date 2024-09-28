@@ -103,7 +103,7 @@ export let checkSession = async (req, res, next) => {
 
 
 
-export const checkPermission = (module: string, action: keyof typeof actions) => {
+export const checkPermissionn = (module: string, action: keyof typeof actions) => {
     return async (req, res, next) => {
         const authHeader = req.headers['token'];
 
@@ -117,7 +117,7 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // Find the user from any of the models
                     const user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
-                    await Student.findOne({ _id: tokendata.id }) ||
+                        await Student.findOne({ _id: tokendata.id }) ||
                         await Admin.findOne({ _id: tokendata.id }) ||
                         await Agent.findOne({ _id: tokendata.id }) ||
                         await Staff.findOne({ _id: tokendata.id });
@@ -143,6 +143,79 @@ export const checkPermission = (module: string, action: keyof typeof actions) =>
 
                     // Check if the specific action (add/edit/view/delete) is allowed
                     if (!privilege[actions[action]]) {
+                        console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
+                        return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
+                    }
+
+                    next();
+                } catch (error) {
+                    console.error('Error checking permissions:', error);
+                    return res.status(500).json({ message: 'Internal server error', error });
+                }
+            } else {
+                return res.status(401).json({ message: 'Invalid or missing authorization header' });
+            }
+        } else {
+            return res.status(401).json({ message: 'Authorization header not provided' });
+        }
+    };
+};
+
+
+// Default privilege settings for University and Program
+const getDefaultPrivilege = (module) => {
+    // Default to view: true for University and Program
+    if (module === 'university' || module === 'program') {
+        return { add: false, edit: false, view: true, delete: false };
+    }
+    // Default to all false for other modules
+    return { add: false, edit: false, view: false, delete: false };
+};
+
+
+export const checkPermission = (module: string, action: keyof typeof actions) => {
+    return async (req, res, next) => {
+        const authHeader = req.headers['token'];
+
+        if (authHeader) {
+            const [headerType, tokenValue] = authHeader.split(' ');
+
+            if (headerType === "Bearer" && tokenValue?.trim()) {
+                try {
+                    const tokendata = await jwt.verify(tokenValue.trim(), 'edufynd');
+                    console.log('Token data to check permission:', tokendata);
+
+                    // Find the user from any of the models
+                    const user = await SuperAdmin.findOne({ _id: tokendata.id }) ||
+                        await Student.findOne({ _id: tokendata.id }) ||
+                        await Admin.findOne({ _id: tokendata.id }) ||
+                        await Agent.findOne({ _id: tokendata.id }) ||
+                        await Staff.findOne({ _id: tokendata.id });
+
+                    // console.log("User found:", user);
+
+                    if (!user) {
+                        return res.status(404).json({ message: 'User not found' });
+                    }
+
+                    // If the user is a SuperAdmin, directly call next()
+                    if (user.role === "superAdmin") {
+                        return next();
+                    }
+
+                    // For non-SuperAdmin users, check privileges
+                    const privilege = user.privileges.find((p) => p.module === module);
+                    console.log(`Checking ${action} permission for module ${module}:`, privilege);
+
+                    // If no privilege is found, use default privilege
+                    const effectivePrivilege = privilege || getDefaultPrivilege(module);
+
+                    if (!effectivePrivilege) {
+                        return res.status(403).json({ message: `Access denied: No privileges found for module ${module}` });
+                    }
+
+                    // Check if the specific action (add/edit/view/delete) is allowed
+                    if (!effectivePrivilege[actions[action]]) {
                         console.log(`Permission check failed: ${action} is not allowed for module ${module}`);
                         return res.status(403).json({ message: `Access denied: You do not have permission to ${action} this ${module}` });
                     }

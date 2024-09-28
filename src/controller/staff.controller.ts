@@ -295,6 +295,18 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                 staffDetails.createdOn = new Date();
                 staffDetails.employeeID = await generateNextStaffID();
                 const createStaff = new Staff(staffDetails);
+
+                const modulesWithDefaultView = ['university', 'program'];
+
+                modulesWithDefaultView.forEach((module) => {
+                    createStaff.privileges.push({
+                        module: module,
+                        add: false,
+                        edit: false,
+                        view: true, // Default view is true for University and Program
+                        delete: false,
+                    });
+                });
                 const insertStaff = await createStaff.save();
                 const newHash = await decrypt(insertStaff["password"]);
 

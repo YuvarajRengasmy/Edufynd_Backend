@@ -587,8 +587,6 @@ export const getProgramCategory = async (req, res) => {
 }
 
 
-
-
 export const getProgramByCountry = async (req, res) => {
     const { country, inTake } = req.query;
     try {
@@ -615,9 +613,6 @@ export const getProgramByUniversity = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
-
-
-
 
 
 

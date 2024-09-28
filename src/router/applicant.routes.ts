@@ -33,7 +33,7 @@ router.get('/SingleLog',
 router.get('/card',               
     basicAuthUser,
      checkSession,
-     checkPermission('application', 'view'),
+   
     getAllApplicantCardDetails
 );
 
