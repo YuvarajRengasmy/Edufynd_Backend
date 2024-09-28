@@ -56,7 +56,7 @@ export let getSingleLoggedUniversity = async (req, res) => {
 export let getAllUniversit = async (req, res, next) => {
     try {
         // Find all universities that are not deleted
-        const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
+        const universities = await University.find()
 
         // Total number of universities
         const totalUniversities = universities.length;
@@ -66,8 +66,8 @@ export let getAllUniversit = async (req, res, next) => {
         const totalUniqueCountries = uniqueCountries.length;
 
         // Active and inactive universities
-        const activeUniversities = await University.countDocuments({ isDeleted: false, isActive: true });
-        const inactiveUniversities = await University.countDocuments({ isDeleted: true, isActive: false });
+        const activeUniversities = await University.countDocuments({ isActive: "Active"});
+        const inactiveUniversities = await University.countDocuments({ isActive: "InActive"});
 
         // Popular categories count for each university
         const universitiesWithPopularCategories = universities.map(university => {

@@ -4,7 +4,8 @@ import { getAllNotification, getSingleNotification, createNotification, updateNo
     activeNotification,
     deactivateNotification,
     getAllLoggedNotification,
-    getSingleLoggedNotification, } from './notification.controller';
+    getSingleLoggedNotification,
+    assignStaffId, } from './notification.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -65,6 +66,12 @@ router.post('/deActive',
     checkSession,
     deactivateNotification
 );
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                  
     basicAuthUser,

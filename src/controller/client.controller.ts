@@ -51,7 +51,7 @@ export let getSingleLoggedClient = async (req, res) => {
 export let getAllClientCardDetails = async (req, res, next) => {
     try {
         // Find all client that are not deleted
-        const client = await Client.find({ isDeleted: false }).sort({ clientID: -1 });
+        const client = await Client.find()
 
         // Total number of client
         const totalClient = client.length;
@@ -61,8 +61,8 @@ export let getAllClientCardDetails = async (req, res, next) => {
         const totalUniqueCountries = uniqueCountries.length;
 
         // Active and inactive universities
-        const activeClient = await Client.countDocuments({ clientStatus: "Active", isActive: true });
-        const inactiveClient = await Client.countDocuments({ clientStatus: "Inactive", isActive: false });
+        const activeClient = await Client.countDocuments({ isActive: "Active"});
+        const inactiveClient = await Client.countDocuments({ isActive: "InActive"});
 
         // Construct the response data
         const responseData = {

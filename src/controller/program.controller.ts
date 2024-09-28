@@ -55,10 +55,12 @@ export let getSingleLoggedProgram = async (req, res) => {
     }
   }
 
+
+  
 export let getAllProgramCard = async (req, res, next) => {
     try {
         // Find all program that are not deleted
-        const program = await Program.find({ isDeleted: false }).sort({ programCode: -1 });
+        const program = await Program.find()
 
         // Total number of program
         const totalProgram = program.length;
@@ -72,9 +74,10 @@ export let getAllProgramCard = async (req, res, next) => {
         const universityName= uniqueUniversityName.length;
 
         // Active and inactive universities
-        const activeProgram = await Program.countDocuments({ isDeleted: false, isActive: true });
-        const inactiveProgram = await Program.countDocuments({ isDeleted: true, isActive: false });
+        const activeProgram = await Program.countDocuments({ isActive: "Active"});
+        const inactiveProgram = await Program.countDocuments({ isActive: "InActive"});
 
+       
       
 
         // Construct the response data
@@ -727,3 +730,5 @@ export let activeProgram = async (req, res, next) => {
       response(req, res, activity, 'Level-3', 'Deactivate-program', false, 500, {}, 'Internal Server Error', err.message);
     }
   };
+
+

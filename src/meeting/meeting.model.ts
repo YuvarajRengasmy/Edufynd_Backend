@@ -11,6 +11,8 @@ export interface MeetingDocument extends mongoose.Document {
     content?: string;
     userEmail?: any[];
     subject?: string;
+    staffId?: any;
+    staffName?: string;
    
     date?: Date;
     time?: string;
@@ -39,6 +41,8 @@ const meetingSchema = new mongoose.Schema({
     scheduledTime: {type: Date},
     sent: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

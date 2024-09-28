@@ -246,7 +246,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Admin Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -257,7 +257,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                                               <p>Hello ${insertAdmin.name},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertAdmin.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    

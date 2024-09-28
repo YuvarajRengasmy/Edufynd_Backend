@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllPromotion, getSinglePromotion, createPromotion, updatePromotion, deletePromotion, getFilteredPromotion, activePromotion, deactivatePromotion, getAllLoggedPromotion, getSingleLoggedPromotion } from './promotion.controller';
+import { getAllPromotion, getSinglePromotion, createPromotion, updatePromotion, deletePromotion, getFilteredPromotion, activePromotion, deactivatePromotion, getAllLoggedPromotion, getSingleLoggedPromotion, assignStaffId } from './promotion.controller';
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { checkSession, checkPermission} from '../utils/tokenManager';
 import { basicAuthUser } from '../middleware/checkAuth';
@@ -59,6 +59,12 @@ router.post('/deActive',
     checkSession,
     deactivatePromotion
 );
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                  
     basicAuthUser,

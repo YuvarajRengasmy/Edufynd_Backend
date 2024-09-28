@@ -10,6 +10,8 @@ export interface TestimonialDocument extends mongoose.Document {
     content?: string;
     uploadFile?:any[];
     hostName?: string;
+    staffId?: any;
+    staffName?: string;
     counselorName?: string;
     isActive?: string;
    
@@ -30,6 +32,8 @@ const testimonialSchema = new mongoose.Schema({
     counselorName: {type: String},
     hostName:{type: String},
     isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

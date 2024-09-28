@@ -12,6 +12,8 @@ export interface EventDocument extends mongoose.Document {
     userEmail?: any[];
     eventTopic?: string;
     universityName?: string;
+    staffId?: any;
+    staffName?: string;
     
     date?: Date;
     time?: string;
@@ -45,6 +47,8 @@ const eventSchema = new mongoose.Schema({
     venue: {type: String},
     sent: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
