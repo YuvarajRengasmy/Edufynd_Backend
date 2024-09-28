@@ -732,18 +732,3 @@ export let activeProgram = async (req, res, next) => {
   };
 
 
-
-//   Good Evening Ms. Amirtha,
-
-// I'm writing to update you on today's progress and activities:
-
-// 1). Today work on testing the module for user to assign the staff.
-
-// 2). Then set the privileges and tested the privileges to respective users.
-
-// 3). And, code correction in some module.
-
-
-// Regards
-// Balan K K
-// Developer
