@@ -17,7 +17,7 @@ const router: Router = Router();
 router.get('/',              
     basicAuthUser,
     checkSession,
-    checkPermission('staff', 'view'),
+    // checkPermission('staff', 'view'),
     getAllStaff
 );
 
@@ -39,7 +39,7 @@ router.get('/SingleLog',
 router.get('/getSingleStaff',
     basicAuthUser,
     checkSession,
-    checkPermission('staff', 'view'),
+    // checkPermission('staff', 'view'),
     checkQuery('_id'),
     getSingleStaff,
 );
@@ -110,7 +110,7 @@ router.post('/createStaffBySuperAdmin',             //create staff by super Admi
 router.put('/getFilterStaffSuperAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('staff', 'view'),
+    // checkPermission('staff', 'view'),
     getFilteredStaff,
 );
 
