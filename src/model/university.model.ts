@@ -39,6 +39,8 @@ export interface UniversityDocument extends mongoose.Document {
     typeOfClient?: string;
     couponCode?: string;
     universityStatus?: string;
+    commissionType?: string;
+    commissionValue?: string;
     isDeleted?: boolean;
     isActive?: string;
     createdOn?: Date;
@@ -93,6 +95,8 @@ const universitySchema = new mongoose.Schema({
     typeOfClient: {type: String},
     couponCode: {type: String},
     universityStatus:{type: String},
+    commissionType: {type: String},
+    commissionValue: {type: String},
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
