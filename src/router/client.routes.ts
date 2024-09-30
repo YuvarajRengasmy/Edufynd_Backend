@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import {
     getAllClient, activeClient, getSingleClient, saveClient, updateClient, deleteClient,
-    csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient,
+    csvToJson, getFilteredClient, editClientProfileBySuperAdmin,getAllLoggedClient,
     getSingleLoggedClient,
     deactivateClient
 } from '../controller/client.controller';
+import { getAllClientCardDetails} from '../cards/clientCard.controller'
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';

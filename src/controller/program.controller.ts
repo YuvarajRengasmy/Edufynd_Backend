@@ -57,45 +57,7 @@ export let getSingleLoggedProgram = async (req, res) => {
 
 
   
-export let getAllProgramCard = async (req, res, next) => {
-    try {
-        // Find all program that are not deleted
-        const program = await Program.find()
 
-        // Total number of program
-        const totalProgram = program.length;
-
-        // Number of unique countries
-        const uniqueCountries = await Program.distinct("country", { isDeleted: false });
-        const totalUniqueCountries = uniqueCountries.length;
-
-        // Number of unique universityName
-        const uniqueUniversityName = await Program.distinct("universityName", { isDeleted: false });
-        const universityName= uniqueUniversityName.length;
-
-        // Active and inactive universities
-        const activeProgram = await Program.countDocuments({ isActive: "Active"});
-        const inactiveProgram = await Program.countDocuments({ isActive: "InActive"});
-
-       
-      
-
-        // Construct the response data
-        const responseData = {
-            totalProgram,
-            totalUniqueCountries,
-            universityName,
-            activeProgram,
-            inactiveProgram,
-            program
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-Program Count', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-2', 'GetAll-Program Count', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
 
 
 

@@ -2,12 +2,12 @@ import { Router } from 'express';
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
      getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName,
-     getAllUniversit,
      getAllLoggedUniversity,
      getSingleLoggedUniversity,
      activeUniversity,
      deactivateUniversity,
     } from '../controller/university.controller';
+import { getAllUniversit} from '../cards/universityCard.controller'
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';

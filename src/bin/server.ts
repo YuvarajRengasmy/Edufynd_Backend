@@ -56,7 +56,7 @@ app.instance.set('port', port);
 	}
 
 	const bind: any = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
-console.log("l", bind)
+
 	// handle specific listen errors with friendly messages
 	switch (error.code) {
 		case 'EACCES':
