@@ -46,8 +46,6 @@ export let getAllProgramCard = async (req, res, next) => {
         programCount: programTitlesSet.size           // Get the size of the Set
     }));
 
-
-
         mongoose.set('debug', true);
         // Construct the response data
         const responseData = {
