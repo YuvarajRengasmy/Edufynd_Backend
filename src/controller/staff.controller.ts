@@ -425,7 +425,7 @@ export let getFilteredStaff = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate('adminId').exec();
+        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate('adminId').populate('agentId').exec();
         const staffCount = await Staff.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStaff', true, 200, { staffList, staffCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {

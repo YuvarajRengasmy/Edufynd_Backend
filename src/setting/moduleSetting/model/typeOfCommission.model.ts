@@ -2,7 +2,15 @@ import * as mongoose from 'mongoose'
 
 
 export interface TypeOfCommissionDocument extends mongoose.Document {
-    commission?: string;
+    commissionValue: string,
+    paymentType: string,
+    paymentStatus: string,
+    paymentValue1: string,
+    paymentStatus1: string,
+    paymentValue2: string,
+    paymentStatus2: string,
+    paymentValue3: string,
+    paymentStatus3: string,
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -11,7 +19,15 @@ export interface TypeOfCommissionDocument extends mongoose.Document {
 
 const typeOfCommissionSchema = new mongoose.Schema({
     
-    commission: { type: String },
+    commissionValue: { type: String },
+    paymentType: { type: String },
+    paymentStatus: { type: String },
+    paymentValue1: { type: String },
+    paymentStatus1: { type: String },
+    paymentValue2: { type: String },
+    paymentStatus2:  { type: String },
+    paymentValue3:  { type: String },
+    paymentStatus3:  { type: String },
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

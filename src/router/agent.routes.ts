@@ -43,6 +43,12 @@ router.get('/getSingleAgent',
     getSingleAgent,
 );
 
+router.get('/getSingleAgentView',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleAgent,
+);
 
 router.post('/',
     basicAuthUser,

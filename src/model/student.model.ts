@@ -6,6 +6,8 @@ export interface StudentDocument extends mongoose.Document {
     studentCode?: string;
     adminId?: any;
     staffId?: any;
+    agentId?: any;
+    agentName?:any;
     staffName?: string;
     superAdminId?: any;
     source?: string;
@@ -91,8 +93,10 @@ const studentSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     adminId: { type: mongoose.Types.ObjectId,ref:'Admin'},
     staffId: { type: mongoose.Types.ObjectId,ref:'Staff'},
+    agentId:{ type: mongoose.Types.ObjectId,ref:'Agent'},
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     staffName: { type: String},
+    agentName: { type: String},
     studentCode: { type: String },
     source: { type: String },
     name: { type: String },

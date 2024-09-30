@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose'
 import {LoggingMiddleware} from '../helper/commonResponseHandler'
+import { Agent } from './agent.model';
 
 
 export interface StaffDocument extends mongoose.Document {
@@ -9,6 +10,8 @@ export interface StaffDocument extends mongoose.Document {
     role?: string;
     dob?: String;
      adminId?: any;
+     agentId?: any;
+     agentName?:any;
     designation?: string;
     doj?: String;
     reportingManager?: string;
@@ -91,6 +94,8 @@ const privilegeSchema = new mongoose.Schema({
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     adminId: { type: mongoose.Types.ObjectId, ref:"Admin" },
+    agentId: { type: mongoose.Types.ObjectId, ref:"Agent" },
+    agentName:{type:String},
     employeeID: { type: String },
     photo: { type: String },
     // role:{type:String},
