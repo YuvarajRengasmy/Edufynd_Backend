@@ -66,12 +66,14 @@ router.put('/',
 router.post('/activeStaff',
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'view'),
     activeStaff
 );
 
 router.post('/deActiveStaff',
     basicAuthUser,
     checkSession,
+    checkPermission('staff', 'view'),
     deactivateStaff
 );
 

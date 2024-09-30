@@ -101,6 +101,7 @@ import Tax from '../setting/moduleSetting/router/tax.route'
 import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
 import ApplicationStatus from '../setting/moduleSetting/router/applicationStatus.route'
 import Qualification from '../setting/moduleSetting/router/qualification.route'
+import CommissionType from '../setting/moduleSetting/router/typeOfCommission.route'
 
 
 
@@ -201,10 +202,7 @@ router.use('/tax', Tax)
 router.use('/typeOfClient', TypeOfClient)
 router.use('/applicationStatus', ApplicationStatus)
 router.use('/qulaification', Qualification)
-
-
-
-
+router.use('/commissionType', CommissionType)
 
 
 export default router

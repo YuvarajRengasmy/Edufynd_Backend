@@ -18,7 +18,6 @@ const router:Router=Router();
 router.get('/', 
     basicAuthUser,
     checkSession,
-    checkPermission('program', 'view'),
     getAllProgram
 );
 
@@ -40,14 +39,12 @@ router.get('/SingleLog',
 router.get('/card', 
     basicAuthUser,
     checkSession,
-    checkPermission('program', 'view'),
     getAllProgramCard
 );
 
 router.get('/getSingleProgram',
     basicAuthUser,
     checkSession,
-    checkPermission('program', 'view'),
     checkQuery('_id'),
     getSingleProgram,
 );

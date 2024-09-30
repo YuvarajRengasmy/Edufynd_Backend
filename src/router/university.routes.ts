@@ -40,7 +40,7 @@ router.get('/SingleLog',
 router.get('/getAllUniversit',             
     basicAuthUser,
     checkSession,
-    checkPermission('university', 'view'),
+    // checkPermission('university', 'view'),
     getAllUniversit
 );
 
@@ -77,6 +77,7 @@ router.put('/',
 router.post('/activeUniversity',
     basicAuthUser,
     checkSession,
+    checkPermission('university', 'view'),
     activeUniversity
 );
 
@@ -99,7 +100,7 @@ router.delete('/',
 router.put('/getFilterUniversity',
     basicAuthUser,
     checkSession,
-    checkPermission('university', 'view'),
+    // checkPermission('university', 'view'),
     getFilteredUniversity,
 );
 

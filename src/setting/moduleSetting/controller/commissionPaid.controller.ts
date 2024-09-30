@@ -60,7 +60,7 @@ export const updateCommissionPaid = async (req: any, res:any, next:any) => {
   let updatedModule = await existingModule.save();
       response(req, res, activity, 'Level-2', 'Update-CommissionPaid', true, 200, updatedModule, clientError.success.updateSuccess);
     } catch (err) {
-      response(req, res, activity, 'Level-3', 'Create-CommissionPaid', false, 500, {}, errorMessage.internalServer, err.message);
+      response(req, res, activity, 'Level-3', 'Update-CommissionPaid', false, 500, {}, errorMessage.internalServer, err.message);
     }
   };
 
