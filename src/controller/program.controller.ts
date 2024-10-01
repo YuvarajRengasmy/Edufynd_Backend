@@ -145,7 +145,7 @@ export let updateProgram = async (req, res, next) => {
                     currency: programDetails.currency,
                     flag: programDetails.flag,
 
-                    campuses: programDetails.campuses,
+                    // campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
