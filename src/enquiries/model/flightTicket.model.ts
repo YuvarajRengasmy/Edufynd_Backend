@@ -92,7 +92,10 @@ const flightTicketSchema = new mongoose.Schema({
             replyMessage: {type: String},
             createdBy: { type: String },
     
-        }]
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
     }],
   
     staffName: { type: String},
