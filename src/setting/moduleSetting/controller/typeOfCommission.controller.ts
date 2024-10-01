@@ -55,9 +55,29 @@ export const updateCommissionType = async (req: any, res:any, next:any) => {
       if (!existingModule) {
         return res.status(404).json({ message: 'Module not found' });
       }
-      existingModule.commission =  DropdownListDetails.commission 
+   
 
-  let updatedModule = await existingModule.save();
+      const statusData = await CommissionType.findByIdAndUpdate(
+        { _id: req.query._id },
+        {
+            $set: {
+                commissionValue: DropdownListDetails.commissionValue,
+                paymentType: DropdownListDetails.paymentType,
+                paymentStatus: DropdownListDetails.paymentStatus,
+                paymentValue1:DropdownListDetails.paymentValue1,
+                paymentStatus1:DropdownListDetails.paymentStatus1,
+                paymentValue2: DropdownListDetails.paymentValue2,
+                paymentStatus2: DropdownListDetails.paymentStatus2,
+                paymentValue3: DropdownListDetails.paymentValue3,
+                paymentStatus3:DropdownListDetails.paymentStatus3,
+                modifiedOn: new Date(),
+            
+            },
+        },
+        { new: true }
+    );
+
+  let updatedModule = await statusData.save();
       response(req, res, activity, 'Level-2', 'Update-CommissionType', true, 200, updatedModule, clientError.success.updateSuccess);
     } catch (err) {
       response(req, res, activity, 'Level-3', 'Update-CommissionType', false, 500, {}, errorMessage.internalServer, err.message);
