@@ -49,8 +49,6 @@ const programSchema = new mongoose.Schema({
     country: { type: String },
     programTitle: { type: String },
     applicationFee: { type: Number },
-   
-   
     currency: { type: String },
     flag: { type: String },
     courseType: {type: String},  

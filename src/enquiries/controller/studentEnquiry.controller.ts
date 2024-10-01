@@ -137,7 +137,7 @@ export let createStudentEnquiry = async (req, res, next) => {
     }
 };
 
-export let updateStudentEnquiry = async (req, res, next) => {
+export let updateStudentEnquiryy = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -402,7 +402,8 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let updateFlightTicketEnquiry = async (req, res, next) => {
+
+export let updateStudentEnquiry = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {

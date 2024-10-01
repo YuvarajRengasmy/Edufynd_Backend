@@ -99,7 +99,7 @@ export let createLoanEnquiry = async (req, res, next) => {
     }
 }
 
-export let updateLoanEnquiry = async (req, res, next) => {
+export let updateLoanEnquiryy = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -295,7 +295,7 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let updateFlightTicketEnquiry = async (req, res, next) => {
+export let updateLoanEnquiry = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {

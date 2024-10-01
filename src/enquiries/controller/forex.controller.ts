@@ -100,7 +100,7 @@ export let createForexEnquiry = async (req, res, next) => {
     }
 }
 
-export let updateForexEnquiry = async (req, res, next) => {
+export let updateForexEnquiryy = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -275,12 +275,12 @@ export let activeForex= async (req, res, next) => {
 
 
 
-
 const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let updateFlightTicketEnquiry = async (req, res, next) => {
+
+export let updateForexEnquiry = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
