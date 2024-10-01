@@ -145,7 +145,7 @@ export let updateProgram = async (req, res, next) => {
                     currency: programDetails.currency,
                     flag: programDetails.flag,
 
-                    // campuses: programDetails.campuses,
+                    campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
@@ -155,10 +155,10 @@ export let updateProgram = async (req, res, next) => {
                     modifiedOn: new Date(),
                     modifiedBy: programDetails.modifiedBy,
                 },
-                $addToSet: {
-                    campuses: programDetails.campuses,
+                // $addToSet: {
+                //     campuses: programDetails.campuses,
 
-                }
+                // }
 
             })
             response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
