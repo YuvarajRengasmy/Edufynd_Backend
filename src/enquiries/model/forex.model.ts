@@ -41,6 +41,7 @@ export interface ForexDocument extends mongoose.Document {
     typeOfClient: string;
     isDeleted?: boolean;
     isActive?: string;
+    status?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -91,6 +92,26 @@ const forexSchema = new mongoose.Schema({
     staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
+
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

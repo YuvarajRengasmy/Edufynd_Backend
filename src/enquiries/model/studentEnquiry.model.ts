@@ -112,7 +112,11 @@ const studentEnquirySchema = new mongoose.Schema({
         reply: [{
             replyMessage: {type: String},
             createdBy: { type: String },
-        }]
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
     }],
     isActive: {type: String,default: "InActive"},
     isDeleted: { type: Boolean, default: false },

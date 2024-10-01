@@ -55,6 +55,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     staffName?:string,
     typeOfClient?: string;
     isActive?: string;
+    status?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -115,8 +116,26 @@ const loanEnquirySchema = new mongoose.Schema({
     dial6: { type: String },
     coApplicantWhatsAppNo: { type: String },
     relationship: { type: String },
-
     isActive: {type: String,default: "InActive"},
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
