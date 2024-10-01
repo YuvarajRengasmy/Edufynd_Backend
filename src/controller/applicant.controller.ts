@@ -381,9 +381,6 @@ export let updateApplicant = async (req, res, next) => {
 };
 
 
-
-
-
 export let deleteApplicant = async (req, res, next) => {
 
     try {
@@ -396,16 +393,6 @@ export let deleteApplicant = async (req, res, next) => {
     }
 };
 
-
-
-/**
- * @author Balan K K
- * @date 28-05-2024
- * @param {Object} req 
- * @param {Object} res 
- * @param {Function} next  
- * @description This Function is used to get filter Staff Details
- */
 
 export let getFilteredApplication = async (req, res, next) => {
     try {
