@@ -78,7 +78,6 @@ export let getAllUniversit = async (req, res, next) => {
             inactiveUniversities,
             universitiesWithPopularCategories,
             totalPopularCategoryCount,
-            universities,
             countryCounts: countryCountObj,
         };
 
