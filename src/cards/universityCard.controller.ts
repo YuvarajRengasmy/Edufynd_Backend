@@ -19,7 +19,7 @@ export let getAllUniversit = async (req, res, next) => {
         const totalUniversities = universities.length;
 
         // Number of unique countries
-        const uniqueCountries = await University.distinct("country", { isDeleted: false });
+        const uniqueCountries = await University.distinct("country");
         const totalUniqueCountries = uniqueCountries.length;
 
         // Active and inactive universities
@@ -46,6 +46,29 @@ export let getAllUniversit = async (req, res, next) => {
 
         const totalPopularCategoryCount = uniquePopularCategories.length;
 
+        // Country-wise count of universities
+        const countryCounts = await University.aggregate([
+            {
+                $group: {
+                    _id: "$country",             // Group by country
+                    count: { $sum: 1 }           // Count the number of occurrences
+                }
+            },
+            {
+                $project: {
+                    country: "$_id",            // Rename _id to country
+                    count: 1,                   // Include count in the result
+                    _id: 0                      // Exclude _id from the result
+                }
+            }
+        ]);
+
+        // Create a country count object
+        const countryCountObj = {};
+        countryCounts.forEach(({ country, count }) => {
+            countryCountObj[country] = count;  // Populate the country count object
+        });
+
         mongoose.set('debug', true);
         // Construct the response data
         const responseData = {
@@ -55,7 +78,8 @@ export let getAllUniversit = async (req, res, next) => {
             inactiveUniversities,
             universitiesWithPopularCategories,
             totalPopularCategoryCount,
-            universities
+            universities,
+            countryCounts: countryCountObj,
         };
 
         // Send the response

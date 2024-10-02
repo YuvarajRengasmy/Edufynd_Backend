@@ -130,7 +130,7 @@ export let createProgram = async (req, res, next) => {
 };
 
 
-export let updateProgram = async (req, res, next) => {
+export let updateProgramm = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -145,7 +145,7 @@ export let updateProgram = async (req, res, next) => {
                     currency: programDetails.currency,
                     flag: programDetails.flag,
 
-                    campuses: programDetails.campuses,
+                    // campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
@@ -155,10 +155,10 @@ export let updateProgram = async (req, res, next) => {
                     modifiedOn: new Date(),
                     modifiedBy: programDetails.modifiedBy,
                 },
-                // $addToSet: {
-                //     campuses: programDetails.campuses,
+                $addToSet: {
+                    campuses: programDetails.campuses,
 
-                // }
+                }
 
             })
             response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
@@ -693,3 +693,115 @@ export let activeProgram = async (req, res, next) => {
   };
 
 
+  export let updateProgram = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const programDetails: ProgramDocument = req.body;
+
+            // Update existing fields of the program
+            let updateData = await Program.findByIdAndUpdate(
+                { _id: programDetails._id },
+                {
+                    $set: {
+                        universityName: programDetails.universityName,
+                        country: programDetails.country,
+                        courseType: programDetails.courseType,
+                        programTitle: programDetails.programTitle,
+                        applicationFee: programDetails.applicationFee,
+                        currency: programDetails.currency,
+                        flag: programDetails.flag,
+                        popularCategories: programDetails.popularCategories,
+                        englishlanguageTest: programDetails.englishlanguageTest,
+                        universityInterview: programDetails.universityInterview,
+                        greGmatRequirement: programDetails.greGmatRequirement,
+                        academicRequirement: programDetails.academicRequirement,
+                        commission: programDetails.commission,
+                        modifiedOn: new Date(),
+                        modifiedBy: programDetails.modifiedBy,
+                    },
+                },
+                { new: true }
+            );
+
+            // Update or Add campuses (if campuses field is provided)
+            if (programDetails.campuses && programDetails.campuses.length > 0) {
+                for (let campus of programDetails.campuses) {
+                    if (campus._id) {
+                        // Update existing campus
+                        await Program.findOneAndUpdate(
+                            { _id: programDetails._id, 'campuses._id': campus._id },
+                            {
+                                $set: {
+                                    'campuses.$.campus': campus.campus,
+                                    'campuses.$.inTake': campus.inTake,
+                                    'campuses.$.duration': campus.duration,
+                                    'campuses.$.courseFees': campus.courseFees,
+                                },
+                            }
+                        );
+                    } else {
+                        // Add new campus if no _id is provided
+                        await Program.findByIdAndUpdate(
+                            { _id: programDetails._id },
+                            {
+                                $addToSet: {
+                                    campuses: {
+                                        campus: campus.campus,
+                                        inTake: campus.inTake,
+                                        duration: campus.duration,
+                                        courseFees: campus.courseFees,
+                                    },
+                                },
+                            }
+                        );
+                    }
+                }
+            }
+
+            // Send success response
+            response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
+
+        } catch (err: any) {
+            // Handle errors
+            response(req, res, activity, 'Level-3', 'Update-Program', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        // Handle validation errors
+        response(req, res, activity, 'Level-3', 'Update-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
+
+
+// export const deleteCampuses = async (req, res) => {
+//     const { programId, campusId } = req.body; // Expecting both programId and campusId
+
+//     try {
+//         // Find the program document by programId
+//         const program = await Program.findById(programId);
+
+//         if (!program) {
+//             return res.status(404).json({ message: 'Program not found' });
+//         }
+
+//         // Find the index of the campus to delete using the campusId
+//         const campusIndex = program.campuses.findIndex(campus => campus._id.toString() === campusId);
+//         if (campusIndex === -1) {
+//             return res.status(404).json({ message: 'Campus not found' });
+//         }
+
+//         // Remove the campus from the array
+//         program.campuses.splice(campusIndex, 1);
+
+//         // Save the updated program document
+//         await program.save();
+
+//         return res.status(200).json({ message: 'Campus deleted successfully', program });
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Error deleting campus', error });
+//     }
+// };
+
+
+  
