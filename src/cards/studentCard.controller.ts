@@ -19,13 +19,11 @@ export let getAllStudentCardDetails = async (req, res, next) => {
 
         // Number of unique countries
         const uniqueCountries = await Student.distinct("country");
-        const clientcount = await Student.distinct("typeOfClient")
         const totalUniqueCountries = uniqueCountries.length;
-        const totalClient = clientcount.length;
 
         // Active and inactive 
-        const activeClient = await Student.countDocuments({ isActive: "Active"});
-        const inactiveClient = await Student.countDocuments({ isActive: "InActive"});
+        const activeData = await Student.countDocuments({ isActive: "Active"});
+        const inactiveData = await Student.countDocuments({ isActive: "InActive"});
         const accommodation = await Student.countDocuments({ typeOfClient: "Accommodation"});
         const flight = await Student.countDocuments({ typeOfClient: "Flight"});
         const forex = await Student.countDocuments({ typeOfClient: "Forex"});
@@ -36,10 +34,10 @@ export let getAllStudentCardDetails = async (req, res, next) => {
 
         // Construct the response data
         const responseData = {
-            totalClient,
+            totalStudent,
             totalUniqueCountries,
-            activeClient,
-            inactiveClient,
+            activeData,
+            inactiveData,
             accommodation,
             flight,
             forex,
