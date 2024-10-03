@@ -131,7 +131,7 @@ export let getFilteredYear   = async (req: any, res:any, next:any) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.year) {
             andList.push({ year: req.body.year })
         }
@@ -139,7 +139,7 @@ export let getFilteredYear   = async (req: any, res:any, next:any) => {
         
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const yearList = await Year.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
+        const yearList = await Year.find(findQuery).limit(limit).skip(page)
 
         const yearCount = await Year.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter-Year', true, 200, { yearList, yearCount }, clientError.success.fetchedSuccessfully);
