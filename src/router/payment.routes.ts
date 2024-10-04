@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {createPaymentIntent, checkOut} from '../controller/payment.controller';
+import {createPaymentIntent, checkOut, cashFreePayment} from '../controller/payment.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -18,6 +18,9 @@ router.post('/',
 
 
 router.post('/create-checkout-session',checkOut);
+
+
+router.post('/cash', cashFreePayment)
 
 
 
