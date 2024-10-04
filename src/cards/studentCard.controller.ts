@@ -8,6 +8,8 @@ import * as mongoose from 'mongoose';
 
 var activity = "Student";
 
+
+
 export let getAllStudentCardDetails = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
@@ -17,45 +19,33 @@ export let getAllStudentCardDetails = async (req, res, next) => {
 
         // Number of unique countries
         const uniqueCountries = await Student.distinct("country");
+        const clientcount = await Student.distinct("typeOfClient")
         const totalUniqueCountries = uniqueCountries.length;
+        const totalClient = clientcount.length;
 
         // Active and inactive 
-        const activeData = await Student.countDocuments({ isActive: "Active"});
-        const inactiveData = await Student.countDocuments({ isActive: "InActive"});
-
-
-       // Source-wise count of student
-       const sourceCounts = await Student.aggregate([
-        {
-            $group: {
-                _id: "$source",             // Group by country
-                count: { $sum: 1 }           // Count the number of occurrences
-            }
-        },
-        {
-            $project: {
-                source: "$_id",            // Rename _id to country
-                count: 1,                   // Include count in the result
-                _id: 0                      // Exclude _id from the result
-            }
-        }
-    ]);
-
-    // Create a country count object
-    const sourceCountObj = {};
-    sourceCounts.forEach(({ source, count }) => {
-        sourceCountObj[source] = count;  // Populate the country count object
-    });
+        const activeClient = await Student.countDocuments({ isActive: "Active"});
+        const inactiveClient = await Student.countDocuments({ isActive: "InActive"});
+        const accommodation = await Student.countDocuments({ typeOfClient: "Accommodation"});
+        const flight = await Student.countDocuments({ typeOfClient: "Flight"});
+        const forex = await Student.countDocuments({ typeOfClient: "Forex"});
+        const education = await Student.countDocuments({ typeOfClient: "Educational Institute"});
+        const finance = await Student.countDocuments({ typeOfClient: "Financial Institute"});
 
         mongoose.set('debug', true);
 
         // Construct the response data
         const responseData = {
-            totalStudent,
+            totalClient,
             totalUniqueCountries,
-            activeData,
-            inactiveData,
-            sourceCounts: sourceCountObj,  
+            activeClient,
+            inactiveClient,
+            accommodation,
+            flight,
+            forex,
+            education,
+            finance
+         
         };
 
         // Send the response

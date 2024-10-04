@@ -14,7 +14,6 @@ import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded'
-import { getAllStudentCardDetails } from '../cards/studentCard.controller';
 const router: Router = Router();
 
 
@@ -46,13 +45,6 @@ router.get('/getSingleStudent',
     checkPermission('student', 'view'),
     checkQuery('_id'),
     getSingleStudent,
-);
-
-
-router.get('/card',
-    basicAuthUser,
-    checkSession,
-    getAllStudentCardDetails
 );
 
 
