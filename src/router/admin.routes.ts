@@ -13,6 +13,7 @@ import {
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
+import { getAllAdminCardDetails } from '../cards/adminCard.controller';
 
 const router: Router = Router();
 
@@ -44,7 +45,11 @@ router.get('/getSingleAdmin',
     getSingleAdmin,
 );
 
-
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllAdminCardDetails
+);
 
 router.post('/',
     basicAuthUser,
