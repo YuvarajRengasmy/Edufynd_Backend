@@ -51,9 +51,9 @@ export let getSuperAdminForSearch = async (req, res, next) => {
             const studentList = await Student.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('name', { name: 1 })
             const staffList = await Staff.find({ $and: [{ $or: [{ empName: { $regex: search, $options: 'i' } }, { designation: { $regex: search, $options: 'i' } },{ reportingManager: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('empName', { empName: 1 })
             const agentListed = await Agent.find({ $and: [{ $or: [{ agentName: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('agentName', { agentName: 1 })
-            const applicationList = await Applicant.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } },{programTitle: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }]}).populate('isActive', { isActive: 1 })
+            const applicationListed = await Applicant.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } },{programTitle: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }]}).populate('isActive', { isActive: 1 })
             response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200,
-                 { adminList,commissionList,applicationList,universityList, programList, clientList , blogList,studentList,staffList,agentListed,},
+                 { adminList,commissionList,applicationListed,universityList, programList, clientList , blogList,studentList,staffList,agentListed,},
                  clientError.success.fetchedSuccessfully);
         } catch (err: any) {
             console.log(err)
