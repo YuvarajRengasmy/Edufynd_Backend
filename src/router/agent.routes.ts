@@ -12,6 +12,7 @@ import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
+import { getAllAgentCardDetails } from '../cards/agentCard.controller';
 const router: Router = Router();
 
 
@@ -41,6 +42,12 @@ router.get('/getSingleAgent',
     checkSession,
     checkQuery('_id'),
     getSingleAgent,
+);
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllAgentCardDetails
 );
 
 router.get('/getSingleAgentView',
