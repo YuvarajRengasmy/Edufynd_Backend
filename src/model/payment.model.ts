@@ -17,6 +17,15 @@ export interface PaymentDocument extends mongoose.Document {
     createdBy?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
+
+    order_amount?: number;
+    order_currency?: string;
+    order_id?: string;
+    customer_details?: any;
+    payment_status?: any;
+    payment_link?: any;
+    cashfree_response?: any;
+
 }
 
 const paymentSchema = new mongoose.Schema({
@@ -33,6 +42,20 @@ const paymentSchema = new mongoose.Schema({
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
+
+    order_amount: { type: Number},
+    order_currency: { type: String},
+    order_id: { type: String},
+    customer_details: {
+        customer_id: { type: String},
+        customer_phone: { type: String},
+        customer_name: { type: String},
+        customer_email: { type: String},
+    },
+    payment_status: { type: String }, // Example field for status from Cashfree
+    payment_link: { type: String },   // Example field for payment link from Cashfree
+    cashfree_response: { type: Object }, // Store the entire response if necessary
+    
 })
 
 LoggingMiddleware(paymentSchema)
