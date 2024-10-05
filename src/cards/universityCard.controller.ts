@@ -69,6 +69,16 @@ export let getAllUniversit = async (req, res, next) => {
             countryCountObj[country] = count;  // Populate the country count object
         });
 
+
+        const topCategory = await University.aggregate([
+            { $match: { isActive: "Active" } }, // Match documents that are active
+            { $unwind: "$popularCategories" }, // Unwind the popularCategories array to process each category separately
+            { $group: { _id: "$popularCategories", count: { $sum: 1 } } }, // Group by each category and count occurrences
+            { $sort: { count: -1 } }, // Sort by count in descending order
+            { $limit: 5 }, // Limit to top 5 categories
+            { $project: { _id: 0, popularCategory: "$_id", count: 1 } } // Project the category and its count
+        ]);
+
         mongoose.set('debug', true);
         // Construct the response data
         const responseData = {
@@ -79,6 +89,7 @@ export let getAllUniversit = async (req, res, next) => {
             universitiesWithPopularCategories,
             totalPopularCategoryCount,
             countryCounts: countryCountObj,
+            topCategory
         };
 
         // Send the response

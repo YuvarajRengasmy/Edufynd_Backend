@@ -1,7 +1,8 @@
 import {Router} from 'express';
-import { activeApplicant, assignStaffId, courseApply, createApplicant, deactivateApplicant, deleteApplicant, getAllApplicant, getAllApplicantCardDetails, getAllLoggedApplication, getFilteredApplication,
-     getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
+import { activeApplicant, assignStaffId, courseApply, createApplicant, deactivateApplicant, deleteApplicant, getAllApplicant, 
+    getAllLoggedApplication, getFilteredApplication,getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
+import { getAllApplicantCardDetails } from '../cards/applicationCard.controller';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 const router:Router=Router();
@@ -30,8 +31,8 @@ router.get('/SingleLog',
 
 
 router.get('/card',               
-    // basicAuthUser,
-    //  checkSession,
+    basicAuthUser,
+     checkSession,
     getAllApplicantCardDetails
 );
 
