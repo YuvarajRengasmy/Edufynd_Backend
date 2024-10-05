@@ -34,6 +34,7 @@ export interface ApplicantDocument extends mongoose.Document {
     isDeleted?: boolean;
     isActive?: string;
     status?: any;
+    uniCountry?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -94,6 +95,7 @@ const applicantSchema = new mongoose.Schema({
     }],
 
     programTitle: {type: String},
+    uniCountry: {type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

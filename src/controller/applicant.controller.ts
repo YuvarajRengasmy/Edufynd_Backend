@@ -50,18 +50,38 @@ export let getSingleLoggedApplicant = async (req, res) => {
 export let getAllApplicantCardDetails = async (req, res, next) => {
     try {
         // Find all client that are not deleted
-        const totalApplication = await Applicant.find({ isDeleted: false }).count()
+        const totalApplication = await Applicant.find().count()
     
 
         // Active and inactive universities
-        const activeClient = await Applicant.countDocuments({ clientStatus: "Active", isActive: true });
-        const inactiveClient = await Applicant.countDocuments({ clientStatus: "Inactive", isActive: false });
+        const activeClient = await Applicant.countDocuments({ isActive: "Active"});
+        const inactiveClient = await Applicant.countDocuments({isActive: "InActive" });
+
+
+        const topUniversities = await Applicant.aggregate([
+            { $match: { isActive: "Active" } }, // Match documents that are not deleted
+            { $group: { _id: "$universityName", count: { $sum: 1 } } }, // Group by universityName and count occurrences
+            { $sort: { count: -1 } }, // Sort by count in descending order
+            { $limit: 3 }, // Limit to top 3 universities
+            { $project: { _id: 0, universityName: "$_id", count: 1 } } // Project the result with universityName and count
+        ]);
+
+        
+        const topCountry = await Applicant.aggregate([
+            { $match: { isActive: "Active" } }, // Match documents that are not deleted
+            { $group: { _id: "$uniCountry", count: { $sum: 1 } } }, // Group by universityName and count occurrences
+            { $sort: { count: -1 } }, // Sort by count in descending order
+            { $limit: 3 }, // Limit to top 3 universities
+            { $project: { _id: 0, uniCountry: "$_id", count: 1 } } // Project the result with universityName and count
+        ]);
 
         // Construct the response data
         const responseData = {
             totalApplication,
             activeClient,
             inactiveClient, 
+            topUniversities,
+            topCountry
         };
 
         // Send the response
@@ -216,6 +236,7 @@ export let updateApplicant = async (req, res, next) => {
                             feesPaid: applicantDetails.feesPaid,
                             assignTo: applicantDetails.assignTo,
                             country: applicantDetails.country,
+                            uniCountry: applicantDetails.uniCountry,
                             modifiedOn: new Date(),
                             modifiedBy: applicantDetails.modifiedBy,
                         },
