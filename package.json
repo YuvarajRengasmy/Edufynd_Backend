@@ -15,6 +15,7 @@
     "axios": "^1.7.4",
     "basic-auth": "^2.0.1",
     "body-parser": "^1.20.2",
+    "cashfree-pg": "^4.2.3",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "csvtojson": "^2.0.10",

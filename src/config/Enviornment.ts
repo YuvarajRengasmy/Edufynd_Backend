@@ -87,5 +87,9 @@ export const SERVER = {
     FCM_KEY: '',
     FACEBOOK_ACCESS_TOKEN: process.env['FACEBOOK_ACCESS_TOKEN'],
     STRIPE_SECRET_KEY: process.env['STRIPE_SECRET_KEY'],
-    WEB_HOOK: process.env['WEB_HOOK']
+    WEB_HOOK: process.env['WEB_HOOK'],
+    CASHFREE_CLIENT_ID: process.env['CASHFREE_CLIENT_ID'],
+    CASHFREE_SECRET_KEY: process.env['CASHFREE_SECRET_KEY'],
+
+
 };

@@ -27,6 +27,7 @@ export let getAllClientCardDetails = async (req, res, next) => {
         const forex = await Client.countDocuments({ typeOfClient: "Forex"});
         const education = await Client.countDocuments({ typeOfClient: "Educational Institute"});
         const finance = await Client.countDocuments({ typeOfClient: "Financial Institute"});
+        const loan = await Client.countDocuments({ typeOfClient: "loan"});
 
         mongoose.set('debug', true);
 
@@ -40,7 +41,8 @@ export let getAllClientCardDetails = async (req, res, next) => {
             flight,
             forex,
             education,
-            finance
+            finance,
+            loan
          
         };
 
