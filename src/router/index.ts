@@ -19,6 +19,7 @@ import Commission from './commission.routes'
 import Demo from './demo.routes'
 import Payment from './payment.routes'
 import DialCode from './dialCode.routes'
+import Branch from './branch.routes'
 
 
 
@@ -123,8 +124,8 @@ router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
 router.use('/chat', Chat)
-
 router.use('/dialCode', DialCode)
+router.use('/branch', Branch)
 
 
 //All Enquiry API

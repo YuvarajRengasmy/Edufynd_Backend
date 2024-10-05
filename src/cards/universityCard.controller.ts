@@ -34,11 +34,6 @@ export let getAllUniversit = async (req, res, next) => {
             };
         });
 
-        // // Total count of popular categories across all universities
-        // const totalPopularCategoryCount = universities.reduce((total, university) => {
-        //     return total + university.popularCategories.length;
-        // }, 0);
-
         // Get unique popular categories across all universities
         const uniquePopularCategories = [...new Set(
             universities.flatMap(university => university.popularCategories)
@@ -70,13 +65,15 @@ export let getAllUniversit = async (req, res, next) => {
         });
 
 
+      
+
         const topCategory = await University.aggregate([
-            { $match: { isActive: "Active" } }, // Match documents that are active
+            { $match: { isActive: "Active" } }, // Match active universities
             { $unwind: "$popularCategories" }, // Unwind the popularCategories array to process each category separately
-            { $group: { _id: "$popularCategories", count: { $sum: 1 } } }, // Group by each category and count occurrences
-            { $sort: { count: -1 } }, // Sort by count in descending order
-            { $limit: 5 }, // Limit to top 5 categories
-            { $project: { _id: 0, popularCategory: "$_id", count: 1 } } // Project the category and its count
+            { $group: { _id: "$popularCategories", count: { $sum: 1 } } }, // Group by category and count occurrences
+            { $sort: { count: -1 } }, // Sort by count in descending order (highest count first)
+            { $group: { _id: null, uniqueCategories: { $push: { popularCategory: "$_id", count: "$count" } } } }, // Group into a single array of unique categories
+            { $project: { _id: 0, uniqueCategories: { $slice: ["$uniqueCategories", 5] } } } // Limit to the top 5 categories
         ]);
 
         mongoose.set('debug', true);
@@ -93,8 +90,8 @@ export let getAllUniversit = async (req, res, next) => {
         };
 
         // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
+        response(req, res, activity, 'Level-1', 'GetAll-University Card', true, 200, responseData, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-3', 'GetAll-University Card', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
