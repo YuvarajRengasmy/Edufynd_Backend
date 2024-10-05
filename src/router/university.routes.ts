@@ -37,9 +37,9 @@ router.get('/SingleLog',
 );
 
 
-router.get('/getAllUniversit',             
-    basicAuthUser,
-    checkSession,
+router.get('/card',             
+    // basicAuthUser,
+    // checkSession,
     getAllUniversit
 );
 
