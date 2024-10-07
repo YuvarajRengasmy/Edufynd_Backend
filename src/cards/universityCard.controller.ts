@@ -64,9 +64,6 @@ export let getAllUniversit = async (req, res, next) => {
             countryCountObj[country] = count;  // Populate the country count object
         });
 
-
-      
-
         const topCategory = await University.aggregate([
             { $match: { isActive: "Active" } }, // Match active universities
             { $unwind: "$popularCategories" }, // Unwind the popularCategories array to process each category separately
