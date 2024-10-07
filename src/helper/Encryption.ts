@@ -46,7 +46,7 @@ export let decrypt = (textToConvert) => {
 
 
 export let generateRandomPassword = (length) => {
-  const specialCharacters = '!@#$%^&*'
+  const specialCharacters = '@#$&*'
   const digits = '0123456789';
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lower = "abcdefghijklmnopqrstuvwxyz"

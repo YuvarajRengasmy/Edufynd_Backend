@@ -13,51 +13,59 @@ var activity = "Commission";
 export let getAllCommissionCardDetails = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
- 
-        const student = await Commission.find()
-        const totalStudent = student.length;
+
+        const data = await Commission.find()
+        const totalData = data.length;
 
         // Number of unique countries
         const uniqueCountries = await Commission.distinct("country");
         const totalUniqueCountries = uniqueCountries.length;
 
         // Active and inactive 
-        const activeData = await Commission.countDocuments({ isActive: "Active"});
-        const inactiveData = await Commission.countDocuments({ isActive: "InActive"});
+        const activeData = await Commission.countDocuments({ isActive: "Active" });
+        const inactiveData = await Commission.countDocuments({ isActive: "InActive" });
+        // Function to aggregate counts based on a given field
+        const getCounts = async (field) => {
+            const counts = await Commission.aggregate([
+                {
+                    $group: {
+                        _id: `$${field}`,
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        source: "$_id",
+                        count: 1,
+                        _id: 0
+                    }
+                }
+            ]);
 
+            const countObj = {};
+            counts.forEach(({ source, count }) => {
+                countObj[source] = count;
+            });
 
-       // Source-wise count of student
-       const sourceCounts = await Commission.aggregate([
-        {
-            $group: {
-                _id: "$source",             // Group by country
-                count: { $sum: 1 }           // Count the number of occurrences
-            }
-        },
-        {
-            $project: {
-                source: "$_id",            // Rename _id to country
-                count: 1,                   // Include count in the result
-                _id: 0                      // Exclude _id from the result
-            }
-        }
-    ]);
+            return countObj;
+        };
 
-    // Create a country count object
-    const sourceCountObj = {};
-    sourceCounts.forEach(({ source, count }) => {
-        sourceCountObj[source] = count;  // Populate the country count object
-    });
+        // Get payment method and payment type counts
+        const paymentMethodCountObj = await getCounts('paymentMethod');
+        const paymentTypeCountObj = await getCounts('paymentType');
+        const taxCountObj = await getCounts('tax');
 
         mongoose.set('debug', true);
 
         // Construct the response data
         const responseData = {
-            totalStudent,
+            totalData,
             totalUniqueCountries,
             activeData,
             inactiveData,
-            sourceCounts: sourceCountObj,  
+            paymentMethodCounts: paymentMethodCountObj,
+            paymentTypeCounts: paymentTypeCountObj,
+            taxCounts: taxCountObj,
         };
 
         // Send the response

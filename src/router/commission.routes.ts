@@ -12,6 +12,7 @@ import {
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
+import { getAllCommissionCardDetails } from '../cards/commissionCard.controller';
 
 
 const router: Router = Router();
@@ -48,6 +49,12 @@ router.get('/getSingleUniversity',
     getSingleUniversity,
 );
 
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllCommissionCardDetails
+);
 
 router.post('/',
     basicAuthUser,

@@ -256,11 +256,6 @@ export const assignPermissions = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // if (user.role === 'superAdmin') {
-        //     return res.status(403).json({ message: 'SuperAdmin cannot have modified permissions' });
-        // }
-
-        // Loop through each privilege in the array
         privileges.forEach((priv: any) => {
             let privilege = user.privileges.find((p) => p.module === priv.module);
 
