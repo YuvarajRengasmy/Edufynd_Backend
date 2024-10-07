@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {  getUserData, publishPost} from '../controller/facebook.controller';
+import {  facebookPost, getUserData, publishPost} from '../controller/facebook.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession } from '../../utils/tokenManager';
@@ -8,7 +8,7 @@ import { checkSession } from '../../utils/tokenManager';
 const router: Router = Router();
 
 router.get('/',                
-    basicAuthUser,
+    // basicAuthUser,
     getUserData
 
 );
@@ -46,5 +46,7 @@ router.put('/getFilterSocialMedia',
     basicAuthUser,
  
 );
+
+router.post('/post', facebookPost)
 
 export default router

@@ -28,8 +28,19 @@ export let getAllCommissionCardDetails = async (req, res, next) => {
         const getCounts = async (field) => {
             const counts = await Commission.aggregate([
                 {
+                    // $group: {
+                    //     _id: `$${field}`,
+                    //     count: { $sum: 1 }
+                    // }
+
                     $group: {
-                        _id: `$${field}`,
+                        _id: {
+                            $cond: {
+                                if: { $or: [{ $eq: [`$${field}`, ""] }, { $eq: [`$${field}`, null] }] },
+                                then: "Fixed",  // Replace empty or null values with 'Unknown'
+                                else: `$${field}`
+                            }
+                        },
                         count: { $sum: 1 }
                     }
                 },
@@ -54,7 +65,9 @@ export let getAllCommissionCardDetails = async (req, res, next) => {
         const paymentMethodCountObj = await getCounts('paymentMethod');
         const paymentTypeCountObj = await getCounts('paymentType');
         const taxCountObj = await getCounts('tax');
-
+        const commissionPaidCountObj = await getCounts('commissionPaidOn');
+   
+    
         mongoose.set('debug', true);
 
         // Construct the response data
@@ -66,6 +79,7 @@ export let getAllCommissionCardDetails = async (req, res, next) => {
             paymentMethodCounts: paymentMethodCountObj,
             paymentTypeCounts: paymentTypeCountObj,
             taxCounts: taxCountObj,
+            commissionCounts: commissionPaidCountObj,
         };
 
         // Send the response

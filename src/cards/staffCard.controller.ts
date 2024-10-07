@@ -10,18 +10,15 @@ var activity = "Staff"
 export let getAllStaffCardDetails = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
-        // Find all client that are not deleted
+     
         const staff = await Staff.find()
         const totalStaff = staff.length;
 
-        // Number of unique countries
         const uniqueCountries = await Staff.distinct("country");
         const totalUniqueCountries = uniqueCountries.length;
 
-        // Active and inactive 
         const activeData = await Staff.countDocuments({ isActive: "Active"});
         const inactiveData = await Staff.countDocuments({ isActive: "InActive"});
-
 
        // Source-wise count of student
        const sourceCounts = await Staff.aggregate([
@@ -40,7 +37,6 @@ export let getAllStaffCardDetails = async (req, res, next) => {
         }
     ]);
 
-    // Create a country count object
     const sourceCountObj = {};
     sourceCounts.forEach(({ source, count }) => {
         sourceCountObj[source] = count;  // Populate the country count object

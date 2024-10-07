@@ -2,7 +2,8 @@ import * as mongoose from 'mongoose'
 
 export interface FaceBookDocument extends mongoose.Document {
     message?: string;
-  
+    image?: string;
+
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -10,9 +11,8 @@ export interface FaceBookDocument extends mongoose.Document {
 }
 
 const facebookSchema = new mongoose.Schema({
-
-    message: {type: String},
-
+    message: { type: String },
+    image: { type: String },
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },

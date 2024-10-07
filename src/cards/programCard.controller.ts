@@ -11,7 +11,6 @@ var activity = "Program"
 export let getAllProgramCard = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
-        // Find all program that are not deleted
         const program = await Program.find()
 
         // Total number of program
@@ -58,7 +57,6 @@ export let getAllProgramCard = async (req, res, next) => {
           
         };
 
-        // Send the response
         response(req, res, activity, 'Level-1', 'GetAll-Program Count', true, 200, responseData, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-2', 'GetAll-Program Count', false, 500, {}, errorMessage.internalServer, err.message);
