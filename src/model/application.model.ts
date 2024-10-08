@@ -90,6 +90,7 @@ const applicantSchema = new mongoose.Schema({
     
         }],
         subCategory: [String],
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }

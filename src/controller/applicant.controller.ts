@@ -197,7 +197,6 @@ export let updateApplicant = async (req, res, next) => {
                             uniCountry: applicantDetails.uniCountry,
                             modifiedOn: new Date(),
                             modifiedBy: applicantDetails.modifiedBy,
-                            // subCategory: applicantDetails.subCategory
                         },
                         $addToSet: {
                             status: applicantDetails.status
