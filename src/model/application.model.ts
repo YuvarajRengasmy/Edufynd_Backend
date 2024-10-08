@@ -79,7 +79,7 @@ const applicantSchema = new mongoose.Schema({
         newStatus: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        // progress: {type: String},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
@@ -90,6 +90,7 @@ const applicantSchema = new mongoose.Schema({
     
         }],
         subCategory: [String],
+        progress: { type: Number }, 
         completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
@@ -104,7 +105,6 @@ const applicantSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 
 })
-
 
 LoggingMiddleware(applicantSchema)
 export const Applicant = mongoose.model("Applicant", applicantSchema)
