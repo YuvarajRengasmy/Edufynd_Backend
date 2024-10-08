@@ -4,8 +4,8 @@ export interface ApplicationStatusDocument extends mongoose.Document{
     _id?: any;
     statusName?: string;
     duration?: string;
-    subCategory?: any;
-
+    subCategory?: any[];
+    position?: number;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -17,6 +17,7 @@ export const applicationStatusSchema = new mongoose.Schema({
     statusName: {type: String},
     duration:{ type: String},
     subCategory: [String],
+    position: {type: Number},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },

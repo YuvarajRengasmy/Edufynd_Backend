@@ -60,6 +60,7 @@ export const updateApplicationStatus = async (req: any, res:any, next:any) => {
                         statusName: statusDetails.statusName,
                         duration: statusDetails.duration,
                         subCategory: statusDetails.subCategory,
+                        position: statusDetails.position,
                    
                         modifiedOn: new Date(),
                         modifiedBy: statusDetails.modifiedBy,
