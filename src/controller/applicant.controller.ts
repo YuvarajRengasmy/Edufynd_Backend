@@ -176,6 +176,14 @@ export let updateApplicant = async (req, res, next) => {
 
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
+
+                   // Check progress and set completed to true if progress is 100
+                   applicantDetails.status.forEach(status => {
+                    if (status.progress == 100) {
+                        status.completed = true;
+                    }
+                });
+                
                 let updatedApplicant = await updateMaster.updateOne(
                     {
                         $set: {
