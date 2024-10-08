@@ -177,20 +177,18 @@ export let updateApplicant = async (req, res, next) => {
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
 
-           // Ensure status is a non-empty array
-           if (!applicantDetails.status || !Array.isArray(applicantDetails.status) || applicantDetails.status.length === 0) {
-            return res.status(400).json({ message: 'Invalid status data. Expected a non-empty array of status.' });
+          // Ensure status is an object
+          if (!applicantDetails.status || typeof applicantDetails.status !== 'object') {
+            return res.status(400).json({ message: 'Invalid status data. Expected a status object.' });
         }
 
         // Log the applicantDetails to debug
-        console.log("balan", applicantDetails);
+        console.log(applicantDetails);
 
         // Check progress and set completed to true if progress is 100
-        applicantDetails.status.forEach(status => {
-            if (status.progress === 100) {
-                status.completed = true;
-            }
-        });
+        if (applicantDetails.status.progress === 100) {
+            applicantDetails.status.completed = true;
+        }
 
                 let updatedApplicant = await updateMaster.updateOne(
                     {
