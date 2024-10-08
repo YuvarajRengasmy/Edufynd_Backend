@@ -177,13 +177,21 @@ export let updateApplicant = async (req, res, next) => {
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
 
-                   // Check progress and set completed to true if progress is 100
-                   applicantDetails.status.forEach(status => {
-                    if (status.progress == 100) {
-                        status.completed = true;
-                    }
-                });
-                
+           // Ensure status is a non-empty array
+           if (!applicantDetails.status || !Array.isArray(applicantDetails.status) || applicantDetails.status.length === 0) {
+            return res.status(400).json({ message: 'Invalid status data. Expected a non-empty array of status.' });
+        }
+
+        // Log the applicantDetails to debug
+        console.log("balan", applicantDetails);
+
+        // Check progress and set completed to true if progress is 100
+        applicantDetails.status.forEach(status => {
+            if (status.progress === 100) {
+                status.completed = true;
+            }
+        });
+
                 let updatedApplicant = await updateMaster.updateOne(
                     {
                         $set: {
