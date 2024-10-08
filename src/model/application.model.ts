@@ -34,7 +34,6 @@ export interface ApplicantDocument extends mongoose.Document {
     isDeleted?: boolean;
     isActive?: string;
     status?: any;
-    subCategory?: any[];
     uniCountry?: string;
     createdOn?: Date;
     createdBy?: string;
@@ -91,6 +90,7 @@ const applicantSchema = new mongoose.Schema({
     
         }],
         subCategory: [String],
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }
