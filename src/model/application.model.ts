@@ -34,7 +34,6 @@ export interface ApplicantDocument extends mongoose.Document {
     isDeleted?: boolean;
     isActive?: string;
     status?: any;
-    subCategory?: any[];
     uniCountry?: string;
     createdOn?: Date;
     createdBy?: string;
