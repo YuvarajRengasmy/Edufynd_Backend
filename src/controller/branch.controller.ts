@@ -210,9 +210,6 @@ export let getFilteredBranch = async (req, res, next) => {
 };
 
 
-
-
-
 export let activeBranch = async (req, res, next) => {
     try {
         const branchIds = req.body.branchIds; 

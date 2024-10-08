@@ -32,7 +32,7 @@ router.get('/logs',
 );
 
 
-router.get('/SingleLog',
+router.get('/singleLog',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),

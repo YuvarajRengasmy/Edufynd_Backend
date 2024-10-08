@@ -3,6 +3,7 @@ import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, up
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllStudentEnquiryCard } from '../../cards/studentEnquiryCard.controller';
 
 const router: Router = Router();
 
@@ -32,13 +33,19 @@ router.get('/logs',
 );
 
 
-router.get('/SingleLog',
+router.get('/singleLog',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     getSingleLoggedStudentEnquiry
 );
 
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllStudentEnquiryCard
+);
 
 router.post('/',
     checkPermission('studentEnquiry', 'add'),

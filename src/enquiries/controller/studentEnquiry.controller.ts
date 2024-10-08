@@ -11,63 +11,19 @@ var activity = "StudentEnquiry";
 
 export let getAllStudentEnquiry = async (req, res, next) => {
     try {
-        const data = await StudentEnquiry.find({ isDeleted: false }).sort({
-            studentCode: -1,
-        });
-        response(
-            req,
-            res,
-            activity,
-            "Level-1",
-            "GetAll-StudentEnquiry",
-            true,
-            200,
-            data,
-            clientError.success.fetchedSuccessfully
-        );
+        const data = await StudentEnquiry.find({ isDeleted: false }).sort({studentCode: -1});
+        response(req,res,activity,"Level-1","GetAll-StudentEnquiry",true,200,data,clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(
-            req,
-            res,
-            activity,
-            "Level-3",
-            "GetAll-StudentEnquiry",
-            false,
-            500,
-            {},
-            errorMessage.internalServer,
-            err.message
-        );
+        response(req,res,activity,"Level-3","GetAll-StudentEnquiry",false,500,{},errorMessage.internalServer,err.message);
     }
 };
 
 export let getSingleStudentEnquiry = async (req, res, next) => {
     try {
         const student = await StudentEnquiry.findOne({ _id: req.query._id });
-        response(
-            req,
-            res,
-            activity,
-            "Level-1",
-            "Get-Single-StudentEnquiry",
-            true,
-            200,
-            student,
-            clientError.success.fetchedSuccessfully
-        );
+        response(req,res,activity,"Level-1","Get-Single-StudentEnquiry",true,200,student,clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(
-            req,
-            res,
-            activity,
-            "Level-3",
-            "Get-Single-StudentEnquiry",
-            false,
-            500,
-            {},
-            errorMessage.internalServer,
-            err.message
-        );
+        response(req,res,activity,"Level-3","Get-Single-StudentEnquiry",false,500,{},errorMessage.internalServer,err.message);
     }
 };
 
@@ -193,10 +149,7 @@ export let updateStudentEnquiryy = async (req, res, next) => {
                     },
                 }
             );
-            response(
-                req,
-                res,
-                activity,
+            response(req,res,activity,
                 "Level-2",
                 "Update-studentEnquiryDetails",
                 true,

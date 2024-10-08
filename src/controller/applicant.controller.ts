@@ -204,8 +204,6 @@ export let updateApplicant = async (req, res, next) => {
                         }
                     }
                 );
-
-
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
                 const user = updatedApplication.name
