@@ -311,7 +311,7 @@ export let updateApplicanttt = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
         
@@ -554,7 +554,7 @@ export let updateApplicantt = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
                                                           
@@ -706,7 +706,7 @@ export let updateApplicant = async (req, res, next) => {
             // If no status exists, insert the first status
             const initialStatus = {
                 _id: new mongoose.Types.ObjectId(),
-                newStatus: applicantDetails.status.newStatus,
+                statusName: applicantDetails.status.statusName,
                 progress: applicantDetails.status.progress,
                 subCategory: applicantDetails.status.subCategory,
                 completed: true,
@@ -733,7 +733,7 @@ export let updateApplicant = async (req, res, next) => {
                 // Move to the next status
                 const nextStatus = {
                     _id: new mongoose.Types.ObjectId(),
-                    newStatus:  'Next Status',
+                    statusName:  'Next Status',
                     progress: 0,
                     completed: false,
                     createdOn: new Date(),
@@ -775,9 +775,9 @@ export let updateApplicant = async (req, res, next) => {
                 );
 
                 // Update specific status by statusId
-                const { statusId } = req.body; // Get the statusId from request body
+                const { _id } = req.body; // Get the statusId from request body
                 const updateStatusData = {
-                    "status.$[elem].newStatus": req.body.newStatus,
+                    "status.$[elem].statusName": req.body.statusName,
                     "status.$[elem].progress": req.body.progress,
                     "status.$[elem].subCategory": req.body.subCategory,
                     "status.$[elem].completed": req.body.completed,
@@ -788,7 +788,7 @@ export let updateApplicant = async (req, res, next) => {
                 await Applicant.updateOne(
                     { _id: applicantDetails._id },
                     { $set: updateStatusData },
-                    { arrayFilters: [{ "elem._id": statusId }] } // Update only the specific status
+                    { arrayFilters: [{ "elem._id": _id }] } // Update only the specific status
                 );
 
                 
@@ -886,7 +886,7 @@ export let updateApplicant = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
         
