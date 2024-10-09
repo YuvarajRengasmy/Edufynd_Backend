@@ -80,7 +80,6 @@ const applicantSchema = new mongoose.Schema({
         commentBox: {type: String},
         duration: {type: String},
         position: {type: String},
-        // progress: {type: String},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
