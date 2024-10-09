@@ -686,7 +686,7 @@ export let updateApplicanttt = async (req, res, next) => {
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
-console.log("jj",application)
+
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
 
@@ -722,7 +722,7 @@ console.log("jj",application)
                 // Move to the next status
                 const nextStatus = {
                     _id: new mongoose.Types.ObjectId(),
-                    statusName:  'Next Status',
+                    newStatus:  'Next Status',
                     progress: 0,
                     completed: false,
                     createdOn: new Date(),
@@ -767,7 +767,7 @@ console.log("jj",application)
                 const { statusId } = req.body; // Get the statusId from request body
                 console.log("pppp", statusId)
                 const updateStatusData = {
-                    "status.$[elem].statusName": req.body.statusName,
+                    "status.$[elem].newStatus": req.body.newStatus,
                     "status.$[elem].progress": req.body.progress,
                     "status.$[elem].subCategory": req.body.subCategory,
                     "status.$[elem].completed": req.body.completed,
@@ -950,7 +950,7 @@ export let updateApplicant = async (req, res, next) => {
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
 
-                const updatedApplicant = await updateMaster.updateOne(
+                let updatedApplicant = await updateMaster.updateOne(
                     {
                         $set: {
                             name: applicantDetails.name,
@@ -982,7 +982,7 @@ export let updateApplicant = async (req, res, next) => {
                   const { statusId } = req.body; // Get the statusId from request body
                   console.log("pppp", statusId)
                   const updateStatusData = {
-                      "status.$[elem].newStatus": req.body.newStatus,
+                      "status.$[elem].statusName": req.body.statusName,
                       "status.$[elem].progress": req.body.progress,
                       "status.$[elem].subCategory": req.body.subCategory,
                       "status.$[elem].completed": req.body.completed,
@@ -993,8 +993,10 @@ export let updateApplicant = async (req, res, next) => {
                   await Applicant.updateOne(
                       { _id: applicantDetails._id },
                       { $set: updateStatusData },
-                      { arrayFilters: [{ "elem._id": applicantDetails.status._id }] } // Update only the specific status
+                      { arrayFilters: [{ "elem._id": statusId }] } // Update only the specific status
                   );
+
+
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
                 const user = updatedApplication.name
@@ -1149,3 +1151,46 @@ export let updateApplicant = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+
+
+
+
+export const updateStatus = async (req, res) => {
+    try {
+        const applicantDetails: ApplicantDocument = req.body;
+        const { statusId, statusName, progress, subCategory, completed, duration, position} = req.body;
+        
+        // Assuming applicantDetails are retrieved based on your logic
+        const Details = await Applicant.findById(applicantDetails._id); // Ensure you get the correct applicant details
+        if (!Details) {
+            return res.status(404).json({ message: 'Applicant not found' });
+        }
+
+        // Prepare the update data
+        const updateStatusData = {
+            "status.$[elem].statusName": statusName,
+            "status.$[elem].progress": progress,
+            "status.$[elem].duration": duration,
+            "status.$[elem].subCategory": subCategory,
+            "status.$[elem].position": position,
+            "status.$[elem].completed": completed,
+            "status.$[elem].modifiedOn": new Date(),
+            "status.$[elem].modifiedBy": applicantDetails.modifiedBy // Assuming this comes from your applicant details
+        };
+
+        // Update specific status by statusId
+        await Applicant.updateOne(
+            { _id: applicantDetails._id },
+            { $set: updateStatusData },
+            { arrayFilters: [{ "elem._id": statusId }] } // Update only the specific status
+        );
+
+        res.status(200).json({ message: 'Status updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+}
+
+

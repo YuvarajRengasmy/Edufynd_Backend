@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import { activeApplicant, assignStaffId, courseApply, createApplicant, deactivateApplicant, deleteApplicant, getAllApplicant, 
-    getAllLoggedApplication, getFilteredApplication,getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
+    getAllLoggedApplication, getFilteredApplication,getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant,
+    updateStatus} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { getAllApplicantCardDetails } from '../cards/applicationCard.controller';
 import { basicAuthUser,  } from '../middleware/checkAuth';
@@ -64,9 +65,15 @@ router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('application', 'edit'),
-     checkRequestBodyParams('_id'),
-    // checkQuery('_id'),
+    checkRequestBodyParams('_id'),
     updateApplicant
+);
+
+router.put('/status',                    
+    // basicAuthUser,
+    // checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
 );
 
 router.post('/activeApplicant',
