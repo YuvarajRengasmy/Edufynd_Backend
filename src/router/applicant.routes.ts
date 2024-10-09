@@ -61,10 +61,11 @@ router.post('/courseApply',
 
 
 router.put('/',                    
-    basicAuthUser,
-    checkSession,
-    checkPermission('application', 'edit'),
+    // basicAuthUser,
+    // checkSession,
+    // checkPermission('application', 'edit'),
     checkRequestBodyParams('_id'),
+
     updateApplicant
 );
 

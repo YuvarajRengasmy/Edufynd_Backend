@@ -168,7 +168,7 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let updateApplicanttt = async (req, res, next) => {
+export let updateApplicanty = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -177,19 +177,6 @@ export let updateApplicanttt = async (req, res, next) => {
 
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
-
-          // Ensure status is an object
-          if (!applicantDetails.status || typeof applicantDetails.status !== 'object') {
-            return res.status(400).json({ message: 'Invalid status data. Expected a status object.' });
-        }
-
-        // Log the applicantDetails to debug
-        console.log(applicantDetails);
-
-        // Check progress and set completed to true if progress is 100
-        if (applicantDetails.status.progress === 100) {
-            applicantDetails.status.completed = true;
-        }
 
                 let updatedApplicant = await updateMaster.updateOne(
                     {
@@ -250,6 +237,7 @@ export let updateApplicanttt = async (req, res, next) => {
 
                 const lastStatus = updatedApplication.status[statusLength - 1];
                 const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+          
                 const docs = lastStatus.document;
                 const Message = delayMessages[delayMessages.length - 1]
                 const delayMessage = Message ? Message : "No Delay"
@@ -311,7 +299,7 @@ export let updateApplicanttt = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
         
@@ -554,7 +542,7 @@ export let updateApplicantt = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
                                                           
@@ -691,13 +679,14 @@ export let deactivateApplicant = async (req, res, next) => {
 
 /////
 
-export let updateApplicant = async (req, res, next) => {
+export let updateApplicanttt = async (req, res, next) => {
+    console.log("888")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
             const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
-
+console.log("jj",application)
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
 
@@ -706,7 +695,7 @@ export let updateApplicant = async (req, res, next) => {
             // If no status exists, insert the first status
             const initialStatus = {
                 _id: new mongoose.Types.ObjectId(),
-                newStatus: applicantDetails.status.newStatus,
+                statusName: applicantDetails.status.statusName,
                 progress: applicantDetails.status.progress,
                 subCategory: applicantDetails.status.subCategory,
                 completed: true,
@@ -776,6 +765,7 @@ export let updateApplicant = async (req, res, next) => {
 
                 // Update specific status by statusId
                 const { statusId } = req.body; // Get the statusId from request body
+                console.log("pppp", statusId)
                 const updateStatusData = {
                     "status.$[elem].newStatus": req.body.newStatus,
                     "status.$[elem].progress": req.body.progress,
@@ -791,7 +781,7 @@ export let updateApplicant = async (req, res, next) => {
                     { arrayFilters: [{ "elem._id": statusId }] } // Update only the specific status
                 );
 
-                
+
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
                 const user = updatedApplication.name
@@ -886,7 +876,222 @@ export let updateApplicant = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
+                                                              <p>Comment: ${sanitizedContent}</p>
+                                                                 <p>Delayed: ${delayMessage}</p>
+        
+                                                             ${cid? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
+          
+                                                              <p>This information is for your reference.</p>
+                                                              <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                  <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                      <!-- CTA Button -->
+                                      <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                          <tr>
+                                              <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                  <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </td>
+                              </tr>
+                          
+                                                      <!-- Footer -->
+                                                      <tr>
+                                                          <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                              Copyright &copy; 2024 | All rights reserved
+                                                          </td>
+                                                      </tr>
+                                                  </table>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </body>
+                              `,
+                              attachments: attachments
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'You have received a Application Status Notification' });
+                    }
+                });
+                res.status(201).json({ message: 'Application status has been updated and emails sent.', Details: updatedApplication });
+
+            } else {
+                res.status(404).json({ message: 'Applicant not found' });
+            }
+        } catch (err: any) {
+            console.log(err)
+            response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Applicant Status', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
+
+
+
+export let updateApplicant = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const applicantDetails: ApplicantDocument = req.body;
+            const application = await Applicant.findOne({ $and: [{ _id: { $ne: applicantDetails._id } }, { email: applicantDetails.email }] });
+
+            if (!application) {
+                const updateMaster = new Applicant(applicantDetails)
+
+                let updatedApplicant = await updateMaster.updateOne(
+                    {
+                        $set: {
+                            name: applicantDetails.name,
+                            dob: applicantDetails.dob,
+                            passportNo: applicantDetails.passportNo,
+                            email: applicantDetails.email,
+                            primaryNumber: applicantDetails.primaryNumber,
+                            whatsAppNumber: applicantDetails.whatsAppNumber,
+                            inTake: applicantDetails.inTake,
+                            universityName: applicantDetails.universityName,
+                            campus: applicantDetails.campus,
+                            course: applicantDetails.course,
+                            courseFees: applicantDetails.courseFees,
+                            anyVisaRejections: applicantDetails.anyVisaRejections,
+                            feesPaid: applicantDetails.feesPaid,
+                            assignTo: applicantDetails.assignTo,
+                            country: applicantDetails.country,
+                            uniCountry: applicantDetails.uniCountry,
+                            modifiedOn: new Date(),
+                            modifiedBy: applicantDetails.modifiedBy,
+                        },
+                        $addToSet: {
+                            status: applicantDetails.status
+                        }
+                    }
+                );
+
+                  // Update specific status by statusId
+                  const { statusId } = req.body; // Get the statusId from request body
+                  console.log("pppp", statusId)
+                  const updateStatusData = {
+                      "status.$[elem].newStatus": req.body.newStatus,
+                      "status.$[elem].progress": req.body.progress,
+                      "status.$[elem].subCategory": req.body.subCategory,
+                      "status.$[elem].completed": req.body.completed,
+                      "status.$[elem].modifiedOn": new Date(),
+                      "status.$[elem].modifiedBy": applicantDetails.modifiedBy
+                  };
+  
+                  await Applicant.updateOne(
+                      { _id: applicantDetails._id },
+                      { $set: updateStatusData },
+                      { arrayFilters: [{ "elem._id": statusId }] } // Update only the specific status
+                  );
+
+                  
+                // Delay days Calculation
+                const updatedApplication = await Applicant.findById(applicantDetails._id);
+                const user = updatedApplication.name
+                const statusLength = updatedApplication.status.length;
+                const currentDate = new Date();
+                let delayMessages = []; // Array to store all delay messages
+
+                if (statusLength > 1) {
+                    for (let i = 0; i < statusLength - 1; i++) {
+                        const statusCreatedOn = new Date(updatedApplication.status[i].createdOn);
+                        const statusDurationInMs = Number(updatedApplication.status[i + 1].duration) * 24 * 60 * 60 * 1000;
+                        const expectedCompletionDate = new Date(statusCreatedOn.getTime() + statusDurationInMs);
+
+                        if (currentDate > expectedCompletionDate) {
+                            const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                            delayMessages.push(`Delayed by ${delayDays} day(s) for status updated on ${statusCreatedOn.toDateString()}`);
+                        }
+                    }
+                } else if (statusLength === 1) {
+                    const applicationCreatedDate = new Date(updatedApplication.createdOn);
+                    const lastStatus = updatedApplication.status[0];
+                    const statusDurationInMs = Number(lastStatus.duration) * 24 * 60 * 60 * 1000;
+                    const expectedCompletionDate = new Date(applicationCreatedDate.getTime() + statusDurationInMs);
+
+                    if (currentDate > expectedCompletionDate) {
+                        const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                        delayMessages.push(`Delayed by ${delayDays} day(s) for initial application created on ${applicationCreatedDate.toDateString()}`);
+                    }
+                }
+
+                const lastStatus = updatedApplication.status[statusLength - 1];
+                const sanitizedContent = lastStatus.commentBox
+          
+                const docs = lastStatus.document;
+                const Message = delayMessages[delayMessages.length - 1]
+                const delayMessage = Message ? Message : "No Delay"
+
+                // Update last status with delay message in the database
+                await updatedApplication.updateOne({
+                    $set: {
+                        "status.$[elem].delay": delayMessage,
+                        "status.$[elem].createdBy": user,
+                        "status.$[statusElem].reply.$[replyElem].replyMessage": req.body.replyMessage,
+
+                    }
+                }, {
+                    arrayFilters: [
+                        // { "statusElem._id": req.body.statusId }, // Match the status by its _id
+                        { "elem._id": lastStatus._id },
+                        { "replyElem._id": req.body.replyId },   // Match the reply by its _id
+                    ],
+
+                });
+
+                // Prepare email attachments
+                const attachments = [];
+                   let cid = ''
+                if (docs) {
+                    const [fileType, fileContent] = docs.split("base64,");
+                    const extension = fileType ?? fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    const timestamp = format(new Date(), 'yyyyMMdd');
+                    const dynamicFilename = `${sanitizedContent.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+                    cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: docs.split("base64,")[1],
+                        encoding: 'base64',
+                        cid: cid
+                    });
+                }
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: updatedApplication.email,
+                    subject: "Application Status Updated",
+                    html: `
+                                  <body style="font-family: 'Poppins', Arial, sans-serif">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                          <tr>
+                                              <td align="center" style="padding: 20px;">
+                                                  <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                      <!-- Header -->
+                                                      <tr>
+                                                          <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                              Application Status Updated
+                                                          </td>
+                                                      </tr>
+                          
+                                                      <!-- Body -->
+                                                      <tr>
+                                                          <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Hello ${updatedApplication.name},</p>
+                                                              <p>Your application status has been updated.</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
         
