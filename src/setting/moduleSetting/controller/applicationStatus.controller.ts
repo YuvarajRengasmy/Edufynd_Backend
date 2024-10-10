@@ -122,7 +122,7 @@ export let getFilteredApplicationStatus   = async (req: any, res:any, next:any) 
         
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const statusList = await ApplicationStatus.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
+        const statusList = await ApplicationStatus.find(findQuery).sort({ _id: 1 }).limit(limit).skip(page)
 
         const statusCount = await ApplicationStatus.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStatus', true, 200, { statusList, statusCount }, clientError.success.fetchedSuccessfully);

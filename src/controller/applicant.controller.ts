@@ -1,4 +1,6 @@
 import { Applicant, ApplicantDocument } from '../model/application.model'
+
+import { ApplicationStatus, ApplicationStatusDocument } from '../setting/moduleSetting/model/applicationStatus.model'
 import { Logs } from "../model/logs.model";
 import { Program, ProgramDocument } from '../model/program.model'
 import { Student, StudentDocument } from '../model/student.model'
@@ -83,7 +85,7 @@ const generateNextApplicationCode = async () => {
 };
 
 
-export let createApplicant = async (req, res, next) => {
+export let createApplicantt = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -101,6 +103,86 @@ export let createApplicant = async (req, res, next) => {
         response(req, res, activity, 'Save-Applicant', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+
+
+
+export let createApplicant = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const applicantDetails: ApplicantDocument = req.body;
+
+            // Generate the next client ID
+            applicantDetails.applicationCode = await generateNextApplicationCode();
+
+            // Fetch position and duration details from the ApplicationStatusDocument collection
+            const nextDocument = await ApplicationStatus.find({});
+
+            // Initialize estimateDate for each status
+            let previousEstimateDate = new Date(); // Start with the current date for the first status
+
+            if (applicantDetails.status && applicantDetails.status.length > 0) {
+                applicantDetails.status = applicantDetails.status.map((status, index) => {
+
+                    // Fetch the corresponding status details from ApplicationStatusDocument collection
+                    const statusDetails = nextDocument.find((appStatus) => appStatus.position === status.position);
+
+                    if (!statusDetails) {
+                        throw new Error(`Status with position ${status.position} not found in the ApplicationStatus collection.`);
+                    }
+
+                    // For the first status (position 1), set the current date for both createdOn and estimateDate
+                    if (statusDetails.position === 1) {
+                        // For the first status (position 1), set estimateDate and createdOn to the current date
+                        status.estimateDate = new Date(); // Set estimateDate to current date
+                        status.createdOn = new Date(); // Set createdOn to current date
+                        previousEstimateDate = status.estimateDate; // Set previousEstimateDate for the next position
+                    } else {
+                        // For subsequent positions (position 2, 3, etc.)
+                        // Find the previous status by looking at the previous index
+                        const previousStatus = applicantDetails.status.find(
+                            (prevStatus) => prevStatus.position === (Number(statusDetails.position) - 1)
+                        );
+                    // console.log("not found", previousStatus)
+                        if (previousStatus) {
+                            // console.log("kdfkk")
+                            // Use the previous status' estimateDate and duration to calculate the current estimateDate
+                            const previousDurationInDays = Number(previousStatus.duration) || 0;
+                            // console.log("pp", previousDurationInDays)
+                            const previousEstimate = new Date(previousStatus.estimateDate);
+                            // console.log("kk", previousEstimate)
+                            status.estimateDate = new Date(previousEstimate.setDate(previousEstimate.getDate() + previousDurationInDays));
+                        } 
+                    }
+
+               
+                    
+                    // Set other fields like position and duration
+                    status.position = statusDetails.position;
+                    status.duration = statusDetails.duration;
+                    
+                    return status
+                });
+            }
+
+            // Save the applicant details
+            const createData = new Applicant(applicantDetails);
+            let insertData = await createData.save();
+
+            // Return the response with a success message
+            response(req, res, activity, 'Save-Applicant', 'Level-2', true, 200, insertData, clientError.success.application);
+
+        } catch (err) {
+            console.log(err);
+            response(req, res, activity, 'Save-Applicant', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        // Return validation error response
+        response(req, res, activity, 'Save-Applicant', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
 
 
 export const courseApply = async (req, res) => {
@@ -726,3 +808,7 @@ export const updateStatus = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error });
     }
 };
+
+
+
+

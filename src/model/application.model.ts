@@ -79,7 +79,7 @@ const applicantSchema = new mongoose.Schema({
         statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        position: {type: String},
+        position: {type: Number},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
@@ -89,6 +89,8 @@ const applicantSchema = new mongoose.Schema({
             createdBy: { type: String },
     
         }],
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
         subCategory: [String],
         progress: { type: Number }, 
         completed: {type: Boolean},
