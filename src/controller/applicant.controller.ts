@@ -762,7 +762,7 @@ export let deactivateApplicant = async (req, res, next) => {
 
 export const updateStatus = async (req, res) => {
     try {
-        const { statusId, statusName, progress, subCategory, completed, duration, position, commentBox, document} = req.body;
+        const { statusId, statusName, progress, subCategory, completed, duration, position, commentBox, document, actualDate} = req.body;
         const applicantDetails: ApplicantDocument = req.body;
 
         // Find the applicant by ID
@@ -780,9 +780,10 @@ export const updateStatus = async (req, res) => {
             "status.$[elem].position": position,
             "status.$[elem].completed": completed,
             "status.$[elem].commentBox": commentBox,
+            "status.$[elem].actualDate": actualDate,
             "status.$[elem].document": document,
             "status.$[elem].modifiedOn": new Date(),
-            "status.$[elem].modifiedBy": req.body.modifiedBy
+           
         };
 
         // Use findOneAndUpdate to update and return the modified document
