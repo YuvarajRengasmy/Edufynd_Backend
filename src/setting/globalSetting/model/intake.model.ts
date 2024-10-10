@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 
 export interface InTakeDocument extends mongoose.Document {
     intakeName?: string;
@@ -25,4 +25,6 @@ export const inTakeSchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(inTakeSchema)
 export const InTake = mongoose.model("InTake", inTakeSchema)

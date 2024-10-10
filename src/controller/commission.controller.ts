@@ -1,4 +1,5 @@
 import { Commission, CommissionDocument } from '../model/commission.model'
+import { Logs } from "../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -13,6 +14,32 @@ export const getAllCommission = async (req, res) => {
     } catch (err: any) {
         response(req, res, activity, 'Level-1', 'GetAll-Commission', false, 500, {}, errorMessage.internalServer, err.message)
     }
+}
+
+
+export let getAllLoggedCommission = async (req, res, next) => {
+  try {
+      const data = await Logs.find({ modelName: "Commission" })
+      response(req, res, activity, 'Level-1', 'All-Logged Commission', true, 200, data, clientError.success.fetchedSuccessfully);
+  } catch (err: any) {
+      response(req, res, activity, 'Level-2', 'All-Logged Commission', false, 500, {}, errorMessage.internalServer, err.message);
+  }
+};
+
+
+export let getSingleLoggedCommission = async (req, res) => {
+  try {
+    const {_id } = req.query
+    const logs = await Logs.find({ documentId: _id });
+
+    if (!logs || logs.length === 0) {
+      response(req, res, 'activity', 'Level-3', 'Single-Logged Commission', false, 404, {},"No logs found.");
+    }
+
+    response(req, res, 'activity', 'Level-1', 'Single-Logged Commission', true, 200, logs, clientError.success.fetchedSuccessfully);
+  } catch (err) {
+    response(req, res, 'activity', 'Level-2', 'Single-Logged Commission', false, 500, {}, errorMessage.internalServer, err.message);
+  }
 }
 
 
@@ -86,7 +113,7 @@ export let getFilteredCommission = async (req, res, next) => {
             var limit = req.body.limit ? req.body.limit : 0;
             var page = req.body.page ? req.body.page : 0;
             andList.push({ isDeleted: false })
-            andList.push({ status: 1 })
+            // andList.push({ status: 1 })
            
             if (req.body.universityName) {
                 andList.push({ universityName: req.body.universityName })
@@ -364,3 +391,44 @@ export let updateCommissioncorrect = async (req, res, next) => {
 };
 
 
+
+
+export let activeCommission = async (req, res, next) => {
+  try {
+      const commissionIds = req.body.commissionIds; 
+
+      const commissions = await Commission.updateMany(
+          { _id: { $in: commissionIds } }, 
+          { $set: { isActive: "Active" } }, 
+          { new: true }
+      );
+
+      if (commissions.modifiedCount > 0) {
+          response(req, res, activity, 'Level-2', 'Active-Commission ', true, 200, commissions, 'Successfully Activated Commission .');
+      } else {
+          response(req, res, activity, 'Level-3', 'Active-Commission ', false, 400, {}, 'Already Commission  were Activated.');
+      }
+  } catch (err) {
+      response(req, res, activity, 'Level-3', 'Active-Commission ', false, 500, {}, 'Internal Server Error', err.message);
+  }
+};
+
+
+export let deactivateCommission = async (req, res, next) => {
+  try {
+    const commissionIds = req.body.commissionIds;    
+    const commissions = await Commission.updateMany(
+      { _id: { $in: commissionIds } }, 
+      { $set: { isActive: "InActive" } }, 
+      { new: true }
+    );
+
+    if (commissions.modifiedCount > 0) {
+      response(req, res, activity, 'Level-2', 'Deactivate-Commission', true, 200, commissions, 'Successfully deactivated Commission.');
+    } else {
+      response(req, res, activity, 'Level-3', 'Deactivate-Commission', false, 400, {}, 'Already Commission were deactivated.');
+    }
+  } catch (err) {
+    response(req, res, activity, 'Level-3', 'Deactivate-Commission', false, 500, {}, 'Internal Server Error', err.message);
+  }
+};

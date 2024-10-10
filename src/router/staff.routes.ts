@@ -1,29 +1,56 @@
 import { Router } from 'express';
 import { getAllStaff, getSingleStaff, createStaff, updateStaff, deleteStaff, getFilteredStaff, csvToJson,
-    createStaffBySuperAdmin, createStudentByStaff, 
+    createStaffBySuperAdmin, createStudentByStaff,
+    getAllLoggedStaff,
+    getSingleLoggedStaff,
+    activeStaff,
+    deactivateStaff,
+    assignAdminId, 
    } from '../controller/staff.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
+import { getAllStaffCardDetails } from '../cards/staffCard.controller';
 
 const router: Router = Router();
 
 router.get('/',              
     basicAuthUser,
     checkSession,
-    checkPermission('staff', 'view'),
+    // checkPermission('staff', 'view'),
     getAllStaff
 );
+
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedStaff
+);
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedStaff,
+);
+
 
 router.get('/getSingleStaff',
     basicAuthUser,
     checkSession,
-    checkPermission('staff', 'view'),
+    // checkPermission('staff', 'view'),
     checkQuery('_id'),
     getSingleStaff,
 );
 
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllStaffCardDetails
+);
 
 router.post('/',           
     basicAuthUser,
@@ -41,6 +68,27 @@ router.put('/',
     checkRequestBodyParams('_id'),
     updateStaff
 );
+
+
+router.post('/activeStaff',
+    basicAuthUser,
+    checkSession,
+    checkPermission('staff', 'view'),
+    activeStaff
+);
+
+router.post('/deActiveStaff',
+    basicAuthUser,
+    checkSession,
+    checkPermission('staff', 'view'),
+    deactivateStaff
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignAdminId
+)
 
 
 router.delete('/',                  
@@ -71,7 +119,7 @@ router.post('/createStaffBySuperAdmin',             //create staff by super Admi
 router.put('/getFilterStaffSuperAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('staff', 'view'),
+    // checkPermission('staff', 'view'),
     getFilteredStaff,
 );
 

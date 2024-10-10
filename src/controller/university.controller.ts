@@ -1,9 +1,11 @@
 import { University, UniversityDocument } from '../model/university.model'
+import { Logs } from "../model/logs.model";
 import * as mongoose from 'mongoose'
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import csv = require('csvtojson')
+import xlsx = require('xlsx')
 
 
 var activity = "University";
@@ -13,9 +15,41 @@ export let getAllUniversity = async (req, res, next) => {
         const data = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+export let getAllLoggedUniversity = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "University" })
+        response(req, res, activity, 'Level-1', 'All-Logged University', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedUniversity = async (req, res) => {
+    try {
+        const { _id } = req.query;
+
+        // Fetch logs that have the documentId matching _id
+        const logs = await Logs.find({ documentId: _id });
+
+        // If no logs are found, send a 404 response and stop further execution
+        if (!logs || logs.length === 0) {
+            return response(req, res, 'activity', 'Level-3', 'Single-Logged University', false, 404, {}, "No logs found.");
+        }
+
+        // If logs are found, send a 200 response with logs data
+        return response(req, res, 'activity', 'Level-1', 'Single-Logged University', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        // Handle server errors and send a 500 response
+        return response(req, res, 'activity', 'Level-2', 'Single-Logged University', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
 
 
 export let getSingleUniversity = async (req, res, next) => {
@@ -26,6 +60,8 @@ export let getSingleUniversity = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-University', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+
 
 
 
@@ -41,30 +77,30 @@ export let saveUniversity = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const university = await University.findOne({ universityName: req.body.universityName });
-            if(!university){
-            const universityDetails: UniversityDocument = req.body;
-            universityDetails.createdOn = new Date()
-            const univesity = await University.find({}, 'universityCode').exec();
-            const maxCounter = univesity.reduce((max, app) => {
-                const appCode = app.universityCode;
-                const parts = appCode.split('_')
-                if (parts.length === 2) {
-                    const counter = parseInt(parts[1], 10)
-                    return counter > max ? counter : max;
-                }
-                return max;
-            }, 100);
+            if (!university) {
+                const universityDetails: UniversityDocument = req.body;
+                universityDetails.createdOn = new Date()
+                const univesity = await University.find({}, 'universityCode').exec();
+                const maxCounter = univesity.reduce((max, app) => {
+                    const appCode = app.universityCode;
+                    const parts = appCode.split('_')
+                    if (parts.length === 2) {
+                        const counter = parseInt(parts[1], 10)
+                        return counter > max ? counter : max;
+                    }
+                    return max;
+                }, 100);
 
-            let currentMaxCounter = maxCounter;
-            universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
-            const createData = new University(universityDetails);
-            let insertData = await createData.save();
+                let currentMaxCounter = maxCounter;
+                universityDetails.universityCode = await generateNextUniversityCode(currentMaxCounter)
+                const createData = new University(universityDetails);
+                let insertData = await createData.save();
 
-            response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
-        }
-        else {
-            response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
-        }
+                response(req, res, activity, 'Level-1', 'Save-University', true, 200, insertData, clientError.success.savedSuccessfully);
+            }
+            else {
+                response(req, res, activity, 'Level-2', 'Save-University', true, 422, {}, 'University Name already registered');
+            }
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Save-University', false, 500, {}, errorMessage.internalServer, err.message);
@@ -89,6 +125,7 @@ export let updateUniversity = async (req, res, next) => {
                     universityLogo: universityDetails.universityLogo,
                     countryName: universityDetails.countryName,
                     about: universityDetails.about,
+                    universityStatus: universityDetails.universityStatus,
                     courseType: universityDetails.courseType,
                     email: universityDetails.email,
                     country: universityDetails.country,
@@ -112,14 +149,16 @@ export let updateUniversity = async (req, res, next) => {
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
                     website: universityDetails.website,
                     inTake: universityDetails.inTake,
-                   
+                    commissionType: universityDetails.commissionType,
+                    commissionValue: universityDetails.commissionValue,
+
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
 
                 },
-                 $addToSet: {
+                $addToSet: {
                     campuses: universityDetails.campuses,
-                 
+
                 }
             });
 
@@ -209,6 +248,7 @@ export let getFilteredUniversity = async (req, res, next) => {
             andList.push({ courseType: req.body.courseType })
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
+
 
         const universityList = await University.find(findQuery).sort({ universityCode: -1 }).limit(limit).skip(page)
 
@@ -337,7 +377,7 @@ export let getFilteredUniversityForStudent = async (req, res, next) => {
  */
 
 
-export const csvToJson = async (req, res) => {
+export const csvToJsonc = async (req, res) => {
     try {
         const csvData = await csv().fromFile(req.file.path);
         const univesity = await University.find({}, 'universityCode').exec();
@@ -378,7 +418,7 @@ export const csvToJson = async (req, res) => {
                 universityName: data.UniversityName,
                 universityLogo: data.UniversityLogo,
                 courseType: data.CourseType ? data.CourseType.split(',') : [],
-                businessName: data.BusinessName,
+                businessName: data.ClientName,
                 banner: data.Banner,
                 country: data.Country,
                 campuses: campuses,
@@ -497,7 +537,7 @@ export const getUniversityWithProgramDetails = async (req, res) => {
 
 
 export const getUniversityByCountry = async (req, res) => {
-    const { country } = req.query; 
+    const { country } = req.query;
     try {
         const universities = await University.find({ country: country });
         response(req, res, activity, 'Level-2', 'Get-University By Country', true, 200, universities, clientError.success.fetchedSuccessfully)
@@ -511,55 +551,87 @@ export const getUniversityByCountry = async (req, res) => {
 export const getUniversityByName = async (req, res) => {
     try {
         const { name } = req.params;
-        const university = await University.findOne({universityName: name });
+        const university = await University.findOne({ universityName: name });
         if (!university) {
-          return res.status(404).json({ message: 'University not found' });
+            return res.status(404).json({ message: 'University not found' });
         }
         res.json({ result: university });
-      } catch (err) {
+    } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
-      }
-  };
+    }
+};
 
 
 ////
 
-// correct but old without state and city against that state and city corresponding of array
-export const csvToJsonn = async (req, res) => {
+
+export const csvToJson = async (req, res) => {
     try {
-        const csvData = await csv().fromFile(req.file.path);
-        const univesity = await University.find({}, 'universityCode').exec();
-        const maxCounter = univesity.reduce((max, app) => {
+        let fileData = [];
+
+        // Check file extension
+        const fileExtension = req.file.originalname.split('.').pop();
+
+        if (fileExtension === 'csv') {
+            // Parse CSV file
+            fileData = await csv().fromFile(req.file.path);
+        } else if (fileExtension === 'xlsx') {
+            // Parse XLSX file
+            const workbook = xlsx.readFile(req.file.path);
+            const sheetName = workbook.SheetNames[0]; // Assuming the first sheet
+            const worksheet = workbook.Sheets[sheetName];
+            fileData = xlsx.utils.sheet_to_json(worksheet, { raw: true });
+        } else {
+            return res.status(400).json({ message: 'Unsupported file format. Please upload CSV or XLSX.' });
+        }
+
+        const university = await University.find({}, 'universityCode').exec();
+        const maxCounter = university.reduce((max, app) => {
             const appCode = app.universityCode;
-            const parts = appCode.split('_')
+            const parts = appCode.split('_');
             if (parts.length === 2) {
-                const counter = parseInt(parts[1], 10)
+                const counter = parseInt(parts[1], 10);
                 return counter > max ? counter : max;
             }
             return max;
         }, 100);
 
         let currentMaxCounter = maxCounter;
-
         const universityList = [];
-        for (const data of csvData) {
-            const universityCode = await  generateNextUniversityCode(currentMaxCounter)
-            currentMaxCounter++; 
+
+        for (const data of fileData) {
+            // Parse State and City fields as arrays
+            const states = data.State ? data.State.match(/\[([^\]]+)\]/g).map(s => s.replace(/[\[\]]/g, '').trim()) : [];
+            const cityGroups = data.City ? data.City.match(/\[([^\]]+)\]/g).map(c => c.replace(/[\[\]]/g, '').split(',').map(city => city.trim())) : [];
+
+
+            const primaryCampus = data.PrimaryCampus ? data.PrimaryCampus.trim() : '';
+
+            // Create campuses by mapping states to corresponding city groups
+            const campuses = states.flatMap((state, index) => {
+                const correspondingCities = cityGroups[index] || [];
+
+                return correspondingCities.map(city => ({
+                    state: state,
+                    lga: city,
+                    primary: state === primaryCampus ? "Primary Campus" : "Secondary Campus",
+                    _id: new mongoose.Types.ObjectId()  // Generate a new ObjectId for _id
+                }));
+            });
+
+            // Generate university code and create university data object
+            const universityCode = await generateNextUniversityCode(currentMaxCounter);
+            currentMaxCounter++;
+
             universityList.push({
                 universityCode: universityCode,
                 universityName: data.UniversityName,
                 universityLogo: data.UniversityLogo,
                 courseType: data.CourseType ? data.CourseType.split(',') : [],
-                businessName: data.BusinessName,
+                businessName: data.ClientName,
                 banner: data.Banner,
                 country: data.Country,
-                campuses: [
-                    {
-                        state: data.State,               // ? data.State.split(',') : [],
-                        lga: data.City,                  // ? data.City.split(',') : [],
-                        _id: new mongoose.Types.ObjectId() // Generate a new ObjectId for _id
-                    }
-                ],
+                campuses: campuses,
                 countryName: data.CountryName,
                 email: data.Email,
                 ranking: data.Ranking,
@@ -580,19 +652,62 @@ export const csvToJsonn = async (req, res) => {
                 currency: data.Currency,
                 paymentTAT: data.PaymentTAT,
                 tax: data.Tax,
-                inTake:  data.InTake ? data.InTake.split(',') : [],
+                inTake: data.InTake ? data.InTake.split(',') : [],
                 website: data.Website,
-                about: data.About
-
-            })
+                commissionPaidOn: data.CommissionPaidOn,
+                about: data.About,
+                typeOfClient: data.ClientName,
+                primary: data.PrimaryCampus
+            });
         }
+
         await University.insertMany(universityList);
-        response(req, res, activity, 'Level-1', 'CSV-File-Insert-Database', true, 200, { universityList }, 'Successfully CSV File Store Into Database');
+        response(req, res, activity, 'Level-1', 'File-Insert-Database', true, 200, { universityList }, 'Successfully File Stored Into Database');
     } catch (err) {
         console.error(err);
-        response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
+        response(req, res, activity, 'Level-3', 'File-Insert-Database', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
 
 
 
+
+export let activeUniversity = async (req, res, next) => {
+    try {
+        const universityIds = req.body.universityIds; 
+  
+        const university = await University.updateMany(
+            { _id: { $in: universityIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (university.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-University ', true, 200, university, 'Successfully Activated University .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-University ', false, 400, {}, 'Already University were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-University ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateUniversity = async (req, res, next) => {
+    try {
+        const universityIds = req.body.universityIds;     
+      const university = await University.updateMany(
+        { _id: { $in: universityIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (university.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-University', true, 200, university, 'Successfully deactivated University.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-University', false, 400, {}, 'Already University were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-University', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

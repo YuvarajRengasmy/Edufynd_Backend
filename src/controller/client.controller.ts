@@ -1,4 +1,5 @@
 import { Client, ClientDocument } from '../model/client.model'
+import { Logs } from "../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -15,6 +16,40 @@ export let getAllClient = async (req, res, next) => {
     }
 };
 
+export let getAllLoggedClient = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Client" })
+        response(req, res, activity, 'Level-1', 'All-Logged Client', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+export let getSingleLoggedClient = async (req, res) => {
+    try {
+        const { _id } = req.query;
+
+        // Fetch logs that match the documentId
+        const logs = await Logs.find({ documentId: _id });
+
+        // If no logs are found, return a 404 response and stop further execution
+        if (!logs || logs.length === 0) {
+            return response(req, res, activity, 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
+        }
+
+        // If logs are found, return a 200 response with logs data
+        return response(req, res, activity, 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        // Handle errors and send a 500 response, then stop execution
+        return response(req, res, activity, 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+
+
+
 
 export let getSingleClient = async (req, res, next) => {
     try {
@@ -24,6 +59,8 @@ export let getSingleClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
+
+
 
 
 
@@ -106,6 +143,7 @@ export let updateClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Client', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
 
 
 
@@ -251,3 +289,48 @@ export const editClientProfileBySuperAdmin = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Update-Client-By-SuperAdmin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+export let activeClient = async (req, res, next) => {
+    try {
+        const clientIds = req.body.clientIds; // Array of client IDs
+
+        // Update all clients whose IDs are in clientIds to set isActive to true
+        const clients = await Client.updateMany(
+            { _id: { $in: clientIds } }, // Match any client whose _id is in the clientIds array
+            { $set: { isActive: "Active" } }, // Set isActive to true for all matched clients
+            { new: true }
+        );
+
+        if (clients.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Client', true, 200, clients, 'Successfully Activated Clients.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Client', false, 400, {}, 'No clients were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateClient = async (req, res, next) => {
+    try {
+      const clientIds = req.body.clientIds; // Array of client IDs to deactivate
+  
+      // Update all clients whose IDs are in clientIds to set isActive to false
+      const clients = await Client.updateMany(
+        { _id: { $in: clientIds } }, // Match clients with the given IDs
+        { $set: { isActive: "InActive" } }, // Set isActive to false
+        { new: true }
+      );
+  
+      if (clients.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Client', true, 200, clients, 'Successfully deactivated clients.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Client', false, 400, {}, 'No clients were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Client', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  

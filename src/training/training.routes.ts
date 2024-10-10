@@ -1,21 +1,37 @@
 import { Router } from 'express';
-import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining } from './training.controller';
+import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining, activeTraining, deactivateTraining, getAllLoggedTraining, getSingleLoggedTraining, assignStaffId } from './training.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission} from '../utils/tokenManager';
 
 
 const router: Router = Router();
 
 router.get('/',                
     basicAuthUser,
+    checkSession,
     getAllTraining
 );
 
 router.get('/getSingleTraining',
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     getSingleTraining,
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedTraining
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedTraining
 );
 
 
@@ -34,14 +50,35 @@ router.put('/',
 );
 
 
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeTraining
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateTraining
+);
+
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
 router.delete('/',                  
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     deleteTraining
 );
 
 router.put('/getFilterTraining',
     basicAuthUser,
+    checkSession,
     getFilteredTraining,
 );
 

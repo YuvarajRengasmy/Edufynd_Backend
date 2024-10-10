@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface CommissionDocument extends mongoose.Document {
@@ -16,7 +17,7 @@ export interface CommissionDocument extends mongoose.Document {
     flag?: string;
     clientName?: string;
     years?: any;
-
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -49,6 +50,7 @@ const commissionSchema = new mongoose.Schema({
           
         }],
     }],
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -56,4 +58,6 @@ const commissionSchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(commissionSchema)
 export const Commission = mongoose.model("Commission", commissionSchema)

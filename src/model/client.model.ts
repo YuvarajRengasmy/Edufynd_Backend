@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface ClientDocument extends mongoose.Document {
@@ -17,7 +18,7 @@ export interface ClientDocument extends mongoose.Document {
     state?: string;
     emailID?: string;
     clientID?: string;
-   
+    isActive?: string;
     clientStatus?: string;
     addressLine1?: string;
     addressLine2?: string;
@@ -36,7 +37,7 @@ export interface ClientDocument extends mongoose.Document {
 
 const clientSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
-    clientID: { type: String},
+    clientID: { type: String },
     typeOfClient: { type: String }, 
     businessName: { type: String },
     clientStatus: { type: String },
@@ -47,6 +48,7 @@ const clientSchema = new mongoose.Schema({
     addressLine1: { type: String }, 
     addressLine2: { type: String },
     addressLine3: { type: String },   
+    isActive: {type: String,default: "InActive"},
     name: { type: String },
     country: { type: String },
     state: { type: String },
@@ -66,5 +68,5 @@ const clientSchema = new mongoose.Schema({
 
 })
 
-
+LoggingMiddleware(clientSchema)
 export const Client = mongoose.model("Client", clientSchema)

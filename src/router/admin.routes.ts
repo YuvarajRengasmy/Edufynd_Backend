@@ -3,30 +3,53 @@ import {
     getAllAdmin, getSingleAdmin, createAdmin, createStudentByAdmin, createStaffByAdmin, deleteAdmin,
     createAdminBySuperAdmin, editAdminProfileBySuperAdmin, getFilteredAdmin, editStudentProfileByAdmin,
     editStaffProfileByAdmin,
-    updateAdmin
+    updateAdmin,
+    getAllLoggedAdmin,
+    getSingleLoggedAdmin,
+    activeAdmin,
+    deactivateAdmin,
+    assignStaffId 
 } from '../controller/admin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
+import { getAllAdminCardDetails } from '../cards/adminCard.controller';
+
 const router: Router = Router();
 
 
 router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
     getAllAdmin
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedAdmin
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedAdmin,
 );
 
 router.get('/getSingleAdmin',
     basicAuthUser,
     checkSession,
-    //  checkPermission('admin', 'view'),
     checkQuery('_id'),
     getSingleAdmin,
 );
 
-
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllAdminCardDetails
+);
 
 router.post('/',
     basicAuthUser,
@@ -41,9 +64,27 @@ router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('admin', 'edit'),
-    // checkRequestBodyParams('_id'),
+     checkRequestBodyParams('_id'),
     updateAdmin
 );
+
+router.post('/activeAdmin',
+    basicAuthUser,
+    checkSession,
+    activeAdmin
+);
+
+router.post('/deActiveAdmin',
+    basicAuthUser,
+    checkSession,
+    deactivateAdmin
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',
@@ -58,7 +99,6 @@ router.delete('/',
 router.put('/getFilterAdmin',
     basicAuthUser,
     checkSession,
-    checkPermission('admin', 'view'),
     getFilteredAdmin,
 );
 

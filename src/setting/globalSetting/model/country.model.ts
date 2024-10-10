@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../../helper/commonResponseHandler'
 
 export interface CountryDocument extends mongoose.Document{
     country?: any[];
@@ -20,5 +20,5 @@ export const countrySchema = new mongoose.Schema({
  
 })
 
-
+LoggingMiddleware(countrySchema)
 export const Country = mongoose.model("Country", countrySchema)

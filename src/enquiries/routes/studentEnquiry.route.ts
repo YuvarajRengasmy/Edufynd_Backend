@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry, getFilteredStudentEnquiry } from '../controller/studentEnquiry.controller';
+import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry, getFilteredStudentEnquiry, getAllLoggedStudentEnquiry, getSingleLoggedStudentEnquiry, activeStudentEnquiry, deactivateStudentEnquiry, assignStaffId } from '../controller/studentEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllStudentEnquiryCard } from '../../cards/studentEnquiryCard.controller';
 
 const router: Router = Router();
 
@@ -24,6 +25,28 @@ router.get('/getSingleStudentEnquiry',
     getSingleStudentEnquiry,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedStudentEnquiry
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedStudentEnquiry
+);
+
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllStudentEnquiryCard
+);
+
 router.post('/',
     checkPermission('studentEnquiry', 'add'),
     checkRequestBodyParams('email'),
@@ -37,6 +60,19 @@ router.put('/',
     checkRequestBodyParams('_id'),
     updateStudentEnquiry,
 
+);
+
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeStudentEnquiry
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateStudentEnquiry
 );
 
 
@@ -57,5 +93,20 @@ router.put('/getFilterStudentEnquiry',
 );
 
 
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
+
+
+//Public API
+
+router.get('/public', getAllStudentEnquiry);
+
+router.get('/publicGetSingleStudentEnquiry', getSingleStudentEnquiry);
+
+router.post('/public', createStudentEnquiry);
 
 export default router

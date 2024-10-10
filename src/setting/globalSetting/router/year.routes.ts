@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllYear, getSingleYear, createYear, updateYear, deleteYear, getFilteredYear } from '../../globalSetting/controller/year.controller';
+import { getAllYear, getSingleYear, createYear, updateYear, deleteYear, getFilteredYear, getAllLoggedYear, getSingleLoggedYear } from '../../globalSetting/controller/year.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
@@ -15,6 +15,18 @@ router.get('/getSingleYear',
     basicAuthUser,
     checkQuery('_id'),
     getSingleYear,
+);
+
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedYear
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedYear
 );
 
 

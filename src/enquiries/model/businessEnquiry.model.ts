@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 
 export interface BusinessEnquiryDocument extends mongoose.Document{
@@ -7,7 +8,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
-    
+    staffName?:string,
     dial1?: string;
     mobileNumber?: number;  
     message?: string;
@@ -29,8 +30,9 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
      assignedTo?: string;
      adminId?: any;
      staffId?: any;
-    
-
+     typeOfClient?: string;
+     status?: any;
+     isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -49,7 +51,7 @@ const businessEnquirySchema = new mongoose.Schema({
     dial1: {type: String},
     mobileNumber: {type: Number},
     message: {type: String},
-
+    typeOfClient: { type: String },
      //Newly added 
      source: { type: String },
      studentName: { type: String },
@@ -66,11 +68,34 @@ const businessEnquirySchema = new mongoose.Schema({
      whatsAppNumber: { type: String },
      qualification: { type: String },
      assignedTo: { type: String },
+     staffName: { type: String},
+     isActive: {type: String,default: "InActive"},
 
+     status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
+
+LoggingMiddleware(businessEnquirySchema)
 export const BusinessEnquiry = mongoose.model("BusinessEnquiry", businessEnquirySchema)

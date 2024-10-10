@@ -1,7 +1,9 @@
 import {Router} from 'express';
-import { courseApply, createApplicant, deleteApplicant, getAllApplicant, getFilteredApplication,
-     getSingleApplicant, getStudentApplication, updateApplicant} from '../controller/applicant.controller';
+import { activeApplicant, assignStaffId, courseApply, createApplicant, deactivateApplicant, deleteApplicant, getAllApplicant, 
+    getAllLoggedApplication, getFilteredApplication,getSingleApplicant, getSingleLoggedApplicant, getStudentApplication, updateApplicant,
+    updateStatus} from '../controller/applicant.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
+import { getAllApplicantCardDetails } from '../cards/applicationCard.controller';
 import { basicAuthUser,  } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 const router:Router=Router();
@@ -10,15 +12,35 @@ const router:Router=Router();
 router.get('/',               
     basicAuthUser,
      checkSession,
-     checkPermission('application', 'view'),
     getAllApplicant
+);
+
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedApplication
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedApplicant,
+);
+
+
+router.get('/card',               
+    basicAuthUser,
+     checkSession,
+    getAllApplicantCardDetails
 );
 
 
 router.get('/getSingleApplicant',
     basicAuthUser,
     checkSession,
-    checkPermission('application', 'view'),
     checkQuery('_id'),
     getSingleApplicant,
 );
@@ -47,7 +69,30 @@ router.put('/',
     updateApplicant
 );
 
+router.put('/status',                    
+    // basicAuthUser,
+    // checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
+);
 
+router.post('/activeApplicant',
+    basicAuthUser,
+    checkSession,
+    activeApplicant
+);
+
+router.post('/deActiveApplicant',
+    basicAuthUser,
+    checkSession,
+    deactivateApplicant
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',                
@@ -62,7 +107,6 @@ router.delete('/',
 router.put('/getFilterApplicant',
     basicAuthUser,
     checkSession,
-    checkPermission('application', 'view'),
     getFilteredApplication,
 );
 

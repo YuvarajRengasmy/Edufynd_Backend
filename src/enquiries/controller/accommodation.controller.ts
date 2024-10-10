@@ -1,7 +1,10 @@
 import { Accommodation, AccommodationDocument } from '../model/accommodation.model'
+import { Logs } from "../../model/logs.model";
 import { validationResult } from "express-validator";
-import { response} from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
+import { response, transporter } from "../../helper/commonResponseHandler";
+import { format } from 'date-fns';
+import * as config from '../../config';
 
 
 var activity = "Accommodation_Enquiry";
@@ -27,6 +30,38 @@ export let getSingleAccommodation = async (req, res, next) => {
     }
 }
 
+export let getAllLoggedAccommodation = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Accommodation" })
+        response(req, res, activity, 'Level-1', 'All-Logged Accommodation', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Accommodation', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+ 
+
+  export let getSingleLoggedAccommodation = async (req, res) => {
+    try {
+      const { _id } = req.query;
+  
+      // Fetch logs that match the documentId
+      const logs = await Logs.find({ documentId: _id });
+  
+      // If no logs are found, return a 404 response and stop further execution
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged Accommodation', false, 404, {}, "No logs found.");
+      }
+  
+      // If logs are found, return a 200 response with logs data
+      return response(req, res, activity, 'Level-1', 'Single-Logged Accommodation', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      // Handle errors and return a 500 response, then stop execution
+      return response(req, res, activity, 'Level-2', 'Single-Logged Accommodation', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+  
 const generateNextAccommodationID = async (): Promise<string> => {
     const enquiry = await Accommodation.find({}, 'accommodationID').exec();
     const maxCounter = enquiry.reduce((max, app) => {
@@ -70,7 +105,7 @@ export let createAccommodation = async (req, res, next) => {
     }
 }
 
-export let updateAccommodation = async (req, res, next) => {
+export let updateAccommodationn = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -139,11 +174,11 @@ export let getFilteredAccommodation = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         // andList.push({ status: 1 })
-        if (req.body.agentID) {
-            andList.push({ agentID: req.body.agentID })
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId })
         }
-        if (req.body.staffID) {
-            andList.push({ staffID: req.body.staffID })
+        if (req.body.staffId) {
+            andList.push({ staffId: req.body.staffId })
         }
 
         if (req.body.studentName) {
@@ -161,8 +196,7 @@ export let getFilteredAccommodation = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const accommodationList = await Accommodation.find(findQuery).sort({ accommodationID: -1 }).limit(limit).skip(page).populate({ path: 'adminId', select: 'name' }).populate({ path: 'staffId', select: 'name' })
-
+        const accommodationList = await Accommodation.find(findQuery).sort({ accommodationID: -1 }).limit(limit).skip(page).populate("adminId").populate("staffId")
         const accommodationCount = await Accommodation.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter Accommodation Enquiry', true, 200, { accommodationList, accommodationCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
@@ -172,3 +206,272 @@ export let getFilteredAccommodation = async (req, res, next) => {
 
 
 
+
+export let activeAccommodation = async (req, res, next) => {
+    try {
+        const accommodationIds = req.body.accommodationIds; 
+  
+        const accommodation = await Accommodation.updateMany(
+            { _id: { $in: accommodationIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (accommodation.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Accommodation ', true, 200, accommodation, 'Successfully Activated Accommodation .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Accommodation ', false, 400, {}, 'Already Accommodation were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Accommodation ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateAccommodation = async (req, res, next) => {
+    try {
+        const accommodationIds = req.body.accommodationIds     
+      const accommodation = await Accommodation.updateMany(
+        { _id: { $in: accommodationIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (accommodation.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Accommodation', true, 200, accommodation, 'Successfully deactivated Accommodation.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Accommodation', false, 400, {}, 'Already Accommodation were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Accommodation', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { studentEnquiryIds, staffId,staffName } = req.body;  
+
+
+        const user = await Accommodation.updateMany(
+            { _id: { $in: studentEnquiryIds } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+
+const stripHtmlTags = (html) => {
+    return html.replace(/<\/?[^>]+(>|$)/g, "");
+};
+
+export let updateAccommodation = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const accommodationDetails: AccommodationDocument = req.body;
+            const application = await Accommodation.findOne({ $and: [{ _id: { $ne: accommodationDetails._id } }, { email: accommodationDetails.email }] });
+
+            if (!application) {
+                const updateMaster = new Accommodation(accommodationDetails)
+                let updatedApplicant = await updateMaster.updateOne(
+                    {
+                        $set: {
+                            studentName: accommodationDetails.studentName,
+                            source: accommodationDetails.source,
+                            passportNumber: accommodationDetails.passportNumber,
+                            expiryDate:accommodationDetails.expiryDate,
+                            courseType: accommodationDetails.courseType,
+                            whatsAppNumber:accommodationDetails.whatsAppNumber,
+                            universityName: accommodationDetails.universityName,
+                            final:accommodationDetails.final,
+                            accommodationType: accommodationDetails.accommodationType,
+                            agentName:accommodationDetails.agentName,
+                            businessName:accommodationDetails.businessName,
+                            agentWhatsAppNumber: accommodationDetails.agentWhatsAppNumber,
+                            assignedTo: accommodationDetails.assignedTo,
+                            message: accommodationDetails.message,
+                            studentId: accommodationDetails.studentId,
+                            country: accommodationDetails.country,
+                            state:accommodationDetails.state,
+                            lga: accommodationDetails.lga,
+                            dial1: accommodationDetails.dial1,
+                            dial2: accommodationDetails.dial2,
+                            dial3: accommodationDetails.dial3,
+                            dial4: accommodationDetails.dial4,
+                            name:accommodationDetails.name,
+                        
+                            modifiedOn: new Date(),
+                            modifiedBy: accommodationDetails.modifiedBy,
+                        },
+                        $addToSet: {
+                            status: accommodationDetails.status
+                        }
+                    }
+                );
+
+
+                // Delay days Calculation
+                const updatedApplication = await Accommodation.findById(accommodationDetails._id);
+                const user = updatedApplication.studentName
+                const statusLength = updatedApplication.status.length;
+                const currentDate = new Date();
+                let delayMessages = []; // Array to store all delay messages
+
+                if (statusLength > 1) {
+                    for (let i = 0; i < statusLength - 1; i++) {
+                        const statusCreatedOn = new Date(updatedApplication.status[i].createdOn);
+                        const statusDurationInMs = Number(updatedApplication.status[i + 1].duration) * 24 * 60 * 60 * 1000;
+                        const expectedCompletionDate = new Date(statusCreatedOn.getTime() + statusDurationInMs);
+
+                        if (currentDate > expectedCompletionDate) {
+                            const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                            delayMessages.push(`Delayed by ${delayDays} day(s) for status updated on ${statusCreatedOn.toDateString()}`);
+                        }
+                    }
+                } else if (statusLength === 1) {
+                    const applicationCreatedDate = new Date(updatedApplication.createdOn);
+                    const lastStatus = updatedApplication.status[0];
+                    const statusDurationInMs = Number(lastStatus.duration) * 24 * 60 * 60 * 1000;
+                    const expectedCompletionDate = new Date(applicationCreatedDate.getTime() + statusDurationInMs);
+
+                    if (currentDate > expectedCompletionDate) {
+                        const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                        delayMessages.push(`Delayed by ${delayDays} day(s) for initial application created on ${applicationCreatedDate.toDateString()}`);
+                    }
+                }
+
+                const lastStatus = updatedApplication.status[statusLength - 1];
+                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+                const docs = lastStatus.document;
+                const Message = delayMessages[delayMessages.length - 1]
+                const delayMessage = Message ? Message : "No Delay"
+
+                // Update last status with delay message in the database
+                await updatedApplication.updateOne({
+                    $set: {
+                        "status.$[elem].delay": delayMessage,
+                        "status.$[elem].createdBy": user,
+                        "status.$[statusElem].reply.$[replyElem].replyMessage": req.body.replyMessage,
+
+                    }
+                }, {
+                    arrayFilters: [
+                        // { "statusElem._id": req.body.statusId }, // Match the status by its _id
+                        { "elem._id": lastStatus._id },
+                        { "replyElem._id": req.body.replyId },   // Match the reply by its _id
+                    ],
+
+                });
+
+                // Prepare email attachments
+                const attachments = [];
+                   let cid = ''
+                if (docs) {
+                    const [fileType, fileContent] = docs.split("base64,");
+                    const extension = fileType ?? fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    const timestamp = format(new Date(), 'yyyyMMdd');
+                    const dynamicFilename = `${sanitizedContent.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+                    cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: docs.split("base64,")[1],
+                        encoding: 'base64',
+                        cid: cid
+                    });
+                }
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: updatedApplication.email,
+                    subject: "Accommodation Enquiry Status Updated",
+                    html: `
+                                  <body style="font-family: 'Poppins', Arial, sans-serif">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                          <tr>
+                                              <td align="center" style="padding: 20px;">
+                                                  <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                      <!-- Header -->
+                                                      <tr>
+                                                          <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                             Accommodation Enquiry Status Updated
+                                                          </td>
+                                                      </tr>
+                          
+                                                      <!-- Body -->
+                                                      <tr>
+                                                          <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Hello ${updatedApplication.studentName},</p>
+                                                              <p>Your application status has been updated.</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p>Comment: ${sanitizedContent}</p>
+                                                                 <p>Delayed: ${delayMessage}</p>
+        
+                                                             ${cid? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
+          
+                                                              <p>This information is for your reference.</p>
+                                                              <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                  <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                      <!-- CTA Button -->
+                                      <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                          <tr>
+                                              <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                  <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </td>
+                              </tr>
+                          
+                                                      <!-- Footer -->
+                                                      <tr>
+                                                          <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                             Copyright &copy; ${new Date().getFullYear()} | All rights reserved
+                                                          </td>
+                                                      </tr>
+                                                  </table>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </body>
+                              `,
+                              attachments: attachments
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'You have received a Accommodation Enquiry Status Notification' });
+                    }
+                });
+                res.status(201).json({ message: 'Accommodation Enquiry status has been updated and emails sent.', Details: updatedApplication });
+
+            } else {
+                res.status(404).json({ message: 'Accommodation Enquiry not found' });
+            }
+        } catch (err: any) {
+            console.log(err)
+            response(req, res, activity, 'Level-3', 'Update-Accommodation Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Accommodation Enquiry', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};

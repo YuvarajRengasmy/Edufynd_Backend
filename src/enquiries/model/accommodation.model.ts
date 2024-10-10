@@ -1,10 +1,12 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 export interface AccommodationDocument extends mongoose.Document {
     accommodationID?: any;
     studentName?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     name?: string;
     passportNumber?: string;
     expiryDate?: string;
@@ -34,8 +36,10 @@ export interface AccommodationDocument extends mongoose.Document {
     final?: string;
     accommodationType?: string;
     assignedTo?: string;
-
+    typeOfClient?: string;
+    status?: any;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -48,6 +52,7 @@ const accommodationSchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
     name:{type:String},
+    typeOfClient: { type: String },
     studentId: {type: String},
     country: {type: String},
     state:{type: String},
@@ -77,8 +82,30 @@ const accommodationSchema = new mongoose.Schema({
     final: {type: String},
     accommodationType: {type: String},
     assignedTo: {type: String},
+   
+    staffName: { type: String},
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
 
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -86,4 +113,5 @@ const accommodationSchema = new mongoose.Schema({
 
 })
 
+LoggingMiddleware(accommodationSchema)
 export const Accommodation = mongoose.model("Accommodation", accommodationSchema)

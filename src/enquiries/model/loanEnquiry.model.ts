@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 export interface LoanEnquiryDocument extends mongoose.Document {
   
@@ -47,10 +47,15 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     dial5?: string;
     coApplicantPrimaryNo?: string;
     dial6?: string;
+  
     coApplicantWhatsAppNo?: string;
     relationship?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
+    typeOfClient?: string;
+    isActive?: string;
+    status?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -63,7 +68,9 @@ export interface LoanEnquiryDocument extends mongoose.Document {
 const loanEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String },
     loanID: { type: String },
+    typeOfClient:{ type: String },
     studentId: { type: String },
     country: { type: String },
     message: { type: String },
@@ -109,8 +116,26 @@ const loanEnquirySchema = new mongoose.Schema({
     dial6: { type: String },
     coApplicantWhatsAppNo: { type: String },
     relationship: { type: String },
-
-
+    isActive: {type: String,default: "InActive"},
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -118,4 +143,6 @@ const loanEnquirySchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(loanEnquirySchema)
 export const LoanEnquiry = mongoose.model('LoanEnquiry', loanEnquirySchema)

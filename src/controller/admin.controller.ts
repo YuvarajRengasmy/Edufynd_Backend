@@ -1,4 +1,5 @@
 import { Admin, AdminDocument } from '../model/admin.model'
+import { Logs } from "../model/logs.model";
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Student, StudentDocument } from '../model/student.model'
 import { SuperAdmin } from '../model/superAdmin.model'
@@ -19,17 +20,50 @@ export let getAllAdmin = async (req, res, next) => {
         const data = await Admin.find({ isDeleted: false }).sort({ adminCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Admin', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
 
+
+export let getAllLoggedAdmin= async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Admin" })
+        response(req, res, activity, 'Level-1', 'All-Logged Admin', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedAdmin = async (req, res) => {
+    try {
+      const { _id } = req.query;
+  
+      // Fetch logs by documentId
+      const logs = await Logs.find({ documentId: _id });
+  
+      // If no logs are found, return a 404 response and stop further execution
+      if (!logs || logs.length === 0) {
+        return res.status(404).json({ message: "No logs found for this Admin." });
+      }
+  
+      // If logs are found, return them with a 200 response
+      return response(req, res, activity, 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      // In case of an error, return a 500 response and stop further execution
+      return response(req, res, activity, 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+  
+
+
+  
 export let getSingleAdmin = async (req, res, next) => {
     try {
         const agent = await Admin.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Admin', true, 200, agent, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Single-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Single-Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
@@ -85,10 +119,10 @@ export let createAdmin = async (req, res, next) => {
                 finalResult["token"] = token;
                 finalResult["loginType"] = 'admin';
                 finalResult["adminDetails"] = result;
-                response(req, res, activity, 'Level-2', 'Create-Admin', true, 200, finalResult, clientError.success.registerSuccessfully);
+                response(req, res, activity, 'Level-1', 'Create-Admin', true, 200, finalResult, clientError.success.registerSuccessfully);
             }
             else {
-                response(req, res, activity, 'Level-3', 'Create-Admin', true, 422, {}, 'Email already registered');
+                response(req, res, activity, 'Level-2', 'Create-Admin', true, 422, {}, 'Email already registered');
             }
 
         } catch (err: any) {
@@ -106,7 +140,7 @@ export const updateAdmin = async (req, res) => {
     if (errors.isEmpty()) {
         try {
             const adminDetails: AdminDocument = req.body;
-            let statusData = await Admin.findByIdAndUpdate({ _id: req.body._id }, {
+            let statusData = await Admin.findByIdAndUpdate({ _id: adminDetails._id }, {
                 $set: {
                     name: adminDetails.name,
                     email: adminDetails.email,
@@ -114,15 +148,15 @@ export const updateAdmin = async (req, res) => {
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
                     privileges: adminDetails.privileges, 
-
+                    dial1: adminDetails.dial1,
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
                 }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Admin Details', true, 200, statusData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Admin Details', true, 200, statusData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Admin Details', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Admin Details', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -136,10 +170,10 @@ export let deleteAdmin = async (req, res, next) => {
     try {
         const agent = await Admin.findOneAndDelete({ _id: req.query._id })
 
-        response(req, res, activity, 'Level-2', 'Delete-Admin', true, 200, agent, 'Successfully Remove the Admin');
+        response(req, res, activity, 'Level-1', 'Delete-Admin', true, 200, agent, 'Successfully Remove the Admin');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-Admin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Delete-Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -151,7 +185,7 @@ export let getFilteredAdmin = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
@@ -171,7 +205,7 @@ export let getFilteredAdmin = async (req, res, next) => {
         const adminCount = await Admin.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterAdmin', true, 200, { adminList, adminCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-FilterAdmin', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-FilterAdmin', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -212,7 +246,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Admin Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -223,7 +257,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                                               <p>Hello ${insertAdmin.name},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertAdmin.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -266,13 +300,13 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                         res.status(201).json({ message: 'Admin profile created and email sent login credentials', admin: insertAdmin });
                     }
                 });
-                response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
+                response(req, res, activity, 'Level-1', 'Create-Admin-By-SuperAdmin', true, 200, { admin: insertAdmin }, 'Admin created successfully by SuperAdmin.');
             } else {
                 response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'Create-Admin-By-SuperAdmin', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'Create-Admin-By-SuperAdmin', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
@@ -287,15 +321,22 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
             const adminDetails: AdminDocument = req.body;
             const updateData = await Admin.findOneAndUpdate({ _id: adminDetails._id }, {
                 $set: {
+                    name: adminDetails.name,
+                    email: adminDetails.email,
+                    dial: adminDetails.dial,
+                    mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    dial1: adminDetails.dial1,
+                    // privileges: adminDetails.privileges, 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
+                    
                 }
             });
-            response(req, res, activity, 'Level-2', 'Update-Admin by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Admin by Super Admin', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Admin by Super Admin', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Admin by Super Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -380,10 +421,10 @@ export const editStudentProfileByAdmin = async (req, res) => {
                 }
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Student by Admin', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Student by Admin', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Student by Admin', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Student by Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -444,9 +485,9 @@ export const editStaffProfileByAdmin = async (req, res) => {
                 }
             });
 
-            response(req, res, activity, 'Level-2', 'Update-Staff by Admin', true, 200, staffData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Staff by Admin', true, 200, staffData, clientError.success.updateSuccess);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Staff by Admin', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Staff by Admin', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -454,3 +495,66 @@ export const editStaffProfileByAdmin = async (req, res) => {
     }
 }
 
+
+export let activeAdmin = async (req, res, next) => {
+    try {
+        const adminIds = req.body.adminIds; 
+
+        const admins = await Admin.updateMany(
+            { _id: { $in: adminIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (admins.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Admin', true, 200, admins, 'Successfully Activated Admin.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Admin', false, 400, {}, 'Already Admin were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateAdmin = async (req, res, next) => {
+    try {
+      const adminIds = req.body.adminIds; 
+      const admins = await Admin.updateMany(
+        { _id: { $in: adminIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (admins.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Admin', true, 200, admins, 'Successfully deactivated Admin.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Admin', false, 400, {}, 'Already Admin were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Admin.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

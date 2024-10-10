@@ -27,7 +27,7 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
-    // checkQuery('_id'),
+    //  checkQuery('_id'),
     updateApplicationStatus
 );
 

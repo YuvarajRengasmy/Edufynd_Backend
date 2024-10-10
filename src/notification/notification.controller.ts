@@ -3,6 +3,7 @@ import { Student, StudentDocument } from '../model/student.model'
 import { Staff, StaffDocument } from '../model/staff.model'
 import { Admin, AdminDocument } from '../model/admin.model'
 import { Agent, AgentDocument } from '../model/agent.model'
+import { Logs } from "../model/logs.model"
 import { validationResult } from "express-validator";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -37,7 +38,34 @@ export const getSingleNotification = async (req, res) => {
 }
 
 
-export let createNotificationf = async (req, res, next) => {
+
+export let getAllLoggedNotification = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Notification" })
+        response(req, res, activity, 'Level-1', 'All-Logged Notification', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Notification', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedNotification = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged Notification', false, 404, {},"No logs found.");
+      }
+  
+      return response(req, res, activity, 'Level-1', 'Single-Logged Notification', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        console.log(err)
+        return response(req, res, activity, 'Level-2', 'Single-Logged Notification', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
+
+export let createNotification = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -192,8 +220,7 @@ export const updateNotification = async (req, res) => {
                     userName: notificationData.userName,
                     subject: notificationData.subject,
                     content: notificationData.content,
-                    uploadImage: notificationData.uploadImage,
-
+                    uploadFile: notificationData.uploadFile,
                     modifiedOn: new Date(),
                     modifiedBy: notificationData.modifiedBy,
                 },
@@ -260,7 +287,7 @@ export let getFilteredNotification = async (req, res, next) => {
 
 
 //with Remainder
-export let createNotification = async (req, res, next) => {
+export let createNotificationf = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return response(req, res, activity, 'Level-3', 'Create-Notifications', false, 422, {}, "Field validation error", JSON.stringify(errors.mapped()));
@@ -446,3 +473,66 @@ export let createNotification = async (req, res, next) => {
 };
 
 
+export let activeNotification = async (req, res, next) => {
+    try {
+        const notificationIds = req.body.notificationIds; 
+  
+        const notification = await Notification.updateMany(
+            { _id: { $in: notificationIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (notification.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Notification ', true, 200, notification, 'Successfully Activated Notification .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Notification ', false, 400, {}, 'Already Notification were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Notification ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateNotification = async (req, res, next) => {
+    try {
+        const notificationIds = req.body.notificationIds; 
+  
+        const notification = await Notification.updateMany(
+        { _id: { $in: notificationIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (notification.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Notification', true, 200, notification, 'Successfully deactivated Notification.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Notification', false, 400, {}, 'Already Notification were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Notification', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Notification.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

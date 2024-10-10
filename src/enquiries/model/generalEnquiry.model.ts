@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 
 export interface GeneralEnquiryDocument extends mongoose.Document{
     studentId?: string,
@@ -11,7 +11,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
     mobileNumber?: number;   
     message?: string;
     typeOfUser?: string;
-
+    staffName?:string;
      //Newly added 
      source?: string;
      studentName?: string;
@@ -37,6 +37,9 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
      agentWhatsAppNumber?: string;
      adminId?: any;
      staffId?: any;
+     
+     status?: any;
+     isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -47,6 +50,7 @@ export interface GeneralEnquiryDocument extends mongoose.Document{
 const generalEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: {type: String},
     studentId: {type: String},
     country: {type: String},
     universityName: {type: String},
@@ -81,11 +85,33 @@ const generalEnquirySchema = new mongoose.Schema({
     dial4:{type: String},
     agentWhatsAppNumber: { type: String },
 
-
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
+   
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
+
+LoggingMiddleware(generalEnquirySchema)
 export const GeneralEnquiry = mongoose.model("GeneralEnquiry", generalEnquirySchema)

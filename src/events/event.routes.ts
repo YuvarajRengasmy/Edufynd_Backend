@@ -1,27 +1,44 @@
 import { Router } from 'express';
-import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent } from './event.controller';
+import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent, activeEvent, deactivateEvent, getAllLoggedEvent, getSingleLoggedEvent, assignStaffId } from './event.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession,checkPermission } from '../utils/tokenManager';
 
 
 const router: Router = Router();
 
 router.get('/',                
     basicAuthUser,
+    checkSession,
     getAllEvent
 );
 
 router.get('/getSingleEvent',
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     getSingleEvent,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedEvent
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedEvent
+);
+
 
 router.post('/',
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
+    checkSession,
     createEvent
 );
 
@@ -33,11 +50,31 @@ router.put('/',
     updateEvent
 );
 
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeEvent
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateEvent
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
+
 
 router.post('/deleteFile', deleteFileFromEvent);
 
 router.delete('/',                  
     basicAuthUser,
+    checkSession,
     checkQuery('_id'),
     deleteEvent
 );

@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface PromotionDocument extends mongoose.Document {
@@ -10,6 +10,9 @@ export interface PromotionDocument extends mongoose.Document {
     content?: string;
     uploadImage?: string;
     fileUpload?: any[];
+    staffId?: any;
+    staffName?: string;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -29,11 +32,14 @@ const promotionSchema = new mongoose.Schema({
         fileName: { type: String},
         fileImage:  { type: String },
     }],
+    isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(promotionSchema)
 export const Promotion = mongoose.model("Promotion", promotionSchema)

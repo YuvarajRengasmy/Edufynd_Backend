@@ -1,35 +1,72 @@
 import { Router } from 'express';
 import { createAgent, createStudentProfileByAgent, csvToJson, deleteAgent, deleteStudentByAgent,
      editStudentProfileByAgent, getAllAgent, getFilteredStudentByAgent, getSingleAgent,
-      updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent, getFilteredAgent} from '../controller/agent.controller';
+      updateAgent,createAgentBySuperAdmin, viewStudentProfileByAgent, getFilteredAgent,
+      getAllLoggedAgent,
+      getSingleLoggedAgent,
+      activeAgent,
+      deactivateAgent,
+      assignStaffId} from '../controller/agent.controller';
 import { createContact } from '../controller/contact.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, validateAgentId,} from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
+import { getAllAgentCardDetails } from '../cards/agentCard.controller';
 const router: Router = Router();
 
 
 router.get('/',                                
     basicAuthUser,
     checkSession,
-    checkPermission('agent', 'view'),
     getAllAgent
+);
+
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedAgent
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedAgent,
 );
 
 router.get('/getSingleAgent',
     basicAuthUser,
     checkSession,
-    checkPermission('agent', 'view'),
     checkQuery('_id'),
     getSingleAgent,
 );
 
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllAgentCardDetails
+);
+
+router.get('/getSingleAgentView',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleAgent,
+);
 
 router.post('/',
     basicAuthUser,
     checkSession,
     checkPermission('agent', 'add'),
+    checkRequestBodyParams('email'),
+    createAgent
+);
+
+router.post('/register',
+    
     checkRequestBodyParams('email'),
     createAgent
 );
@@ -49,6 +86,25 @@ router.put('/',
 );
 
 
+router.post('/activeAgent',
+    basicAuthUser,
+    checkSession,
+    activeAgent
+);
+
+router.post('/deActiveAgent',
+    basicAuthUser,
+    checkSession,
+    deactivateAgent
+);
+
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
 router.delete('/',                 
     basicAuthUser,
     checkSession,
@@ -60,7 +116,6 @@ router.delete('/',
 router.put('/getFilterAgent',
     basicAuthUser,
      checkSession,
-     checkPermission('agent', 'view'),
     getFilteredAgent,
 );
 
@@ -75,7 +130,6 @@ router.post('/createAgentBySuperAdmin',             //create agent by super Admi
 router.put('/getFilterStudentByAgent',
     basicAuthUser,
      checkSession,
-     checkPermission('agent', 'view'),
     getFilteredStudentByAgent,
 );
 

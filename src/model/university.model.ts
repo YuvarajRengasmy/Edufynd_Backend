@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface UniversityDocument extends mongoose.Document {
     _id?: any;
@@ -38,8 +38,11 @@ export interface UniversityDocument extends mongoose.Document {
     inTake?: any[];
     typeOfClient?: string;
     couponCode?: string;
-
+    universityStatus?: string;
+    commissionType?: string;
+    commissionValue?: string;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -91,8 +94,11 @@ const universitySchema = new mongoose.Schema({
     inTake: [String],
     typeOfClient: {type: String},
     couponCode: {type: String},
-
+    universityStatus:{type: String},
+    commissionType: {type: String},
+    commissionValue: {type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -100,5 +106,5 @@ const universitySchema = new mongoose.Schema({
 
 })
 
-
+LoggingMiddleware(universitySchema)
 export const University = mongoose.model("University", universitySchema)

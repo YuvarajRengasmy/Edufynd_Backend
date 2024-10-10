@@ -1,4 +1,5 @@
 import { Agent, AgentDocument } from '../model/agent.model'
+import { Logs } from "../model/logs.model";
 import { Student, StudentDocument } from '../model/student.model'
 import { Admin} from '../model/admin.model'
 import { Staff} from '../model/staff.model'
@@ -20,17 +21,48 @@ export let getAllAgent = async (req, res, next) => {
         const data = await Agent.find({ isDeleted: false }).sort({ agentCode: -1 });
         response(req, res, activity, 'Level-1', 'GetAll-Agent', true, 200, data, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getAllLoggedAgent= async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Agent" })
+        response(req, res, activity, 'Level-1', 'All-Logged Agent', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
 
+export let getSingleLoggedAgent = async (req, res) => {
+    try {
+        const { _id } = req.query;
+
+        // Fetch logs that match the documentId
+        const logs = await Logs.find({ documentId: _id });
+
+        // If no logs are found, return a 404 response and stop further execution
+        if (!logs || logs.length === 0) {
+            return response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 404, {}, "No logs found.");
+        }
+
+        // If logs are found, return a 200 response with logs data
+        return response(req, res, activity, 'Level-1', 'Single-Logged Agent', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        // Handle errors and return a 500 response, then stop execution
+        return response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+
+  
 export let getSingleAgent = async (req, res, next) => {
     try {
         const agent = await Agent.findOne({ _id: req.query._id });
         response(req, res, activity, 'Level-1', 'Get-Single-Agent', true, 200, agent, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Single-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Single-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
 
@@ -80,15 +112,15 @@ export let createAgent = async (req, res, next) => {
                 finalResult["token"] = token;
                 finalResult["loginType"] = 'agent';
                 finalResult["agentDetails"] = result;
-                response(req, res, activity, 'Level-2', 'Create-Agent', true, 200, finalResult, clientError.success.registerSuccessfully);
+                response(req, res, activity, 'Level-1', 'Create-Agent', true, 200, finalResult, clientError.success.registerSuccessfully);
             }
             else {
-                response(req, res, activity, 'Level-3', 'Create-Agent', true, 422, {}, 'Email already registered');
+                response(req, res, activity, 'Level-2', 'Create-Agent', true, 422, {}, 'Email already registered');
             }
 
         } catch (err: any) {
 
-            response(req, res, activity, 'Level-3', 'Create-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Create-Agent', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -155,10 +187,10 @@ export let updateAgent = async (req, res, next) => {
 
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Agent', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Agent', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -171,10 +203,10 @@ export let updateAgent = async (req, res, next) => {
 export let deleteAgent = async (req, res, next) => {
     try {
         const agent = await Agent.findOneAndDelete({ _id: req.query._id })
-        response(req, res, activity, 'Level-2', 'Delete-Agent', true, 200, agent, 'Successfully Remove the Agent');
+        response(req, res, activity, 'Level-1', 'Delete-Agent', true, 200, agent, 'Successfully Remove the Agent');
     }
     catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Delete-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -213,7 +245,7 @@ export let getFilteredAgent = async (req, res, next) => {
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter-Agent', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Get-Filter-Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'Get-Filter-Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -256,7 +288,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Agent Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -267,7 +299,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                                               <p>Hello ${insertAgent.agentName},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertAgent.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -310,7 +342,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                         res.status(201).json({ message: 'Agent profile created and email sent login credentials', agent: insertAgent });
                     }
                 });
-                response(req, res, activity, 'Level-3', 'Create-Agent-By-SuperAdmin', true, 200, { agent: insertAgent }, 'Agent created successfully by SuperAdmin.');
+                response(req, res, activity, 'Level-1', 'Create-Agent-By-SuperAdmin', true, 200, { agent: insertAgent }, 'Agent created successfully by SuperAdmin.');
             } else {
                 response(req, res, activity, 'Level-2', 'Create-Agent-By-SuperAdmin', true, 422, {}, 'This Email already registered');
             }
@@ -334,9 +366,9 @@ export const createStudentProfileByAgent = async (req, res) => {
             const agentId = req.agent._id;
             const newStudent = new Student({ ...studentDetails, agentId: agentId });
             await newStudent.save();
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
+            response(req, res, activity, 'Level-1', 'Create-Student-By-Agent', true, 200, newStudent, 'Student created successfully by agent.');
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'Create-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
 
@@ -358,7 +390,7 @@ export const viewStudentProfileByAgent = async (req, res) => {
             }
             response(req, res, activity, 'Level-1', 'View Student by Agent', true, 200, student, clientError.success.fetchedSuccessfully);
         } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
+            response(req, res, activity, 'Level-2', 'View-Student-By-Agent', false, 500, {}, 'Internal server error.', err.message);
         }
     } else {
         response(req, res, activity, 'Level-3', 'View-Student-By-Agent', false, 422, {}, 'Field validation error.', JSON.stringify(errors.mapped()));
@@ -408,10 +440,10 @@ export const editStudentProfileByAgent = async (req, res) => {
                 }
 
             });
-            response(req, res, activity, 'Level-2', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
+            response(req, res, activity, 'Level-1', 'Update-Student by Agent', true, 200, updateData, clientError.success.updateSuccess);
         }
         catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
+            response(req, res, activity, 'Level-2', 'Update-Student by Agent', false, 500, {}, errorMessage.internalServer, err.message);
         }
     }
     else {
@@ -435,10 +467,6 @@ export let deleteStudentByAgent = async (req, res, next) => {
 
 
 
-
-
-
-
 export let getFilteredStudentByAgent = async (req, res, next) => {
     try {
         var findQuery;
@@ -446,8 +474,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
-
+        // andList.push({ status: 1 })
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
@@ -457,7 +484,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const agentList = await Agent.find(findQuery).sort({ agentCode: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 }).populate('adminId', { name: 1, shortName: 1 })
+        const agentList = await Agent.find(findQuery).sort({ agentCode: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 }).populate('adminId', { name: 1, shortName: 1 }).populate("agentName", { name: 1, shortName: 1 });
 
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
@@ -503,5 +530,69 @@ export const csvToJson = async (req, res) => {
     } catch (err) {
         console.error(err);
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for agent module', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let activeAgent = async (req, res, next) => {
+    try {
+        const agentIds = req.body.agentIds; 
+
+        const agents = await Agent.updateMany(
+            { _id: { $in: agentIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (agents.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Agent', true, 200, agents, 'Successfully Activated Agent.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Agent', false, 400, {}, 'Already Agent were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Agent', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateAgent = async (req, res, next) => {
+    try {
+        const agentIds = req.body.agentIds;  
+      const agents = await Agent.updateMany(
+        { _id: { $in: agentIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (agents.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Agent', true, 200, agents, 'Successfully deactivated Agent.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Agent', false, 400, {}, 'Already Agent were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Agent', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Agent.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
     }
 };

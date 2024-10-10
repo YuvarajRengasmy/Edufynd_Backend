@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {createSuperAdmin, getFilteredSuperAdmin,getSuperAdminForSearch, getSingleSuperAdmin, getAllSuperAdmin} from '../controller/superAdmin.controller';
+import {createSuperAdmin,getNotificationSearch, getFilteredSuperAdmin,getSuperAdminForSearch,getCommonSearch, getSingleSuperAdmin, getAllSuperAdmin, activeSuperAdmin, deactivateSuperAdmin, assignStaffId} from '../controller/superAdmin.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession } from '../utils/tokenManager';
@@ -39,7 +39,37 @@ router.get('/getSuperAdminForSearch',
     checkSession,
     getSuperAdminForSearch);
 
+router.get('/getCommonSearch',
+        basicAuthUser,
+        checkSession,
+        getCommonSearch);
 
-    router.get('/publicGetSuperAdminForSearch',getSuperAdminForSearch);
-  
+router.get('/getNotificationsSearch',
+            basicAuthUser,
+            checkSession,
+     getNotificationSearch) ;
+
+router.get('/publicGetSuperAdminForSearch',getSuperAdminForSearch);
+ 
+
+
+router.post('/activeSuperAdmin',
+        basicAuthUser,
+        checkSession,
+        activeSuperAdmin
+    );
+    
+router.post('/deActiveSuperAdmin',
+        basicAuthUser,
+        checkSession,
+        deactivateSuperAdmin
+    );
+
+router.post('/assign', 
+        basicAuthUser,
+        checkSession,
+        assignStaffId
+)
+
+    
 export default router

@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface ApplicantDocument extends mongoose.Document {
@@ -7,6 +8,7 @@ export interface ApplicantDocument extends mongoose.Document {
     programId?: any;
     adminId?: any;
     staffId?: any;
+    staffName?: any;
     studentCode?: string;
     studentId?:string;
     name?: string,       
@@ -30,7 +32,9 @@ export interface ApplicantDocument extends mongoose.Document {
     commentBox?: string;
     programTitle?: string;
     isDeleted?: boolean;
+    isActive?: string;
     status?: any;
+    uniCountry?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -44,6 +48,8 @@ const applicantSchema = new mongoose.Schema({
     programId: { type: mongoose.Types.ObjectId, ref: 'Program' },
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin' },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+  
+    staffName: { type: String},
     studentId: {type: String, ref: 'Student'},
     studentCode: { type: String },
     name: {type: String, ref: 'Student'},
@@ -67,12 +73,13 @@ const applicantSchema = new mongoose.Schema({
     document:  {type: String},
     commentBox: {type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
+        statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        position: {type: String},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
@@ -82,12 +89,16 @@ const applicantSchema = new mongoose.Schema({
             createdBy: { type: String },
     
         }],
+        subCategory: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
         modifiedOn: { type: Date, default: Date.now }
     }],
 
     programTitle: {type: String},
+    uniCountry: {type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -95,4 +106,5 @@ const applicantSchema = new mongoose.Schema({
 
 })
 
+LoggingMiddleware(applicantSchema)
 export const Applicant = mongoose.model("Applicant", applicantSchema)

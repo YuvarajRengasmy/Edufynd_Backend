@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
+import { Agent } from './agent.model';
 
 
 export interface StaffDocument extends mongoose.Document {
@@ -9,6 +10,8 @@ export interface StaffDocument extends mongoose.Document {
     role?: string;
     dob?: String;
      adminId?: any;
+     agentId?: any;
+     agentName?:any;
     designation?: string;
     doj?: String;
     reportingManager?: string;
@@ -69,9 +72,11 @@ export interface StaffDocument extends mongoose.Document {
     ipAddress?: string;
     userName?: string;
     loginPassword?: string;
-    notificationId?: any;
+   
+    adminName?: string;
     clockIn?: Date;
     clockOut?: Date;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -89,6 +94,8 @@ const privilegeSchema = new mongoose.Schema({
 const staffSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     adminId: { type: mongoose.Types.ObjectId, ref:"Admin" },
+    agentId: { type: mongoose.Types.ObjectId, ref:"Agent" },
+    agentName:{type:String},
     employeeID: { type: String },
     photo: { type: String },
     // role:{type:String},
@@ -118,6 +125,8 @@ const staffSchema = new mongoose.Schema({
     password: { type: String },
     confirmPassword: { type: String },
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
+    adminName: { type: String},
   
     // Newly added fields
     gender: { type: String },
@@ -157,4 +166,7 @@ const staffSchema = new mongoose.Schema({
     modifiedBy: { type: String },
 
 })
+
+
+LoggingMiddleware(staffSchema)
 export const Staff = mongoose.model('Staff', staffSchema)

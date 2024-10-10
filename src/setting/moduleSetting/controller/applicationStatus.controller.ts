@@ -59,6 +59,9 @@ export const updateApplicationStatus = async (req: any, res:any, next:any) => {
                     $set: {
                         statusName: statusDetails.statusName,
                         duration: statusDetails.duration,
+                        subCategory: statusDetails.subCategory,
+                        position: statusDetails.position,
+                   
                         modifiedOn: new Date(),
                         modifiedBy: statusDetails.modifiedBy,
                     },
@@ -109,6 +112,12 @@ export let getFilteredApplicationStatus   = async (req: any, res:any, next:any) 
         }
         if (req.body.duration) {
             andList.push({ duration: req.body.duration })
+        }
+        if (req.body.subDuration) {
+            andList.push({ subDuration: req.body.subDuration })
+        }
+        if (req.body.subCategory) {
+            andList.push({ subCategory: req.body.subCategory })
         }
         
         findQuery = (andList.length > 0) ? { $and: andList } : {}

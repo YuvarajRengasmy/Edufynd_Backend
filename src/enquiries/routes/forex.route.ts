@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry } from '../controller/forex.controller';
+import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry, getAllLoggedForex, getSingleLoggedForex, activeForex, deactivateForex, assignStaffId } from '../controller/forex.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -24,6 +24,20 @@ router.get('/getSingleForexEnquiry',
     getSingleForexEnquiry,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedForex
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedForex
+);
+
 router.post('/',
     basicAuthUser,
     checkSession,
@@ -42,6 +56,24 @@ router.put('/',
 );
 
 
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeForex
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateForex
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
 router.delete('/',
     basicAuthUser,
     checkSession,
@@ -58,5 +90,13 @@ router.put('/getFilterForex',
     getFilteredForexEnquiry,
 );
 
+
+//Public API
+
+router.get('/public', getAllForexEnquiry);
+
+router.get('/publicGetSingleForexEnquiry', getSingleForexEnquiry);
+
+router.post('/public', createForexEnquiry);
 
 export default router

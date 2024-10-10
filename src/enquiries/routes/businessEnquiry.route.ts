@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllBusinessEnquiry, getSingleBusinessEnquiry, createBusinessEnquiry, updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry } from '../controller/businessEnquiry.controller';
+import { getAllBusinessEnquiry, getSingleBusinessEnquiry, createBusinessEnquiry, updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry, getAllLoggedBusinessEnquiry, getSingleLoggedBusinessEnquiry, activeBusinessEnquiry, deactivateBusinessEnquiry, assignStaffId } from '../controller/businessEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -24,6 +24,22 @@ router.get('/getSingleBusinessEnquiry',
     getSingleBusinessEnquiry,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedBusinessEnquiry
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedBusinessEnquiry
+);
+
+
 router.post('/',
     checkPermission('businessEnquiry', 'add'),
     checkRequestBodyParams('email'),
@@ -39,6 +55,24 @@ router.put('/',
 
 );
 
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeBusinessEnquiry
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateBusinessEnquiry
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',
     basicAuthUser,
@@ -57,6 +91,13 @@ router.put('/getFilterBusinessEnquiry',
 );
 
 
+//Public API
+
+router.get('/public', getAllBusinessEnquiry);
+
+router.get('/publicGetSingleBusinessEnquiry', getSingleBusinessEnquiry);
+
+router.post('/public', createBusinessEnquiry);
 
 
 export default router

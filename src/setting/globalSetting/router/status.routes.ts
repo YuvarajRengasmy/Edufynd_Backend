@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllStatus, getSingleStatus, createStatus, updateStatus, deleteStatus, getFilteredStatus } from '../../globalSetting/controller/status.controller';
+import { getAllStatus, getSingleStatus, createStatus, updateStatus, deleteStatus, getFilteredStatus, getAllLoggedStatus, getSingleLoggedStatus } from '../../globalSetting/controller/status.controller';
 import { checkQuery, checkRequestBodyParams } from '../../../middleware/Validators';
 import { basicAuthUser } from '../../../middleware/checkAuth';
 
@@ -17,6 +17,17 @@ router.get('/getSingleStatus',
     getSingleStatus,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    getAllLoggedStatus
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkQuery('_id'),
+    getSingleLoggedStatus
+);
 
 router.post('/',
     basicAuthUser,

@@ -1,13 +1,17 @@
 import { Router } from 'express';
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
-     getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName} from '../controller/university.controller';
+     getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName,
+     getAllLoggedUniversity,
+     getSingleLoggedUniversity,
+     activeUniversity,
+     deactivateUniversity,
+    } from '../controller/university.controller';
+import { getAllUniversit} from '../cards/universityCard.controller'
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
-
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded';
-
 const router: Router = Router();
 
 
@@ -17,6 +21,29 @@ router.get('/',
     checkPermission('university', 'view'),
     getAllUniversity
 );
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedUniversity
+);
+
+
+router.get('/SingleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedUniversity,
+);
+
+
+router.get('/card',             
+    // basicAuthUser,
+    // checkSession,
+    getAllUniversit
+);
+
+
 
 
 router.get('/getSingleUniversity',
@@ -39,11 +66,24 @@ router.post('/',
 
 router.put('/',                   
     basicAuthUser,
-    // checkSession,
+     checkSession,
     // checkQuery('_id'),
     checkPermission('university', 'edit'),
-    checkRequestBodyParams('_id'),
+     checkRequestBodyParams('_id'),
     updateUniversity
+);
+
+router.post('/activeUniversity',
+    basicAuthUser,
+    checkSession,
+    checkPermission('university', 'view'),
+    activeUniversity
+);
+
+router.post('/deActiveUniversity',
+    basicAuthUser,
+    checkSession,
+    deactivateUniversity
 );
 
 
@@ -59,7 +99,7 @@ router.delete('/',
 router.put('/getFilterUniversity',
     basicAuthUser,
     checkSession,
-    checkPermission('university', 'view'),
+    // checkPermission('university', 'view'),
     getFilteredUniversity,
 );
 

@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../../helper/commonResponseHandler'
 export interface ForexDocument extends mongoose.Document {
     forexID?: string;
  
@@ -19,6 +19,7 @@ export interface ForexDocument extends mongoose.Document {
     dial3?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     primaryNumber?: string;
     dial4?: string;
     whatsAppNumber?: string;
@@ -37,8 +38,10 @@ export interface ForexDocument extends mongoose.Document {
     value?: string;
     markUp?: string;
     profit?: string;
-
+    typeOfClient: string;
     isDeleted?: boolean;
+    isActive?: string;
+    status?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -57,6 +60,7 @@ const forexSchema = new mongoose.Schema({
     message: {type: String},
     //If Student request for the following
     studentName: {type: String},
+    typeOfClient: { type: String },
     country: {type: String},
     currency: {type: String},
     flag: {type: String},
@@ -85,8 +89,29 @@ const forexSchema = new mongoose.Schema({
     value:{type: String},
     markUp: {type: String},
     profit: {type: String},
-
+    staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
+
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        newStatus: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        progress: {type: String},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+    
+        }],
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date, default: Date.now }
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },
@@ -94,4 +119,6 @@ const forexSchema = new mongoose.Schema({
 
 })
 
+
+LoggingMiddleware(forexSchema)
 export const Forex = mongoose.model("Forex", forexSchema)

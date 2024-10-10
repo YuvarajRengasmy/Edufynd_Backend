@@ -1,11 +1,14 @@
 import * as mongoose from 'mongoose'
-import { getSingleSuperAdmin } from 'src/controller/superAdmin.controller';
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface AdminDocument extends mongoose.Document{
     _id?: any;
     superAdminId?:any;
+    staffId?: any;
+  staffName?: string;
     name?: string;
+    dial1?: string;
     adminCode?: string;
     email?: string;
     dial?: string;
@@ -22,6 +25,7 @@ export interface AdminDocument extends mongoose.Document{
     resetOtpExpires?: number;  
 
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -42,6 +46,7 @@ const adminSchema = new mongoose.Schema({
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     name: {type: String},
     adminCode: {type: String},
+    dial1: {type: String},  
     email: { type: String},
     dial:{type: String},
     mobileNumber: {type: Number},   
@@ -55,11 +60,16 @@ const adminSchema = new mongoose.Schema({
     programId: { type: mongoose.Types.ObjectId, ref : 'Program'},
     resetOtp: { type: String },
     resetOtpExpires: { type: Number },
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
+
+LoggingMiddleware(adminSchema)
 export const Admin = mongoose.model("Admin", adminSchema)

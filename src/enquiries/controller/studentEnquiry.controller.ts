@@ -1,76 +1,57 @@
-import {
-    StudentEnquiry,
-    StudentEnquiryDocument,
-} from "../model/studentEnquiry.model";
+import {StudentEnquiry,StudentEnquiryDocument} from "../model/studentEnquiry.model";
+import { Logs } from "../../model/logs.model";
 import { validationResult } from "express-validator";
 import * as TokenManager from "../../utils/tokenManager";
 import { response, transporter } from "../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
+import { format } from 'date-fns';
+import * as config from '../../config';
 import csv = require("csvtojson");
-
 var activity = "StudentEnquiry";
 
 export let getAllStudentEnquiry = async (req, res, next) => {
     try {
-        const data = await StudentEnquiry.find({ isDeleted: false }).sort({
-            studentCode: -1,
-        });
-        response(
-            req,
-            res,
-            activity,
-            "Level-1",
-            "GetAll-StudentEnquiry",
-            true,
-            200,
-            data,
-            clientError.success.fetchedSuccessfully
-        );
+        const data = await StudentEnquiry.find({ isDeleted: false }).sort({studentCode: -1});
+        response(req,res,activity,"Level-1","GetAll-StudentEnquiry",true,200,data,clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(
-            req,
-            res,
-            activity,
-            "Level-3",
-            "GetAll-StudentEnquiry",
-            false,
-            500,
-            {},
-            errorMessage.internalServer,
-            err.message
-        );
+        response(req,res,activity,"Level-3","GetAll-StudentEnquiry",false,500,{},errorMessage.internalServer,err.message);
     }
 };
 
 export let getSingleStudentEnquiry = async (req, res, next) => {
     try {
         const student = await StudentEnquiry.findOne({ _id: req.query._id });
-        response(
-            req,
-            res,
-            activity,
-            "Level-1",
-            "Get-Single-StudentEnquiry",
-            true,
-            200,
-            student,
-            clientError.success.fetchedSuccessfully
-        );
+        response(req,res,activity,"Level-1","Get-Single-StudentEnquiry",true,200,student,clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(
-            req,
-            res,
-            activity,
-            "Level-3",
-            "Get-Single-StudentEnquiry",
-            false,
-            500,
-            {},
-            errorMessage.internalServer,
-            err.message
-        );
+        response(req,res,activity,"Level-3","Get-Single-StudentEnquiry",false,500,{},errorMessage.internalServer,err.message);
     }
 };
+
+export let getAllLoggedStudentEnquiry = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "StudentEnquiry" })
+        response(req, res, activity, 'Level-1', 'All-Logged StudentEnquiry', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedStudentEnquiry = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged StudentEnquiry', false, 404, {},"No logs found.");
+      }
+  
+      return response(req, res, activity, 'Level-1', 'Single-Logged StudentEnquiry', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        return response(req, res, activity, 'Level-2', 'Single-Logged StudentEnquiry', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 
 const generateNextStudentCode = async (): Promise<string> => {
     const student = await StudentEnquiry.find({}, "studentCode").exec();
@@ -111,7 +92,7 @@ export let createStudentEnquiry = async (req, res, next) => {
     }
 };
 
-export let updateStudentEnquiry = async (req, res, next) => {
+export let updateStudentEnquiryy = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -168,10 +149,7 @@ export let updateStudentEnquiry = async (req, res, next) => {
                     },
                 }
             );
-            response(
-                req,
-                res,
-                activity,
+            response(req,res,activity,
                 "Level-2",
                 "Update-studentEnquiryDetails",
                 true,
@@ -303,5 +281,295 @@ export let getFilteredStudentEnquiry = async (req, res, next) => {
             errorMessage.internalServer,
             err.message
         );
+    }
+};
+
+
+
+export let activeStudentEnquiry = async (req, res, next) => {
+    try {
+        const studentEnquiryIds = req.body.studentEnquiryIds; 
+  
+        const student = await StudentEnquiry.updateMany(
+            { _id: { $in: studentEnquiryIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (student.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-StudentEnquiry ', true, 200, student, 'Successfully Activated StudentEnquiry .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-StudentEnquiry ', false, 400, {}, 'Already StudentEnquiry were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-StudentEnquiry ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateStudentEnquiry = async (req, res, next) => {
+    try {
+        const studentEnquiryIds = req.body.studentEnquiryIds;   
+      const student = await StudentEnquiry.updateMany(
+        { _id: { $in: studentEnquiryIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (student.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-StudentEnquiry', true, 200, student, 'Successfully deactivated StudentEnquiry.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-StudentEnquiry', false, 400, {}, 'Already StudentEnquiry were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-StudentEnquiry', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { studentEnquiryIds, staffId,staffName } = req.body;  // Destructure studentEnquiryIds and staffId from the request body
+
+        // Update all student enquiries with the selected staffId
+        const student = await StudentEnquiry.updateMany(
+            { _id: { $in: studentEnquiryIds } },  // Find student enquiries by IDs
+            { $set: { staffId: staffId , staffName:staffName } },       // Set the staffId field
+            { new: true }
+        );
+
+        if (student.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, student, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+
+const stripHtmlTags = (html) => {
+    return html.replace(/<\/?[^>]+(>|$)/g, "");
+};
+
+
+export let updateStudentEnquiry = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const studentEnquiryDetails: StudentEnquiryDocument = req.body;
+            const application = await StudentEnquiry.findOne({ $and: [{ _id: { $ne: studentEnquiryDetails._id } }, { email: studentEnquiryDetails.email }] });
+
+            if (!application) {
+                const updateMaster = new StudentEnquiry(studentEnquiryDetails)
+                let updatedApplicant = await updateMaster.updateOne(
+                    {
+                        $set: {
+                            source: studentEnquiryDetails.source,
+                            name: studentEnquiryDetails.name,
+                            dob: studentEnquiryDetails.dob,
+                            passportNo: studentEnquiryDetails.passportNo,
+                            qualification: studentEnquiryDetails.qualification,
+                            whatsAppNumber: studentEnquiryDetails.whatsAppNumber,
+                            primaryNumber: studentEnquiryDetails.primaryNumber,
+                            email: studentEnquiryDetails.email,
+                            cgpa: studentEnquiryDetails.cgpa,
+                            yearPassed: studentEnquiryDetails.yearPassed,
+                            desiredCountry: studentEnquiryDetails.desiredCountry,
+                            desiredCourse: studentEnquiryDetails.desiredCourse,
+                            doYouNeedSupportForLoan:
+                                studentEnquiryDetails.doYouNeedSupportForLoan,
+                            assignedTo: studentEnquiryDetails.assignedTo,
+                            message: studentEnquiryDetails.message,
+    
+                            // New Added Field
+                            gender: studentEnquiryDetails.gender,
+                            citizenShip: studentEnquiryDetails.citizenShip,
+                            expiryDate: studentEnquiryDetails.expiryDate,
+                            desiredUniversity: studentEnquiryDetails.desiredUniversity,
+                            doYouHoldAnyOtherOffer:
+                                studentEnquiryDetails.doYouHoldAnyOtherOffer,
+                            country: studentEnquiryDetails.country,
+                            universityName: studentEnquiryDetails.universityName,
+                            programName: studentEnquiryDetails.programName,
+                            refereeName: studentEnquiryDetails.refereeName,
+                            refereeContactNo: studentEnquiryDetails.refereeContactNo,
+                            registerForIELTSClass: studentEnquiryDetails.registerForIELTSClass,
+                            studentId: studentEnquiryDetails.studentId,
+                            studentName: studentEnquiryDetails.studentName,
+                            agentName: studentEnquiryDetails.agentName,
+                            businessName: studentEnquiryDetails.businessName,
+                            agentPrimaryNumber: studentEnquiryDetails.agentPrimaryNumber,
+                            agentWhatsAppNumber: studentEnquiryDetails.agentWhatsAppNumber,
+                            agentEmail: studentEnquiryDetails.agentEmail,
+                            dial: studentEnquiryDetails.dial,
+                            dial1: studentEnquiryDetails.dial1,
+                            dial2: studentEnquiryDetails.dial2,
+                            dial3: studentEnquiryDetails.dial3,
+                            dial4: studentEnquiryDetails.dial4,
+    
+                            modifiedOn: new Date(),
+                            modifiedBy: studentEnquiryDetails.modifiedBy,
+                        },
+                        $addToSet: {
+                            status: studentEnquiryDetails.status
+                        }
+                    }
+                );
+
+
+                // Delay days Calculation
+                const updatedApplication = await StudentEnquiry.findById(studentEnquiryDetails._id);
+                const user = updatedApplication.studentName
+                const statusLength = updatedApplication.status.length;
+                const currentDate = new Date();
+                let delayMessages = []; // Array to store all delay messages
+
+                if (statusLength > 1) {
+                    for (let i = 0; i < statusLength - 1; i++) {
+                        const statusCreatedOn = new Date(updatedApplication.status[i].createdOn);
+                        const statusDurationInMs = Number(updatedApplication.status[i + 1].duration) * 24 * 60 * 60 * 1000;
+                        const expectedCompletionDate = new Date(statusCreatedOn.getTime() + statusDurationInMs);
+
+                        if (currentDate > expectedCompletionDate) {
+                            const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                            delayMessages.push(`Delayed by ${delayDays} day(s) for status updated on ${statusCreatedOn.toDateString()}`);
+                        }
+                    }
+                } else if (statusLength === 1) {
+                    const applicationCreatedDate = new Date(updatedApplication.createdOn);
+                    const lastStatus = updatedApplication.status[0];
+                    const statusDurationInMs = Number(lastStatus.duration) * 24 * 60 * 60 * 1000;
+                    const expectedCompletionDate = new Date(applicationCreatedDate.getTime() + statusDurationInMs);
+
+                    if (currentDate > expectedCompletionDate) {
+                        const delayDays = Math.ceil(Number(Number(currentDate) - Number(expectedCompletionDate)) / (24 * 60 * 60 * 1000));
+                        delayMessages.push(`Delayed by ${delayDays} day(s) for initial application created on ${applicationCreatedDate.toDateString()}`);
+                    }
+                }
+
+                const lastStatus = updatedApplication.status[statusLength - 1];
+                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+                const docs = lastStatus.document;
+                const Message = delayMessages[delayMessages.length - 1]
+                const delayMessage = Message ? Message : "No Delay"
+
+                // Update last status with delay message in the database
+                await updatedApplication.updateOne({
+                    $set: {
+                        "status.$[elem].delay": delayMessage,
+                        "status.$[elem].createdBy": user,
+                        "status.$[statusElem].reply.$[replyElem].replyMessage": req.body.replyMessage,
+
+                    }
+                }, {
+                    arrayFilters: [
+                        // { "statusElem._id": req.body.statusId }, // Match the status by its _id
+                        { "elem._id": lastStatus._id },
+                        { "replyElem._id": req.body.replyId },   // Match the reply by its _id
+                    ],
+
+                });
+
+                // Prepare email attachments
+                const attachments = [];
+                   let cid = ''
+                if (docs) {
+                    const [fileType, fileContent] = docs.split("base64,");
+                    const extension = fileType ?? fileType.match(/\/(.*?);/)[1]; // Extract file extension (e.g., 'jpg', 'png', 'pdf')
+                    const timestamp = format(new Date(), 'yyyyMMdd');
+                    const dynamicFilename = `${sanitizedContent.replace(/\s+/g, '_')}_${timestamp}.${extension}`;
+                    cid = `image_${Date.now()}.${extension}`; // Create a unique CID for the image
+
+                    attachments.push({
+                        filename: dynamicFilename,
+                        content: docs.split("base64,")[1],
+                        encoding: 'base64',
+                        cid: cid
+                    });
+                }
+
+                const mailOptions = {
+                    from: config.SERVER.EMAIL_USER,
+                    to: updatedApplication.email,
+                    subject: "Student Enquiry Status Updated",
+                    html: `
+                                  <body style="font-family: 'Poppins', Arial, sans-serif">
+                                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                          <tr>
+                                              <td align="center" style="padding: 20px;">
+                                                  <table class="content" width="600" border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border: 1px solid #cccccc;">
+                                                      <!-- Header -->
+                                                      <tr>
+                                                          <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
+                                                            Student Enquiry Status Updated
+                                                          </td>
+                                                      </tr>
+                          
+                                                      <!-- Body -->
+                                                      <tr>
+                                                          <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
+                                                              <p>Hello ${updatedApplication.studentName},</p>
+                                                              <p>Your application status has been updated.</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p>Comment: ${sanitizedContent}</p>
+                                                                 <p>Delayed: ${delayMessage}</p>
+        
+                                                             ${cid? `<img src="cid:${cid}" alt="Image" width="500" height="300" />` : ''}
+          
+                                                              <p>This information is for your reference.</p>
+                                                              <p>Team,<br>Edufynd Private Limited,<br>Chennai.</p>
+                                                          </td>
+                                                      </tr>
+                                                      <tr>
+                                  <td style="padding: 30px 40px 30px 40px; text-align: center;">
+                                      <!-- CTA Button -->
+                                      <table cellspacing="0" cellpadding="0" style="margin: auto;">
+                                          <tr>
+                                              <td align="center" style="background-color: #345C72; padding: 10px 20px; border-radius: 5px;">
+                                                  <a href="https://crm.edufynd.in/" target="_blank" style="color: #ffffff; text-decoration: none; font-weight: bold;">Book a Free Consulatation</a>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </td>
+                              </tr>
+                          
+                                                      <!-- Footer -->
+                                                      <tr>
+                                                          <td class="footer" style="background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;">
+                                                             Copyright &copy; ${new Date().getFullYear()} | All rights reserved
+                                                          </td>
+                                                      </tr>
+                                                  </table>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </body>
+                              `,
+                              attachments: attachments
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        return res.status(500).json({ message: 'Error sending email' });
+                    } else {
+                        console.log('Email sent:', info.response);
+                        res.status(201).json({ message: 'You have received a Loan Enquiry Status Notification' });
+                    }
+                });
+                res.status(201).json({ message: 'Student Enquiry status has been updated and emails sent.', Details: updatedApplication });
+
+            } else {
+                res.status(404).json({ message: 'Student Enquiry not found' });
+            }
+        } catch (err: any) {
+            console.log(err)
+            response(req, res, activity, 'Level-3', 'Update-Student Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        response(req, res, activity, 'Level-3', 'Update-Student Enquiry', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };

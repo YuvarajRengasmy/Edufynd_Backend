@@ -11,8 +11,6 @@ import { Staff } from '../model/staff.model'
 import { v4 as uuidv4 } from 'uuid'
 import * as config from '../config';
 
-
-
 var activity = "Login"
 
 /**

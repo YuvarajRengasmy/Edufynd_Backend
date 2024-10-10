@@ -1,10 +1,14 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface StudentDocument extends mongoose.Document {
     _id?: any;
     studentCode?: string;
     adminId?: any;
     staffId?: any;
+    agentId?: any;
+    agentName?:any;
+    staffName?: string;
     superAdminId?: any;
     source?: string;
     name?: string;
@@ -68,6 +72,7 @@ export interface StudentDocument extends mongoose.Document {
     role?: string;
     privileges?: any[];
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -88,7 +93,10 @@ const studentSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, auto: true },
     adminId: { type: mongoose.Types.ObjectId,ref:'Admin'},
     staffId: { type: mongoose.Types.ObjectId,ref:'Staff'},
+    agentId:{ type: mongoose.Types.ObjectId,ref:'Agent'},
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
+    staffName: { type: String},
+    agentName: { type: String},
     studentCode: { type: String },
     source: { type: String },
     name: { type: String },
@@ -152,13 +160,15 @@ const studentSchema = new mongoose.Schema({
     activeStatus: {type: String},
     role: { type: String},
     privileges: [privilegeSchema],
+    
 
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 })
 
-
+LoggingMiddleware(studentSchema)
 export const Student = mongoose.model("Student", studentSchema)

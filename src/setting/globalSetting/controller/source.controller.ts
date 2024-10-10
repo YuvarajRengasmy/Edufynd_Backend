@@ -1,4 +1,5 @@
 import { Source, SourceDocument } from '../../globalSetting/model/source.model'
+import { Logs } from "../../../model/logs.model";
 import { validationResult } from "express-validator";
 import { response, } from "../../../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../../../helper/ErrorMessage";
@@ -27,6 +28,33 @@ export const getSingleSource = async (req: any, res:any, next:any) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Source', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+
+export let getAllLoggedSource = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Source" })
+        response(req, res, activity, 'Level-1', 'All-Logged Source', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Source', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  };
+
+
+  export let getSingleLoggedSource = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        response(req, res, activity, 'Level-3', 'Single-Logged Source', false, 404, {},"No logs found.");
+      }
+  
+      response(req, res, activity, 'Level-1', 'Single-Logged Source', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+      response(req, res, activity, 'Level-2', 'Single-Logged Source', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 
 
 export let createSource = async (req: any, res:any, next:any) => {

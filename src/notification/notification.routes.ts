@@ -1,9 +1,14 @@
 import { Router } from 'express';
 import { getAllNotification, getSingleNotification, createNotification, updateNotification, 
-    deleteNotification, getFilteredNotification, } from './notification.controller';
+    deleteNotification, getFilteredNotification,
+    activeNotification,
+    deactivateNotification,
+    getAllLoggedNotification,
+    getSingleLoggedNotification,
+    assignStaffId, } from './notification.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
-import { checkSession } from '../utils/tokenManager';
+import { checkSession, checkPermission} from '../utils/tokenManager';
 
 
 const router: Router = Router();
@@ -19,7 +24,19 @@ router.get('/getSingleNotification',
     getSingleNotification,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedNotification
+);
 
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedNotification
+);
 
 router.post('/',
     basicAuthUser,
@@ -37,6 +54,24 @@ router.put('/',
     updateNotification
 );
 
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeNotification
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateNotification
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                  
     basicAuthUser,

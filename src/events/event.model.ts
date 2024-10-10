@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface EventDocument extends mongoose.Document {
@@ -12,12 +12,14 @@ export interface EventDocument extends mongoose.Document {
     userEmail?: any[];
     eventTopic?: string;
     universityName?: string;
+    staffId?: any;
+    staffName?: string;
     
     date?: Date;
     time?: string;
     venue?: string;
     sent?: Boolean;
-
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -44,12 +46,14 @@ const eventSchema = new mongoose.Schema({
     time: {type: String},
     venue: {type: String},
     sent: { type: Boolean, default: false },
-
+    isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(eventSchema)
 export const Event = mongoose.model("Event", eventSchema)

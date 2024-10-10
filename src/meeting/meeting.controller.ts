@@ -3,6 +3,7 @@ import { Student } from '../model/student.model'
 import { Staff } from '../model/staff.model'
 import { Admin } from '../model/admin.model'
 import { Agent } from '../model/agent.model'
+import { Logs } from "../model/logs.model"
 import { validationResult } from "express-validator";
 import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
@@ -35,6 +36,33 @@ export const getSingleMeeting = async (req, res) => {
         response(req, res, activity, 'Level-1', 'GetSingle-Meeting', false, 500, {}, errorMessage.internalServer, err.message)
     }
 }
+
+
+export let getAllLoggedMeeting = async (req, res, next) => {
+    try {
+        const data = await Logs.find({ modelName: "Meeting" })
+        response(req, res, activity, 'Level-1', 'All-Logged Meeting', true, 200, data, clientError.success.fetchedSuccessfully);
+    } catch (err: any) {
+        response(req, res, activity, 'Level-2', 'All-Logged Meeting', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+};
+
+export let getSingleLoggedMeeting = async (req, res) => {
+    try {
+      const {_id } = req.query
+      const logs = await Logs.find({ documentId: _id });
+  
+      if (!logs || logs.length === 0) {
+        return response(req, res, activity, 'Level-3', 'Single-Logged Meeting', false, 404, {},"No logs found.");
+      }
+  
+      return response(req, res, activity, 'Level-1', 'Single-Logged Meeting', true, 200, logs, clientError.success.fetchedSuccessfully);
+    } catch (err) {
+        console.log(err)
+        return response(req, res, activity, 'Level-2', 'Single-Logged Meeting', false, 500, {}, errorMessage.internalServer, err.message);
+    }
+  }
+
 
 
 const stripHtmlTags = (html) => {
@@ -442,3 +470,69 @@ export let createMeeting = async (req, res, next) => {
     }
 };
 
+
+
+
+export let activeMeeting = async (req, res, next) => {
+    try {
+        const meetingIds = req.body.meetingIds; 
+  
+        const meeting = await Meeting.updateMany(
+            { _id: { $in: meetingIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (meeting.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Meeting ', true, 200, meeting, 'Successfully Activated Meeting .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Meeting ', false, 400, {}, 'Already Meeting were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Meeting ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateMeeting = async (req, res, next) => {
+    try {
+        const meetingIds = req.body.meetingIds; 
+  
+        const meeting = await Meeting.updateMany(
+        { _id: { $in: meetingIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (meeting.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Meeting', true, 200, meeting, 'Successfully deactivated Meeting.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Meeting', false, 400, {}, 'Already Meeting were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Meeting', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Meeting.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

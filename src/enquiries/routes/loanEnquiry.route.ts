@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry } from '../controller/loanEnquiry.controller';
+import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry, getAllLoggedLoanEnquiry, getSingleLoggedLoanEnquiry, activeLoanEnquiry, deactivateLoanEnquiry, assignStaffId } from '../controller/loanEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -24,6 +24,22 @@ router.get('/getSingleLoanEnquiry',
     getSingleLoanEnquiry,
 );
 
+
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedLoanEnquiry
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedLoanEnquiry
+);
+
+
 router.post('/',
     checkPermission('loanEnquiry', 'add'),
     checkRequestBodyParams('email'),
@@ -39,6 +55,24 @@ router.put('/',
 
 );
 
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeLoanEnquiry
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateLoanEnquiry
+);
+
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',
     basicAuthUser,
@@ -56,6 +90,12 @@ router.put('/getFilterLoanEnquiry',
     getFilteredLoanEnquiry,
 );
 
+//Public API
 
+router.get('/public', getAllLoanEnquiry);
+
+router.get('/publicGetSingleLoanEnquiry', getSingleLoanEnquiry);
+
+router.post('/public', createLoanEnquiry);
 
 export default router

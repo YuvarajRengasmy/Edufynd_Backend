@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllFlightTicketEnquiry, getSingleFlightTicketEnquiry, createFlightTicketEnquiry, updateFlightTicketEnquiry, deleteFlightTicketEnquiry, getFilteredFlightTicketEnquiry } from '../controller/flightTicket.controller';
+import { getAllFlightTicketEnquiry, getSingleFlightTicketEnquiry, createFlightTicketEnquiry, updateFlightTicketEnquiry, deleteFlightTicketEnquiry, getFilteredFlightTicketEnquiry, getAllLoggedFlight, getSingleLoggedFlight, activeFlight, deactivateFlight, assignStaffId } from '../controller/flightTicket.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -24,6 +24,20 @@ router.get('/getSingleFlightEnquiry',
     getSingleFlightTicketEnquiry,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedFlight
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedFlight
+);
+
 router.post('/',
     checkPermission('flightEnquiry', 'add'),
     checkRequestBodyParams('email'),
@@ -38,6 +52,24 @@ router.put('/',
     updateFlightTicketEnquiry,
 
 );
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeFlight
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateFlight
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',
@@ -56,6 +88,12 @@ router.put('/getFilterFlightEnquiry',
     getFilteredFlightTicketEnquiry,
 );
 
+//Public API
 
+router.get('/public', getAllFlightTicketEnquiry);
+
+router.get('/publicGetSingleFlightEnquiry', getSingleFlightTicketEnquiry);
+
+router.post('/public', createFlightTicketEnquiry);
 
 export default router

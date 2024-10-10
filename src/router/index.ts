@@ -19,6 +19,7 @@ import Commission from './commission.routes'
 import Demo from './demo.routes'
 import Payment from './payment.routes'
 import DialCode from './dialCode.routes'
+import Branch from './branch.routes'
 
 
 
@@ -100,6 +101,8 @@ import PaymentMethod from '../setting/moduleSetting/router/paymentMethod.route'
 import Tax from '../setting/moduleSetting/router/tax.route'
 import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
 import ApplicationStatus from '../setting/moduleSetting/router/applicationStatus.route'
+import Qualification from '../setting/moduleSetting/router/qualification.route'
+import CommissionType from '../setting/moduleSetting/router/typeOfCommission.route'
 
 
 
@@ -121,8 +124,8 @@ router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
 router.use('/chat', Chat)
-
 router.use('/dialCode', DialCode)
+router.use('/branch', Branch)
 
 
 //All Enquiry API
@@ -199,10 +202,8 @@ router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
 router.use('/typeOfClient', TypeOfClient)
 router.use('/applicationStatus', ApplicationStatus)
-
-
-
-
+router.use('/qulaification', Qualification)
+router.use('/commissionType', CommissionType)
 
 
 export default router

@@ -1,10 +1,14 @@
 import * as mongoose from 'mongoose'
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 export interface AgentDocument extends mongoose.Document {
   _id?: any;
   source?: string;
   adminId?: any;
+  
   studentId?: any;
+  staffId?: any;
+  staffName?: string;
   agentCode?: string;
   agentName?: string;
   businessName?: string;
@@ -20,7 +24,7 @@ export interface AgentDocument extends mongoose.Document {
   gstn?: string; 
   panNumberIndividual?: string;
   panNumberCompany?: string; 
-  staffName?: string;
+  
   dial3?: string;
   staffContactNo?: number;  
   // Bank Details
@@ -39,6 +43,7 @@ export interface AgentDocument extends mongoose.Document {
   resetOtp?: string;
   resetOtpExpires?: number;
   isDeleted?: boolean;
+  isActive?: string;
   createdOn?: Date;
   createdBy?: string;
   modifiedOn?: Date;
@@ -99,7 +104,6 @@ const agentSchema = new mongoose.Schema({
   panNumberCompany: { type: String }, 
   gstn: { type: String },
   inc: { type: String }, 
-  staffName: { type: String },
   dial3: {type: String},
   staffContactNo: { type: Number },
   agentsCommission: { type: Number },  
@@ -110,6 +114,7 @@ const agentSchema = new mongoose.Schema({
   resetOtp: { type: String },
   resetOtpExpires: { type: Number },
   isDeleted: { type: Boolean, default: false },
+  isActive: {type: String,default: "InActive"},
   // Newly Added Field
   businessWebsite: { type: String },
   pin: { type: Number },
@@ -127,11 +132,13 @@ const agentSchema = new mongoose.Schema({
   role: { type: String},
   privileges: [privilegeSchema],
   activeStatus: {type: String},
+  staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+  staffName: { type: String },
   createdOn: { type: Date, default: Date.now()},
   createdBy: { type: String },
   modifiedOn: { type: Date },
   modifiedBy: { type: String },
 })
 
-
+LoggingMiddleware(agentSchema)
 export const Agent = mongoose.model("Agent", agentSchema)
