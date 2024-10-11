@@ -294,6 +294,8 @@ export let updateApplicant = async (req, res, next) => {
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
 
+        
+
                 if (statusLength > 1) {
                     for (let i = 0; i < statusLength - 1; i++) {
                         const statusCreatedOn = new Date(updatedApplication.status[i].createdOn);
