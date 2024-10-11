@@ -91,6 +91,7 @@ const applicantSchema = new mongoose.Schema({
         estimateDate: {type: Date},
         actualDate: {type: Date},
         subCategory: [String],
+        category: [String],
         progress: { type: Number }, 
         completed: {type: Boolean},
         createdBy: { type: String },
