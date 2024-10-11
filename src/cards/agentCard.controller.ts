@@ -23,7 +23,7 @@ export let getAllAgentCardDetails = async (req, res, next) => {
         const inactiveData = await Agent.countDocuments({ isActive: "InActive"});
 
 
-       // Source-wise count of student
+       // Source-wise count of Agent
        const sourceCounts = await Agent.aggregate([
         {
             $group: {
@@ -48,7 +48,6 @@ export let getAllAgentCardDetails = async (req, res, next) => {
 
         mongoose.set('debug', true);
 
-        // Construct the response data
         const responseData = {
             totalAgent,
             totalUniqueCountries,
@@ -56,8 +55,6 @@ export let getAllAgentCardDetails = async (req, res, next) => {
             inactiveData,
             sourceCounts: sourceCountObj,  
         };
-
-        // Send the response
         response(req, res, activity, 'Level-1', 'GetAll-Agent Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Agent Card Details', false, 500, {}, errorMessage.internalServer, err.message);

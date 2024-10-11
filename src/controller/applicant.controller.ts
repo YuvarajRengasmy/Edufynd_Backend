@@ -781,9 +781,10 @@ export const updateStatus = async (req, res) => {
             "status.$[elem].position": position,
             "status.$[elem].completed": completed,
             "status.$[elem].commentBox": commentBox,
+            "status.$[elem].actualDate": actualDate,
             "status.$[elem].document": document,
             "status.$[elem].modifiedOn": new Date(),
-            "status.$[elem].modifiedBy": req.body.modifiedBy
+           
         };
 
         // Use findOneAndUpdate to update and return the modified document

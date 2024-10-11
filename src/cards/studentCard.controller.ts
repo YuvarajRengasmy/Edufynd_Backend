@@ -11,7 +11,7 @@ var activity = "Student";
 export let getAllStudentCardDetails = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
-        // Find all client that are not deleted
+        // Find all student that are not deleted
         const student = await Student.find()
         const totalStudent = student.length;
 

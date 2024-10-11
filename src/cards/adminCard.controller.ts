@@ -44,7 +44,7 @@ export let getAllAdminCardDetails = async (req, res, next) => {
     // Create a country count object
     const sourceCountObj = {};
     sourceCounts.forEach(({ source, count }) => {
-        sourceCountObj[source] = count;  // Populate the country count object
+        sourceCountObj[source] = count;  
     });
 
         mongoose.set('debug', true);
@@ -57,8 +57,6 @@ export let getAllAdminCardDetails = async (req, res, next) => {
             inactiveData,
             sourceCounts: sourceCountObj,  
         };
-
-        // Send the response
         response(req, res, activity, 'Level-1', 'GetAll-Admin Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
         response(req, res, activity, 'Level-3', 'GetAll-Admin Card Details', false, 500, {}, errorMessage.internalServer, err.message);

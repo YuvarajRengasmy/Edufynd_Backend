@@ -87,7 +87,6 @@ const applicantSchema = new mongoose.Schema({
         reply: [{
             replyMessage: {type: String},
             createdBy: { type: String },
-    
         }],
         estimateDate: {type: Date},
         actualDate: {type: Date},
@@ -97,9 +96,8 @@ const applicantSchema = new mongoose.Schema({
         completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
-        modifiedOn: { type: Date, default: Date.now }
+        modifiedOn: { type: Date}
     }],
-
     programTitle: {type: String},
     uniCountry: {type: String},
     createdOn: { type: Date },
