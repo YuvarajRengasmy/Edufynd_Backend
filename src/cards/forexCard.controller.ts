@@ -1,31 +1,30 @@
-import {StudentEnquiry,StudentEnquiryDocument} from "../enquiries/model/studentEnquiry.model";
+import { Forex, ForexDocument } from '../enquiries/model/forex.model'
 import { validationResult } from "express-validator";
-import * as TokenManager from "../utils/tokenManager";
-import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
+import { response, transporter } from "../helper/commonResponseHandler";
 import * as mongoose from 'mongoose';
 
-var activity = "StudentEnquiry Cards";
+
+var activity = "ForexEnquiry";
 
 
-export let getAllStudentEnquiryCard = async (req, res, next) => {
+export let getAllForexEnquiryCard = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
 
-        const data = await StudentEnquiry.find()
+        const data = await Forex.find()
         const totalData = data.length;
 
         // Number of unique countries
-        const uniqueCountries = await StudentEnquiry.distinct("country");
+        const uniqueCountries = await Forex.distinct("country");
         const totalUniqueCountries = uniqueCountries.length;
 
         // Active and inactive 
-        const activeData = await StudentEnquiry.countDocuments({ isActive: "Active" });
-        const inactiveData = await StudentEnquiry.countDocuments({ isActive: "InActive" });
-        
+        const activeData = await Forex.countDocuments({ isActive: "Active" });
+        const inactiveData = await Forex.countDocuments({ isActive: "InActive" });
         // Function to aggregate counts based on a given field
         const getCounts = async (field) => {
-            const counts = await StudentEnquiry.aggregate([
+            const counts = await Forex.aggregate([
                 {
                
                     $group: {
@@ -63,10 +62,12 @@ export let getAllStudentEnquiryCard = async (req, res, next) => {
             return countObj;
         };
 
-        // Get source type counts
+        // Get payment method and payment type counts
         const sourceCountObj = await getCounts('source');
     
         mongoose.set('debug', true);
+
+        // Construct the response data
         const responseData = {
             totalData,
             activeData,
@@ -74,8 +75,10 @@ export let getAllStudentEnquiryCard = async (req, res, next) => {
             sourceCounts: sourceCountObj,
           
         };
-        response(req, res, activity, 'Level-1', 'GetAll-StudentEnquiry Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
+
+        // Send the response
+        response(req, res, activity, 'Level-1', 'GetAll-Forex Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-StudentEnquiry Card Details', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-Forex Card Details', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };

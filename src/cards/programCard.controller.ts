@@ -17,16 +17,17 @@ export let getAllProgramCard = async (req, res, next) => {
         const totalProgram = program.length;
 
         // Number of unique countries
-        const uniqueCountries = await Program.distinct("country", { isDeleted: false });
+        const uniqueCountries = await Program.distinct("country");
         const totalUniqueCountries = uniqueCountries.length;
 
         // Number of unique universityName
-        const uniqueUniversityName = await Program.distinct("universityName", { isDeleted: false });
+        const uniqueUniversityName = await Program.distinct("universityName");
         const universityName = uniqueUniversityName.length;
 
         // Active and inactive universities
         const activeProgram = await Program.countDocuments({ isActive: "Active" });
         const inactiveProgram = await Program.countDocuments({ isActive: "InActive" });
+
 
     // Unique country-wise program titles (explicit typing for the object)
     const countryWisePrograms: { [key: string]: Set<string> } = {};
@@ -42,11 +43,11 @@ export let getAllProgramCard = async (req, res, next) => {
     const countrywise = Object.entries(countryWisePrograms).map(([country, programTitlesSet]) => ({
         country,
         // programTitles: Array.from(programTitlesSet),  // Convert Set to Array
-        programCount: programTitlesSet.size           // Get the size of the Set
+        programCount: programTitlesSet.size          
     }));
 
         mongoose.set('debug', true);
-        // Construct the response data
+     
         const responseData = {
             totalProgram,
             totalUniqueCountries,
