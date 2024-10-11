@@ -65,6 +65,15 @@ export let getAllStudentEnquiryCard = async (req, res, next) => {
 
         // Get source type counts
         const sourceCountObj = await getCounts('source');
+
+
+        const topSource = await StudentEnquiry.aggregate([
+            { $match: { isActive: "Active" } }, // Match documents that are not deleted
+            { $group: { _id: "$source", count: { $sum: 1 } } }, // Group by universityName and count occurrences
+            { $sort: { count: -1 } }, // Sort by count in descending order
+            { $limit: 5 }, // Limit to top 3 universities
+            { $project: { _id: 0, source: "$_id", count: 1 } } // Project the result with universityName and count
+        ]);
     
         mongoose.set('debug', true);
         const responseData = {
@@ -72,6 +81,7 @@ export let getAllStudentEnquiryCard = async (req, res, next) => {
             activeData,
             inactiveData,
             sourceCounts: sourceCountObj,
+            topSource
           
         };
         response(req, res, activity, 'Level-1', 'GetAll-StudentEnquiry Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);

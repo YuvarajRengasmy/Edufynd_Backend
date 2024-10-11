@@ -95,7 +95,8 @@ const applicantSchema = new mongoose.Schema({
         completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
-        modifiedOn: { type: Date}
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
     }],
     programTitle: {type: String},
     uniCountry: {type: String},
