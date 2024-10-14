@@ -106,6 +106,8 @@ import CommissionType from '../setting/moduleSetting/router/typeOfCommission.rou
 import StudentEnquiryStatus from '../setting/moduleSetting/router/studentStatus.route'
 import ForexEnquiryStatus from '../setting/moduleSetting/router/forexStatus.route'
 import AccommodationEnquiryStatus from '../setting/moduleSetting/router/accommodationStatus.route'
+import FlightEnquiryStatus from '../setting/moduleSetting/router/flightStatus.route'
+import BusinessEnquiryStatus from '../setting/moduleSetting/router/businessStatus.route'
 
 
 
@@ -207,10 +209,14 @@ router.use('/typeOfClient', TypeOfClient)
 router.use('/applicationStatus', ApplicationStatus)
 router.use('/qulaification', Qualification)
 router.use('/commissionType', CommissionType)
-StudentEnquiryStatus
+
 router.use('/studentStatus', StudentEnquiryStatus)
 router.use('/forexStatus', ForexEnquiryStatus)
 router.use('/accommodationStatus', AccommodationEnquiryStatus)
+router.use('/flightStatus', FlightEnquiryStatus)
+router.use('/businessStatus', BusinessEnquiryStatus)
+
+
 
 
 
