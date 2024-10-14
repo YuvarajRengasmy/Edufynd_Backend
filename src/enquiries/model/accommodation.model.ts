@@ -86,22 +86,26 @@ const accommodationSchema = new mongoose.Schema({
     staffName: { type: String},
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
+        statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        position: {type: Number},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }],
+        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
+        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
-        modifiedOn: { type: Date, default: Date.now }
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
     }],
 
     isDeleted: { type: Boolean, default: false },
