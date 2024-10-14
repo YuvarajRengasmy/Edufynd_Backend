@@ -318,7 +318,7 @@ export let updateApplicant = async (req, res, next) => {
                 }
 
                 const lastStatus = updatedApplication.status[statusLength - 1];
-                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+                const sanitizedContent = stripHtmlTags(lastStatus.commentBox || "");
           
                 const docs = lastStatus.document;
                 const Message = delayMessages[delayMessages.length - 1]
