@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllBusinessEnquiry, getSingleBusinessEnquiry, createBusinessEnquiry, updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry, getAllLoggedBusinessEnquiry, getSingleLoggedBusinessEnquiry, activeBusinessEnquiry, deactivateBusinessEnquiry, assignStaffId } from '../controller/businessEnquiry.controller';
+import { getAllBusinessEnquiry, getSingleBusinessEnquiry, createBusinessEnquiry, updateBusinessEnquiry, deleteBusinessEnquiry, getFilteredBusinessEnquiry, getAllLoggedBusinessEnquiry, getSingleLoggedBusinessEnquiry, activeBusinessEnquiry, deactivateBusinessEnquiry, assignStaffId, updateStatus } from '../controller/businessEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -39,12 +39,19 @@ router.get('/singleLog',
     getSingleLoggedBusinessEnquiry
 );
 
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
+);
 
 router.post('/',
     checkPermission('businessEnquiry', 'add'),
     checkRequestBodyParams('email'),
     createBusinessEnquiry
 );
+
 
 router.put('/',
     basicAuthUser,
