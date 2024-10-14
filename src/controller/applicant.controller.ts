@@ -798,6 +798,3 @@ export const updateStatus = async (req, res) => {
     }
 };
 
-
-
-
