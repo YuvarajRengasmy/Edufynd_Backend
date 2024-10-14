@@ -85,28 +85,6 @@ const generateNextApplicationCode = async () => {
 };
 
 
-export let createApplicantt = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const applicantDetails: ApplicantDocument = req.body;
-            // Generate the next client ID
-            applicantDetails.applicationCode = await generateNextApplicationCode();
-            const createData = new Applicant(applicantDetails);
-            let insertData = await createData.save();
-            response(req, res, activity, 'Save-Applicant', 'Level-2', true, 200, insertData, clientError.success.application);
-        } catch (err: any) {
-            console.log(err)
-            response(req, res, activity, 'Save-Applicant', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    } else {
-        response(req, res, activity, 'Save-Applicant', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
-};
-
-
-
-
 export let createApplicant = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
@@ -294,8 +272,6 @@ export let updateApplicant = async (req, res, next) => {
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
 
-        
-
                 if (statusLength > 1) {
                     for (let i = 0; i < statusLength - 1; i++) {
                         const statusCreatedOn = new Date(updatedApplication.status[i].createdOn);
@@ -320,7 +296,7 @@ export let updateApplicant = async (req, res, next) => {
                 }
 
                 const lastStatus = updatedApplication.status[statusLength - 1];
-                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+                const sanitizedContent = stripHtmlTags(lastStatus.commentBox || "");
           
                 const docs = lastStatus.document;
                 const Message = delayMessages[delayMessages.length - 1]
@@ -764,7 +740,7 @@ export let deactivateApplicant = async (req, res, next) => {
 
 export const updateStatus = async (req, res) => {
     try {
-        const { statusId, statusName, progress, subCategory, completed, duration, position,category, commentBox, document} = req.body;
+        const { statusId, statusName, progress, subCategory, completed, duration, position,category, commentBox, document, reply} = req.body;
         const applicantDetails: ApplicantDocument = req.body;
 
         // Find the applicant by ID
@@ -772,6 +748,14 @@ export const updateStatus = async (req, res) => {
         if (!Details) {
             return res.status(404).json({ message: 'Applicant not found' });
         }
+
+         // Sanitize the reply input
+         const sanitizedReply = Array.isArray(reply)
+         ? reply.map(item => ({
+             replyMessage: stripHtmlTags(item.replyMessage || ""),
+             createdBy: item.createdBy || "Unknown"
+         }))
+         : [{ replyMessage: stripHtmlTags(reply || ""), createdBy: "Unknown" }];
 
         // Prepare the update data
         const updateStatusData = {
@@ -784,6 +768,7 @@ export const updateStatus = async (req, res) => {
             "status.$[elem].completed": completed,
             "status.$[elem].commentBox": commentBox,
             "status.$[elem].document": document,
+            "status.$[elem].reply": sanitizedReply,
             "status.$[elem].modifiedOn": new Date(),
             "status.$[elem].modifiedBy": req.body.modifiedBy
         };
@@ -791,7 +776,8 @@ export const updateStatus = async (req, res) => {
         // Use findOneAndUpdate to update and return the modified document
         const updatedApplicant = await Applicant.findOneAndUpdate(
             { _id: applicantDetails._id }, // Filter by applicant ID
-            { $set: updateStatusData }, // Set new status data
+            {   $push: { "status.$.reply": { $each: sanitizedReply } },
+            $set: updateStatusData }, // Set new status data
             {
                 arrayFilters: [{ "elem._id": statusId }], // Only update the status with matching statusId
                 new: true, // Return the updated document
