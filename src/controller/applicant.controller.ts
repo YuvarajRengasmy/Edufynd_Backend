@@ -777,13 +777,15 @@ export const updateStatus = async (req, res) => {
 
         // Use findOneAndUpdate to update and return the modified document
         const updatedApplicant = await Applicant.findOneAndUpdate(
-            { _id: applicantDetails._id }, // Filter by applicant ID
-            {   $push: { "status.$.reply": { $each: sanitizedReply } },
-            $set: updateStatusData }, // Set new status data
+            { _id: req.body._id }, // Match applicant ID
+            { 
+                $push: { "status.$[elem].reply": { $each: sanitizedReply } }, // Push new replies
+                $set: updateStatusData // Set other status fields
+            },
             {
-                arrayFilters: [{ "elem._id": statusId }], // Only update the status with matching statusId
+                arrayFilters: [{ "elem._id": statusId }], // Only update the matching status object
                 new: true, // Return the updated document
-                runValidators: true // Ensure validators are run
+                runValidators: true // Validate the input
             }
         );
 
@@ -799,7 +801,4 @@ export const updateStatus = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error });
     }
 };
-
-
-
 
