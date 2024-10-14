@@ -85,7 +85,7 @@ const applicantSchema = new mongoose.Schema({
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [String],
+        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
         uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
         estimateDate: {type: Date},
         actualDate: {type: Date},
