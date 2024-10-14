@@ -70,8 +70,8 @@ router.put('/',
 );
 
 router.put('/status',                    
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
     checkRequestBodyParams('_id'),
     updateStatus
 );
