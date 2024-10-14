@@ -753,9 +753,9 @@ export const updateStatus = async (req, res) => {
          const sanitizedReply = Array.isArray(reply)
          ? reply.map(item => ({
              replyMessage: stripHtmlTags(item.replyMessage || ""),
-             createdBy: item.createdBy || "Unknown"
+            
          }))
-         : [{ replyMessage: stripHtmlTags(reply || ""), createdBy: "Unknown" }];
+         : [{ replyMessage: stripHtmlTags(reply || "")}];
 
         // Prepare the update data
         const updateStatusData = {
