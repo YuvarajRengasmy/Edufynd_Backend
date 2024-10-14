@@ -108,6 +108,8 @@ import ForexEnquiryStatus from '../setting/moduleSetting/router/forexStatus.rout
 import AccommodationEnquiryStatus from '../setting/moduleSetting/router/accommodationStatus.route'
 import FlightEnquiryStatus from '../setting/moduleSetting/router/flightStatus.route'
 import BusinessEnquiryStatus from '../setting/moduleSetting/router/businessStatus.route'
+import LoanEnquiryStatus from '../setting/moduleSetting/router/loanStatus.route'
+import GeneralEnquiryStatus from '../setting/moduleSetting/router/generalStatus.route'
 
 
 
@@ -215,6 +217,8 @@ router.use('/forexStatus', ForexEnquiryStatus)
 router.use('/accommodationStatus', AccommodationEnquiryStatus)
 router.use('/flightStatus', FlightEnquiryStatus)
 router.use('/businessStatus', BusinessEnquiryStatus)
+router.use('/loanStatus', LoanEnquiryStatus)
+router.use('/generalStatus', GeneralEnquiryStatus)
 
 
 
