@@ -105,7 +105,7 @@ export let createAccommodation = async (req, res, next) => {
     }
 }
 
-export let updateAccommodationn = async (req, res, next) => {
+export let updateAccommodation = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -276,58 +276,21 @@ const stripHtmlTags = (html) => {
     return html.replace(/<\/?[^>]+(>|$)/g, "");
 };
 
-export let updateAccommodation = async (req, res, next) => {
+
+export let updateAccommodationStatus = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const accommodationDetails: AccommodationDocument = req.body;
-            const application = await Accommodation.findOne({ $and: [{ _id: { $ne: accommodationDetails._id } }, { email: accommodationDetails.email }] });
-
-            if (!application) {
-                const updateMaster = new Accommodation(accommodationDetails)
-                let updatedApplicant = await updateMaster.updateOne(
-                    {
-                        $set: {
-                            studentName: accommodationDetails.studentName,
-                            source: accommodationDetails.source,
-                            passportNumber: accommodationDetails.passportNumber,
-                            expiryDate:accommodationDetails.expiryDate,
-                            courseType: accommodationDetails.courseType,
-                            whatsAppNumber:accommodationDetails.whatsAppNumber,
-                            universityName: accommodationDetails.universityName,
-                            final:accommodationDetails.final,
-                            accommodationType: accommodationDetails.accommodationType,
-                            agentName:accommodationDetails.agentName,
-                            businessName:accommodationDetails.businessName,
-                            agentWhatsAppNumber: accommodationDetails.agentWhatsAppNumber,
-                            assignedTo: accommodationDetails.assignedTo,
-                            message: accommodationDetails.message,
-                            studentId: accommodationDetails.studentId,
-                            country: accommodationDetails.country,
-                            state:accommodationDetails.state,
-                            lga: accommodationDetails.lga,
-                            dial1: accommodationDetails.dial1,
-                            dial2: accommodationDetails.dial2,
-                            dial3: accommodationDetails.dial3,
-                            dial4: accommodationDetails.dial4,
-                            name:accommodationDetails.name,
-                        
-                            modifiedOn: new Date(),
-                            modifiedBy: accommodationDetails.modifiedBy,
-                        },
-                        $addToSet: {
-                            status: accommodationDetails.status
-                        }
-                    }
-                );
-
-
+            
                 // Delay days Calculation
                 const updatedApplication = await Accommodation.findById(accommodationDetails._id);
                 const user = updatedApplication.studentName
                 const statusLength = updatedApplication.status.length;
                 const currentDate = new Date();
                 let delayMessages = []; // Array to store all delay messages
+
+                console.log("ppp", statusLength)
 
                 if (statusLength > 1) {
                     for (let i = 0; i < statusLength - 1; i++) {
@@ -353,8 +316,8 @@ export let updateAccommodation = async (req, res, next) => {
                 }
 
                 const lastStatus = updatedApplication.status[statusLength - 1];
-                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
-                const docs = lastStatus.document;
+                const sanitizedContent = stripHtmlTags(lastStatus?.commentBox || "");
+                const docs = lastStatus?.document || "";
                 const Message = delayMessages[delayMessages.length - 1]
                 const delayMessage = Message ? Message : "No Delay"
 
@@ -369,7 +332,7 @@ export let updateAccommodation = async (req, res, next) => {
                 }, {
                     arrayFilters: [
                         // { "statusElem._id": req.body.statusId }, // Match the status by its _id
-                        { "elem._id": lastStatus._id },
+                        { "elem._id": lastStatus?._id },
                         { "replyElem._id": req.body.replyId },   // Match the reply by its _id
                     ],
 
@@ -464,9 +427,7 @@ export let updateAccommodation = async (req, res, next) => {
                 });
                 res.status(201).json({ message: 'Accommodation Enquiry status has been updated and emails sent.', Details: updatedApplication });
 
-            } else {
-                res.status(404).json({ message: 'Accommodation Enquiry not found' });
-            }
+
         } catch (err: any) {
             console.log(err)
             response(req, res, activity, 'Level-3', 'Update-Accommodation Enquiry', false, 500, {}, errorMessage.internalServer, err.message);
@@ -474,4 +435,4 @@ export let updateAccommodation = async (req, res, next) => {
     } else {
         response(req, res, activity, 'Level-3', 'Update-Accommodation Enquiry', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
-};
+}

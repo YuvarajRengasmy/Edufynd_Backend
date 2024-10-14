@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getAllAccommodation, getSingleAccommodation, createAccommodation, updateAccommodation, deleteAccommodationEnquiry, getFilteredAccommodation, getAllLoggedAccommodation, getSingleLoggedAccommodation, activeAccommodation, deactivateAccommodation, assignStaffId } from '../controller/accommodation.controller';
+import { getAllAccommodation, getSingleAccommodation, createAccommodation, updateAccommodation, deleteAccommodationEnquiry, getFilteredAccommodation, getAllLoggedAccommodation, getSingleLoggedAccommodation, activeAccommodation, deactivateAccommodation, assignStaffId, updateAccommodationStatus } from '../controller/accommodation.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllAccommodationEnquiryCard } from '../../cards/accommodationCard.controller';
 
 const router: Router = Router();
 
@@ -38,6 +39,12 @@ router.get('/singleLog',
     getSingleLoggedAccommodation,
 );
 
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllAccommodationEnquiryCard
+);
+
 router.post('/',
     basicAuthUser,
     checkSession,
@@ -52,6 +59,15 @@ router.put('/',
     checkPermission('accommodationEnquiry', 'edit'),
     checkRequestBodyParams('_id'),
     updateAccommodation,
+
+);
+
+router.put('/status',
+    basicAuthUser,
+    checkSession,
+    checkPermission('accommodationEnquiry', 'edit'),
+    checkRequestBodyParams('_id'),
+    updateAccommodationStatus,
 
 );
 

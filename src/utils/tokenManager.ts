@@ -31,7 +31,7 @@ export let CreateJWTToken = (data: any = {}) => {
         tokenData['id'] = data['id']
     }
 
-    const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '24h' });
+    const token = jwt.sign(tokenData, 'edufynd', { expiresIn: '30d' });
     return token;
 }
 

@@ -3,6 +3,7 @@ import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateFo
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllForexEnquiryCard } from '../../cards/forexCard.controller';
 
 const router: Router = Router();
 
@@ -36,6 +37,12 @@ router.get('/singleLog',
     checkSession,
     checkQuery('_id'),
     getSingleLoggedForex
+);
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllForexEnquiryCard
 );
 
 router.post('/',

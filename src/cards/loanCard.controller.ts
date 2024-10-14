@@ -1,30 +1,30 @@
-import { Forex, ForexDocument } from '../enquiries/model/forex.model'
+import { LoanEnquiry, LoanEnquiryDocument } from '../enquiries/model/loanEnquiry.model'
 import { validationResult } from "express-validator";
-import { clientError, errorMessage } from "../helper/ErrorMessage";
 import { response, transporter } from "../helper/commonResponseHandler";
+import { clientError, errorMessage } from "../helper/ErrorMessage";
 import * as mongoose from 'mongoose';
 
 
-var activity = "ForexEnquiry";
+var activity = "LoanEnquiry Card";
 
 
-export let getAllForexEnquiryCard = async (req, res, next) => {
+export let getAllLoanEnquiryCard = async (req, res, next) => {
     try {
         mongoose.set('debug', false);
 
-        const data = await Forex.find()
+        const data = await LoanEnquiry.find()
         const totalData = data.length;
 
         // Number of unique countries
-        const uniqueCountries = await Forex.distinct("country");
+        const uniqueCountries = await LoanEnquiry.distinct("country");
         const totalUniqueCountries = uniqueCountries.length;
 
         // Active and inactive 
-        const activeData = await Forex.countDocuments({ isActive: "Active" });
-        const inactiveData = await Forex.countDocuments({ isActive: "InActive" });
+        const activeData = await LoanEnquiry.countDocuments({ isActive: "Active" });
+        const inactiveData = await LoanEnquiry.countDocuments({ isActive: "InActive" });
         // Function to aggregate counts based on a given field
         const getCounts = async (field) => {
-            const counts = await Forex.aggregate([
+            const counts = await LoanEnquiry.aggregate([
                 {
                
                     $group: {
@@ -64,7 +64,7 @@ export let getAllForexEnquiryCard = async (req, res, next) => {
 
         // Get payment method and payment type counts
         const sourceCountObj = await getCounts('source');
-        const topSource = await Forex.aggregate([
+        const topSource = await LoanEnquiry.aggregate([
             { $match: { isActive: "Active" } }, // Match documents that are active
             { $group: { _id: "$source", count: { $sum: 1 } } }, // Group by source and count occurrences
             { $match: { _id: { $ne: null } } }, // Filter out entries where source is null
@@ -84,10 +84,8 @@ export let getAllForexEnquiryCard = async (req, res, next) => {
             topSource
           
         };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-Forex Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
+        response(req, res, activity, 'Level-1', 'GetAll-LoanEnquiry Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
-        response(req, res, activity, 'Level-2', 'GetAll-Forex Card Details', false, 500, {}, errorMessage.internalServer, err.message);
+        response(req, res, activity, 'Level-2', 'GetAll-LoanEnquiry Card Details', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };

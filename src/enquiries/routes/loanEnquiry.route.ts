@@ -3,6 +3,7 @@ import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanE
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllLoanEnquiryCard } from '../../cards/loanCard.controller';
 
 const router: Router = Router();
 
@@ -39,6 +40,12 @@ router.get('/singleLog',
     getSingleLoggedLoanEnquiry
 );
 
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllLoanEnquiryCard
+);
 
 router.post('/',
     checkPermission('loanEnquiry', 'add'),
