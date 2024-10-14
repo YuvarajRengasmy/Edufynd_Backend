@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose'
 import {LoggingMiddleware} from '../helper/commonResponseHandler'
+import upload from 'src/utils/fileUploaded';
 
 
 export interface ApplicantDocument extends mongoose.Document {
@@ -84,10 +85,8 @@ const applicantSchema = new mongoose.Schema({
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-        }],
+        reply: [String],
+        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
         estimateDate: {type: Date},
         actualDate: {type: Date},
         subCategory: [String],

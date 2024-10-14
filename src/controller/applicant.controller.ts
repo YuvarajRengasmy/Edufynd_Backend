@@ -762,7 +762,7 @@ export let deactivateApplicant = async (req, res, next) => {
 
 export const updateStatus = async (req, res) => {
     try {
-        const { statusId, statusName, progress, subCategory, completed, duration, position,category, commentBox, document} = req.body;
+        const { statusId, statusName, progress, subCategory,actualDate,reply,uploadFile, completed, duration, position,category, commentBox, document} = req.body;
         const applicantDetails: ApplicantDocument = req.body;
 
         // Find the applicant by ID
@@ -779,6 +779,8 @@ export const updateStatus = async (req, res) => {
             "status.$[elem].subCategory": subCategory,
             "status.$[elem].category": category,
             "status.$[elem].position": position,
+            "status.$[elem].reply": reply,
+            "status.$[elem].uploadFile": uploadFile,
             "status.$[elem].completed": completed,
             "status.$[elem].commentBox": commentBox,
             "status.$[elem].actualDate": actualDate,
