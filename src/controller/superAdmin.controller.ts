@@ -16,6 +16,7 @@ import { Forex, ForexDocument } from "../enquiries/model/forex.model";
 import { Flight, FlightDocument } from "../enquiries/model/flightTicket.model";
 import { BusinessEnquiry, BusinessEnquiryDocument } from "../enquiries/model/businessEnquiry.model";
 import { Accommodation, AccommodationDocument } from "../enquiries/model/accommodation.model";
+import {Income ,IncomeDocument} from "../finance/model/incomeReport.model";
 import {Applicant, ApplicantDocument} from "../model/application.model";
 import {Notification , NotificationDocument} from "../notification/notification.model";
 import { Meeting ,MeetingDocument } from '../meeting/meeting.model';
@@ -51,9 +52,11 @@ export let getSuperAdminForSearch = async (req, res, next) => {
             const studentList = await Student.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('name', { name: 1 })
             const staffList = await Staff.find({ $and: [{ $or: [{ empName: { $regex: search, $options: 'i' } }, { designation: { $regex: search, $options: 'i' } },{ reportingManager: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }] }).populate('empName', { empName: 1 })
             const agentListed = await Agent.find({ $and: [{ $or: [{ agentName: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('agentName', { agentName: 1 })
+            const incomesListed = await Income.find({ $and: [{ $or: [{ typeOfClient: { $regex: search, $options: 'i' } }, { clientName: { $regex: search, $options: 'i' } }, ] }, { isDeleted: false }] }).populate('branch', { branch: 1 })
+
             const applicationListed = await Applicant.find({ $and: [{ $or: [{ name: { $regex: search, $options: 'i' } }, { universityName: { $regex: search, $options: 'i' } },{programTitle: { $regex: search, $options: 'i' } } ] }, { isDeleted: false }]}).populate('isActive', { isActive: 1 })
             response(req, res, activity, 'Level-1', 'Get-SuperAdminForSeach', true, 200,
-                 { adminList,commissionList,applicationListed,universityList, programList, clientList , blogList,studentList,staffList,agentListed,},
+                 { adminList,commissionList,incomesListed,applicationListed,universityList, programList, clientList , blogList,studentList,staffList,agentListed,},
                  clientError.success.fetchedSuccessfully);
         } catch (err: any) {
             console.log(err)
