@@ -1,4 +1,5 @@
 import { Flight, FlightDocument } from '../model/flightTicket.model'
+import { EnquiryStatus} from '../../setting/moduleSetting/model/flightEnquiryStatus.model'
 import { Logs } from "../../model/logs.model";
 import { validationResult } from "express-validator";
 import { clientError, errorMessage } from "../../helper/ErrorMessage";
@@ -88,6 +89,50 @@ export let createFlightTicketEnquiry = async (req, res, next) => {
             const flightDetails: FlightDocument = req.body;
             flightDetails.createdOn = new Date();
             flightDetails.flightID = await generateNextFlightId()
+
+            // Fetch position and duration details from the ApplicationStatusDocument collection
+            const nextDocument = await EnquiryStatus.find({});
+
+            // Initialize estimateDate for each status
+            let previousEstimateDate = new Date(); // Start with the current date for the first status
+
+            if (flightDetails.status && flightDetails.status.length > 0) {
+                flightDetails.status = flightDetails.status.map((status, index) => {
+
+                    // Fetch the corresponding status details from ApplicationStatusDocument collection
+                    const statusDetails = nextDocument.find((appStatus) => appStatus.position === status.position);
+
+                    if (!statusDetails) {
+                        throw new Error(`Status with position ${status.position} not found in the ApplicationStatus collection.`);
+                    }
+
+                    // For the first status (position 1), set the current date for both createdOn and estimateDate
+                    if (statusDetails.position === 1) {
+                        // For the first status (position 1), set estimateDate and createdOn to the current date
+                        status.estimateDate = new Date(); // Set estimateDate to current date
+                        status.createdOn = new Date(); // Set createdOn to current date
+                        previousEstimateDate = status.estimateDate; // Set previousEstimateDate for the next position
+                    } else {
+                        const previousStatus = flightDetails.status.find(
+                            (prevStatus) => prevStatus.position === (Number(statusDetails.position) - 1)
+                        );
+            
+                        if (previousStatus) {
+                          
+                            const previousDurationInDays = Number(previousStatus.duration) || 0;
+                            const previousEstimate = new Date(previousStatus.estimateDate);
+                            status.estimateDate = new Date(previousEstimate.setDate(previousEstimate.getDate() + previousDurationInDays));
+                        } 
+                    }
+                    // Set other fields like position and duration
+                    status.position = statusDetails.position;
+                    status.duration = statusDetails.duration;
+                    
+                    return status
+                });
+            }
+
+
             const createData = new Flight(flightDetails);
             let insertData = await createData.save();
 

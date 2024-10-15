@@ -117,25 +117,17 @@ export let createAccommodation = async (req, res, next) => {
                         status.createdOn = new Date(); // Set createdOn to current date
                         previousEstimateDate = status.estimateDate; // Set previousEstimateDate for the next position
                     } else {
-                        // For subsequent positions (position 2, 3, etc.)
-                        // Find the previous status by looking at the previous index
                         const previousStatus = accommodationDetails.status.find(
                             (prevStatus) => prevStatus.position === (Number(statusDetails.position) - 1)
                         );
-                    // console.log("not found", previousStatus)
+            
                         if (previousStatus) {
-                            // console.log("kdfkk")
-                            // Use the previous status' estimateDate and duration to calculate the current estimateDate
+                          
                             const previousDurationInDays = Number(previousStatus.duration) || 0;
-                            // console.log("pp", previousDurationInDays)
                             const previousEstimate = new Date(previousStatus.estimateDate);
-                            // console.log("kk", previousEstimate)
                             status.estimateDate = new Date(previousEstimate.setDate(previousEstimate.getDate() + previousDurationInDays));
                         } 
                     }
-
-               
-                    
                     // Set other fields like position and duration
                     status.position = statusDetails.position;
                     status.duration = statusDetails.duration;

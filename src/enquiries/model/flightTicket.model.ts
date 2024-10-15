@@ -83,7 +83,7 @@ const flightTicketSchema = new mongoose.Schema({
         statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        position: {type: Number},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
@@ -91,13 +91,18 @@ const flightTicketSchema = new mongoose.Schema({
         reply: [{
             replyMessage: {type: String},
             createdBy: { type: String },
-    
         }],
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
-        modifiedOn: { type: Date, default: Date.now }
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
     }],
-  
     staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},
