@@ -36,6 +36,7 @@ import Chat from './chat.routes';
 // Invoice Routes
 import SenderInvoice from '../finance/routes/senderInvoice.route';
 import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
+import IncomeReport from '../finance/routes/incomeReport.route'
 
 
 // Marketing
@@ -148,6 +149,10 @@ router.use('/flight', Flight)
 router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
 router.use('/payment', Payment)
+router.use('/incomeReport', IncomeReport)
+
+
+
 
 // Marketing
 router.use('/socialMedia', SocialMedia)
