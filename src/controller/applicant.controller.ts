@@ -132,10 +132,7 @@ export let createApplicant = async (req, res, next) => {
                             // console.log("kk", previousEstimate)
                             status.estimateDate = new Date(previousEstimate.setDate(previousEstimate.getDate() + previousDurationInDays));
                         } 
-                    }
-
-               
-                    
+                    }     
                     // Set other fields like position and duration
                     status.position = statusDetails.position;
                     status.duration = statusDetails.duration;

@@ -70,6 +70,7 @@ const businessEnquirySchema = new mongoose.Schema({
      assignedTo: { type: String },
      staffName: { type: String},
      isActive: {type: String,default: "InActive"},
+
      status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
         statusName: {type: String},
@@ -80,8 +81,10 @@ const businessEnquirySchema = new mongoose.Schema({
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
-        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+        }],
         estimateDate: {type: Date},
         actualDate: {type: Date},
         subCategory: [String],

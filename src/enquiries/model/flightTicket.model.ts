@@ -77,6 +77,7 @@ const flightTicketSchema = new mongoose.Schema({
     from: {type: String},
     to: {type: String},
     dateOfTravel: {type: String},
+
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
         statusName: {type: String},
@@ -87,8 +88,10 @@ const flightTicketSchema = new mongoose.Schema({
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
-        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+        }],
         estimateDate: {type: Date},
         actualDate: {type: Date},
         subCategory: [String],
@@ -100,7 +103,6 @@ const flightTicketSchema = new mongoose.Schema({
         modifiedOn: { type: Date},
         modifiedBy: { type: String },
     }],
-  
     staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
     isActive: {type: String,default: "InActive"},

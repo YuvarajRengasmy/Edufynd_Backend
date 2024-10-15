@@ -95,8 +95,10 @@ const generalEnquirySchema = new mongoose.Schema({
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
-        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+        }],
         estimateDate: {type: Date},
         actualDate: {type: Date},
         subCategory: [String],
@@ -108,7 +110,6 @@ const generalEnquirySchema = new mongoose.Schema({
         modifiedOn: { type: Date},
         modifiedBy: { type: String },
     }],
-   
     isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
