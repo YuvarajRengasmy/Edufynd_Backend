@@ -455,7 +455,7 @@ export let updateLoanEnquiry = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.studentName},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
         

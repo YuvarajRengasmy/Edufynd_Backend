@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose'
 export interface IncomeDocument extends mongoose.Document {
     // Income Report
     incomeDate?: string;
+    incomeId?: string;
     typeOfClient?: string;
     clientName?: string;
     value?: number;
@@ -20,6 +21,7 @@ export interface IncomeDocument extends mongoose.Document {
 
 const incomeSchema = new mongoose.Schema({
     incomeDate: { type: String },
+    incomeId: {type: String},
     typeOfClient: { type: String },
     clientName: { type: String },
     value: { type: Number },
