@@ -156,3 +156,44 @@ export let getFilteredIncomeReport = async (req: any, res:any, next:any) => {
         response(req, res, activity, 'Level-2', 'Get-Income Report', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+export let activeIncome = async (req, res, next) => {
+    try {
+        const incomeIds = req.body.incomeIds; 
+
+        const income = await Income.updateMany(
+            { _id: { $in: incomeIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (income.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-income', true, 200, income, 'Successfully Activated income.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-income', false, 400, {}, 'Already income were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-income', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateIncome = async (req, res, next) => {
+    try {
+        const incomeIds = req.body.incomeIds; 
+      const income = await Income.updateMany(
+        { _id: { $in: incomeIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (income.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-income', true, 200, income, 'Successfully deactivated income.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-income', false, 400, {}, 'Already income were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-income', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

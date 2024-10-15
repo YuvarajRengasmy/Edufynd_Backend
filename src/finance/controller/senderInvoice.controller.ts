@@ -72,7 +72,7 @@ console.log("ll", final)
    
             invoiceDetails.amountReceivedInCurrency = final;
             console.log("kk",  invoiceDetails.amountReceivedInINR)
-            let rate = Number((invoiceDetails.amountReceivedInINR) / final)
+            let rate = Number((invoiceDetails.amountReceivedInINR) / final) || final
           console.log("pp", rate)
             invoiceDetails.netAmount = rate;
             invoiceDetails.netInWords = toWords(rate).replace(/,/g, '') + ' only';

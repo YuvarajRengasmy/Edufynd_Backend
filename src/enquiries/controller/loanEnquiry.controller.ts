@@ -564,6 +564,7 @@ export let updateLoanEnquiry = async (req, res, next) => {
 
 
 export const updateStatus = async (req, res) => {
+
     try {
         const { 
         statusId, statusName, progress, subCategory, completed,duration, position, category, commentBox, document, reply} = req.body;
