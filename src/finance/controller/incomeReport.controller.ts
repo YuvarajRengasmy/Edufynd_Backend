@@ -6,8 +6,6 @@ import { clientError, errorMessage } from "../../helper/ErrorMessage";
 
 var activity = "Income Report";
 
-
-
 export const getAllIncomeReport = async (req: any, res:any, next:any) => {
     try {
         const data = await Income.find().sort({ _id: -1 })
@@ -74,7 +72,7 @@ export const updateIncome = async (req: any, res:any, next:any) => {
             );
 
             if (!statusData) {
-                return response(req, res, activity, 'Level-2', 'Update-Income Report', false, 404, {},  'Income Report not found');
+            response(req, res, activity, 'Level-2', 'Update-Income Report', false, 404, {},  'Income Report not found');
             }
 
             response(req, res, activity, 'Level-2', 'Update-Income Report', true, 200, statusData, clientError.success.updateSuccess);
