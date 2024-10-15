@@ -70,25 +70,28 @@ const businessEnquirySchema = new mongoose.Schema({
      assignedTo: { type: String },
      staffName: { type: String},
      isActive: {type: String,default: "InActive"},
-
      status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
         statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        position: {type: Number},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }],
+        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
+        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
-        modifiedOn: { type: Date, default: Date.now }
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
     }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
