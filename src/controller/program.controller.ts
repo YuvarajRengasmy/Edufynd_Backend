@@ -56,11 +56,6 @@ export let getSingleLoggedProgram = async (req, res) => {
   }
 
 
-  
-
-
-
-
 export const getSingleProgram = async (req, res, next) => {
     try {
         const program = await Program.findOne({ _id: req.query._id })

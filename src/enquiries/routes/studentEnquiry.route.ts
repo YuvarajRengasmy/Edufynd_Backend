@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry, getFilteredStudentEnquiry, getAllLoggedStudentEnquiry, getSingleLoggedStudentEnquiry, activeStudentEnquiry, deactivateStudentEnquiry, assignStaffId } from '../controller/studentEnquiry.controller';
+import { getAllStudentEnquiry, getSingleStudentEnquiry, createStudentEnquiry, updateStudentEnquiry, deleteStudentEnquiry,
+     getFilteredStudentEnquiry, getAllLoggedStudentEnquiry, getSingleLoggedStudentEnquiry, activeStudentEnquiry, deactivateStudentEnquiry, assignStaffId, updateStatus } from '../controller/studentEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -45,6 +46,13 @@ router.get('/card',
     basicAuthUser,
     checkSession,
     getAllStudentEnquiryCard
+);
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
 );
 
 router.post('/',

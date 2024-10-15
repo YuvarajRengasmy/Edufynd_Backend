@@ -485,3 +485,67 @@ export let updateForexEnquiry = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Update-Forex Enquiry', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
+
+
+export const updateStatus = async (req, res) => {
+    try {
+        const { 
+            statusId, statusName, progress, subCategory, completed, 
+            duration, position, category, commentBox, document, reply 
+        } = req.body;
+
+        const sanitizedReply = Array.isArray(reply)
+            ? reply.map(item => ({
+                replyMessage: stripHtmlTags(item.replyMessage || ""),
+          
+            }))
+            : [{ replyMessage: stripHtmlTags(reply || "")}];
+
+        // Step 1: Set other status fields
+        const updateResult = await Forex.findOneAndUpdate(
+            { _id: req.body._id, "status._id": statusId },
+            {
+                $set: {
+                    "status.$[elem].statusName": statusName,
+                    "status.$[elem].progress": progress,
+                    "status.$[elem].duration": duration,
+                    "status.$[elem].subCategory": subCategory,
+                    "status.$[elem].category": category,
+                    "status.$[elem].position": position,
+                    "status.$[elem].completed": completed,
+                    "status.$[elem].commentBox": commentBox,
+                    "status.$[elem].document": document,
+                    "status.$[elem].modifiedOn": new Date(),
+                }
+            },
+            {
+                arrayFilters: [{ "elem._id": statusId }],
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!updateResult) {
+            return res.status(404).json({ message: 'Status not found' });
+        }
+
+        // Step 2: Push the reply to the status reply array
+        const pushResult = await Forex.findOneAndUpdate(
+            { _id: req.body._id, "status._id": statusId },
+            { $push: { "status.$.reply": { $each: sanitizedReply } } },
+            { new: true }
+        );
+
+        if (!pushResult) {
+            return res.status(404).json({ message: 'Failed to add reply.' });
+        }
+
+        // Return success response
+        res.status(200).json({ message: 'Status updated successfully', data: pushResult });
+
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};

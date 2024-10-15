@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry, getAllLoggedForex, getSingleLoggedForex, activeForex, deactivateForex, assignStaffId } from '../controller/forex.controller';
+import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry, getAllLoggedForex, getSingleLoggedForex, activeForex, deactivateForex, assignStaffId, updateStatus } from '../controller/forex.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -43,6 +43,13 @@ router.get('/card',
     basicAuthUser,
     checkSession,
     getAllForexEnquiryCard
+);
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
 );
 
 router.post('/',
