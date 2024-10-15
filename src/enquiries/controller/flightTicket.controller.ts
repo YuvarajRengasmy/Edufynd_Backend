@@ -118,7 +118,6 @@ export let createFlightTicketEnquiry = async (req, res, next) => {
                         );
             
                         if (previousStatus) {
-                          
                             const previousDurationInDays = Number(previousStatus.duration) || 0;
                             const previousEstimate = new Date(previousStatus.estimateDate);
                             status.estimateDate = new Date(previousEstimate.setDate(previousEstimate.getDate() + previousDurationInDays));
