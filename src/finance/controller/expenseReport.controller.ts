@@ -156,3 +156,44 @@ export let getFilteredExpenseReport = async (req: any, res:any, next:any) => {
         response(req, res, activity, 'Level-2', 'Get-Expense Report', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
+
+
+export let activeExpense = async (req, res, next) => {
+    try {
+        const expenseIds = req.body.expenseIds; 
+
+        const expense = await Expense.updateMany(
+            { _id: { $in: expenseIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (expense.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-expense', true, 200, expense, 'Successfully Activated expense.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-expense', false, 400, {}, 'Already expense were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-expense', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateExpense = async (req, res, next) => {
+    try {
+        const expenseIds = req.body.expenseIds; 
+      const expense = await Expense.updateMany(
+        { _id: { $in: expenseIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (expense.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-expense', true, 200, expense, 'Successfully deactivated expense.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-expense', false, 400, {}, 'Already income were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-expense', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

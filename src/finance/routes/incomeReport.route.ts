@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createIncomeReport, deleteIncomeReport, getAllIncomeReport, getFilteredIncomeReport, getSingleIncomeReport, updateIncome } from '../controller/incomeReport.controller';
+import { activeIncome, createIncomeReport, deactivateIncome, deleteIncomeReport, getAllIncomeReport, getFilteredIncomeReport, getSingleIncomeReport, updateIncome } from '../controller/incomeReport.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -20,6 +20,18 @@ router.get('/getSingleIncome',
      checkSession,
     checkQuery('_id'),
     getSingleIncomeReport
+);
+
+router.post('/activeIncome',
+    basicAuthUser,
+    checkSession,
+    activeIncome
+);
+
+router.post('/deActiveIncome',
+    basicAuthUser,
+    checkSession,
+    deactivateIncome
 );
 
 router.post('/', 

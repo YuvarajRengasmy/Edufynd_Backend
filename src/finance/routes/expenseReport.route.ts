@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createExpenseReport, deleteExpenseReport, getAllExpenseReport, getFilteredExpenseReport, getSingleExpenseReport, updateExpense } from '../controller/expenseReport.controller';
+import { activeExpense, createExpenseReport, deactivateExpense, deleteExpenseReport, getAllExpenseReport, getFilteredExpenseReport, getSingleExpenseReport, updateExpense } from '../controller/expenseReport.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -20,6 +20,18 @@ router.get('/getSingleExpense',
     checkSession,
     checkQuery('_id'),
     getSingleExpenseReport
+);
+
+router.post('/activeExpense',
+    basicAuthUser,
+    checkSession,
+    activeExpense
+);
+
+router.post('/deActiveExpense',
+    basicAuthUser,
+    checkSession,
+    deactivateExpense
 );
 
 router.post('/',
