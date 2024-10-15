@@ -45,7 +45,7 @@ const generateSenderInvoice = async () => {
 
 
 export let createSenderInvoice = async (req, res, next) => {
-
+console.log("balan")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -64,13 +64,16 @@ export let createSenderInvoice = async (req, res, next) => {
             if (invoiceDetails.paymentMethod === "Fixed") {
                 final = Number(invoiceDetails.fixedAmount) 
             }
-
+console.log("ll", final)
             // invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
             final = parseFloat(final.toFixed(2));
+
+            console.log("l22", final)
    
             invoiceDetails.amountReceivedInCurrency = final;
-            let rate = invoiceDetails.amountReceivedInINR / final
-          
+            console.log("kk",  invoiceDetails.amountReceivedInINR)
+            let rate = Number((invoiceDetails.amountReceivedInINR) / final)
+          console.log("pp", rate)
             invoiceDetails.netAmount = rate;
             invoiceDetails.netInWords = toWords(rate).replace(/,/g, '') + ' only';
 
