@@ -27,11 +27,29 @@ export const getSingleIncomeReport = async (req: any, res:any, next:any) => {
 }
 
 
+const generateNextIncomeID = async (currentMaxCounter): Promise<string> => {
+    const newCounter = currentMaxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    return `IR_${formattedCounter}`;
+};
+
+
 export let createIncomeReport = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const statusDetails: IncomeDocument = req.body;
+
+            const income = await Income.find({}, 'incomeId').exec();
+            const maxCounter = income.reduce((max, expense) => {
+                const incomeID = expense.incomeId;
+                const counter = parseInt(incomeID.split('_')[1], 10);
+                return counter > max ? counter : max;
+            }, 100);
+            let currentMaxCounter = maxCounter;
+            statusDetails.incomeId = await generateNextIncomeID(currentMaxCounter);
+
             const createData = new Income(statusDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-1', 'Create-Income Report', true, 200, insertData, clientError.success.savedSuccessfully);

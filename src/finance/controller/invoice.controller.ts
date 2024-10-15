@@ -126,8 +126,6 @@ export let updateInvoice = async (req, res, next) => {
 }
 
 
-
-
 export let deleteInvoice = async (req, res, next) => {
 
     try {

@@ -86,7 +86,7 @@ const accommodationSchema = new mongoose.Schema({
     staffName: { type: String},
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
+        statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
         progress: {type: String},

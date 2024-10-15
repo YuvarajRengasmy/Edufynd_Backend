@@ -48,9 +48,6 @@ export let getSingleLoggedClient = async (req, res) => {
 
 
 
-
-
-
 export let getSingleClient = async (req, res, next) => {
     try {
         const client = await Client.findOne({ _id: req.query._id });
@@ -59,9 +56,6 @@ export let getSingleClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
-
-
-
 
 
 const generateNextClientID = async (currentMaxCounter): Promise<string> => {

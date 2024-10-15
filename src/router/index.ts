@@ -228,7 +228,4 @@ router.use('/loanStatus', LoanEnquiryStatus)
 router.use('/generalStatus', GeneralEnquiryStatus)
 
 
-
-
-
 export default router

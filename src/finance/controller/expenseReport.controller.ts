@@ -27,11 +27,30 @@ export const getSingleExpenseReport = async (req: any, res:any, next:any) => {
 }
 
 
+
+const generateNextExpenseID = async (currentMaxCounter): Promise<string> => {
+    const newCounter = currentMaxCounter + 1;
+    // Format the counter as a string with leading zeros
+    const formattedCounter = String(newCounter).padStart(3, '0');
+    return `ER_${formattedCounter}`;
+};
+
+
 export let createExpenseReport = async (req: any, res:any, next:any) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const statusDetails: ExpenseDocument = req.body;
+
+            const expense = await Expense.find({}, 'expenseId').exec();
+            const maxCounter = expense.reduce((max, expense) => {
+                const expenseID = expense.expenseId;
+                const counter = parseInt(expenseID.split('_')[1], 10);
+                return counter > max ? counter : max;
+            }, 100);
+            let currentMaxCounter = maxCounter;
+            statusDetails.expenseId = await generateNextExpenseID(currentMaxCounter);
+
             const createData = new Expense(statusDetails);
             let insertData = await createData.save();
             response(req, res, activity, 'Level-1', 'Create-Expense Report', true, 200, insertData, clientError.success.savedSuccessfully);

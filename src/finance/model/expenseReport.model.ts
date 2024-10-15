@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose'
 export interface ExpenseDocument extends mongoose.Document {
     // Expense Report
     expenseDate?: string;
+    expenseId?: string;
     typeOfUser?: string;
     paidName?: string;
     value?: number;
@@ -21,6 +22,7 @@ export interface ExpenseDocument extends mongoose.Document {
 
 const expenseSchema = new mongoose.Schema({
     expenseDate: { type: String },
+    expenseId: {type: String},
     typeOfUser: { type: String },
     paidName: { type: String },
     value: { type: Number },
