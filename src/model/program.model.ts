@@ -5,6 +5,7 @@ import {LoggingMiddleware} from '../helper/commonResponseHandler'
 export interface ProgramDocument extends mongoose.Document {
     _id?: any;
     programCode?: string;
+    clientName?: string;
     superAdminId?: any;
     appliedStudentId?: any;
     universityId?: any;
@@ -39,6 +40,7 @@ export interface ProgramDocument extends mongoose.Document {
 const programSchema = new mongoose.Schema({
     _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
     programCode: {type: String},
+    clientName: { type: String },
     superAdminId: { type: mongoose.Types.ObjectId, ref: 'SuperAdmin' },
     appliedStudentId: { type: mongoose.Types.ObjectId, ref: 'Student' },
     universityId: { type: mongoose.Types.ObjectId, ref: 'University' },
