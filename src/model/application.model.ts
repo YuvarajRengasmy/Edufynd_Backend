@@ -35,6 +35,7 @@ export interface ApplicantDocument extends mongoose.Document {
     isDeleted?: boolean;
     isActive?: string;
     status?: any;
+    clientName?: string;
     uniCountry?: string;
     createdOn?: Date;
     createdBy?: string;
@@ -67,7 +68,8 @@ const applicantSchema = new mongoose.Schema({
     universityName: { type: String, ref: 'University' },
     campus: {type: String},
     course: { type: String },
-    courseFees: { type: Number },       
+    courseFees: { type: Number }, 
+    clientName: { type: String },      
     anyVisaRejections: { type: String, ref: 'Student' },
     feesPaid: { type: String },
     assignTo: { type: String },
