@@ -112,6 +112,7 @@ import FlightEnquiryStatus from '../setting/moduleSetting/router/flightStatus.ro
 import BusinessEnquiryStatus from '../setting/moduleSetting/router/businessStatus.route'
 import LoanEnquiryStatus from '../setting/moduleSetting/router/loanStatus.route'
 import GeneralEnquiryStatus from '../setting/moduleSetting/router/generalStatus.route'
+import ExpenseType from '../setting/moduleSetting/router/typeOfExpense.route'
 
 
 
@@ -226,6 +227,8 @@ router.use('/flightStatus', FlightEnquiryStatus)
 router.use('/businessStatus', BusinessEnquiryStatus)
 router.use('/loanStatus', LoanEnquiryStatus)
 router.use('/generalStatus', GeneralEnquiryStatus)
+router.use('/expense', ExpenseType)
+
 
 
 export default router

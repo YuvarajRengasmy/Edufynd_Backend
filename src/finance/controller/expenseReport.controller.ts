@@ -178,7 +178,6 @@ export let activeExpense = async (req, res, next) => {
     }
 };
 
-
 export let deactivateExpense = async (req, res, next) => {
     try {
         const expenseIds = req.body.expenseIds; 

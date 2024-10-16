@@ -45,7 +45,7 @@ const generateSenderInvoice = async () => {
 
 
 export let createSenderInvoice = async (req, res, next) => {
-console.log("balan")
+
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
