@@ -59,5 +59,5 @@ const commissionSchema = new mongoose.Schema({
 })
 
 
-LoggingMiddleware(commissionSchema)
+// LoggingMiddleware(commissionSchema)
 export const Commission = mongoose.model("Commission", commissionSchema)

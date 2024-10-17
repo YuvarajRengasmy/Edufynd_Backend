@@ -116,8 +116,6 @@ import ExpenseType from '../setting/moduleSetting/router/typeOfExpense.route'
 
 
 
-
-
 // All Module API
 router.use('/superadmin', SuperAdmin)
 router.use('/admin', Admin)
@@ -219,7 +217,6 @@ router.use('/typeOfClient', TypeOfClient)
 router.use('/applicationStatus', ApplicationStatus)
 router.use('/qualification', Qualification)
 router.use('/commissionType', CommissionType)
-
 router.use('/studentStatus', StudentEnquiryStatus)
 router.use('/forexStatus', ForexEnquiryStatus)
 router.use('/accommodationStatus', AccommodationEnquiryStatus)

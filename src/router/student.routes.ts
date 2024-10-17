@@ -65,15 +65,30 @@ router.post('/',
 );
 
 router.post('/register',
-   
     checkRequestBodyParams('email'),
     saveStudent
 );
 
 
-
 router.post('/contact', createContact);
 
+router.put('/',
+    basicAuthUser,
+    checkSession,
+    checkPermission('student', 'edit'),
+    checkRequestBodyParams('_id'),
+    upload.fields([
+        { name: 'photo', maxCount: 1 },
+        { name: 'resume', maxCount: 1 },
+        { name: 'passport', maxCount: 1 },
+        { name: 'sslc', maxCount: 1 },
+        { name: 'hsc', maxCount: 1 },
+        { name: 'degree', maxCount: 10 },
+        { name: 'additional', maxCount: 10 }
+    ]),
+
+    updateStudent,
+);
 
 router.post('/activeStudent',
     basicAuthUser,
@@ -93,24 +108,6 @@ router.post('/assign',
     checkSession,
     assignStaffId
 )
-
-router.put('/',
-    basicAuthUser,
-    checkSession,
-    checkPermission('student', 'edit'),
-    checkRequestBodyParams('_id'),
-    upload.fields([
-        { name: 'photo', maxCount: 1 },
-        { name: 'resume', maxCount: 1 },
-        { name: 'passport', maxCount: 1 },
-        { name: 'sslc', maxCount: 1 },
-        { name: 'hsc', maxCount: 1 },
-        { name: 'degree', maxCount: 10 },
-        { name: 'additional', maxCount: 10 }
-    ]),
-
-    updateStudent,
-);
 
 
 router.delete('/',

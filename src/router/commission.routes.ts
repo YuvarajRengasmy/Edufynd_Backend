@@ -19,6 +19,7 @@ const router: Router = Router();
 
 router.get('/',
     basicAuthUser,
+    checkSession,
     getAllCommission
 );
 
