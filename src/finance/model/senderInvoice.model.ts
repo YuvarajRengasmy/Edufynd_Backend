@@ -1,3 +1,4 @@
+import { application } from 'express';
 import * as mongoose from 'mongoose';
 
 export interface SenderInvoiceDocument extends mongoose.Document {
@@ -5,16 +6,21 @@ export interface SenderInvoiceDocument extends mongoose.Document {
   tax?: string; 
   gst?: string;
   tds?: string;
-  businessName?: string;
+  clientName?: string;
   universityName?: string;
   applicationID?: string;
   currency?: string;
   commission?: number;
   amountReceivedInCurrency?: number;
   amountReceivedInINR?: number;
+
   // INRValue?: number;
   date?: Date;
   paymentMethod?: string;
+  totalCourseFees: number;
+  finalValue: number;
+  application:[];
+
   fixedAmount?: number;
   courseFeesAmount?: number;
   paidFeesAmount?: number;
@@ -34,15 +40,23 @@ const senderInvoiceSchema = new mongoose.Schema({
   tax: { type: String },
   gst: { type: String },
   tds: { type: String },
-  businessName: { type: String,ref: "Client" },
+  clientName: { type: String,ref: "Client" },
   universityName: { type: String, ref: "University" },
   // applicationID: { type: mongoose.Types.ObjectId, ref: "Applicant" },
-  applicationID: { type: String, ref: "Applicant" },
   currency: { type: String },
   commission: { type: Number },
+
   amountReceivedInCurrency: { type: Number },
+  totalCourseFees:{type: Number},
+  finalValue:{type: Number},
   amountReceivedInINR: { type: Number },
+  application:[{applicationCode: {type: String},
+    courseFeesAmount:{type: Number},
+    course:{type: String}, 
+    agentName:{type: String},
+    amountReceivedInINR:{type: Number}}],
   // INRValue: { type: Number },
+  applicationID: [String],
   date: { type: Date },
   paymentMethod: { type: String,ref: "University" },
   fixedAmount: { type: Number ,ref: "University"},

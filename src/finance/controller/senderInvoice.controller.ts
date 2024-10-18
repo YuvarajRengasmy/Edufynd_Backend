@@ -70,12 +70,12 @@ console.log("ll", final)
 
             console.log("l22", final)
    
-            invoiceDetails.amountReceivedInCurrency = final;
+            invoiceDetails.amountReceivedInCurrency = final || 0;
             console.log("kk",  invoiceDetails.amountReceivedInINR)
             let rate = Number((invoiceDetails.amountReceivedInINR) / final) || final
           console.log("pp", rate)
-            invoiceDetails.netAmount = rate;
-            invoiceDetails.netInWords = toWords(rate).replace(/,/g, '') + ' only';
+            // invoiceDetails.netAmount = rate;
+            // invoiceDetails.netInWords = toWords(rate).replace(/,/g, '') + ' only';
 
             const createData = new SenderInvoice(invoiceDetails);
 
@@ -105,7 +105,7 @@ export let updateSenderInvoice = async (req, res, next) => {
                     gst: invoiceDetails.gst,
                     tds: invoiceDetails.tds,
 
-                    businessName: invoiceDetails.businessName,
+                    clientName: invoiceDetails.clientName,
                     universityName: invoiceDetails.universityName,
                     applicationID: invoiceDetails.applicationID,
                     currency: invoiceDetails.currency,
@@ -117,6 +117,10 @@ export let updateSenderInvoice = async (req, res, next) => {
 
                     modifiedOn: new Date(),
                     modifiedBy: invoiceDetails.modifiedBy,
+                },
+                $addToSet: {
+                    application: invoiceDetails.application,
+
                 }
 
             });
