@@ -116,7 +116,7 @@ export let updateSenderInvoice = async (req, res, next) => {
                     date: invoiceDetails.date,
 
                     modifiedOn: new Date(),
-                    modifiedBy: invoiceDetails.modifiedBy,
+                
                 },
                 $addToSet: {
                     application: invoiceDetails.application,

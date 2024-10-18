@@ -152,7 +152,6 @@ export let updateProgramm = async (req, res, next) => {
                 },
                 $addToSet: {
                     campuses: programDetails.campuses,
-
                 }
 
             })
