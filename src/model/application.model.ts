@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose'
 import {LoggingMiddleware} from '../helper/commonResponseHandler'
 import upload from 'src/utils/fileUploaded';
+import { Agent } from './agent.model';
 
 
 export interface ApplicantDocument extends mongoose.Document {
@@ -9,6 +10,7 @@ export interface ApplicantDocument extends mongoose.Document {
     programId?: any;
     adminId?: any;
     staffId?: any;
+    agentId?: any;
     staffName?: any;
     studentCode?: string;
     studentId?:string;
@@ -21,6 +23,7 @@ export interface ApplicantDocument extends mongoose.Document {
     dial2?: string; 
     whatsAppNumber?: number,  
     inTake?: string,
+    agentName?: string;
     applicationFee?: number,
     country?: string;
     universityName?: string,
@@ -49,8 +52,9 @@ const applicantSchema = new mongoose.Schema({
     applicationCode: { type: String },
     programId: { type: mongoose.Types.ObjectId, ref: 'Program' },
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin' },
+    agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
-  
+    agentName:{type: String},
     staffName: { type: String},
     studentId: {type: String, ref: 'Student'},
     studentCode: { type: String },
