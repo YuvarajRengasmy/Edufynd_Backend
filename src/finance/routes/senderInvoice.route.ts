@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getAllSenderInvoice, getSingleSenderInvoice, createSenderInvoice, updateSenderInvoice, deleteSenderInvoice, getFilteredSenderInvoice} from '../controller/senderInvoice.controller';
+import { getAllSenderInvoice, getSingleSenderInvoice, createSenderInvoice, updateSenderInvoice, deleteSenderInvoice, getFilteredSenderInvoice, updateSenderApplication} from '../controller/senderInvoice.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission} from '../../utils/tokenManager';
@@ -49,6 +49,13 @@ router.put('/getFilterSenderInvoice',
     getFilteredSenderInvoice,
 );
 
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateSenderApplication
+);
 
 
 export default router
