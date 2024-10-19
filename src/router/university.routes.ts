@@ -38,8 +38,8 @@ router.get('/SingleLog',
 
 
 router.get('/card',             
-    // basicAuthUser,
-    // checkSession,
+    basicAuthUser,
+    checkSession,
     getAllUniversit
 );
 

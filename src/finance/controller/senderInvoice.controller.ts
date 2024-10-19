@@ -62,18 +62,18 @@ export let createSenderInvoice = async (req, res, next) => {
                 final = Number(invoiceDetails.paidFeesAmount) * (invoiceDetails.paidFeesPercentage / 100)
             }
             if (invoiceDetails.paymentMethod === "Fixed") {
-                final = Number(invoiceDetails.fixedAmount) 
+                final = Number(invoiceDetails.fixedAmount)
             }
-console.log("ll", final)
+            console.log("ll", final)
             // invoiceDetails.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
             final = parseFloat(final.toFixed(2));
 
             console.log("l22", final)
-   
+
             invoiceDetails.amountReceivedInCurrency = final || 0;
-            console.log("kk",  invoiceDetails.amountReceivedInINR)
-            let rate = Number((invoiceDetails.amountReceivedInINR) / final) || final
-          console.log("pp", rate)
+            // console.log("kk",  invoiceDetails.amountReceivedInINR)
+            // let rate = Number((invoiceDetails.amountReceivedInINR) / final) || final
+            //   console.log("pp", rate)
             // invoiceDetails.netAmount = rate;
             // invoiceDetails.netInWords = toWords(rate).replace(/,/g, '') + ' only';
 
@@ -111,12 +111,14 @@ export let updateSenderInvoice = async (req, res, next) => {
                     currency: invoiceDetails.currency,
                     commission: invoiceDetails.commission,
                     amountReceivedInCurrency: invoiceDetails.amountReceivedInCurrency,
-                    amountReceivedInINR: invoiceDetails.amountReceivedInINR,
+
                     // INRValue: invoiceDetails.INRValue,    
                     date: invoiceDetails.date,
+                    courseFeeInINR: invoiceDetails.courseFeeInINR,
+                    finalValueInINR: invoiceDetails.finalValueInINR,
 
                     modifiedOn: new Date(),
-                    modifiedBy: invoiceDetails.modifiedBy,
+
                 },
                 $addToSet: {
                     application: invoiceDetails.application,
@@ -188,3 +190,107 @@ export let getFilteredSenderInvoice = async (req, res, next) => {
 
 
 
+export const updateSenderApplication = async (req, res) => {
+    try {
+        const { amountReceivedInINR, commissionValue, presentValue, applicationId } = req.body;
+
+
+        // Step 1: Set other status fields
+        const updateResult = await SenderInvoice.findOneAndUpdate(
+            { _id: req.body._id, "application._id": applicationId },
+            {
+                $set: {
+                    "status.$[elem].amountReceivedInINR": amountReceivedInINR,
+                    "status.$[elem].commissionValue": commissionValue,
+                    "status.$[elem].presentValue": presentValue,
+
+                }
+            },
+            {
+                arrayFilters: [{ "elem._id": applicationId }],
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!updateResult) {
+            return res.status(404).json({ message: 'Status not found' });
+        }
+        // Return success response
+        res.status(200).json({ message: 'Status updated successfully', data: updateResult });
+
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};
+
+
+
+
+
+export const updateSenderInvoiceAndApplication = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return response(req,res, 'activity','Level-3','Update-Sender Invoice Details',false,422,{},errorMessage.fieldValidation,JSON.stringify(errors.mapped())
+        );
+    }
+
+    const {
+        _id, // Invoice ID
+        tax, gst, tds, clientName, universityName,
+        applicationID, currency, commission, amountReceivedInCurrency,
+        date, courseFeeInINR, finalValueInINR, application,
+        amountReceivedInINR, commissionValue, presentValue, applicationId,
+    } = req.body;
+
+    try {
+        // 1. Handle General Invoice Update
+        let updateFields = {
+            tax, gst, tds, clientName, universityName, applicationID,
+            currency, commission, amountReceivedInCurrency, date,
+            courseFeeInINR, finalValueInINR, modifiedOn: new Date(),
+        };
+
+        // If `application` array is provided, add it to $addToSet
+        const updateOptions = application
+            ? { $set: updateFields, $addToSet: { application } }
+            : { $set: updateFields };
+
+        let updateResult = await SenderInvoice.findOneAndUpdate(
+            { _id },
+            updateOptions,
+            { new: true }
+        );
+
+        // 2. Handle Application Array Update (if applicationId is provided)
+        if (applicationId) {
+            updateResult = await SenderInvoice.findOneAndUpdate(
+                { _id, "application._id": applicationId },
+                {
+                    $set: {
+                        "application.$[elem].amountReceivedInINR": amountReceivedInINR,
+                        "application.$[elem].commissionValue": commissionValue,
+                        "application.$[elem].presentValue": presentValue,
+                    },
+                },
+                {
+                    arrayFilters: [{ "elem._id": applicationId }],
+                    new: true,
+                    runValidators: true,
+                }
+            );
+
+            if (!updateResult) {
+                return res.status(404).json({ message: "Application not found" });
+            }
+        }
+
+        // Success Response
+        response(req,res,'activity','Level-2','Update-Sender Invoice Details',true,200,updateResult, clientError.success.updateSuccess);
+
+    } catch (error) {
+        console.error("Error updating sender invoice:", error);
+        response(req,res,'activity','Level-3','Update-Sender Invoice Details',false,500,{},errorMessage.internalServer,error.message);
+    }
+};
