@@ -22,7 +22,7 @@ export interface ReceiverInvoiceDocument extends mongoose.Document {
   amount?: number;
   paymentMethod?: string;
   netInWords?: string;
-
+  agentCommissionValue:string;
   createdOn?: Date;
   createdBy?: string;
   modifiedOn?: Date;
@@ -37,6 +37,7 @@ const receiverInvoiceSchema = new mongoose.Schema({
   gst: { type: String },
   tds: { type: String },
   agentName: { type: String },
+  agentCommissionValue: { type: Number },
   applicationID: { type: mongoose.Types.ObjectId, ref: "Applicant" },  
   universityName: { type: String, ref: "University" },   
   commission: { type: Number, ref: "Program" },
@@ -49,6 +50,14 @@ const receiverInvoiceSchema = new mongoose.Schema({
   paymentMethod: { type: String },
   amount: { type: Number },
   netInWords: {type: String},
+  application: [{ 
+    course: {type: String},
+     applicationCode: {type: String},
+     universityName: {type: String},
+      courseFeesAmount:{type: Number}, 
+      amountReceived: {type: Number},
+      dayInInr: {type: Number},
+      totalAmount:{type: Number} }],
 
   createdOn: { type: Date, default: Date.now },
   createdBy: { type: String },

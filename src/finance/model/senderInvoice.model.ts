@@ -1,5 +1,6 @@
 import { application } from 'express';
 import * as mongoose from 'mongoose';
+import { University } from 'src/model/university.model';
 
 export interface SenderInvoiceDocument extends mongoose.Document {
   senderInvoiceNumber?: string;
@@ -54,6 +55,8 @@ const senderInvoiceSchema = new mongoose.Schema({
     courseFeesAmount:{type: Number},
     course:{type: String}, 
     agentName:{type: String},
+    agentsCommission:{type: Number},
+    universityName:{type: String},
     amountReceivedInINR:{type: Number}}],
   // INRValue: { type: Number },
   applicationID: [String],

@@ -11,6 +11,7 @@ export interface ApplicantDocument extends mongoose.Document {
     adminId?: any;
     staffId?: any;
     agentId?: any;
+    agentsCommission?: number;
     staffName?: any;
     studentCode?: string;
     studentId?:string;
@@ -55,6 +56,7 @@ const applicantSchema = new mongoose.Schema({
     agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
     agentName:{type: String},
+    agentsCommission:{type: Number},
     staffName: { type: String},
     studentId: {type: String, ref: 'Student'},
     studentCode: { type: String },
