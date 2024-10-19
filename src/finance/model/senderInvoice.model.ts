@@ -57,7 +57,10 @@ const senderInvoiceSchema = new mongoose.Schema({
     agentName:{type: String},
     agentsCommission:{type: Number},
     universityName:{type: String},
+    commissionValue:{type: Number},
+    presentValueInINR:{type: Number},
     amountReceivedInINR:{type: Number}}],
+   
   // INRValue: { type: Number },
   applicationID: [String],
   date: { type: Date },
