@@ -19,7 +19,7 @@ export interface SenderInvoiceDocument extends mongoose.Document {
   paymentMethod?: string;
   totalCourseFees: number;
   finalValue: number;
-  application:[];
+  application:any;
 
   fixedAmount?: number;
   courseFeesAmount?: number;
