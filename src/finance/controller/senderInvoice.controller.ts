@@ -37,7 +37,7 @@ const generateSenderInvoice = async () => {
             return counter > max ? counter : max;
         }
         return max;
-    }, 0);
+    }, 100);
     const newCounter = maxCounter + 1;
     const formattedCounter = String(newCounter).padStart(3, '0');
     return `SINV_${formattedCounter}`;
@@ -53,29 +53,6 @@ export let createSenderInvoice = async (req, res, next) => {
             const senderDetails: SenderInvoiceDocument = req.body;
             senderDetails.createdOn = new Date();
             senderDetails.senderInvoiceNumber = await generateSenderInvoice()
-
-            // let final: any, courseValue: any, paidValue: any, fixedValue: any
-            // if (senderInvoice.paymentMethod === "CourseFees") {
-            //     let afterScholarship = Number(senderInvoice.courseFeesAmount) - (senderInvoice.scholarshipAmount ? senderInvoice.scholarshipAmount : 0)
-            //     final = afterScholarship * (senderInvoice.courseFeesPercentage / 100)
-            // } if (senderInvoice.paymentMethod === "PaidFees") {
-            //     final = Number(senderInvoice.paidFeesAmount) * (senderInvoice.paidFeesPercentage / 100)
-            // }
-            // if (senderInvoice.paymentMethod === "Fixed") {
-            //     final = Number(senderInvoice.fixedAmount)
-            // }
-         
-            // // SenderInvoice.netAmount = courseValue ?? paidValue ?? fixedValue ?? 0
-            // final = parseFloat(final);
-
-            // console.log("l22", final)
-
-            // senderInvoice.amountReceivedInCurrency = final || 0;
-            // // console.log("kk",  SenderInvoice.amountReceivedInINR)
-            // // let rate = Number((SenderInvoice.amountReceivedInINR) / final) || final
-            // //   console.log("pp", rate)
-            // // SenderInvoice.netAmount = rate;
-            // // SenderInvoice.netInWords = toWords(rate).replace(/,/g, '') + ' only';
 
             const createData = new SenderInvoice(senderDetails);
 
@@ -94,9 +71,6 @@ export let createSenderInvoice = async (req, res, next) => {
 
 
 
-
-
-
 export let updateSenderInvoice = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -110,7 +84,7 @@ export let updateSenderInvoice = async (req, res, next) => {
         const existingInvoice = await SenderInvoice.findOne({ 
             _id: { $ne: senderInvoice._id }
         });
-console.log(existingInvoice)
+
         if (existingInvoice) {
             // Perform the update operation
             const updatedInvoice = await SenderInvoice.findByIdAndUpdate(

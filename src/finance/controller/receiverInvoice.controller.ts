@@ -40,7 +40,7 @@ const generateReceiverInvoice = async (): Promise<string> => {
             return counter > max ? counter : max;
         }
         return max;
-    }, 0);
+    }, 100);
 
     // Increment the counter
     const newCounter = maxCounter + 1;
@@ -57,20 +57,7 @@ export let createReceiverInvoice = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const receiverInvoiceDetails: ReceiverInvoiceDocument = req.body;
-            // Populate the senderId field to get the senderInvoice document
-            // const senderInvoice = await SenderInvoice.findById(receiverInvoiceDetails.senderId);
-            // if (!senderInvoice) {
-            //     return response(req, res, activity, 'Level-3', 'Sender Invoice Not Found', false, 404, {}, "Not Found the Amount");
-            // }
-            // Assign netAmount from senderInvoice to amountPaid in receiverInvoice
-            // let percent = senderInvoice.amountReceivedInCurrency;
-            //  let rate = INR/Currency
-            // let currencyAmount = percent * (receiverInvoiceDetails.commission / 100)
-
-            // receiverInvoiceDetails.amountInCurrency = currencyAmount
-            // let INR = receiverInvoiceDetails.amountInINR / currencyAmount
-
-            // receiverInvoiceDetails.amount = INR
+            receiverInvoiceDetails.receiverInvoiceNumber = await generateReceiverInvoice()
             // Calculation of GST
             let commissionReceived = receiverInvoiceDetails.amountInINR
             let withoutGST = commissionReceived / (118 * 100)
