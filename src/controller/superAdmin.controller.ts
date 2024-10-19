@@ -142,6 +142,9 @@ export let createSuperAdmin = async (req, res, next) => {
             const admin = await SuperAdmin.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
 
             if (!admin) {
+                if (req.body.password !== req.body.confirmPassword) {
+                    return response(req,res,activity,'Level-3','Save-SuperAdmin',false,400,{},'Passwords do not match');
+                }
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
 

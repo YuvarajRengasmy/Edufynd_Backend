@@ -82,14 +82,21 @@ const generateNextStudentCode = async (currentMaxCounter): Promise<string> => {
 
 
 export let saveStudent = async (req, res, next) => {
+    console.log("jjjjj")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const student = await Student.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
 
             if (!student) {
+                 // Check if password and confirmPassword match
+                 if (req.body.password !== req.body.confirmPassword) {
+                    return response(req,res,activity,'Level-3','Save-Student',false,400,{},'Passwords do not match');
+                }
+
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+
                 const studentDetails: StudentDocument = req.body;
                 studentDetails.createdOn = new Date();
 
