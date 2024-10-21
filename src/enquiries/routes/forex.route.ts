@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry, getAllLoggedForex, getSingleLoggedForex } from '../controller/forex.controller';
+import { getAllForexEnquiry, getSingleForexEnquiry, createForexEnquiry, updateForexEnquiry, deleteForexEnquiry, getFilteredForexEnquiry, getAllLoggedForex, getSingleLoggedForex, activeForex, deactivateForex, assignStaffId, updateStatus } from '../controller/forex.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllForexEnquiryCard } from '../../cards/forexCard.controller';
 
 const router: Router = Router();
 
@@ -31,11 +32,24 @@ router.get('/logs',
 );
 
 
-router.get('/SingleLog',
+router.get('/singleLog',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     getSingleLoggedForex
+);
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllForexEnquiryCard
+);
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
 );
 
 router.post('/',
@@ -55,6 +69,24 @@ router.put('/',
 
 );
 
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeForex
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateForex
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',
     basicAuthUser,

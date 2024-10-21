@@ -6,6 +6,7 @@ export interface AccommodationDocument extends mongoose.Document {
     studentName?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     name?: string;
     passportNumber?: string;
     expiryDate?: string;
@@ -36,7 +37,9 @@ export interface AccommodationDocument extends mongoose.Document {
     accommodationType?: string;
     assignedTo?: string;
     typeOfClient?: string;
+    status?: any;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -79,8 +82,36 @@ const accommodationSchema = new mongoose.Schema({
     final: {type: String},
     accommodationType: {type: String},
     assignedTo: {type: String},
+   
+    staffName: { type: String},
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        statusName: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        position: {type: Number},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+        }],
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
+    }],
 
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

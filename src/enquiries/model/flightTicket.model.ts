@@ -34,8 +34,10 @@ export interface FlightDocument extends mongoose.Document {
     message?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     status?: any;
     isDeleted?: boolean;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -78,10 +80,10 @@ const flightTicketSchema = new mongoose.Schema({
 
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
+        statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        position: {type: Number},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
@@ -89,11 +91,21 @@ const flightTicketSchema = new mongoose.Schema({
         reply: [{
             replyMessage: {type: String},
             createdBy: { type: String },
-    
-        }]
+        }],
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
     }],
- 
+    staffName: { type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

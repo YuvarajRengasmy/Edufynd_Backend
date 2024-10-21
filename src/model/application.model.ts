@@ -1,5 +1,7 @@
 import * as mongoose from 'mongoose'
 import {LoggingMiddleware} from '../helper/commonResponseHandler'
+import upload from 'src/utils/fileUploaded';
+import { Agent } from './agent.model';
 
 
 export interface ApplicantDocument extends mongoose.Document {
@@ -8,6 +10,9 @@ export interface ApplicantDocument extends mongoose.Document {
     programId?: any;
     adminId?: any;
     staffId?: any;
+    agentId?: any;
+    agentsCommission?: number;
+    staffName?: any;
     studentCode?: string;
     studentId?:string;
     name?: string,       
@@ -19,6 +24,7 @@ export interface ApplicantDocument extends mongoose.Document {
     dial2?: string; 
     whatsAppNumber?: number,  
     inTake?: string,
+    agentName?: string;
     applicationFee?: number,
     country?: string;
     universityName?: string,
@@ -31,7 +37,10 @@ export interface ApplicantDocument extends mongoose.Document {
     commentBox?: string;
     programTitle?: string;
     isDeleted?: boolean;
+    isActive?: string;
     status?: any;
+    clientName?: string;
+    uniCountry?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -44,7 +53,11 @@ const applicantSchema = new mongoose.Schema({
     applicationCode: { type: String },
     programId: { type: mongoose.Types.ObjectId, ref: 'Program' },
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin' },
+    agentId: { type: mongoose.Types.ObjectId, ref: 'Agent' },
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff' },
+    agentName:{type: String},
+    agentsCommission:{type: Number},
+    staffName: { type: String},
     studentId: {type: String, ref: 'Student'},
     studentCode: { type: String },
     name: {type: String, ref: 'Student'},
@@ -61,41 +74,46 @@ const applicantSchema = new mongoose.Schema({
     universityName: { type: String, ref: 'University' },
     campus: {type: String},
     course: { type: String },
-    courseFees: { type: Number },       
+    courseFees: { type: Number }, 
+    clientName: { type: String },      
     anyVisaRejections: { type: String, ref: 'Student' },
     feesPaid: { type: String },
     assignTo: { type: String },
     document:  {type: String},
     commentBox: {type: String},
     isDeleted: { type: Boolean, default: false },
+    isActive: {type: String,default: "InActive"},
     status: [{
         _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
-        newStatus: {type: String},
+        statusName: {type: String},
         commentBox: {type: String},
         duration: {type: String},
-        progress: {type: String},
+        position: {type: Number},
         document:  {type: String},
         delay: {type: String},
         tagPerson: {type: String},
         subject: {type: String},
-        reply: [{
-            replyMessage: {type: String},
-            createdBy: { type: String },
-    
-        }],
+        reply: [{replyMessage: {type: String}, createdBy: {type: String} }],
+        uploadFile: [{fileName: { type: String}, uploadImage: { type: String} }]   ,
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
         createdBy: { type: String },
         createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
-        modifiedOn: { type: Date, default: Date.now }
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
     }],
-
     programTitle: {type: String},
+    uniCountry: {type: String},
     createdOn: { type: Date },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String },
 
 })
-
 
 LoggingMiddleware(applicantSchema)
 export const Applicant = mongoose.model("Applicant", applicantSchema)

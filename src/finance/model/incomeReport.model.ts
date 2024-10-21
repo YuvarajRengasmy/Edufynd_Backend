@@ -1,12 +1,17 @@
 import * as mongoose from 'mongoose'
 
 
-export interface InvoiceDocument extends mongoose.Document {
+export interface IncomeDocument extends mongoose.Document {
     // Income Report
     incomeDate?: string;
-    nameOfIncome?: string;
-    receivedFrom?: string;
-    incomeAmount?: string;
+    incomeId?: string;
+    typeOfClient?: string;
+    clientName?: string;
+    value?: number;
+    branch?: string;
+    acceptType?: string;
+    attachment?: string;
+    amount?: number;
 
     createdOn?: Date;
     createdBy?: string;
@@ -16,9 +21,14 @@ export interface InvoiceDocument extends mongoose.Document {
 
 const incomeSchema = new mongoose.Schema({
     incomeDate: { type: String },
-    nameOfIncome: { type: String },
-    receivedFrom: { type: String },
-    incomeAmount: { type: String },
+    incomeId: {type: String},
+    typeOfClient: { type: String },
+    clientName: { type: String },
+    value: { type: Number },
+    branch: { type: String },
+    acceptType: { type: String },
+    attachment: { type: String },
+    amount: {type: Number},
 
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
@@ -27,4 +37,4 @@ const incomeSchema = new mongoose.Schema({
 
 })
 
-export const Income = mongoose.model("Income", incomeSchema)
+export const Income = mongoose.model("IncomeReport", incomeSchema)

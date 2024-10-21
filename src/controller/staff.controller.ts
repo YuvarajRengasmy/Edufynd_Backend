@@ -295,6 +295,18 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                 staffDetails.createdOn = new Date();
                 staffDetails.employeeID = await generateNextStaffID();
                 const createStaff = new Staff(staffDetails);
+
+                const modulesWithDefaultView = ['university', 'program'];
+
+                modulesWithDefaultView.forEach((module) => {
+                    createStaff.privileges.push({
+                        module: module,
+                        add: false,
+                        edit: false,
+                        view: true, // Default view is true for University and Program
+                        delete: false,
+                    });
+                });
                 const insertStaff = await createStaff.save();
                 const newHash = await decrypt(insertStaff["password"]);
 
@@ -313,7 +325,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Staff Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -324,7 +336,7 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
                                                                <p>Hello ${insertStaff.empName},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertStaff.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -385,21 +397,6 @@ export let createStaffBySuperAdmin = async (req, res, next) => {
 
 
 
-
-
-
-
-
-
-/**
- * @author Balan K K
- * @date 28-05-2024
- * @param {Object} req 
- * @param {Object} res 
- * @param {Function} next  
- * @description This Function is used to get filter Staff Details
- */
-
 export let getFilteredStaff = async (req, res, next) => {
     try {
         var findQuery;
@@ -428,7 +425,7 @@ export let getFilteredStaff = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate('adminId').exec();
+        const staffList = await Staff.find(findQuery).sort({employeeID: -1}).limit(limit).skip(page).populate('adminId').populate('agentId').exec();
         const staffCount = await Staff.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStaff', true, 200, { staffList, staffCount }, clientError.success.fetchedSuccessfully);
     } catch (err: any) {
@@ -499,3 +496,64 @@ export let createStudentByStaff = async (req, res, next) => {
 };
 
 
+export let activeStaff = async (req, res, next) => {
+    try {
+        const staffIds = req.body.staffIds; 
+  
+        const staff = await Staff.updateMany(
+            { _id: { $in: staffIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (staff.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-staff ', true, 200, staff, 'Successfully Activated staff .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-staff ', false, 400, {}, 'Already staff  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-staff ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateStaff = async (req, res, next) => {
+    try {
+        const staffIds = req.body.staffIds;    
+      const staff = await Staff.updateMany(
+        { _id: { $in: staffIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (staff.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-staff', true, 200, staff, 'Successfully deactivated staff.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-staff', false, 400, {}, 'Already staff were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+  export let assignAdminId = async (req, res, next) => {
+    try {
+        const { Ids, adminId,adminName } = req.body;  
+
+
+        const user = await Staff.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { adminId: adminId , adminName:adminName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign Admin', true, 200, user, 'Successfully Assigned Admin');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign Admin', false, 400, {}, 'No Admin were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

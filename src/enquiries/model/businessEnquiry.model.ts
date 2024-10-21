@@ -8,7 +8,7 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
     universityName?: string;
     name?: string;
     email?: string;
-    
+    staffName?:string,
     dial1?: string;
     mobileNumber?: number;  
     message?: string;
@@ -31,7 +31,8 @@ export interface BusinessEnquiryDocument extends mongoose.Document{
      adminId?: any;
      staffId?: any;
      typeOfClient?: string;
-
+     status?: any;
+     isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -67,7 +68,34 @@ const businessEnquirySchema = new mongoose.Schema({
      whatsAppNumber: { type: String },
      qualification: { type: String },
      assignedTo: { type: String },
+     staffName: { type: String},
+     isActive: {type: String,default: "InActive"},
 
+     status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        statusName: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        position: {type: Number},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+        }],
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

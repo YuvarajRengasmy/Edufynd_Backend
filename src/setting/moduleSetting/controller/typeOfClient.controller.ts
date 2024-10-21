@@ -72,7 +72,7 @@ export const updateTypeOfClient = async (req, res) => {
   };
 
 
-    export let deleteTypeOfClient= async (req, res, next) => {
+export let deleteTypeOfClient= async (req, res, next) => {
 
         try {
             let id = req.query._id;

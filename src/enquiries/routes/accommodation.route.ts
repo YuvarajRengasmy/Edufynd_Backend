@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getAllAccommodation, getSingleAccommodation, createAccommodation, updateAccommodation, deleteAccommodationEnquiry, getFilteredAccommodation, getAllLoggedAccommodation, getSingleLoggedAccommodation } from '../controller/accommodation.controller';
+import { getAllAccommodation, getSingleAccommodation, createAccommodation, updateAccommodation, deleteAccommodationEnquiry, getFilteredAccommodation, getAllLoggedAccommodation, getSingleLoggedAccommodation, activeAccommodation, deactivateAccommodation, assignStaffId, updateAccommodationStatus, updateStatus } from '../controller/accommodation.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllAccommodationEnquiryCard } from '../../cards/accommodationCard.controller';
 
 const router: Router = Router();
 
@@ -31,11 +32,17 @@ router.get('/logs',
 );
 
 
-router.get('/SingleLog',
+router.get('/singleLog',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     getSingleLoggedAccommodation,
+);
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllAccommodationEnquiryCard
 );
 
 router.post('/',
@@ -54,6 +61,42 @@ router.put('/',
     updateAccommodation,
 
 );
+
+router.put('/status',
+    basicAuthUser,
+    checkSession,
+    checkPermission('accommodationEnquiry', 'edit'),
+    checkRequestBodyParams('_id'),
+    updateAccommodationStatus,
+
+);
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
+);
+
+
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeAccommodation
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateAccommodation
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',

@@ -44,14 +44,14 @@ export let getSingleLoggedAgent = async (req, res) => {
 
         // If no logs are found, return a 404 response and stop further execution
         if (!logs || logs.length === 0) {
-            return response(req, res, 'activity', 'Level-2', 'Single-Logged Agent', false, 404, {}, "No logs found.");
+            return response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 404, {}, "No logs found.");
         }
 
         // If logs are found, return a 200 response with logs data
-        return response(req, res, 'activity', 'Level-1', 'Single-Logged Agent', true, 200, logs, clientError.success.fetchedSuccessfully);
+        return response(req, res, activity, 'Level-1', 'Single-Logged Agent', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
         // Handle errors and return a 500 response, then stop execution
-        return response(req, res, 'activity', 'Level-2', 'Single-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
+        return response(req, res, activity, 'Level-2', 'Single-Logged Agent', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -93,6 +93,9 @@ export let createAgent = async (req, res, next) => {
 
             if (!agent) {
                 const agentDetails: AgentDocument = req.body;
+                if (req.body.password !== req.body.confirmPassword) {
+                    return response(req,res,activity,'Level-3','Save-Agent',false,400,{},'Passwords do not match');
+                }
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
                 agentDetails.createdOn = new Date()
@@ -288,7 +291,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Agent Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -299,7 +302,7 @@ export let createAgentBySuperAdmin = async (req, res, next) => {
                                                               <p>Hello ${insertAgent.agentName},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertAgent.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -467,10 +470,6 @@ export let deleteStudentByAgent = async (req, res, next) => {
 
 
 
-
-
-
-
 export let getFilteredStudentByAgent = async (req, res, next) => {
     try {
         var findQuery;
@@ -478,8 +477,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
-
+        // andList.push({ status: 1 })
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
@@ -489,7 +487,7 @@ export let getFilteredStudentByAgent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const agentList = await Agent.find(findQuery).sort({ agentCode: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 }).populate('adminId', { name: 1, shortName: 1 })
+        const agentList = await Agent.find(findQuery).sort({ agentCode: -1 }).limit(limit).skip(page).populate('studentId', { name: 1, email: 1, mobileNumber: 1 }).populate('adminId', { name: 1, shortName: 1 }).populate("agentName", { name: 1, shortName: 1 });
 
         const agentCount = await Agent.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { agentList, agentCount }, clientError.success.fetchedSuccessfully);
@@ -535,5 +533,69 @@ export const csvToJson = async (req, res) => {
     } catch (err) {
         console.error(err);
         response(req, res, activity, 'Level-3', 'CSV-File-Insert-Database for agent module', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let activeAgent = async (req, res, next) => {
+    try {
+        const agentIds = req.body.agentIds; 
+
+        const agents = await Agent.updateMany(
+            { _id: { $in: agentIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (agents.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Agent', true, 200, agents, 'Successfully Activated Agent.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Agent', false, 400, {}, 'Already Agent were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Agent', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateAgent = async (req, res, next) => {
+    try {
+        const agentIds = req.body.agentIds;  
+      const agents = await Agent.updateMany(
+        { _id: { $in: agentIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (agents.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Agent', true, 200, agents, 'Successfully deactivated Agent.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Agent', false, 400, {}, 'Already Agent were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Agent', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Agent.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
     }
 };

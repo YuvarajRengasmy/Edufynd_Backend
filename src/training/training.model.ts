@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-
+import {LoggingMiddleware} from '../helper/commonResponseHandler'
 
 
 export interface TrainingDocument extends mongoose.Document {
@@ -14,9 +14,12 @@ export interface TrainingDocument extends mongoose.Document {
     name?: string;
     subject?: string;
     content?: string;
-    uploadDocument?: string;
-
-
+    fileUpload?: any[];
+    staffId?: any;
+    staffName?: string;
+    uploadDocument?:string;
+    hostName: string;
+    isActive?: string;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -29,7 +32,7 @@ const trainingSchema = new mongoose.Schema({
     trainingTopic: { type: String },
     date: { type: Date },
     time: { type: String },
-
+    hostName: { type: String },
     typeOfUser: { type: String },
     usersName: [String],
     userEmail: [String],
@@ -38,12 +41,19 @@ const trainingSchema = new mongoose.Schema({
     subject: { type: String },
     content: { type: String },
     uploadDocument: { type: String },
-
+    fileUpload: [{
+        _id: { type: mongoose.Types.ObjectId, auto: true },
+        fileName: { type: String},
+        fileImage:  { type: String },
+    }],
+    isActive: {type: String,default: "InActive"},
+    staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String},
     createdOn: { type: Date, default: Date.now },
     createdBy: { type: String },
     modifiedOn: { type: Date },
     modifiedBy: { type: String }
 })
 
-
+LoggingMiddleware(trainingSchema)
 export const Training = mongoose.model("Training", trainingSchema)

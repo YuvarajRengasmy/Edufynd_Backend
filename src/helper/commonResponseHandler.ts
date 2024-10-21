@@ -76,9 +76,6 @@ export const sendEmail = async (req:any, toMail:any, subject?: any, text?: any) 
 // }
 
 
-
-
-
 //log-2
 export let response = function (req, res, activity, level, method, success, statusCode, result, message, extendedMessage?) {
     const LogsData: LogsDocument = new Logs();
@@ -106,9 +103,6 @@ export let response = function (req, res, activity, level, method, success, stat
         statusCode: statusCode
     });
 };
-
-
-
 
 
 export const LoggingMiddleware = async (schema) => {

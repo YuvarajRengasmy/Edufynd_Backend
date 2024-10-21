@@ -4,172 +4,41 @@ import { validationResult } from "express-validator";
 import { response, } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+import * as crypto from "crypto";
+import { Cashfree } from 'cashfree-pg';
 import * as config from '../config';
 var activity = "Payment";
 
 
 
-export const getAllPayment = async (req, res) => {
+export let createPaymentIntent = async (req, res) => {
+    const { amount, currency, studentId } = req.body;
+
     try {
-        const data = await Payment.find().sort({ _id: -1 })
-        response(req, res, activity, 'Level-1', 'GetAll-Payment', true, 200, data, clientError.success.fetchedSuccessfully)
 
-    } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetAll-Payment', false, 500, {}, errorMessage.internalServer, err.message)
-    }
-}
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount, // Convert amount to smallest currency unit
+            currency: currency || 'usd',
+        });
 
-export let getAllLoggedPayment = async (req, res, next) => {
-    try {
-        const data = await Logs.find({ modelName: "Payment" })
-        response(req, res, activity, 'Level-1', 'All-Logged Payment', true, 200, data, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-2', 'All-Logged Payment', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-  };
+        // Save the payment details in your database
+        const payment = new Payment({
+            studentId: studentId,
+            amount,
+            currency: currency || 'usd',
+            stripePaymentId: paymentIntent.id,
+            status: 'Pending',
+        });
 
-  export let getSingleLoggedPayment = async (req, res) => {
-    try {
-      const {_id } = req.query
-      const logs = await Logs.find({ documentId: _id });
-  
-      if (!logs || logs.length === 0) {
-        response(req, res, activity, 'Level-3', 'Single-Logged Payment', false, 404, {},"No logs found.");
-      }
-  
-      response(req, res, activity, 'Level-1', 'Single-Logged Payment', true, 200, logs, clientError.success.fetchedSuccessfully);
-    } catch (err) {
-      response(req, res, activity, 'Level-2', 'Single-Logged Payment', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-  }
+        await payment.save();
 
-
-export const getSinglePayment = async (req, res) => {
-    try {
-        const data = await Payment.findOne({ _id: req.query._id })
-        response(req, res, activity, 'Level-1', 'GetSingle-Payment', true, 200, data, clientError.success.fetchedSuccessfully)
-    } catch (err: any) {
-        response(req, res, activity, 'Level-1', 'GetSingle-Payment', false, 500, {}, errorMessage.internalServer, err.message)
-    }
-}
-
-
-export let createPayment = async (req, res, next) => {
-
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-        try {
-            const DropdownListDetails: PaymentDocument = req.body;
-            const createData = new Payment(DropdownListDetails);
-            let insertData = await createData.save();
-            response(req, res, activity, 'Level-2', 'Create-Payment', true, 200, insertData, clientError.success.savedSuccessfully);
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Create-Payment', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    } else {
-        response(req, res, activity, 'Level-3', 'Create-Payment', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+        res.status(200).json({ clientSecret: paymentIntent.client_secret, details: payment });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
 
-
-
-export const updatePayment = async (req, res) => {
-    const errors = validationResult(req)
-    if (errors.isEmpty()) {
-        try {
-            const demoDetails: PaymentDocument = req.body;
-            let statusData = await Payment.findByIdAndUpdate({ _id: req.query._id }, {
-                $set: {
-                  
-                    modifiedOn: new Date(),
-                    modifiedBy:  demoDetails.modifiedBy,
-                },
-                $addToSet: {
-            
-               }
-            });
-
-            response(req, res, activity, 'Level-1', 'Update-Payment Details', true, 200, statusData, clientError.success.updateSuccess);
-        } catch (err: any) {
-            response(req, res, activity, 'Level-2', 'Update-Payment Details', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    }
-    else {
-        response(req, res, activity, 'Level-3', 'Update-Payment Details', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
-    }
-}
-
-
-export let deletePayment = async (req, res, next) => {
-
-        try {
-            let id = req.query._id;
-            const demo = await Payment.findByIdAndDelete({ _id: id })
-            response(req, res, activity, 'Level-2', 'Deleted the Payment', true, 200, demo, 'Successfully Remove this Field');
-        }
-        catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Deleted the Payment', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    };
-
-
-
-export let getFilteredPayment = async (req, res, next) => {
-        try {
-            var findQuery;
-            var andList: any = []
-            var limit = req.body.limit ? req.body.limit : 0;
-            var page = req.body.page ? req.body.page : 0;
-            andList.push({ isDeleted: false })
-            andList.push({ status: 1 })
-            if (req.body.name) {
-                andList.push({ name: req.body.name })
-            }
-            if (req.body.code) {
-                andList.push({ code: req.body.code })
-            }  
-            findQuery = (andList.length > 0) ? { $and: andList } : {}
-
-            const dropDownList = await Payment.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
-
-            const dropDownCount = await Payment.find(findQuery).count()
-            response(req, res, activity, 'Level-1', 'Get-Filter Payment', true, 200, { dropDownList, dropDownCount }, clientError.success.fetchedSuccessfully);
-        } catch (err: any) {
-            response(req, res, activity, 'Level-3', 'Get-Filter Payment', false, 500, {}, errorMessage.internalServer, err.message);
-        }
-    };
-
-
-    export let createPaymentIntent = async (req, res) => {
-        const { amount, currency, studentId } = req.body;
-    
-        try {
-           
-            const paymentIntent = await stripe.paymentIntents.create({
-             
-                amount: amount, // Convert amount to smallest currency unit
-                currency: currency || 'usd',
-            });
-    
-            // Save the payment details in your database
-            const payment = new Payment({
-                studentId: studentId,
-                amount,
-                currency: currency || 'usd',
-                stripePaymentId: paymentIntent.id,
-                status: 'Pending',
-            });
-    
-            await payment.save();
-    
-            res.status(200).json({clientSecret: paymentIntent.client_secret, details:payment });
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    };
-
-    
 
 
 
@@ -196,12 +65,88 @@ export const checkOut = async (req, res) => {
             cancel_url: 'https://crm.edufynd.in/view_application',
         });
 
-         res.json({ id: session.id });
- 
+        res.json({ id: session.id });
+
     } catch (error) {
         console.error('Error creating checkout session:', error.message);
         res.status(500).json({ error: error.message });
     }
 };
 
+
+
+Cashfree.XClientId = config.SERVER.CASHFREE_CLIENT_ID
+Cashfree.XClientSecret = config.SERVER.CASHFREE_SECRET_KEY
+Cashfree.XEnvironment = Cashfree.Environment.SANDBOX
+
+
+
+const generateOrderId = ()=>{
+
+    const uniqueId = crypto.randomBytes(16).toString('hex')
+    const hash = crypto.createHash('sha256')
+        hash.update(uniqueId)
     
+    const orderId = hash.digest('hex')
+
+    return orderId.substring(0,12)
+}
+
+
+export const cashFreePayment = async (req, res) => {
+    try {
+        // const { customer_details, order_amount, order_currency } = req.body;
+
+        const paymentDetails: PaymentDocument = req.body;
+        const order_id = await generateOrderId();
+
+        // Constructing the request object
+        const paymentData = {
+            "order_amount": paymentDetails.order_amount,
+            "order_currency": paymentDetails.order_currency,
+            "order_id": order_id,
+            "customer_details": {
+                "customer_id": paymentDetails.customer_details.customer_id,
+                "customer_phone": paymentDetails.customer_details.customer_phone,
+                "customer_name": paymentDetails.customer_details.customer_name,
+                "customer_email": paymentDetails.customer_details.customer_email
+            }
+        };
+
+        // Save the initial payment details to the MongoDB Payment collection
+        let newPayment = new Payment(paymentData);
+        await newPayment.save();
+
+        // Making the API call to Cashfree's PGCreateOrder
+        const cashfreeResponse = await Cashfree.PGCreateOrder("2022-09-01", paymentData);
+
+        newPayment.cashfree_response = cashfreeResponse.data;             // Store the entire response (if needed)
+    
+        // Save the updated payment details to the MongoDB Payment collection
+        await newPayment.save();
+
+        // Respond with the data from Cashfree
+        res.json(cashfreeResponse.data);
+
+    } catch (err) {
+        // Logging and sending back the error message
+        console.error('Error creating Cashfree order:', err);
+
+        if (err.response) {
+            // If the error comes with a response from the API (e.g., status code 400)
+            res.status(err.response.status).json({
+                message: 'Failed to create Cashfree order',
+                error: err.response.data  // Detailed error message from Cashfree
+            });
+        } else {
+            // For other errors, return a generic error message
+            res.status(500).json({
+                message: 'Internal server error',
+                error: err.message
+            });
+        }
+    }
+};
+
+
+

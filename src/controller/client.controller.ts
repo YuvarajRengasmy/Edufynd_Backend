@@ -35,51 +35,17 @@ export let getSingleLoggedClient = async (req, res) => {
 
         // If no logs are found, return a 404 response and stop further execution
         if (!logs || logs.length === 0) {
-            return response(req, res, 'activity', 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
+            return response(req, res, activity, 'Level-3', 'Single-Logged Client', false, 404, {}, "No logs found.");
         }
 
         // If logs are found, return a 200 response with logs data
-        return response(req, res, 'activity', 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
+        return response(req, res, activity, 'Level-1', 'Single-Logged Client', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
         // Handle errors and send a 500 response, then stop execution
-        return response(req, res, 'activity', 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
+        return response(req, res, activity, 'Level-2', 'Single-Logged Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
-
-
-export let getAllClientCardDetails = async (req, res, next) => {
-    try {
-        // Find all client that are not deleted
-        const client = await Client.find({ isDeleted: false }).sort({ clientID: -1 });
-
-        // Total number of client
-        const totalClient = client.length;
-
-        // Number of unique countries
-        const uniqueCountries = await Client.distinct("country", { isDeleted: false });
-        const totalUniqueCountries = uniqueCountries.length;
-
-        // Active and inactive universities
-        const activeClient = await Client.countDocuments({ clientStatus: "Active", isActive: true });
-        const inactiveClient = await Client.countDocuments({ clientStatus: "Inactive", isActive: false });
-
-        // Construct the response data
-        const responseData = {
-            totalClient,
-            totalUniqueCountries,
-            activeClient,
-            inactiveClient,
-         
-         
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-Client Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-Client Card Details', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
 
 
 export let getSingleClient = async (req, res, next) => {
@@ -90,9 +56,6 @@ export let getSingleClient = async (req, res, next) => {
         response(req, res, activity, 'Level-3', 'Get-Single-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
-
-
-
 
 
 const generateNextClientID = async (currentMaxCounter): Promise<string> => {
@@ -187,20 +150,6 @@ export let deleteClient = async (req, res, next) => {
     }
     catch (err: any) {
         response(req, res, activity, 'Level-3', 'Delete-Client', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-export let activeClient = async (req, res, next) => {
-
-    try {
-        const clientDetails: ClientDocument = req.body;
-        const client = await Client.findByIdAndUpdate( { _id: clientDetails._id,},
-            { isActive: true }, // Assuming `isActive` is a field in your Notification schema
-            { new: true })
-
-        response(req, res, activity, 'Level-2', 'Active-Client', true, 200, client, 'Successfully Active Client');
-    }
-    catch (err: any) {
-        response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, errorMessage.internalServer, err.message);
     }
 };
 
@@ -334,3 +283,48 @@ export const editClientProfileBySuperAdmin = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Update-Client-By-SuperAdmin', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 }
+
+
+export let activeClient = async (req, res, next) => {
+    try {
+        const clientIds = req.body.clientIds; // Array of client IDs
+
+        // Update all clients whose IDs are in clientIds to set isActive to true
+        const clients = await Client.updateMany(
+            { _id: { $in: clientIds } }, // Match any client whose _id is in the clientIds array
+            { $set: { isActive: "Active" } }, // Set isActive to true for all matched clients
+            { new: true }
+        );
+
+        if (clients.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Client', true, 200, clients, 'Successfully Activated Clients.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Client', false, 400, {}, 'No clients were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Client', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateClient = async (req, res, next) => {
+    try {
+      const clientIds = req.body.clientIds; // Array of client IDs to deactivate
+  
+      // Update all clients whose IDs are in clientIds to set isActive to false
+      const clients = await Client.updateMany(
+        { _id: { $in: clientIds } }, // Match clients with the given IDs
+        { $set: { isActive: "InActive" } }, // Set isActive to false
+        { new: true }
+      );
+  
+      if (clients.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Client', true, 200, clients, 'Successfully deactivated clients.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Client', false, 400, {}, 'No clients were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Client', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  

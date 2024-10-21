@@ -59,6 +59,9 @@ export const updateApplicationStatus = async (req: any, res:any, next:any) => {
                     $set: {
                         statusName: statusDetails.statusName,
                         duration: statusDetails.duration,
+                        subCategory: statusDetails.subCategory,
+                        position: statusDetails.position,
+                   
                         modifiedOn: new Date(),
                         modifiedBy: statusDetails.modifiedBy,
                     },
@@ -110,10 +113,16 @@ export let getFilteredApplicationStatus   = async (req: any, res:any, next:any) 
         if (req.body.duration) {
             andList.push({ duration: req.body.duration })
         }
+        if (req.body.subDuration) {
+            andList.push({ subDuration: req.body.subDuration })
+        }
+        if (req.body.subCategory) {
+            andList.push({ subCategory: req.body.subCategory })
+        }
         
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const statusList = await ApplicationStatus.find(findQuery).sort({ _id: -1 }).limit(limit).skip(page)
+        const statusList = await ApplicationStatus.find(findQuery).sort({ _id: 1 }).limit(limit).skip(page)
 
         const statusCount = await ApplicationStatus.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStatus', true, 200, { statusList, statusCount }, clientError.success.fetchedSuccessfully);

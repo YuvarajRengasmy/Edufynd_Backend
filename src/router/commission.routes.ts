@@ -1,24 +1,29 @@
 import { Router } from 'express';
-import { getAllCommission, getSingleCommission,getSingleUniversity, createCommission, updateCommission, 
-    deleteCommission, getFilteredCommission, 
+import {
+    getAllCommission, getSingleCommission, getSingleUniversity, createCommission, updateCommission,
+    deleteCommission, getFilteredCommission,
     deleteCourseType,
     deleteIntake,
     getAllLoggedCommission,
-    getSingleLoggedCommission} from '../controller/commission.controller';
+    getSingleLoggedCommission,
+    activeCommission,
+    deactivateCommission
+} from '../controller/commission.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
+import { getAllCommissionCardDetails } from '../cards/commissionCard.controller';
 
 
 const router: Router = Router();
 
 router.get('/',
     basicAuthUser,
-    checkPermission('commission', 'view'),
+    checkSession,
     getAllCommission
 );
 
-router.get('/logs',             
+router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedCommission
@@ -35,18 +40,22 @@ router.get('/SingleLog',
 
 router.get('/getSingleCommission',
     basicAuthUser,
-    checkPermission('commission', 'view'),
     checkQuery('_id'),
     getSingleCommission,
 );
 
 router.get('/getSingleUniversity',
     basicAuthUser,
-    checkPermission('commission', 'view'),
     checkQuery('universityId'),
     getSingleUniversity,
 );
 
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllCommissionCardDetails
+);
 
 router.post('/',
     basicAuthUser,
@@ -65,13 +74,21 @@ router.put('/',
     updateCommission
 );
 
-router.post('/deleteCourseType', 
-    
-    deleteCourseType);
+router.post('/activeCommission',
+    basicAuthUser,
+    checkSession,
+    activeCommission
+);
 
-router.post('/deleteIntake', 
-  
-    deleteIntake);
+router.post('/deActiveCommission',
+    basicAuthUser,
+    checkSession,
+    deactivateCommission
+);
+
+router.post('/deleteCourseType',deleteCourseType);
+
+router.post('/deleteIntake',deleteIntake);
 
 
 router.delete('/',
@@ -92,7 +109,6 @@ router.delete('/courseType',
 
 router.put('/getFilterCommission',
     basicAuthUser,
-    checkPermission('commission', 'delete'),
     getFilteredCommission,
 );
 

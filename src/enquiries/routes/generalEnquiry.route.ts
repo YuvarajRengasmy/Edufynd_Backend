@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllGeneralEnquiry, getSingleGeneralEnquiry, createGeneralEnquiry, updateGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry, getAllLoggedGeneralEnquiry, getSingleLoggedGeneralEnquiry } from '../controller/generalEnquiry.controller';
+import { getAllGeneralEnquiry, getSingleGeneralEnquiry, createGeneralEnquiry, updateGeneralEnquiry, deleteGeneralEnquiry, getFilteredGeneralEnquiry, getAllLoggedGeneralEnquiry, getSingleLoggedGeneralEnquiry, activeGeneralEnquiry, deactivateGeneralEnquiry, assignStaffId, updateStatus } from '../controller/generalEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
@@ -32,13 +32,20 @@ router.get('/logs',
 );
 
 
-router.get('/SingleLog',
+router.get('/singleLog',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     getSingleLoggedGeneralEnquiry
 );
 
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
+);
 
 router.post('/',
      checkPermission('generalEnquiry', 'add'),
@@ -55,6 +62,24 @@ router.put('/',
 
 );
 
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeGeneralEnquiry
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateGeneralEnquiry
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',
     basicAuthUser,

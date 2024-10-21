@@ -2,10 +2,12 @@ import { Router } from 'express';
 import { getAllUniversity, getSingleUniversity, saveUniversity, updateUniversity, deleteUniversity, getFilteredUniversity,
      csvToJson, getFilteredUniversityForAgent, getFilteredUniversityForStudent, getAllUniversityForWeb, 
      getUniversityWithProgramDetails, getUniversityByCountry, getUniversityByName,
-     getAllUniversit,
      getAllLoggedUniversity,
      getSingleLoggedUniversity,
+     activeUniversity,
+     deactivateUniversity,
     } from '../controller/university.controller';
+import { getAllUniversit} from '../cards/universityCard.controller'
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -35,10 +37,9 @@ router.get('/SingleLog',
 );
 
 
-router.get('/getAllUniversit',             
+router.get('/card',             
     basicAuthUser,
     checkSession,
-    checkPermission('university', 'view'),
     getAllUniversit
 );
 
@@ -72,6 +73,19 @@ router.put('/',
     updateUniversity
 );
 
+router.post('/activeUniversity',
+    basicAuthUser,
+    checkSession,
+    checkPermission('university', 'view'),
+    activeUniversity
+);
+
+router.post('/deActiveUniversity',
+    basicAuthUser,
+    checkSession,
+    deactivateUniversity
+);
+
 
 router.delete('/',                 
     basicAuthUser,
@@ -85,7 +99,7 @@ router.delete('/',
 router.put('/getFilterUniversity',
     basicAuthUser,
     checkSession,
-    checkPermission('university', 'view'),
+    // checkPermission('university', 'view'),
     getFilteredUniversity,
 );
 

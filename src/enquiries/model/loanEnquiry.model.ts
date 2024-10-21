@@ -47,11 +47,15 @@ export interface LoanEnquiryDocument extends mongoose.Document {
     dial5?: string;
     coApplicantPrimaryNo?: string;
     dial6?: string;
+  
     coApplicantWhatsAppNo?: string;
     relationship?: string;
     adminId?: any;
     staffId?: any;
+    staffName?:string,
     typeOfClient?: string;
+    isActive?: string;
+    status?: any;
     createdOn?: Date;
     createdBy?: string;
     modifiedOn?: Date;
@@ -64,6 +68,7 @@ export interface LoanEnquiryDocument extends mongoose.Document {
 const loanEnquirySchema = new mongoose.Schema({
     adminId: { type: mongoose.Types.ObjectId, ref: 'Admin'},
     staffId: { type: mongoose.Types.ObjectId, ref: 'Staff'},
+    staffName: { type: String },
     loanID: { type: String },
     typeOfClient:{ type: String },
     studentId: { type: String },
@@ -111,8 +116,32 @@ const loanEnquirySchema = new mongoose.Schema({
     dial6: { type: String },
     coApplicantWhatsAppNo: { type: String },
     relationship: { type: String },
-
-
+    isActive: {type: String,default: "InActive"},
+    status: [{
+        _id: { type: mongoose.Types.ObjectId, required: true, auto: true },
+        statusName: {type: String},
+        commentBox: {type: String},
+        duration: {type: String},
+        position: {type: Number},
+        document:  {type: String},
+        delay: {type: String},
+        tagPerson: {type: String},
+        subject: {type: String},
+        reply: [{
+            replyMessage: {type: String},
+            createdBy: { type: String },
+        }],
+        estimateDate: {type: Date},
+        actualDate: {type: Date},
+        subCategory: [String],
+        category: [String],
+        progress: { type: Number }, 
+        completed: {type: Boolean},
+        createdBy: { type: String },
+        createdOn: { type: Date, default: Date.now },  // Automatically set to current date/time
+        modifiedOn: { type: Date},
+        modifiedBy: { type: String },
+    }],
     createdOn: { type: Date, default: Date.now() },
     createdBy: { type: String },
     modifiedOn: { type: Date },

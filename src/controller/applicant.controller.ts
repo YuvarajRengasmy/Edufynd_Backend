@@ -1,4 +1,6 @@
 import { Applicant, ApplicantDocument } from '../model/application.model'
+
+import { ApplicationStatus, ApplicationStatusDocument } from '../setting/moduleSetting/model/applicationStatus.model'
 import { Logs } from "../model/logs.model";
 import { Program, ProgramDocument } from '../model/program.model'
 import { Student, StudentDocument } from '../model/student.model'
@@ -8,6 +10,7 @@ import { response, transporter } from "../helper/commonResponseHandler";
 import { clientError, errorMessage } from "../helper/ErrorMessage";
 import * as config from '../config';
 import { closestIndexTo, format } from 'date-fns';
+import * as mongoose from 'mongoose';
 
 
 var activity = "Applicant";
@@ -47,29 +50,7 @@ export let getSingleLoggedApplicant = async (req, res) => {
     }
   }
 
-export let getAllApplicantCardDetails = async (req, res, next) => {
-    try {
-        // Find all client that are not deleted
-        const totalApplication = await Applicant.find({ isDeleted: false }).count()
-    
 
-        // Active and inactive universities
-        const activeClient = await Applicant.countDocuments({ clientStatus: "Active", isActive: true });
-        const inactiveClient = await Applicant.countDocuments({ clientStatus: "Inactive", isActive: false });
-
-        // Construct the response data
-        const responseData = {
-            totalApplication,
-            activeClient,
-            inactiveClient, 
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-Application Card Details', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-2', 'GetAll-Application Card Details', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
 
 export let getSingleApplicant = async (req, res, next) => {
     try {
@@ -109,19 +90,74 @@ export let createApplicant = async (req, res, next) => {
     if (errors.isEmpty()) {
         try {
             const applicantDetails: ApplicantDocument = req.body;
+
             // Generate the next client ID
             applicantDetails.applicationCode = await generateNextApplicationCode();
+
+            // Fetch position and duration details from the ApplicationStatusDocument collection
+            const nextDocument = await ApplicationStatus.find({});
+
+            // Initialize estimateDate for each status
+            let previousEstimateDate = new Date(); // Start with the current date for the first status
+
+            if (applicantDetails.status && applicantDetails.status.length > 0) {
+                applicantDetails.status = applicantDetails.status.map((status, index) => {
+
+                    // Fetch the corresponding status details from ApplicationStatusDocument collection
+                    const statusDetails = nextDocument.find((appStatus) => appStatus.position === status.position);
+
+                    if (!statusDetails) {
+                        throw new Error(`Status with position ${status.position} not found in the ApplicationStatus collection.`);
+                    }
+
+                    // For the first status (position 1), set the current date for both createdOn and estimateDate
+                    if (statusDetails.position === 1) {
+                        // For the first status (position 1), set estimateDate and createdOn to the current date
+                        status.estimateDate = new Date(); // Set estimateDate to current date
+                        status.createdOn = new Date(); // Set createdOn to current date
+                        previousEstimateDate = status.estimateDate; // Set previousEstimateDate for the next position
+                    } else {
+                        // For subsequent positions (position 2, 3, etc.)
+                        // Find the previous status by looking at the previous index
+                        const previousStatus = applicantDetails.status.find(
+                            (prevStatus) => prevStatus.position === (Number(statusDetails.position) - 1)
+                        );
+                    // console.log("not found", previousStatus)
+                        if (previousStatus) {
+                            // console.log("kdfkk")
+                            // Use the previous status' estimateDate and duration to calculate the current estimateDate
+                            const previousDurationInDays = Number(previousStatus.duration) || 0;
+                            // console.log("pp", previousDurationInDays)
+                            const previousEstimate = new Date(previousStatus.estimateDate);
+                            // console.log("kk", previousEstimate)
+                            status.estimateDate = new Date(previousEstimate.setDate(previousEstimate.getDate() + previousDurationInDays));
+                        } 
+                    }     
+                    // Set other fields like position and duration
+                    status.position = statusDetails.position;
+                    status.duration = statusDetails.duration;
+                    
+                    return status
+                });
+            }
+
+            // Save the applicant details
             const createData = new Applicant(applicantDetails);
             let insertData = await createData.save();
+
+            // Return the response with a success message
             response(req, res, activity, 'Save-Applicant', 'Level-2', true, 200, insertData, clientError.success.application);
-        } catch (err: any) {
-            console.log(err)
+
+        } catch (err) {
+            console.log(err);
             response(req, res, activity, 'Save-Applicant', 'Level-3', false, 500, {}, errorMessage.internalServer, err.message);
         }
     } else {
+        // Return validation error response
         response(req, res, activity, 'Save-Applicant', 'Level-3', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
     }
 };
+
 
 
 export const courseApply = async (req, res) => {
@@ -198,6 +234,7 @@ export let updateApplicant = async (req, res, next) => {
 
             if (!application) {
                 const updateMaster = new Applicant(applicantDetails)
+
                 let updatedApplicant = await updateMaster.updateOne(
                     {
                         $set: {
@@ -216,6 +253,7 @@ export let updateApplicant = async (req, res, next) => {
                             feesPaid: applicantDetails.feesPaid,
                             assignTo: applicantDetails.assignTo,
                             country: applicantDetails.country,
+                            uniCountry: applicantDetails.uniCountry,
                             modifiedOn: new Date(),
                             modifiedBy: applicantDetails.modifiedBy,
                         },
@@ -224,8 +262,6 @@ export let updateApplicant = async (req, res, next) => {
                         }
                     }
                 );
-
-
                 // Delay days Calculation
                 const updatedApplication = await Applicant.findById(applicantDetails._id);
                 const user = updatedApplication.name
@@ -257,7 +293,8 @@ export let updateApplicant = async (req, res, next) => {
                 }
 
                 const lastStatus = updatedApplication.status[statusLength - 1];
-                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+                const sanitizedContent = stripHtmlTags(lastStatus.commentBox || "");
+          
                 const docs = lastStatus.document;
                 const Message = delayMessages[delayMessages.length - 1]
                 const delayMessage = Message ? Message : "No Delay"
@@ -319,7 +356,7 @@ export let updateApplicant = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
         
@@ -381,9 +418,6 @@ export let updateApplicant = async (req, res, next) => {
 };
 
 
-
-
-
 export let deleteApplicant = async (req, res, next) => {
 
     try {
@@ -397,16 +431,6 @@ export let deleteApplicant = async (req, res, next) => {
 };
 
 
-
-/**
- * @author Balan K K
- * @date 28-05-2024
- * @param {Object} req 
- * @param {Object} res 
- * @param {Function} next  
- * @description This Function is used to get filter Staff Details
- */
-
 export let getFilteredApplication = async (req, res, next) => {
     try {
         var findQuery;
@@ -415,11 +439,15 @@ export let getFilteredApplication = async (req, res, next) => {
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
         // andList.push({ status: 1 })
+        if (req.body.name) {
+            andList.push({ name: req.body.name })
+        }
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
-        if (req.body.universityId) {
-            andList.push({ universityId: req.body.universityId })
+       
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId })
         }
         if (req.body.adminId) {
             andList.push({ adminId: req.body.adminId })
@@ -436,7 +464,7 @@ export let getFilteredApplication = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const applicantList = await Applicant.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page).populate("adminId")
+        const applicantList = await Applicant.find(findQuery).sort({ createdOn: -1 }).limit(limit).skip(page).populate("agentId").populate("adminId").populate("staffId").exec();
 
         const applicantCount = await Applicant.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterApplicant', true, 200, { applicantList, applicantCount }, clientError.success.fetchedSuccessfully);
@@ -571,7 +599,7 @@ export let updateApplicantt = async (req, res, next) => {
                                                           <td class="body" style="padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;">
                                                               <p>Hello ${updatedApplication.name},</p>
                                                               <p>Your application status has been updated.</p>
-                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.newStatus}</p>
+                                                              <p style="font-weight: bold,color: #345C72">Current Status: ${lastStatus.statusName}</p>
                                                               <p>Comment: ${sanitizedContent}</p>
                                                                  <p>Delayed: ${delayMessage}</p>
                                                           
@@ -645,4 +673,128 @@ export const getStudentApplication = async (req, res) => {
     }
 }
 
+
+export let activeApplicant = async (req, res, next) => {
+    try {
+        const applicantIds = req.body.applicantIds; 
+
+        const applicants = await Applicant .updateMany(
+            { _id: { $in: applicantIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (applicants.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Applicant ', true, 200, applicants, 'Successfully Activated Applicant .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Applicant ', false, 400, {}, 'Already Applicant  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Applicant ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateApplicant = async (req, res, next) => {
+    try {
+        const applicantIds = req.body.applicantIds;   
+      const applicants = await Applicant.updateMany(
+        { _id: { $in: applicantIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (applicants.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Applicant', true, 200, applicants, 'Successfully deactivated Applicant.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Applicant', false, 400, {}, 'Already Applicant were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Applicant', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+  
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+        const user = await Applicant.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+
+
+export const updateStatus = async (req, res) => {
+    try {
+        const { 
+            statusId, statusName, progress, subCategory, completed, 
+            duration, position, category, commentBox, document, reply 
+        } = req.body;
+
+        const sanitizedReply = Array.isArray(reply)
+            ? reply.map(item => ({
+                replyMessage: stripHtmlTags(item.replyMessage || ""),
+          
+            }))
+            : [{ replyMessage: stripHtmlTags(reply || "")}];
+
+        // Step 1: Set other status fields
+        const updateResult = await Applicant.findOneAndUpdate(
+            { _id: req.body._id, "status._id": statusId },
+            {
+                $set: {
+                    "status.$[elem].statusName": statusName,
+                    "status.$[elem].progress": progress,
+                    "status.$[elem].duration": duration,
+                    "status.$[elem].subCategory": subCategory,
+                    "status.$[elem].category": category,
+                    "status.$[elem].position": position,
+                    "status.$[elem].completed": completed,
+                    "status.$[elem].commentBox": commentBox,
+                    "status.$[elem].document": document,
+                    "status.$[elem].modifiedOn": new Date(),
+                }
+            },
+            {
+                arrayFilters: [{ "elem._id": statusId }],
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!updateResult) {
+            return res.status(404).json({ message: 'Status not found' });
+        }
+
+        // Step 2: Push the reply to the status reply array
+        const pushResult = await Applicant.findOneAndUpdate(
+            { _id: req.body._id, "status._id": statusId },
+            { $push: { "status.$.reply": { $each: sanitizedReply } } },
+            { new: true }
+        );
+
+        if (!pushResult) {
+            return res.status(404).json({ message: 'Failed to add reply.' });
+        }
+
+        // Return success response
+        res.status(200).json({ message: 'Status updated successfully', data: pushResult });
+
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).json({ message: 'Internal server error', error });
+    }
+};
 

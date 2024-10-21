@@ -4,6 +4,9 @@ import {
     createStudentBySuperAdmin, getFilteredStudent, editStudentProfileBySuperAdmin,
     getAllLoggedStudent,
     getSingleLoggedStudent,
+    activeStudent,
+    deactivateStudent,
+    assignStaffId,
 } from '../controller/student.controller';
 import { forgotPassword } from '../controller/login.controller';
 import { createContact } from '../controller/contact.controller';
@@ -11,6 +14,7 @@ import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser, } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
 import upload from '../utils/fileUploaded'
+import { getAllStudentCardDetails } from '../cards/studentCard.controller';
 const router: Router = Router();
 
 
@@ -45,6 +49,13 @@ router.get('/getSingleStudent',
 );
 
 
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllStudentCardDetails
+);
+
+
 router.post('/',
     basicAuthUser,
     checkSession,
@@ -54,15 +65,12 @@ router.post('/',
 );
 
 router.post('/register',
-   
     checkRequestBodyParams('email'),
     saveStudent
 );
 
 
-
 router.post('/contact', createContact);
-
 
 router.put('/',
     basicAuthUser,
@@ -81,6 +89,25 @@ router.put('/',
 
     updateStudent,
 );
+
+router.post('/activeStudent',
+    basicAuthUser,
+    checkSession,
+    activeStudent
+);
+
+router.post('/deActiveStudent',
+    basicAuthUser,
+    checkSession,
+    deactivateStudent
+);
+
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 
 router.delete('/',

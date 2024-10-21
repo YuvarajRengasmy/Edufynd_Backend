@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent } from './event.controller';
+import { getAllEvent, getSingleEvent, createEvent, updateEvent, deleteEvent, getFilteredEvent, deleteFileFromEvent, activeEvent, deactivateEvent, getAllLoggedEvent, getSingleLoggedEvent, assignStaffId } from './event.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession,checkPermission } from '../utils/tokenManager';
@@ -20,6 +20,20 @@ router.get('/getSingleEvent',
     getSingleEvent,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedEvent
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedEvent
+);
+
 
 router.post('/',
     basicAuthUser,
@@ -35,6 +49,25 @@ router.put('/',
     // checkQuery('_id'),
     updateEvent
 );
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeEvent
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateEvent
+);
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
+
 
 
 router.post('/deleteFile', deleteFileFromEvent);

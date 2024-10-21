@@ -46,17 +46,18 @@ export let decrypt = (textToConvert) => {
 
 
 export let generateRandomPassword = (length) => {
-
-  const specialCharacters = '!@#$%^&*'
+  const specialCharacters = '@#$&*'
   const digits = '0123456789';
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lower = "abcdefghijklmnopqrstuvwxyz"
 
-  const allCharacters = letters + specialCharacters + digits;
+  const allCharacters = letters + specialCharacters + digits+ lower
 
   let password = '';
   password += specialCharacters[Math.floor(Math.random() * specialCharacters.length)];
   password += digits[Math.floor(Math.random() * digits.length)];
   password += letters[Math.floor(Math.random() * letters.length)];
+  password += lower[Math.floor(Math.random() * lower.length)];
 
   for (let i = 3; i < length; i++) {
     password += allCharacters[Math.floor(Math.random() * allCharacters.length)];
@@ -73,8 +74,6 @@ export let generateCouponCode = (length) => {
 
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   const digits = '0123456789';
- 
-
   const allCharacters = letters + digits;
 
   let coupon = '';

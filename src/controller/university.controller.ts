@@ -52,49 +52,6 @@ export let getSingleLoggedUniversity = async (req, res) => {
 
 
 
-
-export let getAllUniversit = async (req, res, next) => {
-    try {
-        // Find all universities that are not deleted
-        const universities = await University.find({ isDeleted: false }).sort({ universityCode: -1 });
-
-        // Total number of universities
-        const totalUniversities = universities.length;
-
-        // Number of unique countries
-        const uniqueCountries = await University.distinct("country", { isDeleted: false });
-        const totalUniqueCountries = uniqueCountries.length;
-
-        // Active and inactive universities
-        const activeUniversities = await University.countDocuments({ isDeleted: false, isActive: true });
-        const inactiveUniversities = await University.countDocuments({ isDeleted: true, isActive: false });
-
-        // Popular categories count for each university
-        const universitiesWithPopularCategories = universities.map(university => {
-            return {
-                universityName: university.universityName,
-                popularCategoryCount: university.popularCategories.length
-            };
-        });
-
-        // Construct the response data
-        const responseData = {
-            totalUniversities,
-            totalUniqueCountries,
-            activeUniversities,
-            inactiveUniversities,
-            universitiesWithPopularCategories,
-            universities
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-University', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-3', 'GetAll-University', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
-
 export let getSingleUniversity = async (req, res, next) => {
     try {
         const student = await University.findOne({ _id: req.query._id });
@@ -192,6 +149,8 @@ export let updateUniversity = async (req, res, next) => {
                     paidFeesPercentage: universityDetails.paidFeesPercentage,
                     website: universityDetails.website,
                     inTake: universityDetails.inTake,
+                    commissionType: universityDetails.commissionType,
+                    commissionValue: universityDetails.commissionValue,
 
                     modifiedOn: new Date(),
                     modifiedBy: universityDetails.modifiedBy,
@@ -713,4 +672,42 @@ export const csvToJson = async (req, res) => {
 
 
 
-
+export let activeUniversity = async (req, res, next) => {
+    try {
+        const universityIds = req.body.universityIds; 
+  
+        const university = await University.updateMany(
+            { _id: { $in: universityIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (university.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-University ', true, 200, university, 'Successfully Activated University .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-University ', false, 400, {}, 'Already University were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-University ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateUniversity = async (req, res, next) => {
+    try {
+        const universityIds = req.body.universityIds;     
+      const university = await University.updateMany(
+        { _id: { $in: universityIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (university.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-University', true, 200, university, 'Successfully deactivated University.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-University', false, 400, {}, 'Already University were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-University', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };

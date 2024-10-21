@@ -19,6 +19,7 @@ import Commission from './commission.routes'
 import Demo from './demo.routes'
 import Payment from './payment.routes'
 import DialCode from './dialCode.routes'
+import Branch from './branch.routes'
 
 
 
@@ -35,6 +36,8 @@ import Chat from './chat.routes';
 // Invoice Routes
 import SenderInvoice from '../finance/routes/senderInvoice.route';
 import ReceiverInvoice from '../finance/routes/receiverInvoice.route'
+import IncomeReport from '../finance/routes/incomeReport.route'
+import ExpenseReport from '../finance/routes/expenseReport.route'
 
 
 // Marketing
@@ -101,8 +104,15 @@ import Tax from '../setting/moduleSetting/router/tax.route'
 import TypeOfClient from '../setting/moduleSetting/router/typeOfClient.route'
 import ApplicationStatus from '../setting/moduleSetting/router/applicationStatus.route'
 import Qualification from '../setting/moduleSetting/router/qualification.route'
-
-
+import CommissionType from '../setting/moduleSetting/router/typeOfCommission.route'
+import StudentEnquiryStatus from '../setting/moduleSetting/router/studentStatus.route'
+import ForexEnquiryStatus from '../setting/moduleSetting/router/forexStatus.route'
+import AccommodationEnquiryStatus from '../setting/moduleSetting/router/accommodationStatus.route'
+import FlightEnquiryStatus from '../setting/moduleSetting/router/flightStatus.route'
+import BusinessEnquiryStatus from '../setting/moduleSetting/router/businessStatus.route'
+import LoanEnquiryStatus from '../setting/moduleSetting/router/loanStatus.route'
+import GeneralEnquiryStatus from '../setting/moduleSetting/router/generalStatus.route'
+import ExpenseType from '../setting/moduleSetting/router/typeOfExpense.route'
 
 
 
@@ -122,8 +132,8 @@ router.use('/blog', Blog)
 router.use('/commission', Commission)
 router.use('/demo', Demo)
 router.use('/chat', Chat)
-
 router.use('/dialCode', DialCode)
+router.use('/branch', Branch)
 
 
 //All Enquiry API
@@ -139,6 +149,11 @@ router.use('/flight', Flight)
 router.use('/senderInvoice', SenderInvoice)
 router.use('/receiverInvoice', ReceiverInvoice)
 router.use('/payment', Payment)
+router.use('/incomeReport', IncomeReport)
+router.use('/expenseReport', ExpenseReport)
+
+
+
 
 // Marketing
 router.use('/socialMedia', SocialMedia)
@@ -200,10 +215,16 @@ router.use('/paymentMethod', PaymentMethod)
 router.use('/tax', Tax)
 router.use('/typeOfClient', TypeOfClient)
 router.use('/applicationStatus', ApplicationStatus)
-router.use('/qulaification', Qualification)
-
-
-
+router.use('/qualification', Qualification)
+router.use('/commissionType', CommissionType)
+router.use('/studentStatus', StudentEnquiryStatus)
+router.use('/forexStatus', ForexEnquiryStatus)
+router.use('/accommodationStatus', AccommodationEnquiryStatus)
+router.use('/flightStatus', FlightEnquiryStatus)
+router.use('/businessStatus', BusinessEnquiryStatus)
+router.use('/loanStatus', LoanEnquiryStatus)
+router.use('/generalStatus', GeneralEnquiryStatus)
+router.use('/expense', ExpenseType)
 
 
 

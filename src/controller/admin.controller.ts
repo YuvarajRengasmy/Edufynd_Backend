@@ -48,10 +48,10 @@ export let getSingleLoggedAdmin = async (req, res) => {
       }
   
       // If logs are found, return them with a 200 response
-      return response(req, res, 'activity', 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
+      return response(req, res, activity, 'Level-1', 'Single-Logged Admin', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
       // In case of an error, return a 500 response and stop further execution
-      return response(req, res, 'activity', 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
+      return response(req, res, activity, 'Level-2', 'Single-Logged Admin', false, 500, {}, errorMessage.internalServer, err.message);
     }
   };
   
@@ -148,7 +148,7 @@ export const updateAdmin = async (req, res) => {
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
                     privileges: adminDetails.privileges, 
-
+                    dial1: adminDetails.dial1,
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
                 }
@@ -185,7 +185,7 @@ export let getFilteredAdmin = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.studentId) {
             andList.push({ studentId: req.body.studentId })
         }
@@ -246,7 +246,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Admin Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -257,7 +257,7 @@ export let createAdminBySuperAdmin = async (req, res, next) => {
                                                               <p>Hello ${insertAdmin.name},</p>
                         
                                                           <p style="font-weight: bold,color: #345C72">UserID: ${insertAdmin.email}</p>
-                                                            <p style="font-weight: bold,color: #345C72">Password: ${newHash}</p>
+                                                            <p style="font-weight: bold,color: #345C72">Password: <b>${newHash}</b></p>
                                                              <p style="font-weight: bold,color: #345C72">Please change your password after logging in for the first time.</p>
                                                           
                                                    
@@ -326,6 +326,7 @@ export const editAdminProfileBySuperAdmin = async (req, res) => {
                     dial: adminDetails.dial,
                     mobileNumber: adminDetails.mobileNumber,
                     role: adminDetails.role,
+                    dial1: adminDetails.dial1,
                     // privileges: adminDetails.privileges, 
                     modifiedOn: new Date(),
                     modifiedBy: adminDetails.modifiedBy,
@@ -494,3 +495,66 @@ export const editStaffProfileByAdmin = async (req, res) => {
     }
 }
 
+
+export let activeAdmin = async (req, res, next) => {
+    try {
+        const adminIds = req.body.adminIds; 
+
+        const admins = await Admin.updateMany(
+            { _id: { $in: adminIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+
+        if (admins.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Admin', true, 200, admins, 'Successfully Activated Admin.');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Admin', false, 400, {}, 'Already Admin were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};
+
+
+export let deactivateAdmin = async (req, res, next) => {
+    try {
+      const adminIds = req.body.adminIds; 
+      const admins = await Admin.updateMany(
+        { _id: { $in: adminIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (admins.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-Admin', true, 200, admins, 'Successfully deactivated Admin.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-Admin', false, 400, {}, 'Already Admin were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-Admin', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Admin.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
+    }
+};

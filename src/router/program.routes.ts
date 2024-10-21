@@ -3,9 +3,9 @@ import {getAllProgram, getSingleProgram, createProgram,updateProgram, deleteProg
     getFilteredProgram, getFilteredProgramForAppliedStudent, csvToJson, getProgramUniversity,
     getAllProgramForWeb, getProgramsByUniversityName, getProgramDetailsByUniversity,
     updateProgramApplications,getProgramByCountry,getProgramByUniversity,
-    getProgramCategory, getAllProgramCard,
-    getAllLoggedProgram,
-    getSingleLoggedProgram} from '../controller/program.controller';
+    getProgramCategory, getAllLoggedProgram,getSingleLoggedProgram,activeProgram,deactivateProgram,
+    } from '../controller/program.controller';
+import {getAllProgramCard} from '../cards/programCard.controller'
 import { checkQuery, checkRequestBodyParams} from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -16,7 +16,6 @@ const router:Router=Router();
 router.get('/', 
     basicAuthUser,
     checkSession,
-    checkPermission('program', 'view'),
     getAllProgram
 );
 
@@ -38,14 +37,12 @@ router.get('/SingleLog',
 router.get('/card', 
     basicAuthUser,
     checkSession,
-    checkPermission('program', 'view'),
     getAllProgramCard
 );
 
 router.get('/getSingleProgram',
     basicAuthUser,
     checkSession,
-    checkPermission('program', 'view'),
     checkQuery('_id'),
     getSingleProgram,
 );
@@ -67,6 +64,19 @@ router.put('/',
     updateProgram
 );
 
+// router.delete('/deleteCampus',deleteCampuses);
+
+router.post('/activeProgram',
+    basicAuthUser,
+    checkSession,
+    activeProgram
+);
+
+router.post('/deActiveProgram',
+    basicAuthUser,
+    checkSession,
+    deactivateProgram
+);
 
 router.delete('/',            
     basicAuthUser,

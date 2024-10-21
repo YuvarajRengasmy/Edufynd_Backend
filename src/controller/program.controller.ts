@@ -45,54 +45,15 @@ export let getSingleLoggedProgram = async (req, res) => {
       const logs = await Logs.find({ documentId: _id });
   
       if (!logs || logs.length === 0) {
-        response(req, res, 'activity', 'Level-3', 'Single-Logged Program', false, 404, {},"No logs found.");
+        return response(req, res, activity, 'Level-3', 'Single-Logged Program', false, 404, {},"No logs found.");
       }
   
-      response(req, res, 'activity', 'Level-1', 'Single-Logged Program', true, 200, logs, clientError.success.fetchedSuccessfully);
+      return response(req, res, activity, 'Level-1', 'Single-Logged Program', true, 200, logs, clientError.success.fetchedSuccessfully);
     } catch (err) {
-      response(req, res, 'activity', 'Level-2', 'Single-Logged Program', false, 500, {}, errorMessage.internalServer, err.message);
+        console.log(err)
+        return response(req, res, activity, 'Level-2', 'Single-Logged Program', false, 500, {}, errorMessage.internalServer, err.message);
     }
   }
-
-export let getAllProgramCard = async (req, res, next) => {
-    try {
-        // Find all program that are not deleted
-        const program = await Program.find({ isDeleted: false }).sort({ programCode: -1 });
-
-        // Total number of program
-        const totalProgram = program.length;
-
-        // Number of unique countries
-        const uniqueCountries = await Program.distinct("country", { isDeleted: false });
-        const totalUniqueCountries = uniqueCountries.length;
-
-        // Number of unique universityName
-        const uniqueUniversityName = await Program.distinct("universityName", { isDeleted: false });
-        const universityName= uniqueUniversityName.length;
-
-        // Active and inactive universities
-        const activeProgram = await Program.countDocuments({ isDeleted: false, isActive: true });
-        const inactiveProgram = await Program.countDocuments({ isDeleted: true, isActive: false });
-
-      
-
-        // Construct the response data
-        const responseData = {
-            totalProgram,
-            totalUniqueCountries,
-            universityName,
-            activeProgram,
-            inactiveProgram,
-            program
-        };
-
-        // Send the response
-        response(req, res, activity, 'Level-1', 'GetAll-Program Count', true, 200, responseData, clientError.success.fetchedSuccessfully);
-    } catch (err: any) {
-        response(req, res, activity, 'Level-2', 'GetAll-Program Count', false, 500, {}, errorMessage.internalServer, err.message);
-    }
-};
-
 
 
 export const getSingleProgram = async (req, res, next) => {
@@ -164,7 +125,7 @@ export let createProgram = async (req, res, next) => {
 };
 
 
-export let updateProgram = async (req, res, next) => {
+export let updateProgramm = async (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
@@ -179,7 +140,7 @@ export let updateProgram = async (req, res, next) => {
                     currency: programDetails.currency,
                     flag: programDetails.flag,
 
-                    campuses: programDetails.campuses,
+                    // campuses: programDetails.campuses,
                     popularCategories: programDetails.popularCategories,
                     englishlanguageTest: programDetails.englishlanguageTest,
                     universityInterview: programDetails.universityInterview,
@@ -189,6 +150,9 @@ export let updateProgram = async (req, res, next) => {
                     modifiedOn: new Date(),
                     modifiedBy: programDetails.modifiedBy,
                 },
+                $addToSet: {
+                    campuses: programDetails.campuses,
+                }
 
             })
             response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
@@ -248,7 +212,7 @@ export let getFilteredProgram = async (req, res, next) => {
         var limit = req.body.limit ? req.body.limit : 0;
         var page = req.body.page ? req.body.page : 0;
         andList.push({ isDeleted: false })
-        andList.push({ status: 1 })
+        // andList.push({ status: 1 })
         if (req.body.universityName) {
             andList.push({ universityName: req.body.universityName })
         }
@@ -583,8 +547,6 @@ export const getProgramCategory = async (req, res) => {
 }
 
 
-
-
 export const getProgramByCountry = async (req, res) => {
     const { country, inTake } = req.query;
     try {
@@ -611,9 +573,6 @@ export const getProgramByUniversity = async (req, res) => {
         response(req, res, activity, 'Level-3', 'Get-University By Country', false, 500, {}, errorMessage.internalServer, err.message);
     }
 }
-
-
-
 
 
 
@@ -687,3 +646,156 @@ export const csvToJsonn = async (req, res) => {
 
 
 
+export let activeProgram = async (req, res, next) => {
+    try {
+        const programIds = req.body.programIds; 
+  
+        const program = await Program.updateMany(
+            { _id: { $in: programIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (program.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Program ', true, 200, program, 'Successfully Activated Program .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Program ', false, 400, {}, 'Already Program  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Program ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateProgram = async (req, res, next) => {
+    try {
+        const programIds = req.body.programIds;    
+      const program = await Program.updateMany(
+        { _id: { $in: programIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (program.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-program', true, 200, program, 'Successfully deactivated program.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-program', false, 400, {}, 'Already program were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-program', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+  export let updateProgram = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        try {
+            const programDetails: ProgramDocument = req.body;
+
+            // Update existing fields of the program
+            let updateData = await Program.findByIdAndUpdate(
+                { _id: programDetails._id },
+                {
+                    $set: {
+                        universityName: programDetails.universityName,
+                        country: programDetails.country,
+                        courseType: programDetails.courseType,
+                        programTitle: programDetails.programTitle,
+                        applicationFee: programDetails.applicationFee,
+                        currency: programDetails.currency,
+                        flag: programDetails.flag,
+                        popularCategories: programDetails.popularCategories,
+                        englishlanguageTest: programDetails.englishlanguageTest,
+                        universityInterview: programDetails.universityInterview,
+                        greGmatRequirement: programDetails.greGmatRequirement,
+                        academicRequirement: programDetails.academicRequirement,
+                        commission: programDetails.commission,
+                        modifiedOn: new Date(),
+                        modifiedBy: programDetails.modifiedBy,
+                    },
+                },
+                { new: true }
+            );
+
+            // Update or Add campuses (if campuses field is provided)
+            if (programDetails.campuses && programDetails.campuses.length > 0) {
+                for (let campus of programDetails.campuses) {
+                    if (campus._id) {
+                        // Update existing campus
+                        await Program.findOneAndUpdate(
+                            { _id: programDetails._id, 'campuses._id': campus._id },
+                            {
+                                $set: {
+                                    'campuses.$.campus': campus.campus,
+                                    'campuses.$.inTake': campus.inTake,
+                                    'campuses.$.duration': campus.duration,
+                                    'campuses.$.courseFees': campus.courseFees,
+                                },
+                            }
+                        );
+                    } else {
+                        // Add new campus if no _id is provided
+                        await Program.findByIdAndUpdate(
+                            { _id: programDetails._id },
+                            {
+                                $addToSet: {
+                                    campuses: {
+                                        campus: campus.campus,
+                                        inTake: campus.inTake,
+                                        duration: campus.duration,
+                                        courseFees: campus.courseFees,
+                                    },
+                                },
+                            }
+                        );
+                    }
+                }
+            }
+
+            // Send success response
+            response(req, res, activity, 'Level-2', 'Update-Program', true, 200, updateData, clientError.success.updateSuccess);
+
+        } catch (err: any) {
+            // Handle errors
+            response(req, res, activity, 'Level-3', 'Update-Program', false, 500, {}, errorMessage.internalServer, err.message);
+        }
+    } else {
+        // Handle validation errors
+        response(req, res, activity, 'Level-3', 'Update-Program', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
+
+
+// export const deleteCampuses = async (req, res) => {
+//     const { programId, campusId } = req.body; // Expecting both programId and campusId
+
+//     try {
+//         // Find the program document by programId
+//         const program = await Program.findById(programId);
+
+//         if (!program) {
+//             return res.status(404).json({ message: 'Program not found' });
+//         }
+
+//         // Find the index of the campus to delete using the campusId
+//         const campusIndex = program.campuses.findIndex(campus => campus._id.toString() === campusId);
+//         if (campusIndex === -1) {
+//             return res.status(404).json({ message: 'Campus not found' });
+//         }
+
+//         // Remove the campus from the array
+//         program.campuses.splice(campusIndex, 1);
+
+//         // Save the updated program document
+//         await program.save();
+
+//         return res.status(200).json({ message: 'Campus deleted successfully', program });
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Error deleting campus', error });
+//     }
+// };
+
+
+  

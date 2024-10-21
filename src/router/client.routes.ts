@@ -1,7 +1,11 @@
 import { Router } from 'express';
-import { getAllClient,activeClient, getSingleClient, saveClient, updateClient, deleteClient, 
-    csvToJson, getFilteredClient, editClientProfileBySuperAdmin, getAllClientCardDetails, getAllLoggedClient, 
-    getSingleLoggedClient} from '../controller/client.controller';
+import {
+    getAllClient, activeClient, getSingleClient, saveClient, updateClient, deleteClient,
+    csvToJson, getFilteredClient, editClientProfileBySuperAdmin,getAllLoggedClient,
+    getSingleLoggedClient,
+    deactivateClient
+} from '../controller/client.controller';
+import { getAllClientCardDetails} from '../cards/clientCard.controller'
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission } from '../utils/tokenManager';
@@ -10,14 +14,13 @@ import upload from '../utils/fileUploaded';
 const router: Router = Router();
 
 
-router.get('/',                
+router.get('/',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     getAllClient
 );
 
-router.get('/logs',             
+router.get('/logs',
     basicAuthUser,
     checkSession,
     getAllLoggedClient
@@ -30,17 +33,15 @@ router.get('/SingleLog',
     getSingleLoggedClient,
 );
 
-router.get('/card', 
+router.get('/card',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     getAllClientCardDetails
 );
 
 router.get('/getSingleClient',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     checkQuery('_id'),
     getSingleClient,
 );
@@ -54,21 +55,26 @@ router.post('/',
 );
 
 
-router.put('/',                    
+router.put('/',
     basicAuthUser,
     checkSession,
     checkPermission('client', 'edit'),
     // checkQuery('_id'),
-     checkRequestBodyParams('_id'),
+    checkRequestBodyParams('_id'),
     updateClient
 );
 
 
-router.put('/activeClient',                
+router.post('/activeClient',
     basicAuthUser,
-     checkSession,
-    //  checkQuery('_id'),
+    checkSession,
     activeClient
+);
+
+router.post('/deActiveClient',
+    basicAuthUser,
+    checkSession,
+    deactivateClient
 );
 
 router.put('/editClientProfileBySuperAdmin',             //Update client by super Admin
@@ -77,10 +83,10 @@ router.put('/editClientProfileBySuperAdmin',             //Update client by supe
     editClientProfileBySuperAdmin
 );
 
-router.delete('/',                
+router.delete('/',
     basicAuthUser,
-     checkSession,
-     checkPermission('client', 'delete'),
+    checkSession,
+    checkPermission('client', 'delete'),
     checkQuery('_id'),
     deleteClient
 );
@@ -90,7 +96,6 @@ router.delete('/',
 router.put('/getFilterClient',
     basicAuthUser,
     checkSession,
-    checkPermission('client', 'view'),
     getFilteredClient,
 );
 

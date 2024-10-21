@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining } from './training.controller';
+import { getAllTraining, getSingleTraining, createTraining, updateTraining, deleteTraining, getFilteredTraining, activeTraining, deactivateTraining, getAllLoggedTraining, getSingleLoggedTraining, assignStaffId } from './training.controller';
 import { checkQuery, checkRequestBodyParams } from '../middleware/Validators';
 import { basicAuthUser } from '../middleware/checkAuth';
 import { checkSession, checkPermission} from '../utils/tokenManager';
@@ -20,6 +20,20 @@ router.get('/getSingleTraining',
     getSingleTraining,
 );
 
+router.get('/logs',             
+    basicAuthUser,
+    checkSession,
+    getAllLoggedTraining
+);
+
+
+router.get('/singleLog',
+    basicAuthUser,
+    checkSession,
+    checkQuery('_id'),
+    getSingleLoggedTraining
+);
+
 
 router.post('/',
     basicAuthUser,
@@ -35,6 +49,25 @@ router.put('/',
     updateTraining
 );
 
+
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeTraining
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateTraining
+);
+
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',                  
     basicAuthUser,

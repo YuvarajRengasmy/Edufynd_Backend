@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry, getAllLoggedLoanEnquiry, getSingleLoggedLoanEnquiry } from '../controller/loanEnquiry.controller';
+import { getAllLoanEnquiry, getSingleLoanEnquiry, createLoanEnquiry, updateLoanEnquiry, deleteLoanEnquiry, getFilteredLoanEnquiry, getAllLoggedLoanEnquiry, getSingleLoggedLoanEnquiry, activeLoanEnquiry, deactivateLoanEnquiry, assignStaffId, updateStatus } from '../controller/loanEnquiry.controller';
 import { checkQuery, checkRequestBodyParams } from '../../middleware/Validators';
 import { basicAuthUser } from '../../middleware/checkAuth';
 import { checkSession, checkPermission } from '../../utils/tokenManager';
+import { getAllLoanEnquiryCard } from '../../cards/loanCard.controller';
 
 const router: Router = Router();
 
@@ -32,13 +33,26 @@ router.get('/logs',
 );
 
 
-router.get('/SingleLog',
+router.get('/singleLog',
     basicAuthUser,
     checkSession,
     checkQuery('_id'),
     getSingleLoggedLoanEnquiry
 );
 
+
+router.get('/card',
+    basicAuthUser,
+    checkSession,
+    getAllLoanEnquiryCard
+);
+
+router.put('/status',                    
+    basicAuthUser,
+    checkSession,
+    checkRequestBodyParams('_id'),
+    updateStatus
+);
 
 router.post('/',
     checkPermission('loanEnquiry', 'add'),
@@ -55,6 +69,24 @@ router.put('/',
 
 );
 
+router.post('/active',
+    basicAuthUser,
+    checkSession,
+    activeLoanEnquiry
+);
+
+router.post('/deActive',
+    basicAuthUser,
+    checkSession,
+    deactivateLoanEnquiry
+);
+
+
+router.post('/assign', 
+    basicAuthUser,
+    checkSession,
+    assignStaffId
+)
 
 router.delete('/',
     basicAuthUser,

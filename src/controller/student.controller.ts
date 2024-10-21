@@ -82,14 +82,21 @@ const generateNextStudentCode = async (currentMaxCounter): Promise<string> => {
 
 
 export let saveStudent = async (req, res, next) => {
+    console.log("jjjjj")
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         try {
             const student = await Student.findOne({ $and: [{ isDeleted: false }, { email: req.body.email }] });
 
             if (!student) {
+                 // Check if password and confirmPassword match
+                 if (req.body.password !== req.body.confirmPassword) {
+                    return response(req,res,activity,'Level-3','Save-Student',false,400,{},'Passwords do not match');
+                }
+
                 req.body.password = await encrypt(req.body.password)
                 req.body.confirmPassword = await encrypt(req.body.confirmPassword)
+
                 const studentDetails: StudentDocument = req.body;
                 studentDetails.createdOn = new Date();
 
@@ -292,6 +299,9 @@ export let getFilteredStudent = async (req, res, next) => {
         if (req.body.staffId) {
             andList.push({ staffId: req.body.staffId })
         }
+        if (req.body.agentId) {
+            andList.push({ agentId: req.body.agentId })
+        }
         if (req.body.passportNo) {
             andList.push({ passportNo: req.body.passportNo })
         }
@@ -304,7 +314,7 @@ export let getFilteredStudent = async (req, res, next) => {
 
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await Student.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page).populate('adminId').populate('staffId');
+        const studentList = await Student.find(findQuery).sort({ studentCode: -1 }).limit(limit).skip(page).populate('adminId').populate('staffId').populate('agentId');
 
         const studentCount = await Student.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-FilterStudent', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
@@ -434,7 +444,7 @@ export let createStudentBySuperAdmin = async (req, res, next) => {
                                                   <!-- Header -->
                                                   <tr>
                                                       <td class="header" style="background-color: #345C72; padding: 40px; text-align: center; color: white; font-size: 24px;">
-                                                      Login Credentials
+                                                      Student Login Credentials
                                                       </td>
                                                   </tr>
                       
@@ -591,7 +601,7 @@ export let getFilteredStudentBySuperAdmin = async (req, res, next) => {
         }
         findQuery = (andList.length > 0) ? { $and: andList } : {}
 
-        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('studentId', { StudentName: 1, email: 1, mobileNumber: 1 })
+        const studentList = await Student.find(findQuery).sort({ createdAt: -1 }).limit(limit).skip(page).populate('staffId').populate('adminId').populate('agentId').exec();
 
         const studentCount = await Student.find(findQuery).count()
         response(req, res, activity, 'Level-1', 'Get-Filter', true, 200, { studentList, studentCount }, clientError.success.fetchedSuccessfully);
@@ -710,5 +720,68 @@ export let updateStudent = async (req, res, next) => {
         }
     } else {
         response(req, res, activity, 'Level-3', 'Update-Student', false, 422, {}, errorMessage.fieldValidation, JSON.stringify(errors.mapped()));
+    }
+};
+
+
+export let activeStudent = async (req, res, next) => {
+    try {
+        const studentIds = req.body.studentIds; 
+  
+        const student = await Student.updateMany(
+            { _id: { $in: studentIds } }, 
+            { $set: { isActive: "Active" } }, 
+            { new: true }
+        );
+  
+        if (student.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Active-Student ', true, 200, student, 'Successfully Activated Student .');
+        } else {
+            response(req, res, activity, 'Level-3', 'Active-Student ', false, 400, {}, 'Already Student  were Activated.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Active-Student ', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+  
+  
+  export let deactivateStudent = async (req, res, next) => {
+    try {
+        const studentIds = req.body.studentIds;    
+      const student = await Student.updateMany(
+        { _id: { $in: studentIds } }, 
+        { $set: { isActive: "InActive" } }, 
+        { new: true }
+      );
+  
+      if (student.modifiedCount > 0) {
+        response(req, res, activity, 'Level-2', 'Deactivate-student', true, 200, student, 'Successfully deactivated student.');
+      } else {
+        response(req, res, activity, 'Level-3', 'Deactivate-student', false, 400, {}, 'Already student were deactivated.');
+      }
+    } catch (err) {
+      response(req, res, activity, 'Level-3', 'Deactivate-student', false, 500, {}, 'Internal Server Error', err.message);
+    }
+  };
+
+
+  export let assignStaffId = async (req, res, next) => {
+    try {
+        const { Ids, staffId,staffName } = req.body;  
+
+
+        const user = await Student.updateMany(
+            { _id: { $in: Ids } }, 
+            { $set: { staffId: staffId , staffName:staffName } }, 
+            { new: true }
+        );
+
+        if (user.modifiedCount > 0) {
+            response(req, res, activity, 'Level-2', 'Assign staff', true, 200, user, 'Successfully assigned staff');
+        } else {
+            response(req, res, activity, 'Level-3', 'Assign staff', false, 400, {}, 'No staff were assigned.');
+        }
+    } catch (err) {
+        response(req, res, activity, 'Level-3', 'Assign staff', false, 500, {}, 'Internal Server Error', err.message);
     }
 };
