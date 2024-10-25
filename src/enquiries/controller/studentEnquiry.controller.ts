@@ -496,7 +496,7 @@ export let updateStudentEnquiry = async (req, res, next) => {
                 }
 
                 const lastStatus = updatedApplication.status[statusLength - 1];
-                const sanitizedContent = stripHtmlTags(lastStatus.commentBox);
+                const sanitizedContent = lastStatus.commentBox
                 const docs = lastStatus.document;
                 const Message = delayMessages[delayMessages.length - 1]
                 const delayMessage = Message ? Message : "No Delay"
